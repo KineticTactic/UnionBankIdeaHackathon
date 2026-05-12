@@ -11,6 +11,8 @@ const loadCrmNotes = require("./loaders/loadCrmNotes");
 const loadAppEvents = require("./loaders/loadAppEvents");
 const loadCardTransactions = require("./loaders/loadCardTransactions");
 const loadEnrichment = require("./loaders/loadEnrichment");
+const loadAccountEvents = require("./loaders/loadAccountEvents");
+const loadKycUpdates = require("./loaders/loadKycUpdates");
 
 // Import routes
 const createCoreBankingRouter = require("./routes/coreBanking");
@@ -53,6 +55,8 @@ async function initializeServer() {
       appEvents,
       cardTransactions,
       enrichment,
+      accountEvents,
+      kycUpdates,
     ] = await Promise.all([
       loadCustomers(),
       loadAccounts(),
@@ -61,6 +65,8 @@ async function initializeServer() {
       loadAppEvents(),
       loadCardTransactions(),
       loadEnrichment(),
+      loadAccountEvents(),
+      loadKycUpdates(),
     ]);
 
     // Log load results
@@ -85,6 +91,12 @@ async function initializeServer() {
     console.log(
       `[PCOP Demo Server] enrichment.json    → ${enrichment.count} records`,
     );
+    console.log(
+      `[PCOP Demo Server] account_events.json → ${accountEvents.count} records`,
+    );
+    console.log(
+      `[PCOP Demo Server] kyc_updates.json    → ${kycUpdates.count} records`,
+    );
 
     // Create stores object
     const stores = {
@@ -95,6 +107,8 @@ async function initializeServer() {
       appEvents,
       cardTransactions,
       enrichment,
+      accountEvents,
+      kycUpdates,
     };
 
     // Register route handlers with stores
@@ -227,6 +241,7 @@ async function initializeServer() {
       const uptime = Math.floor((Date.now() - startTime) / 1000);
       res.json({
         status: "ok",
+        timestamp: new Date().toISOString(),
         uptime_s: uptime,
         records: {
           customers: customers.count,
@@ -236,6 +251,8 @@ async function initializeServer() {
           app_events: appEvents.count,
           card_transactions: cardTransactions.count,
           enrichment: enrichment.count,
+          account_events: accountEvents.count,
+          kyc_updates: kycUpdates.count,
         },
       });
     });
@@ -250,8 +267,6 @@ async function initializeServer() {
 
     // Error handler
     app.use((err, req, res, next) => {
-      console.trace();
-      console.log("Hiiiii")
       console.error("Error:", err);
       res.status(500).json({
         status: "error",

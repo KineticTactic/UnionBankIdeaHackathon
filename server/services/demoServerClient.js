@@ -2,7 +2,7 @@ const axios = require('axios');
 const config = require('../config');
 
 const client = axios.create({
-    baseURL: config.demoServerUrl,
+    baseURL: config.bankApiBaseUrl,
 });
 
 // Helper to standardise responses
@@ -104,23 +104,8 @@ async function getMarketSignals() {
 }
 
 async function getPortfolioStats() {
-    // Demo server doesn't have a single portfolio stats endpoint
-    // We aggregate here by fetching all customers
-    const res = await getCustomers();
-    const customers = res.data || [];
-
-    const stats = {
-        total_customers: customers.length,
-        critical_count: customers.filter(c => c.risk_tier === 'critical').length,
-        high_count: customers.filter(c => c.risk_tier === 'high').length,
-        medium_count: customers.filter(c => c.risk_tier === 'medium').length,
-        watch_count: customers.filter(c => c.risk_tier === 'watch').length,
-        low_count: customers.filter(c => c.risk_tier === 'low').length,
-        avg_churn_score: customers.length ? (customers.reduce((acc, c) => acc + c.churn_score, 0) / customers.length) : 0,
-        outreach_sent_this_week: 47 // Hardcoded per PRD
-    };
-
-    return stats;
+    const res = await client.get('/api/core-banking/portfolio-stats');
+    return extractData(res);
 }
 
 module.exports = {

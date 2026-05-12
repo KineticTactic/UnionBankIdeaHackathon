@@ -40,13 +40,13 @@ export function RiskDistributionChart({ data = [] }: RiskDistributionChartProps)
                                 ))}
                             </Pie>
                             <Tooltip
-                                formatter={(value: number, name: string) => [value, name.charAt(0).toUpperCase() + name.slice(1)]}
+                                formatter={(value, name) => [value, String(name).charAt(0).toUpperCase() + String(name).slice(1)]}
                                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                             />
                             <Legend
                                 verticalAlign="bottom"
                                 height={36}
-                                formatter={(value: string) => <span className="text-xs font-medium text-slate-600 capitalize">{value}</span>}
+                                formatter={(value) => <span className="text-xs font-medium text-slate-600 capitalize">{value}</span>}
                             />
                         </PieChart>
                     </ResponsiveContainer>

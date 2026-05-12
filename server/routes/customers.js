@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const demoServerClient = require('../services/demoServerClient');
+const { verifyToken } = require('../middleware/auth');
+const dataStore = require('../services/dataStore');
 
-router.get('/', async (req, res, next) => {
+router.get('/', verifyToken, async (req, res, next) => {
     try {
         const { segment, risk_tier, city, search, page = 1, limit = 20 } = req.query;
         const filters = {};
@@ -12,7 +14,6 @@ router.get('/', async (req, res, next) => {
         const customersData = await demoServerClient.getCustomers(filters);
         let results = customersData.data || [];
 
-        // Client-side search mock on full_name and id
         if (search) {
             const q = search.toLowerCase();
             results = results.filter(c =>
@@ -21,12 +22,23 @@ router.get('/', async (req, res, next) => {
             );
         }
 
+        const { CHURN_SCORES, SIGNALS, LIFE_EVENTS } = dataStore;
+        results = results.map(customer => ({
+            ...customer,
+            churn_score: CHURN_SCORES[customer.customer_id]?.churn_score || customer.churn_score,
+            risk_tier: CHURN_SCORES[customer.customer_id]?.risk_tier || customer.risk_tier,
+            reason_codes: CHURN_SCORES[customer.customer_id]?.reason_codes || [],
+            active_signals: SIGNALS.filter(s => s.customer_id === customer.customer_id && s.detected).map(s => s.signal_type),
+            life_events: LIFE_EVENTS.filter(e => e.customer_id === customer.customer_id).map(e => e.event_type)
+        }));
+
         const total = results.length;
         const pageNum = parseInt(page);
         const limitNum = parseInt(limit);
         const paginated = results.slice((pageNum - 1) * limitNum, pageNum * limitNum);
 
         res.json({
+            status: 'ok',
             data: paginated,
             total,
             page: pageNum,
@@ -37,21 +49,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id', async (req, res, next) => {
-    console.log("Hiii")
-    try {
-        const body = await demoServerClient.getCustomerById(req.params.id);
-        const snapshot = body.data;
-        if (!snapshot || !snapshot.customer) {
-            return res.status(404).json({ status: 'error', message: 'Customer not found' });
-        }
-        res.json(snapshot);
-    } catch (error) {
-        next(error);
-    }
-});
-
-router.get('/:id/signals', async (req, res, next) => {
+router.get('/:id', verifyToken, async (req, res, next) => {
     try {
         const body = await demoServerClient.getCustomerById(req.params.id);
         const snapshot = body.data;
@@ -59,24 +57,70 @@ router.get('/:id/signals', async (req, res, next) => {
             return res.status(404).json({ status: 'error', message: 'Customer not found' });
         }
 
-        // Create mock signal objects from the customer active_signals string array
-        const signals = (snapshot.customer.active_signals || []).map(sig => ({
-            signal_type: sig,
-            confidence: 0.85 + Math.random() * 0.1,
-            evidence: ['Detected pattern matching risk profile', 'Recent activity deviation'],
-            method_used: 'CUSUM / ML'
-        }));
+        const { CHURN_SCORES, SIGNALS, LIFE_EVENTS, getScoreHistory } = dataStore;
+        const customer = snapshot.customer;
 
-        res.json(signals);
+        const enrichedCustomer = {
+            ...customer,
+            churn_score: CHURN_SCORES[customer.customer_id]?.churn_score || customer.churn_score,
+            risk_tier: CHURN_SCORES[customer.customer_id]?.risk_tier || customer.risk_tier,
+            reason_codes: CHURN_SCORES[customer.customer_id]?.reason_codes || [],
+            active_signals: SIGNALS.filter(s => s.customer_id === customer.customer_id && s.detected).map(s => s.signal_type),
+            life_events: LIFE_EVENTS.filter(e => e.customer_id === customer.customer_id).map(e => e.event_type)
+        };
+
+        const scoreHistory = getScoreHistory(customer.customer_id, 90);
+
+        const customerSignals = SIGNALS.filter(s => s.customer_id === customer.customer_id);
+        const customerLifeEvents = LIFE_EVENTS.filter(e => e.customer_id === customer.customer_id);
+
+        res.json({
+            status: 'ok',
+            data: {
+                customer: enrichedCustomer,
+                accounts: snapshot.accounts || [],
+                score_history: scoreHistory,
+                active_signal_details: customerSignals.filter(s => s.detected),
+                life_event_details: customerLifeEvents,
+                engagement: snapshot.engagement_summary || {},
+                crm_summary: snapshot.crm_summary || {},
+                top_mccs: snapshot.latest_card_mccs || []
+            }
+        });
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/:id/transactions', async (req, res, next) => {
+router.get('/:id/signals', verifyToken, async (req, res, next) => {
+    try {
+        const { SIGNALS } = dataStore;
+        const signals = SIGNALS.filter(s => s.customer_id === req.params.id);
+
+        if (signals.length === 0) {
+            const body = await demoServerClient.getCustomerById(req.params.id);
+            if (!body.data?.customer) {
+                return res.status(404).json({ status: 'error', message: 'Customer not found' });
+            }
+            const customerSignals = (body.data.customer.active_signals || []).map(sig => ({
+                signal_type: sig,
+                confidence: 0.85 + Math.random() * 0.1,
+                evidence: ['Detected pattern matching risk profile', 'Recent activity deviation'],
+                method_used: 'CUSUM / ML',
+                detected: true
+            }));
+            return res.json({ status: 'ok', data: customerSignals });
+        }
+
+        res.json({ status: 'ok', data: signals });
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.get('/:id/transactions', verifyToken, async (req, res, next) => {
     try {
         const { from, to, limit = 50 } = req.query;
-        // For raw transactions, we query demoServerClient's client directly since we didn't expose raw txns helper
         const params = new URLSearchParams({ customer_id: req.params.id });
         if (from) params.append('from', from);
         if (to) params.append('to', to);
@@ -89,7 +133,7 @@ router.get('/:id/transactions', async (req, res, next) => {
     }
 });
 
-router.get('/:id/insights', async (req, res, next) => {
+router.get('/:id/insights', verifyToken, async (req, res, next) => {
     try {
         const id = req.params.id;
         const [engagement, crm, stress, location] = await Promise.all([
@@ -99,11 +143,18 @@ router.get('/:id/insights', async (req, res, next) => {
             demoServerClient.getLocationSeries(id)
         ]);
 
+        const { LIFE_EVENTS } = dataStore;
+        const customerLifeEvents = LIFE_EVENTS.filter(e => e.customer_id === id);
+
         res.json({
-            engagement: engagement.data,
-            crm: crm.data,
-            stress: stress.data,
-            location: location.data
+            status: 'ok',
+            data: {
+                engagement: engagement.data,
+                crm: crm.data,
+                stress: stress.data,
+                location: location.data,
+                life_events: customerLifeEvents
+            }
         });
     } catch (error) {
         next(error);

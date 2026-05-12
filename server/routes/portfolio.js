@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const demoServerClient = require('../services/demoServerClient');
+const { verifyToken } = require('../middleware/auth');
 
-router.get('/stats', async (req, res, next) => {
+router.get('/stats', verifyToken, async (req, res, next) => {
     try {
         const stats = await demoServerClient.getPortfolioStats();
         res.json(stats);
@@ -10,7 +11,7 @@ router.get('/stats', async (req, res, next) => {
     }
 });
 
-router.get('/risk-distribution', async (req, res, next) => {
+router.get('/risk-distribution', verifyToken, async (req, res, next) => {
     try {
         const customersData = await demoServerClient.getCustomers();
         const customers = customersData.data || [];
@@ -24,39 +25,40 @@ router.get('/risk-distribution', async (req, res, next) => {
         const distribution = Object.entries(counts).map(([tier, count]) => ({
             tier,
             count,
-            percentage: total > 0 ? (count / total) * 100 : 0
+            percentage: total > 0 ? Math.round((count / total) * 10000) / 100 : 0
         }));
 
-        res.json(distribution);
+        res.json({ status: 'ok', data: distribution });
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/churn-trend', async (req, res, next) => {
+router.get('/churn-trend', verifyToken, async (req, res, next) => {
     try {
         const weeks = parseInt(req.query.weeks) || 12;
         const stats = await demoServerClient.getPortfolioStats();
-        const baseAvg = stats.avg_churn_score || 0.5;
+        const baseAvg = stats.data?.avg_churn_score || 0.5;
 
-        // Simulate trend based on base average
         const trend = [];
         for (let i = weeks; i >= 1; i--) {
-            // Add slight random variance
+            const date = new Date();
+            date.setDate(date.getDate() - (i * 7));
             const variance = (Math.random() * 0.1) - 0.05;
             trend.push({
-                week: `W${i}`,
+                week: `W${weeks - i + 1}`,
+                date: date.toISOString().split('T')[0],
                 avg_score: Math.max(0, Math.min(1, baseAvg + variance))
             });
         }
 
-        res.json(trend.reverse());
+        res.json({ status: 'ok', data: trend.reverse() });
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/signal-breakdown', async (req, res, next) => {
+router.get('/signal-breakdown', verifyToken, async (req, res, next) => {
     try {
         const customersData = await demoServerClient.getCustomers();
         const customers = customersData.data || [];
@@ -74,13 +76,13 @@ router.get('/signal-breakdown', async (req, res, next) => {
             count
         }));
 
-        res.json(breakdown);
+        res.json({ status: 'ok', data: breakdown });
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/top-at-risk', async (req, res, next) => {
+router.get('/top-at-risk', verifyToken, async (req, res, next) => {
     try {
         const limit = parseInt(req.query.limit) || 10;
         const customersData = await demoServerClient.getCustomers();
@@ -99,16 +101,16 @@ router.get('/top-at-risk', async (req, res, next) => {
             recommended_action: c.recommended_action || 'Review Account'
         }));
 
-        res.json(result);
+        res.json({ status: 'ok', data: result });
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/market-signals', async (req, res, next) => {
+router.get('/market-signals', verifyToken, async (req, res, next) => {
     try {
         const signals = await demoServerClient.getMarketSignals();
-        res.json(signals.data || []);
+        res.json({ status: 'ok', data: signals.data || [] });
     } catch (error) {
         next(error);
     }

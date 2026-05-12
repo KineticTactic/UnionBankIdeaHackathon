@@ -171,13 +171,13 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                                 <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Recommended Action</h4>
                                 <div className="flex items-center gap-2 mb-2">
                                     <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-none uppercase text-[10px] tracking-wider font-bold">
-                                        {result.recommended_action.channel.replace('_', ' ')}
+                                        {result.recommended_action?.channel?.replace('_', ' ') || 'N/A'}
                                     </Badge>
-                                    <span className="text-sm font-semibold text-slate-900">{result.recommended_action.offer_code}</span>
+                                    <span className="text-sm font-semibold text-slate-900">{result.recommended_action?.offer_code}</span>
                                     <span className="text-xs text-slate-500 mx-1">•</span>
-                                    <span className="text-xs text-slate-500">{result.recommended_action.timing.replace(/_/g, ' ')}</span>
+                                    <span className="text-xs text-slate-500">{result.recommended_action?.timing?.replace(/_/g, ' ') || 'N/A'}</span>
                                 </div>
-                                <p className="text-sm text-slate-600">{result.recommended_action.rationale}</p>
+                                <p className="text-sm text-slate-600">{result.recommended_action?.rationale}</p>
                             </div>
                         </div>
                     </div>

@@ -14,7 +14,7 @@ export function useOutreachStream() {
         setError(null);
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/outreach/generate`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/outreach/generate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

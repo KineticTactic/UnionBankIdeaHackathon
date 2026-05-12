@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, IBM_Plex_Sans, Merriweather } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { AuthProvider } from "@/hooks/useAuth";
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
 
@@ -35,13 +36,15 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", geist.variable, merriweatherHeading.variable)}
     >
       <body className="min-h-full flex bg-slate-50 text-slate-900">
-        <Sidebar />
-        <div className="flex-1 ml-60 flex flex-col min-h-screen">
-          <Topbar />
-          <main className="p-8 flex-1">
-            {children}
-          </main>
-        </div>
+        <AuthProvider>
+          <Sidebar />
+          <div className="flex-1 ml-60 flex flex-col min-h-screen">
+            <Topbar />
+            <main className="p-8 flex-1">
+              {children}
+            </main>
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

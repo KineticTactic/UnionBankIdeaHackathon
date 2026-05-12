@@ -36,8 +36,8 @@ export function SignalBreakdownChart({ data = [] }: SignalBreakdownChartProps) {
                             <Tooltip
                                 cursor={{ fill: '#F1F5F9' }}
                                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                                formatter={(value: number) => [value, 'Customers']}
-                                labelFormatter={(label: string) => label.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                                formatter={(value) => [value, 'Customers']}
+                                labelFormatter={(label) => String(label).split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                             />
                             <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={24}>
                                 {sortedData.map((entry, index) => (

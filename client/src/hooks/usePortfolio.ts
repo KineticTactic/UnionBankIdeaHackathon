@@ -32,12 +32,12 @@ export function usePortfolio() {
                     api.getMarketSignals()
                 ]);
 
-                setStats(statsData);
-                setRiskDistribution(distData);
-                setChurnTrend(trendData);
-                setSignalBreakdown(signalData);
-                setTopAtRisk(topData);
-                setMarketSignals(marketData || []);
+                setStats(statsData.data || statsData);
+                setRiskDistribution(distData.data || distData || []);
+                setChurnTrend(trendData.data || trendData || []);
+                setSignalBreakdown(signalData.data || signalData || []);
+                setTopAtRisk(topData.data || topData || []);
+                setMarketSignals(marketData?.data || marketData || []);
             } catch (err) {
                 setError(err instanceof Error ? err : new Error('Failed to fetch portfolio data'));
             } finally {

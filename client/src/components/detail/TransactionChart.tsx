@@ -58,10 +58,10 @@ export function TransactionChart({ transactions }: { transactions: any[] }) {
                                         tickFormatter={(val: number) => `₹${(val / 1000).toFixed(0)}k`}
                                     />
                                     <Tooltip
-                                        labelFormatter={(val: string) => {
-                                            try { return format(parseISO(val), 'MMM d, yyyy'); } catch { return val; }
+                                        labelFormatter={(val) => {
+                                            try { return format(parseISO(String(val)), 'MMM d, yyyy'); } catch { return String(val); }
                                         }}
-                                        formatter={(value: number, name: string) => [`₹${value.toLocaleString()}`, name.charAt(0).toUpperCase() + name.slice(1)]}
+                                        formatter={(value, name) => [`₹${Number(value).toLocaleString()}`, String(name).charAt(0).toUpperCase() + String(name).slice(1)]}
                                         contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                                     />
                                     <Area type="monotone" dataKey="credit" stackId="1" stroke="#22c55e" fill="#22c55e" fillOpacity={0.2} />

@@ -217,5 +217,75 @@ module.exports = function createCoreBankingRouter(stores) {
     });
   });
 
+  // GET /api/core-banking/account-events - Account lifecycle events
+  router.get("/account-events", (req, res) => {
+    const { customer_id } = req.query;
+
+    let results = [];
+    if (customer_id) {
+      results = stores.accountEvents.byCustomer.get(customer_id) || [];
+    } else {
+      results = stores.accountEvents.all;
+    }
+
+    results = sliceArray(results, req.query.limit);
+
+    res.json({
+      status: "ok",
+      count: results.length,
+      data: results,
+    });
+  });
+
+  // GET /api/core-banking/kyc-updates - KYC field update history
+  router.get("/kyc-updates", (req, res) => {
+    const { customer_id, field_name, verification_status } = req.query;
+
+    let results = [];
+    if (customer_id) {
+      results = stores.kycUpdates.byCustomer.get(customer_id) || [];
+    } else {
+      results = stores.kycUpdates.all;
+    }
+
+    if (field_name) {
+      results = results.filter((u) => u.field_name === field_name);
+    }
+    if (verification_status) {
+      results = results.filter((u) => u.verification_status === verification_status);
+    }
+
+    results = sliceArray(results, req.query.limit);
+
+    res.json({
+      status: "ok",
+      count: results.length,
+      data: results,
+    });
+  });
+
+  // GET /api/core-banking/portfolio-stats - Portfolio-level statistics
+  router.get("/portfolio-stats", (req, res) => {
+    const customers = Array.from(stores.customers.map.values());
+
+    const stats = {
+      total_customers: customers.length,
+      critical_count: customers.filter((c) => c.risk_tier === "critical").length,
+      high_count: customers.filter((c) => c.risk_tier === "high").length,
+      medium_count: customers.filter((c) => c.risk_tier === "medium").length,
+      watch_count: customers.filter((c) => c.risk_tier === "watch").length,
+      low_count: customers.filter((c) => c.risk_tier === "low").length,
+      avg_churn_score: customers.length
+        ? customers.reduce((acc, c) => acc + c.churn_score, 0) / customers.length
+        : 0,
+      outreach_sent_this_week: 47,
+    };
+
+    res.json({
+      status: "ok",
+      data: stats,
+    });
+  });
+
   return router;
 };

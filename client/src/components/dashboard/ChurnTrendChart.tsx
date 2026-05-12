@@ -33,7 +33,7 @@ export function ChurnTrendChart({ data = [] }: ChurnTrendChartProps) {
                                 tickFormatter={(val: number) => `${(val * 100).toFixed(0)}%`}
                             />
                             <Tooltip
-                                formatter={(value: number) => [`${(value * 100).toFixed(1)}%`, 'Avg Score']}
+                                formatter={(value) => [`${(Number(value) * 100).toFixed(1)}%`, 'Avg Score']}
                                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                                 labelStyle={{ fontWeight: 'bold', color: '#1E293B', marginBottom: '4px' }}
                             />

@@ -1,0 +1,56 @@
+# Implementation plan
+chronos_implementation_plan.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+.venv/
+venv/
+env/
+ENV/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Data files
+data/raw/
+data/processed/
+*.csv
+*.parquet
+*.pkl
+*.joblib
+
+# ML checkpoints / models
+ml/checkpoints/*.pt
+ml/checkpoints/*.pth
+ml/checkpoints/*.ckpt
+*.h5
+*.hdf5
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker
+.docker/

@@ -65,7 +65,13 @@ def train(args: argparse.Namespace) -> None:
     import pandas as pd
     from services.scoring.models.tare_encoder import TAREEncoder, VOCAB_SIZE
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")
+    elif torch.cuda.is_available():
+        device = torch.device("cuda")
+    else:
+        device = torch.device("cpu")
+
 
     df = pd.read_parquet(DATA_PATH)
     X_ids = np.array(df["token_ids"].tolist())

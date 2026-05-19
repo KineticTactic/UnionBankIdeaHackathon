@@ -102,9 +102,21 @@ def train_hillstrom_t_learner(hillstrom_path: Path) -> tuple[xgb.Booster, xgb.Bo
     if "preferred_channel" in df.columns:
         df["preferred_channel"] = df["preferred_channel"].map({"Phone": 0, "Multichannel": 1, "Web": 2}).fillna(0)
 
+    # Encode remaining categorical columns
+    if "history_segment" in df.columns:
+        seg_map = {s: i for i, s in enumerate(sorted(df["history_segment"].unique()))}
+        df["history_segment"] = df["history_segment"].map(seg_map).fillna(0)
+
+    if "zip_code" in df.columns:
+        zip_map = {z: i for i, z in enumerate(sorted(df["zip_code"].unique()))}
+        df["zip_code"] = df["zip_code"].map(zip_map).fillna(0)
+
+    if df["treatment"].dtype == "object":
+        df["treatment"] = df["treatment"].map({"No E-Mail": 0, "Mens E-Mail": 1, "Womens E-Mail": 2}).fillna(0)
+
     feature_cols = [c for c in df.columns if c not in ["target", "treatment", "visit", "conversion", "spend"]]
     X = df[feature_cols].fillna(0).values.astype(np.float32)
-    y_col = "conversion" if "conversion" in df.columns else "visit"
+    y_col = "target" if "target" in df.columns else ("conversion" if "conversion" in df.columns else "visit")
     y = df[y_col].fillna(0).values.astype(np.float32)
     t = df["treatment"].fillna(0).values
 

@@ -36,8 +36,13 @@ data/datasets
 ml/checkpoints/*.pt
 ml/checkpoints/*.pth
 ml/checkpoints/*.ckpt
+ml/checkpoints/*.json
+ml/checkpoints/*.data
+ml/checkpoints/*.png
+ml/checkpoints/*.onnx
 *.h5
 *.hdf5
+mlruns/
 
 # IDE
 .vscode/

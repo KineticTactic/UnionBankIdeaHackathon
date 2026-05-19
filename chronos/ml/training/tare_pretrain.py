@@ -56,7 +56,7 @@ def _mask_tokens(
     labels = token_ids.clone()
     masked = token_ids.clone()
     mask = (token_ids != pad_id) & (torch.rand_like(token_ids.float()) < mask_fraction)
-    masked[mask] = vocab_size + 1  # MASK token id (out-of-vocab sentinel)
+    masked[mask] = vocab_size  # MASK token id (out-of-vocab sentinel)
     labels[~mask] = -100
     return masked, labels, mask
 
@@ -125,7 +125,13 @@ def main() -> None:
         TAREPretrainHead,
     )
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if torch.backends.mps.is_available():
+        device = torch.device("mps")
+    elif torch.cuda.is_available():
+        device = torch.device("cuda")
+    else:
+        device = torch.device("cpu")
+
     logger.info("Using device: %s", device)
 
     data_path = DATA_DIR / "train.parquet"
@@ -135,7 +141,7 @@ def main() -> None:
     dataset = MBDSequenceDataset(data_path, subset_fraction=args.subset)
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=2, pin_memory=True)
 
-    model = TAREEncoder().to(device)
+    model = TAREEncoder(vocab_size=VOCAB_SIZE + 1).to(device)
     pretrain_head = TAREPretrainHead(vocab_size=VOCAB_SIZE).to(device)
     optimizer = torch.optim.Adam(
         list(model.parameters()) + list(pretrain_head.parameters()), lr=args.lr

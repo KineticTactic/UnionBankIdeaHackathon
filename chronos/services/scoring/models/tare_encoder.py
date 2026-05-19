@@ -180,7 +180,25 @@ class TAREEncoder(nn.Module):
             model_kwargs = {**ckpt["model_config"], **model_kwargs}
 
         model = cls(**model_kwargs)
-        model.load_state_dict(ckpt["model_state_dict"])
+
+        state_dict = ckpt["model_state_dict"]
+        # Handle pretraining checkpoints with extra MASK embedding
+        if "embedding.weight" in state_dict:
+            ckpt_embed = state_dict["embedding.weight"]
+            model_embed = model.embedding.weight
+
+            if ckpt_embed.shape[0] != model_embed.shape[0]:
+                logger.warning(
+                    "Adjusting embedding size from %d -> %d",
+                    ckpt_embed.shape[0],
+                    model_embed.shape[0],
+                )
+
+                state_dict["embedding.weight"] = ckpt_embed[
+                    : model_embed.shape[0]
+                ]
+
+        model.load_state_dict(state_dict)
         logger.info(
             "Loaded TARE checkpoint from %s (params=%d)", checkpoint_path, model.parameter_count()
         )

@@ -3,6 +3,7 @@ name = "chronos-scoring"
 version = "1.0.0"
 description = "CHRONOS Neural Risk Intelligence Engine — Layer 3 ML Scoring"
 authors = ["PCOP ML Team"]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"

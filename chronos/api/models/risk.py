@@ -39,6 +39,14 @@ class ChurnScoreListResponse(BaseModel):
     page_size: int = 50
 
 
+class TokenSequenceResponse(BaseModel):
+    customer_id: str
+    token_ids: list[int]
+    time_gaps: list[float]
+    token_labels: list[str]
+    non_pad_count: int
+
+
 class ModelComponentStatus(BaseModel):
     name: str
     version: str

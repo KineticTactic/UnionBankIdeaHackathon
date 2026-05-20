@@ -188,6 +188,38 @@ export interface AnalysisResult {
     scored_at: string;
 }
 
+export interface ReasonCodeV2 {
+    category: string;
+    description: string;
+    importance: number;
+    source: string;
+}
+
+export interface ChronosStats {
+    total_customers_scored: number;
+    tier_distribution: Record<string, number>;
+    avg_churn_score: number;
+    last_scored_at: string | null;
+    model_versions: string[];
+}
+
+export interface ModelComponent {
+    name: string;
+    version: string;
+    last_updated: string | null;
+    status: string;
+    metrics: Record<string, unknown>;
+}
+
+export interface ModelHealth {
+    fusion_tare_weight: number;
+    fusion_habitat_weight: number;
+    fusion_ece: number | null;
+    fusion_last_calibration: string | null;
+    aegis_drift_status: string;
+    components: ModelComponent[];
+}
+
 export interface AuthUser {
     username: string;
     role: 'analyst' | 'manager' | 'admin';

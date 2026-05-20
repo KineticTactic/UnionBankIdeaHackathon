@@ -1,18 +1,44 @@
 'use client';
 
+import { useState, useEffect } from "react";
 import { usePortfolio } from "@/hooks/usePortfolio";
-import { Users, AlertOctagon, AlertTriangle, TrendingUp } from "lucide-react";
+import { api } from "@/lib/api";
+import { Users, AlertOctagon, AlertTriangle, TrendingUp, BrainCircuit } from "lucide-react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { ChurnTrendChart } from "@/components/dashboard/ChurnTrendChart";
 import { RiskDistributionChart } from "@/components/dashboard/RiskDistributionChart";
 import { TopAtRiskTable } from "@/components/dashboard/TopAtRiskTable";
 import { SignalBreakdownChart } from "@/components/dashboard/SignalBreakdownChart";
 import { MarketSignalsCard } from "@/components/dashboard/MarketSignalsCard";
+import { ChronosDashboardCard } from "@/components/dashboard/ChronosDashboardCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { ChronosStats, ModelHealth } from "@/types";
 
 export default function DashboardPage() {
     const { stats, riskDistribution, churnTrend, signalBreakdown, topAtRisk, marketSignals, isLoading } = usePortfolio();
+    const [chronosStats, setChronosStats] = useState<ChronosStats | null>(null);
+    const [modelHealth, setModelHealth] = useState<ModelHealth | null>(null);
+    const [chronosLoading, setChronosLoading] = useState(true);
+
+    useEffect(() => {
+        async function loadChronos() {
+            try {
+                setChronosLoading(true);
+                const [statsData, healthData] = await Promise.all([
+                    api.getChronosStats(),
+                    api.getChronosModelHealth(),
+                ]);
+                setChronosStats(statsData.data || statsData);
+                setModelHealth(healthData);
+            } catch {
+                // CHRONOS might not be available
+            } finally {
+                setChronosLoading(false);
+            }
+        }
+        loadChronos();
+    }, []);
 
     if (isLoading) {
         return (
@@ -35,7 +61,7 @@ export default function DashboardPage() {
 
     return (
         <ProtectedRoute>
-            <div className="flex flex-col gap-6 max-w-7xl">
+            <div className="flex flex-col gap-6 max-w-7xl pb-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatCard
                         title="Total Customers"
@@ -74,7 +100,9 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-[55%_minmax(0,1fr)] gap-6 h-full pb-8">
+                <ChronosDashboardCard stats={chronosStats} modelHealth={modelHealth} isLoading={chronosLoading} />
+
+                <div className="grid grid-cols-1 lg:grid-cols-[55%_minmax(0,1fr)] gap-6">
                     <div className="w-full flex flex-col gap-6">
                         <TopAtRiskTable data={topAtRisk} />
                         <MarketSignalsCard signals={marketSignals} />

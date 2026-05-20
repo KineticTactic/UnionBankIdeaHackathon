@@ -2,6 +2,7 @@ const router = require('express').Router();
 const demoServerClient = require('../services/demoServerClient');
 const { verifyToken } = require('../middleware/auth');
 const dataStore = require('../services/dataStore');
+const chronos = require('../services/chronosClient');
 
 router.get('/', verifyToken, async (req, res, next) => {
     try {
@@ -23,14 +24,27 @@ router.get('/', verifyToken, async (req, res, next) => {
         }
 
         const { CHURN_SCORES, SIGNALS, LIFE_EVENTS } = dataStore;
-        results = results.map(customer => ({
-            ...customer,
-            churn_score: CHURN_SCORES[customer.customer_id]?.churn_score || customer.churn_score,
-            risk_tier: CHURN_SCORES[customer.customer_id]?.risk_tier || customer.risk_tier,
-            reason_codes: CHURN_SCORES[customer.customer_id]?.reason_codes || [],
-            active_signals: SIGNALS.filter(s => s.customer_id === customer.customer_id && s.detected).map(s => s.signal_type),
-            life_events: LIFE_EVENTS.filter(e => e.customer_id === customer.customer_id).map(e => e.event_type)
-        }));
+        let chronosMap = {};
+        try {
+            const chronosData = await chronos.getScores({ page_size: 100 });
+            for (const c of (chronosData.customers || [])) {
+                if (!chronosMap[c.customer_id]) {
+                    chronosMap[c.customer_id] = { churn_score: c.final_score, risk_tier: c.risk_tier, reason_codes: (c.reason_codes_v2 || []).map(r => r.description) };
+                }
+            }
+        } catch (_) { /* fall through to static dataStore */ }
+
+        results = results.map(customer => {
+            const cs = chronosMap[customer.customer_id] || CHURN_SCORES[customer.customer_id] || {};
+            return {
+                ...customer,
+                churn_score: cs.churn_score ?? customer.churn_score,
+                risk_tier: cs.risk_tier || customer.risk_tier,
+                reason_codes: cs.reason_codes || [],
+                active_signals: SIGNALS.filter(s => s.customer_id === customer.customer_id && s.detected).map(s => s.signal_type),
+                life_events: LIFE_EVENTS.filter(e => e.customer_id === customer.customer_id).map(e => e.event_type)
+            };
+        });
 
         const total = results.length;
         const pageNum = parseInt(page);
@@ -60,11 +74,16 @@ router.get('/:id', verifyToken, async (req, res, next) => {
         const { CHURN_SCORES, SIGNALS, LIFE_EVENTS, getScoreHistory } = dataStore;
         const customer = snapshot.customer;
 
+        let chronosScore = null;
+        try {
+            chronosScore = await chronos.getScore(customer.customer_id);
+        } catch (_) { /* fall through */ }
+
         const enrichedCustomer = {
             ...customer,
-            churn_score: CHURN_SCORES[customer.customer_id]?.churn_score || customer.churn_score,
-            risk_tier: CHURN_SCORES[customer.customer_id]?.risk_tier || customer.risk_tier,
-            reason_codes: CHURN_SCORES[customer.customer_id]?.reason_codes || [],
+            churn_score: chronosScore?.final_score ?? CHURN_SCORES[customer.customer_id]?.churn_score ?? customer.churn_score,
+            risk_tier: chronosScore?.risk_tier ?? CHURN_SCORES[customer.customer_id]?.risk_tier ?? customer.risk_tier,
+            reason_codes: (chronosScore?.reason_codes_v2 || []).map(r => r.description) || CHURN_SCORES[customer.customer_id]?.reason_codes || [],
             active_signals: SIGNALS.filter(s => s.customer_id === customer.customer_id && s.detected).map(s => s.signal_type),
             life_events: LIFE_EVENTS.filter(e => e.customer_id === customer.customer_id).map(e => e.event_type)
         };

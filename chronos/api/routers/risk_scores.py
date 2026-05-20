@@ -3,21 +3,26 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime
+from collections.abc import Generator
+from datetime import date, datetime
 from typing import Annotated, Optional
 
+import requests
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from api.models.risk import ChurnScoreListResponse, ChurnScoreResponse, ReasonCodeV2
+from api.models.risk import ChurnScoreListResponse, ChurnScoreResponse, ReasonCodeV2, TokenSequenceResponse
+from ml.features.sequence_builder import VOCAB
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/scores", tags=["risk-scores"])
 
 
-def _get_db() -> Session:
-    raise NotImplementedError("Wire up your SQLAlchemy session factory here")
+def _get_db() -> Generator[Session, None, None]:
+    from api.database import get_db
+    yield from get_db()
 
 
 @router.get("/{customer_id}", response_model=ChurnScoreResponse)
@@ -54,6 +59,50 @@ async def list_scores(
     )
 
 
+@router.get("/{customer_id}/token-sequence", response_model=TokenSequenceResponse)
+async def get_token_sequence(
+    customer_id: str,
+    as_of_date_str: Optional[str] = Query(default=None, description="Override the as_of_date (YYYY-MM-DD)"),
+    db: Annotated[Session, Depends(_get_db)] = None,  # type: ignore[assignment]
+) -> TokenSequenceResponse:
+    """Build the TARE token sequence for a customer from live bank data."""
+    bank_api = "http://localhost:3001/api"
+
+    if as_of_date_str:
+        as_of_date = date.fromisoformat(as_of_date_str)
+    else:
+        as_of_date = date.today()
+
+    def _get(url: str, params: dict | None = None) -> dict:
+        resp = requests.get(url, params=params, timeout=10)
+        resp.raise_for_status()
+        return resp.json()
+
+    try:
+        cust = _get(f"{bank_api}/core-banking/customers/{customer_id}")["data"]
+        txns = _get(f"{bank_api}/core-banking/transactions", {"customer_id": customer_id, "limit": 1000})["data"]
+        acct_evts = _get(f"{bank_api}/core-banking/account-events", {"customer_id": customer_id})["data"]
+        app_evts = _get(f"{bank_api}/app-events", {"customer_id": customer_id, "limit": 500})["data"]
+        crm_notes = _get(f"{bank_api}/crm/notes", {"customer_id": customer_id, "limit": 100})["data"]
+    except requests.RequestException as e:
+        raise HTTPException(status_code=502, detail=f"Bank API unavailable: {e}")
+
+    from services.scoring.serving.bank_loader import _build_token_sequence
+    token_ids, time_gaps = _build_token_sequence(cust, txns, acct_evts, app_evts, crm_notes, as_of_date)
+
+    id_to_name = {v: k for k, v in VOCAB.items()}
+    token_labels = [id_to_name.get(tid, "?") for tid in token_ids]
+    non_pad_count = sum(1 for t in token_ids if t != 0)
+
+    return TokenSequenceResponse(
+        customer_id=customer_id,
+        token_ids=token_ids,
+        time_gaps=time_gaps,
+        token_labels=token_labels,
+        non_pad_count=non_pad_count,
+    )
+
+
 @router.get("/{customer_id}/reason-codes", response_model=list[ReasonCodeV2])
 async def get_reason_codes(
     customer_id: str,
@@ -71,11 +120,11 @@ def _fetch_latest_score(customer_id: str, db: Session | None) -> dict | None:
     """Fetch the most recent churn_scores row for a customer."""
     if db is None:
         return None
-    result = db.execute(
-        "SELECT * FROM churn_scores WHERE customer_id = :cid ORDER BY scored_at DESC LIMIT 1",
+    row = db.execute(
+        text("SELECT * FROM churn_scores WHERE customer_id = :cid ORDER BY scored_at DESC LIMIT 1"),
         {"cid": customer_id},
     ).fetchone()
-    return dict(result) if result else None
+    return dict(row._mapping) if row else None
 
 
 def _fetch_score_list(
@@ -96,12 +145,11 @@ def _fetch_score_list(
         params["tiers"] = tiers
     where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
     offset = (page - 1) * page_size
-    rows = db.execute(
-        f"SELECT * FROM churn_scores {where} ORDER BY scored_at DESC LIMIT :lim OFFSET :off",
-        {**params, "lim": page_size, "off": offset},
-    ).fetchall()
-    total = db.execute(f"SELECT COUNT(*) FROM churn_scores {where}", params).scalar()
-    return [dict(r) for r in rows], int(total)
+    sql = text(f"SELECT * FROM churn_scores {where} ORDER BY scored_at DESC LIMIT :lim OFFSET :off")
+    rows = db.execute(sql, {**params, "lim": page_size, "off": offset}).fetchall()
+    count_sql = text(f"SELECT COUNT(*) FROM churn_scores {where}")
+    total = db.execute(count_sql, params).scalar()
+    return [dict(r._mapping) for r in rows], int(total)
 
 
 def _row_to_response(row: dict) -> ChurnScoreResponse:

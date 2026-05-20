@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 __version__ = "1.0.0"
 
-STATIC_TARE_WEIGHT = 0.55
-STATIC_HABITAT_WEIGHT = 0.45
+STATIC_TARE_WEIGHT = 0.50
+STATIC_HABITAT_WEIGHT = 0.50
 MIN_LABELLED_OUTCOMES = 500
 ECE_WARNING_THRESHOLD = 0.08
 ECE_CRITICAL_THRESHOLD = 0.15
@@ -118,6 +118,10 @@ class FusionX:
     def fuse(self, tare_score: float, habitat_score: float) -> FusionResult:
         """Fuse two model scores into a calibrated final score with CI.
 
+        Uses logit-space (log-odds) blending, which is more principled than
+        linear averaging for probability outputs — especially when models
+        have very different calibration scales.
+
         Args:
             tare_score: TARE churn probability.
             habitat_score: HABITAT churn probability.
@@ -125,18 +129,22 @@ class FusionX:
         Returns:
             FusionResult with final_score and 95% bootstrap CI bounds.
         """
+        EPS = 1e-7
+        tare_s = np.clip(tare_score, EPS, 1 - EPS)
+        hab_s = np.clip(habitat_score, EPS, 1 - EPS)
+        tare_logit = np.log(tare_s / (1 - tare_s))
+        hab_logit = np.log(hab_s / (1 - hab_s))
+
         w_t = self._weights.tare
         w_h = self._weights.habitat
-        final = w_t * tare_score + w_h * habitat_score
+        final_logit = w_t * tare_logit + w_h * hab_logit
+        final = float(expit(final_logit))
 
-        # Bootstrap CI
+        # Bootstrap CI in probability space
         rng = np.random.default_rng(seed=None)
-        samples = np.array([tare_score] * BOOTSTRAP_SAMPLES)
-        noise_t = rng.normal(0, 0.02, BOOTSTRAP_SAMPLES)
-        noise_h = rng.normal(0, 0.02, BOOTSTRAP_SAMPLES)
-        boot_scores = w_t * np.clip(samples + noise_t, 0, 1) + w_h * np.clip(
-            np.full(BOOTSTRAP_SAMPLES, habitat_score) + noise_h, 0, 1
-        )
+        boot_logits = w_t * (tare_logit + rng.normal(0, 0.1, BOOTSTRAP_SAMPLES)) \
+                      + w_h * (hab_logit + rng.normal(0, 0.1, BOOTSTRAP_SAMPLES))
+        boot_scores = expit(boot_logits)
         ci_lower = float(np.percentile(boot_scores, 2.5))
         ci_upper = float(np.percentile(boot_scores, 97.5))
 

@@ -107,7 +107,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Register all CHRONOS models in MLflow")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--model", help="Register only a specific model by name")
-    parser.add_argument("--tracking-uri", default="http://localhost:5000")
+    parser.add_argument("--tracking-uri", default="http://localhost:5001")
     args = parser.parse_args()
 
     mlflow.set_tracking_uri(args.tracking_uri)

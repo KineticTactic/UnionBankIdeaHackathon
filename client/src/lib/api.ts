@@ -119,4 +119,21 @@ export const api = {
             method: 'POST',
             body: JSON.stringify({ customer_id: customerId }),
         }),
+
+    // CHRONOS API
+    getChronosScores: (params?: { page?: number; page_size?: number; anomaly_only?: boolean; tier?: string }) => {
+        const searchParams = new URLSearchParams();
+        if (params) {
+            Object.entries(params).forEach(([key, value]) => {
+                if (value !== undefined && value !== '') searchParams.append(key, value.toString());
+            });
+        }
+        return fetchApi(`/api/chronos/scores?${searchParams.toString()}`);
+    },
+    getChronosScore: (customerId: string) => fetchApi(`/api/chronos/scores/${customerId}`),
+    getChronosReasonCodes: (customerId: string) => fetchApi(`/api/chronos/scores/${customerId}/reason-codes`),
+    getChronosTokenSequence: (customerId: string) => fetchApi(`/api/chronos/scores/${customerId}/token-sequence`),
+    getChronosModelHealth: () => fetchApi('/api/chronos/model-health'),
+    getChronosScheduler: () => fetchApi('/api/chronos/model-health/scheduler'),
+    getChronosStats: () => fetchApi('/api/chronos/stats'),
 };

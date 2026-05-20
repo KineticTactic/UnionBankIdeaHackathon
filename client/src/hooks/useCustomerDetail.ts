@@ -20,9 +20,9 @@ export function useCustomerDetail(id: string) {
                     api.getCustomerInsights(id).catch(() => null)
                 ]);
 
-                setSnapshot(snapData);
-                setSignals(sigData);
-                setInsights(insightData);
+                setSnapshot(snapData?.data || snapData);
+                setSignals(sigData?.data || sigData || []);
+                setInsights(insightData?.data || insightData);
 
                 // The demoServer returns { status, count, data } for transactions
                 setTransactions(txData?.data || txData || []);

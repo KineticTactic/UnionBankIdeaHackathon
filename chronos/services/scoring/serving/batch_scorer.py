@@ -7,6 +7,7 @@ import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -217,14 +218,103 @@ class BatchScorer:
         return results
 
 
+def load_customers_from_db(bank_api_base: str | None = "http://localhost:3001") -> list[CustomerRecord]:
+    """Load customer data from the PCOP Bank Demo API, falling back to DB query.
+
+    Args:
+        bank_api_base: Base URL of the bank API server. If None, skips API call.
+
+    Returns:
+        List of CustomerRecord objects ready for scoring.
+    """
+    if bank_api_base:
+        from services.scoring.serving.bank_loader import load_customers_from_bank_api
+        try:
+            records = load_customers_from_bank_api(api_base=bank_api_base)
+            if records:
+                return records
+        except Exception:
+            logger.warning("Bank API unavailable at %s — falling back to DB query", bank_api_base)
+
+    logger.warning("No customer data source available — returning empty list")
+    return []
+
+
+def write_scores_to_db(
+    results: list[ScoredCustomer],
+    scoring_pass: str | None = "batch-v1.0",
+) -> int:
+    """Persist scored customer results to the churn_scores table.
+
+    Args:
+        results: Scored customers from the pipeline.
+        scoring_pass: Identifier for this scoring run.
+
+    Returns:
+        Number of rows written.
+    """
+    import json
+    from datetime import datetime, timezone
+
+    from sqlalchemy import text
+
+    from api.database import SessionLocal
+
+    written = 0
+    db = SessionLocal()
+    try:
+        for r in results:
+            db.execute(
+                text("""
+                    INSERT INTO churn_scores
+                        (customer_id, final_score, risk_tier, tare_score,
+                         habitat_score, scoring_pass, reason_codes_v2,
+                         model_version, scored_at, is_cold_start, anomaly_flag)
+                    VALUES
+                        (:cid, :final, :tier, :tare, :habitat, :pass, CAST(:rc_v2 AS JSONB),
+                         :ver, :now, :cold, :anomaly)
+                """),
+                {
+                    "cid": r.customer_id,
+                    "final": r.final_score,
+                    "tier": r.risk_tier,
+                    "tare": r.tare_score,
+                    "habitat": r.habitat_score,
+                    "pass": scoring_pass,
+                    "rc_v2": json.dumps(r.reason_codes),
+                    "ver": r.model_version,
+                    "now": datetime.now(timezone.utc),
+                    "cold": r.is_cold_start,
+                    "anomaly": r.anomaly_flag,
+                },
+            )
+            written += 1
+        db.commit()
+        logger.info("Wrote %d scored customers to churn_scores", written)
+    except Exception:
+        db.rollback()
+        logger.exception("Failed to write scored customers to DB")
+        raise
+    finally:
+        db.close()
+    return written
+
+
 def main() -> None:
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser(description="CHRONOS batch scorer")
     parser.add_argument("--customer-id", help="Score a single customer (debug mode)")
     parser.add_argument("--batch-size", type=int, default=DEFAULT_BATCH_SIZE)
+    parser.add_argument("--bank-api", default="http://localhost:3001", help="Bank API base URL (set to '' to disable)")
+    parser.add_argument("--write-db", action="store_true", help="Write results to churn_scores table")
     args = parser.parse_args()
 
-    scorer = BatchScorer(batch_size=args.batch_size)
+    api = args.bank_api if args.bank_api else None
+    tare_path = Path("ml/checkpoints/tare_churn.onnx")
+    scorer = BatchScorer(
+        tare_onnx_path=str(tare_path) if tare_path.exists() else None,
+        batch_size=args.batch_size,
+    )
 
     if args.customer_id:
         logger.info("Debug mode: scoring single customer %s", args.customer_id)
@@ -238,7 +328,22 @@ def main() -> None:
         result = scorer._score_single(dummy)
         logger.info("Result: %s", result)
     else:
-        logger.info("Full pipeline run — load customers from DB and call run_full_pipeline()")
+        logger.info("Full pipeline: loading customers from bank API at %s", api or "(none)")
+        customers = load_customers_from_db(bank_api_base=api)
+        if not customers:
+            logger.warning("No customers loaded — nothing to score")
+            return
+        logger.info("Loaded %d customers — scoring...", len(customers))
+        results = scorer.run_full_pipeline(customers)
+        if args.write_db:
+            written = write_scores_to_db(results, scoring_pass="batch-v1.0")
+            logger.info("Wrote %d results to churn_scores", written)
+        else:
+            for r in results[:5]:
+                logger.info("  %s: score=%.4f tier=%s model=%s cold=%s",
+                            r.customer_id, r.final_score, r.risk_tier, r.model_version, r.is_cold_start)
+            if len(results) > 5:
+                logger.info("  ... (%d more results, use --write-db to persist)", len(results) - 5)
 
 
 if __name__ == "__main__":

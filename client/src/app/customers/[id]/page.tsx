@@ -9,6 +9,7 @@ import { TransactionChart } from "@/components/detail/TransactionChart";
 import { CrmNotesPanel } from "@/components/detail/CrmNotesPanel";
 import { AnalysisPanel } from "@/components/detail/AnalysisPanel";
 import { OutreachPanel } from "@/components/detail/OutreachPanel";
+import { TokenTimeline } from "@/components/detail/TokenTimeline";
 import { InsightCard } from "@/components/detail/InsightCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BrainCircuit } from "lucide-react";
@@ -51,19 +52,20 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
         );
     }
 
-    const initialAnalysisResult = analysisResult || (snapshot.customer.reason_codes && snapshot.customer.reason_codes.length > 0 ? {
-        customer_id: snapshot.customer.customer_id,
-        churn_score: snapshot.customer.churn_score,
-        risk_tier: snapshot.customer.risk_tier,
-        active_signals: snapshot.customer.active_signals,
-        life_events: snapshot.customer.life_events || [],
-        recommended_action: snapshot.customer.preferred_channel ? {
-            channel: snapshot.customer.preferred_channel,
-            offer_code: snapshot.customer.reason_codes[0] || 'High churn risk detected',
+    const customer = snapshot?.customer;
+    const initialAnalysisResult = analysisResult || (customer?.reason_codes?.length ? {
+        customer_id: customer.customer_id,
+        churn_score: customer.churn_score,
+        risk_tier: customer.risk_tier,
+        active_signals: customer.active_signals,
+        life_events: customer.life_events || [],
+        recommended_action: customer.preferred_channel ? {
+            channel: customer.preferred_channel,
+            offer_code: customer.reason_codes[0] || 'High churn risk detected',
             timing: 'next_24_hours',
-            rationale: snapshot.customer.reason_codes[0] || 'High churn risk detected'
+            rationale: customer.reason_codes[0] || 'High churn risk detected'
         } : null,
-        reason_codes: snapshot.customer.reason_codes,
+        reason_codes: customer.reason_codes,
         analysis_duration_ms: 0,
         model_version: "pre-computed",
         scored_at: new Date().toISOString()
@@ -72,8 +74,8 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
     return (
         <ProtectedRoute>
             <div className="flex flex-col gap-8 max-w-7xl bg-slate-50 min-h-full pb-12">
-                <CustomerHeader customer={snapshot.customer} />
-
+                <CustomerHeader customer={customer} />
+ 
                 <div className="grid grid-cols-1 xl:grid-cols-[65%_minmax(0,1fr)] gap-8">
                     <div className="flex flex-col gap-8">
                         <section>
@@ -82,19 +84,25 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                                 AI Insight & Strategy
                             </h2>
                             <AnalysisPanel
-                                customerId={snapshot.customer.customer_id}
+                                customerId={customer?.customer_id}
                                 onAnalysisComplete={setAnalysisResult}
                             />
-
+ 
                             {initialAnalysisResult && (
                                 <div className="mt-4">
                                     <OutreachPanel
-                                        customerId={snapshot.customer.customer_id}
+                                        customerId={customer?.customer_id}
                                         analysisResult={initialAnalysisResult}
                                     />
                                 </div>
                             )}
                         </section>
+
+                        {customer?.customer_id && (
+                            <section>
+                                <TokenTimeline customerId={customer.customer_id} />
+                            </section>
+                        )}
 
                         <section>
                             <div className="flex items-center justify-between mb-4">
@@ -131,10 +139,10 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         <section className="sticky top-20">
                             <h2 className="text-lg font-bold text-slate-900 tracking-tight mb-4">Risk Summary</h2>
                             <RiskScoreCard
-                                score={analysisResult?.churn_score ?? snapshot.customer.churn_score}
-                                tier={analysisResult?.risk_tier ?? snapshot.customer.risk_tier}
-                                recommendedAction={analysisResult?.recommended_action?.offer_code ?? snapshot.customer.reason_codes?.[0]}
-                                reasonCodes={analysisResult?.reason_codes ?? snapshot.customer.reason_codes ?? []}
+                                score={analysisResult?.churn_score ?? customer?.churn_score ?? 0}
+                                tier={analysisResult?.risk_tier ?? customer?.risk_tier ?? 'low'}
+                                recommendedAction={analysisResult?.recommended_action?.offer_code ?? customer?.reason_codes?.[0] ?? 'Monitor Account'}
+                                reasonCodes={analysisResult?.reason_codes ?? customer?.reason_codes ?? []}
                             />
 
                             <div className="mt-8">

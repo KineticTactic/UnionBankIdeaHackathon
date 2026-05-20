@@ -3,6 +3,7 @@
 ## Quick start (from fresh clone)
 
 ### Prerequisites
+
 - Node.js >= 20, pnpm (`npm install -g pnpm`)
 - Docker Desktop (for PostgreSQL, Redis, MLflow)
 - Python >= 3.11 with Poetry (`pip install poetry`)
@@ -21,6 +22,7 @@ pnpm dev
 ```bash
 cd server
 pnpm install
+# might have to run pnpm approve-builds
 cp .env.example .env
 # Edit server/.env to contain:
 #   PORT=8000
@@ -38,6 +40,7 @@ pnpm dev
 ```
 
 Requires `.npmrc` in `client/` with:
+
 ```
 onlyBuiltDependencies[]=msw
 onlyBuiltDependencies[]=sharp
@@ -51,6 +54,7 @@ Steps 1–3 give you a fully functional demo with hardcoded customer scores. To 
 live ML scoring (TARE + HABITAT + FusionX), also start these:
 
 ### Prerequisites
+
 - Docker Desktop (for PostgreSQL, MLflow)
 - Python >= 3.11 with Poetry (`pip install poetry`)
 
@@ -67,6 +71,7 @@ docker compose up -d postgres mlflow
 ```bash
 cd chronos
 poetry install
+eval "$(poetry env activate)"
 poetry run alembic upgrade head
 uvicorn api.main:app --host 0.0.0.0 --port 8001 --reload
 ```
@@ -83,12 +88,12 @@ poetry run python -m services.scoring.serving.batch_scorer \
 
 ## Port map
 
-| Service | Port |
-|---------|------|
-| Frontend (Next.js) | 3000 |
-| Bank API | 3001 |
+| Service             | Port |
+| ------------------- | ---- |
+| Frontend (Next.js)  | 3000 |
+| Bank API            | 3001 |
 | Express API gateway | 8000 |
-| CHRONOS FastAPI | 8001 |
+| CHRONOS FastAPI     | 8001 |
 
 ## Architecture
 

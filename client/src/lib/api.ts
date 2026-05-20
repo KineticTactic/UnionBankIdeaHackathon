@@ -131,6 +131,7 @@ export const api = {
         return fetchApi(`/api/chronos/scores?${searchParams.toString()}`);
     },
     getChronosScore: (customerId: string) => fetchApi(`/api/chronos/scores/${customerId}`),
+    analyzeChronosScore: (customerId: string) => fetchApi(`/api/chronos/scores/${customerId}/analyze`, { method: 'POST' }),
     getChronosReasonCodes: (customerId: string) => fetchApi(`/api/chronos/scores/${customerId}/reason-codes`),
     getChronosTokenSequence: (customerId: string) => fetchApi(`/api/chronos/scores/${customerId}/token-sequence`),
     getChronosModelHealth: () => fetchApi('/api/chronos/model-health'),

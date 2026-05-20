@@ -34,6 +34,11 @@ async function getTokenSequence(customerId, params = {}) {
     return res.data;
 }
 
+async function analyzeScore(customerId) {
+    const res = await client.post(`/scores/${encodeURIComponent(customerId)}/analyze`);
+    return res.data;
+}
+
 module.exports = {
-    getScores, getScore, getReasonCodes, getModelHealth, getSchedulerStatus, getTokenSequence, client,
+    getScores, getScore, getReasonCodes, getModelHealth, getSchedulerStatus, getTokenSequence, analyzeScore, client,
 };

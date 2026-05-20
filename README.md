@@ -43,12 +43,23 @@ onlyBuiltDependencies[]=msw
 onlyBuiltDependencies[]=sharp
 ```
 
+---
+
+## Optional: ML scoring (CHRONOS)
+
+Steps 1–3 give you a fully functional demo with hardcoded customer scores. To enable
+live ML scoring (TARE + HABITAT + FusionX), also start these:
+
+### Prerequisites
+- Docker Desktop (for PostgreSQL, MLflow)
+- Python >= 3.11 with Poetry (`pip install poetry`)
+
 ### 4. Docker infrastructure
 
 ```bash
 cd chronos
 cp .env.example .env
-docker compose up -d postgres redis mlflow
+docker compose up -d postgres mlflow
 ```
 
 ### 5. CHRONOS FastAPI (port 8001)
@@ -60,7 +71,7 @@ poetry run alembic upgrade head
 uvicorn api.main:app --host 0.0.0.0 --port 8001 --reload
 ```
 
-### 6. Score customers (optional)
+### 6. Score customers
 
 ```bash
 cd chronos

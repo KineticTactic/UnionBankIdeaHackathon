@@ -186,6 +186,20 @@ export interface AnalysisResult {
     analysis_duration_ms: number;
     model_version: string;
     scored_at: string;
+    tare_score: number | null;
+    habitat_score: number | null;
+    token_count: number;
+    tabular_features: Record<string, number>;
+    attention_weights: { position: number; token: string; weight: number }[];
+    shap_values: { feature: string; shap_value: number; direction: string }[];
+    fusion_tare_weight: number;
+    fusion_habitat_weight: number;
+    fusion_ci_lower: number;
+    fusion_ci_upper: number;
+    tare_duration_ms: number;
+    habitat_duration_ms: number;
+    fusion_duration_ms: number;
+    prism_duration_ms: number;
 }
 
 export interface ReasonCodeV2 {

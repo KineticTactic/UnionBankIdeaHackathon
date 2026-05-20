@@ -12,7 +12,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from api.models.risk import ChurnScoreListResponse, ChurnScoreResponse, ReasonCodeV2, TokenSequenceResponse
+from api.models.risk import AnalyzeResponse, ChurnScoreListResponse, ChurnScoreResponse, ReasonCodeV2, TokenSequenceResponse
 from ml.features.sequence_builder import VOCAB
 
 logger = logging.getLogger(__name__)
@@ -103,6 +103,84 @@ async def get_token_sequence(
     )
 
 
+@router.post("/{customer_id}/analyze", response_model=AnalyzeResponse)
+async def analyze_customer(
+    customer_id: str,
+    db: Annotated[Session, Depends(_get_db)] = None,
+) -> AnalyzeResponse:
+    """Run the full CHRONOS pipeline for a single customer on-demand.
+
+    Fetches live data from the bank API, extracts features, scores with
+    TARE + HABITAT + FusionX, generates PRISM reason codes, persists to
+    the database, and returns the scored result with full diagnostics.
+    """
+    bank_api = "http://localhost:3001/api"
+    as_of_date = date.today()
+
+    from services.scoring.serving.bank_loader import (
+        _build_tabular_features, _build_token_sequence,
+        _fetch_account_events, _fetch_app_events, _fetch_crm_notes,
+        _fetch_customer_full, _fetch_customers, _fetch_transaction_summary,
+        _fetch_transactions,
+    )
+    from services.scoring.serving.batch_scorer import (
+        CustomerRecord, BatchScorer, write_scores_to_db,
+    )
+
+    try:
+        cust = next((c for c in _fetch_customers() if c["customer_id"] == customer_id), None)
+        if cust is None:
+            raise HTTPException(status_code=404, detail=f"Customer {customer_id} not found in bank API")
+
+        customer_full = _fetch_customer_full(customer_id)
+        transactions = _fetch_transactions(customer_id)
+        txn_summary = _fetch_transaction_summary(customer_id)
+        account_events = _fetch_account_events(customer_id)
+        app_events = _fetch_app_events(customer_id)
+        crm_notes = _fetch_crm_notes(customer_id)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Bank API error: {e}")
+
+    import requests
+    enrichment_raw = {}
+    try:
+        enrichment_raw = requests.get(
+            f"{bank_api}/enrichment/{customer_id}", timeout=10
+        ).json().get("data", {})
+    except Exception:
+        pass
+
+    token_ids, time_gaps = _build_token_sequence(
+        cust, transactions, account_events, app_events, crm_notes, as_of_date,
+    )
+    tabular_features = _build_tabular_features(
+        cust, customer_full, transactions, txn_summary, crm_notes,
+        account_events, enrichment_raw, as_of_date,
+    )
+
+    record = CustomerRecord(
+        customer_id=customer_id,
+        token_ids=token_ids,
+        time_gaps=time_gaps,
+        tabular_features=tabular_features,
+        tenure_days=int(cust.get("tenure_years", 0)) * 365,
+    )
+
+    from pathlib import Path
+    tare_path = Path("ml/checkpoints/tare_churn.onnx")
+    scorer = BatchScorer(
+        tare_onnx_path=str(tare_path) if tare_path.exists() else None,
+    )
+
+    result, diag = scorer._score_single_debug(record)
+
+    write_scores_to_db([result], scoring_pass="ondemand")
+
+    return _diag_to_response(result, diag)
+
+
 @router.get("/{customer_id}/reason-codes", response_model=list[ReasonCodeV2])
 async def get_reason_codes(
     customer_id: str,
@@ -150,6 +228,51 @@ def _fetch_score_list(
     count_sql = text(f"SELECT COUNT(*) FROM churn_scores {where}")
     total = db.execute(count_sql, params).scalar()
     return [dict(r._mapping) for r in rows], int(total)
+
+
+def _diag_to_response(s: "ScoredCustomer", d: "ScoreDiagnostics") -> AnalyzeResponse:
+    from services.scoring.serving.batch_scorer import ScoredCustomer, ScoreDiagnostics
+    from api.models.risk import AttentionWeight, ShapValue
+    return AnalyzeResponse(
+        customer_id=s.customer_id,
+        final_score=s.final_score,
+        risk_tier=s.risk_tier,
+        tare_score=s.tare_score,
+        habitat_score=s.habitat_score,
+        reason_codes_v2=[ReasonCodeV2(**rc) for rc in s.reason_codes],
+        model_version=s.model_version,
+        scored_at=datetime.utcnow(),
+        is_cold_start=s.is_cold_start,
+        anomaly_flag=s.anomaly_flag,
+        token_count=d.token_count,
+        tabular_features=d.tabular_features,
+        attention_weights=[AttentionWeight(**a) for a in d.attention_weights],
+        shap_values=[ShapValue(**sv) for sv in d.shap_values],
+        fusion_tare_weight=d.fusion_tare_weight,
+        fusion_habitat_weight=d.fusion_habitat_weight,
+        fusion_ci_lower=d.fusion_ci_lower,
+        fusion_ci_upper=d.fusion_ci_upper,
+        tare_duration_ms=d.tare_duration_ms,
+        habitat_duration_ms=d.habitat_duration_ms,
+        fusion_duration_ms=d.fusion_duration_ms,
+        prism_duration_ms=d.prism_duration_ms,
+    )
+
+
+def _scored_to_response(s: "ScoredCustomer") -> ChurnScoreResponse:
+    from services.scoring.serving.batch_scorer import ScoredCustomer
+    return ChurnScoreResponse(
+        customer_id=s.customer_id,
+        final_score=s.final_score,
+        risk_tier=s.risk_tier,
+        tare_score=s.tare_score,
+        habitat_score=s.habitat_score,
+        reason_codes_v2=[ReasonCodeV2(**rc) for rc in s.reason_codes],
+        model_version=s.model_version,
+        scored_at=datetime.utcnow(),
+        is_cold_start=s.is_cold_start,
+        anomaly_flag=s.anomaly_flag,
+    )
 
 
 def _row_to_response(row: dict) -> ChurnScoreResponse:

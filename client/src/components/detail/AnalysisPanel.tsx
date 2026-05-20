@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RiskBadge } from "@/components/customers/RiskBadge";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle2, CircleDashed, Cpu, Play, Search, Network, BrainCircuit, ListChecks, AlertCircle, BarChart3, Sigma, Shield } from "lucide-react";
+import { CheckCircle2, CircleDashed, Cpu, Play, Search, Network, BrainCircuit, ListChecks, AlertCircle, BarChart3, Sigma, Shield, ChevronDown, ChevronRight, Gauge, Layers, Table2 } from "lucide-react";
 import { AnalysisResult } from "@/types";
 import { api } from "@/lib/api";
 
@@ -21,6 +21,7 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
     const [stage, setStage] = useState(0);
     const [result, setResult] = useState<AnalysisResult | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [showPipeline, setShowPipeline] = useState(false);
 
     const STAGES = [
         { label: "Querying CHRONOS pipeline", icon: Search, duration: 600 },
@@ -37,7 +38,7 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
         setResult(null);
         setError(null);
 
-        const apiCall = api.getChronosScore(customerId);
+        const apiCall = api.analyzeChronosScore(customerId);
 
         let currentProgress = 0;
         for (let i = 0; i < STAGES.length; i++) {
@@ -71,6 +72,20 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                 analysis_duration_ms: 3600,
                 model_version: `chronos-${res.model_version}`,
                 scored_at: res.scored_at,
+                tare_score: res.tare_score ?? null,
+                habitat_score: res.habitat_score ?? null,
+                token_count: res.token_count ?? 0,
+                tabular_features: res.tabular_features ?? {},
+                attention_weights: (res.attention_weights || []).map((a: { position: number; token: string; weight: number }) => ({ position: a.position, token: a.token, weight: a.weight })),
+                shap_values: (res.shap_values || []).map((s: { feature: string; shap_value: number; direction: string }) => ({ feature: s.feature, shap_value: s.shap_value, direction: s.direction })),
+                fusion_tare_weight: res.fusion_tare_weight ?? 0,
+                fusion_habitat_weight: res.fusion_habitat_weight ?? 0,
+                fusion_ci_lower: res.fusion_ci_lower ?? 0,
+                fusion_ci_upper: res.fusion_ci_upper ?? 0,
+                tare_duration_ms: res.tare_duration_ms ?? 0,
+                habitat_duration_ms: res.habitat_duration_ms ?? 0,
+                fusion_duration_ms: res.fusion_duration_ms ?? 0,
+                prism_duration_ms: res.prism_duration_ms ?? 0,
             };
             setProgress(100);
             setResult(analysisRes);
@@ -172,77 +187,228 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
     }
 
     if (result) {
+        const totalMs = result.tare_duration_ms + result.habitat_duration_ms + result.fusion_duration_ms + result.prism_duration_ms;
         return (
-            <Card className="shadow-sm border-indigo-200 bg-white">
-                <CardHeader className="border-b border-indigo-100 bg-gradient-to-r from-indigo-50/60 to-purple-50/60 pb-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                                <BrainCircuit className="w-5 h-5 text-indigo-600" />
-                            </div>
-                            <div>
-                                <CardTitle className="text-base font-semibold text-slate-900">CHRONOS Analysis Complete</CardTitle>
-                                <div className="text-xs text-slate-400 mt-0.5">
-                                    <span className="font-mono">{result.model_version}</span>
-                                    <span className="mx-1.5">•</span>
-                                    {result.analysis_duration_ms}ms
+            <>
+                <Card className="shadow-sm border-indigo-200 bg-white">
+                    <CardHeader className="border-b border-indigo-100 bg-gradient-to-r from-indigo-50/60 to-purple-50/60 pb-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                                    <BrainCircuit className="w-5 h-5 text-indigo-600" />
+                                </div>
+                                <div>
+                                    <CardTitle className="text-base font-semibold text-slate-900">CHRONOS Analysis Complete</CardTitle>
+                                    <div className="text-xs text-slate-400 mt-0.5">
+                                        <span className="font-mono">{result.model_version}</span>
+                                        <span className="mx-1.5">•</span>
+                                        {Math.round(totalMs)}ms
+                                        <span className="mx-1.5">•</span>
+                                        {result.token_count} tokens
+                                    </div>
                                 </div>
                             </div>
+                            <Button variant="outline" size="sm" onClick={runAnalysis} className="h-8 text-xs font-medium">
+                                Re-run Analysis
+                            </Button>
                         </div>
-                        <Button variant="outline" size="sm" onClick={runAnalysis} className="h-8 text-xs font-medium">
-                            Re-run Analysis
-                        </Button>
-                    </div>
-                </CardHeader>
+                    </CardHeader>
 
-                <CardContent className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div className="md:col-span-1 border-r border-indigo-100 pr-4 flex flex-col items-center justify-center text-center">
-                            <span className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-3">CHRONOS Churn Score</span>
-                            <span className="text-5xl font-extrabold text-slate-900 tracking-tighter mb-4">{Math.round(result.churn_score * 100)}%</span>
-                            <RiskBadge tier={result.risk_tier} className="px-4 py-1.5 text-xs shadow-sm" />
-                            {result.scored_at && (
-                                <span className="text-[10px] text-slate-400 mt-3 font-mono">
-                                    {new Date(result.scored_at).toLocaleString()}
-                                </span>
-                            )}
-                        </div>
-
-                        <div className="md:col-span-2 flex flex-col justify-center gap-6 pl-4">
-                            <div>
-                                <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
-                                    <ListChecks className="w-4 h-4 mr-2 text-indigo-500" />
-                                    PRISM Risk Factors
-                                </h4>
-                                {result.reason_codes.length > 0 ? (
-                                    <ol className="list-decimal pl-5 space-y-2">
-                                        {result.reason_codes.map((rc, i) => (
-                                            <li key={i} className="text-sm leading-snug text-slate-700">{rc}</li>
-                                        ))}
-                                    </ol>
-                                ) : (
-                                    <p className="text-sm text-slate-400 italic">No reason codes available</p>
+                    <CardContent className="p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div className="md:col-span-1 border-r border-indigo-100 pr-4 flex flex-col items-center justify-center text-center">
+                                <span className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-3">CHRONOS Churn Score</span>
+                                <span className="text-5xl font-extrabold text-slate-900 tracking-tighter mb-4">{Math.round(result.churn_score * 100)}%</span>
+                                <RiskBadge tier={result.risk_tier} className="px-4 py-1.5 text-xs shadow-sm" />
+                                <div className="flex gap-4 mt-3 text-xs text-slate-500">
+                                    <span>TARE: {result.tare_score != null ? (result.tare_score * 100).toFixed(1) + '%' : '—'}</span>
+                                    <span>HABITAT: {result.habitat_score != null ? (result.habitat_score * 100).toFixed(1) + '%' : '—'}</span>
+                                </div>
+                                {result.scored_at && (
+                                    <span className="text-[10px] text-slate-400 mt-3 font-mono">
+                                        {new Date(result.scored_at).toLocaleString()}
+                                    </span>
                                 )}
                             </div>
 
-                            {result.recommended_action && (
-                                <div className="bg-gradient-to-br from-indigo-50/80 to-purple-50/80 rounded-lg p-4 border border-indigo-100">
-                                    <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">Recommended Action</h4>
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Badge className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 border-none uppercase text-[10px] tracking-wider font-bold">
-                                            {result.recommended_action.channel?.replace(/_/g, " ")}
-                                        </Badge>
-                                        <span className="text-sm font-semibold text-slate-900">{result.recommended_action.offer_code}</span>
-                                        <span className="text-xs text-slate-400 mx-1">•</span>
-                                        <span className="text-xs text-slate-500">{result.recommended_action.timing?.replace(/_/g, " ")}</span>
+                            <div className="md:col-span-2 flex flex-col justify-center gap-6 pl-4">
+                                <div>
+                                    <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
+                                        <ListChecks className="w-4 h-4 mr-2 text-indigo-500" />
+                                        PRISM Risk Factors
+                                    </h4>
+                                    {result.reason_codes.length > 0 ? (
+                                        <ol className="list-decimal pl-5 space-y-2">
+                                            {result.reason_codes.map((rc, i) => (
+                                                <li key={i} className="text-sm leading-snug text-slate-700">{rc}</li>
+                                            ))}
+                                        </ol>
+                                    ) : (
+                                        <p className="text-sm text-slate-400 italic">No reason codes available</p>
+                                    )}
+                                </div>
+
+                                {result.recommended_action && (
+                                    <div className="bg-gradient-to-br from-indigo-50/80 to-purple-50/80 rounded-lg p-4 border border-indigo-100">
+                                        <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">Recommended Action</h4>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Badge className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 border-none uppercase text-[10px] tracking-wider font-bold">
+                                                {result.recommended_action.channel?.replace(/_/g, " ")}
+                                            </Badge>
+                                            <span className="text-sm font-semibold text-slate-900">{result.recommended_action.offer_code}</span>
+                                            <span className="text-xs text-slate-400 mx-1">•</span>
+                                            <span className="text-xs text-slate-500">{result.recommended_action.timing?.replace(/_/g, " ")}</span>
+                                        </div>
+                                        <p className="text-sm text-slate-600">{result.recommended_action.rationale}</p>
                                     </div>
-                                    <p className="text-sm text-slate-600">{result.recommended_action.rationale}</p>
+                                )}
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Pipeline Details */}
+                <Card className="shadow-sm border-slate-200 bg-white mt-4">
+                    <button
+                        onClick={() => setShowPipeline(!showPipeline)}
+                        className="w-full flex items-center justify-between px-6 py-4 text-sm font-semibold text-slate-800 hover:bg-slate-50 transition-colors"
+                    >
+                        <span className="flex items-center gap-2">
+                            <Layers className="w-4 h-4 text-indigo-500" />
+                            Pipeline Details
+                        </span>
+                        {showPipeline ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                    </button>
+
+                    {showPipeline && (
+                        <CardContent className="px-6 pb-6 pt-2 space-y-6 border-t border-slate-100">
+
+                            {/* Timing */}
+                            <div>
+                                <h5 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <Gauge className="w-3.5 h-3.5" /> Stage Timing
+                                </h5>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    {[
+                                        { label: 'TARE', ms: result.tare_duration_ms, color: 'bg-indigo-500' },
+                                        { label: 'HABITAT', ms: result.habitat_duration_ms, color: 'bg-emerald-500' },
+                                        { label: 'FusionX', ms: result.fusion_duration_ms, color: 'bg-amber-500' },
+                                        { label: 'PRISM', ms: result.prism_duration_ms, color: 'bg-purple-500' },
+                                    ].map(s => (
+                                        <div key={s.label} className="bg-slate-50 rounded p-3">
+                                            <div className="text-xs text-slate-400">{s.label}</div>
+                                            <div className="text-sm font-semibold text-slate-800">{s.ms.toFixed(1)}ms</div>
+                                            <div className="mt-1.5 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                                                <div className={`h-full rounded-full ${s.color}`} style={{ width: `${(s.ms / Math.max(totalMs, 1)) * 100}%` }} />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Tabular Features */}
+                            <div>
+                                <h5 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <Table2 className="w-3.5 h-3.5" /> Tabular Features
+                                </h5>
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                                    {Object.entries(result.tabular_features).slice(0, 14).map(([key, val]) => (
+                                        <div key={key} className="bg-slate-50 rounded px-3 py-2 text-xs">
+                                            <span className="text-slate-400 block truncate">{key.replace(/_/g, ' ')}</span>
+                                            <span className="font-mono font-semibold text-slate-800">{typeof val === 'number' ? val.toFixed(4) : val}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* TARE Attention */}
+                            {result.attention_weights.length > 0 && (
+                                <div>
+                                    <h5 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                        <Sigma className="w-3.5 h-3.5" /> TARE Top Attention Tokens
+                                    </h5>
+                                    <div className="space-y-1.5">
+                                        {result.attention_weights.map((a, i) => (
+                                            <div key={i} className="flex items-center gap-3">
+                                                <span className="text-xs font-mono text-slate-400 w-6 text-right">{a.position}</span>
+                                                <Badge className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 border-none text-[10px] font-mono w-28 justify-center shrink-0">
+                                                    {a.token}
+                                                </Badge>
+                                                <div className="flex-1 h-4 bg-slate-100 rounded-full overflow-hidden">
+                                                    <div
+                                                        className="h-full bg-indigo-400 rounded-full"
+                                                        style={{ width: `${a.weight * 100}%` }}
+                                                    />
+                                                </div>
+                                                <span className="text-xs font-mono text-slate-500 w-12 text-right">{(a.weight * 100).toFixed(1)}%</span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+
+                            {/* HABITAT SHAP Values */}
+                            {result.shap_values.length > 0 && (
+                                <div>
+                                    <h5 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                        <BarChart3 className="w-3.5 h-3.5" /> HABITAT SHAP Contributions
+                                    </h5>
+                                    <div className="space-y-1.5">
+                                        {result.shap_values.slice(0, 8).map((sv, i) => {
+                                            const isPositive = sv.shap_value > 0;
+                                            const barWidth = Math.min(Math.abs(sv.shap_value) * 500, 100);
+                                            return (
+                                                <div key={i} className="flex items-center gap-3 text-xs">
+                                                    <span className="text-slate-600 w-36 truncate text-right">{sv.feature.replace(/_/g, ' ')}</span>
+                                                    <div className="flex-1 flex items-center gap-1">
+                                                        <div className="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden relative">
+                                                            <div
+                                                                className={`h-full rounded-full ${isPositive ? 'bg-red-400 ml-auto' : 'bg-emerald-400'}`}
+                                                                style={{ width: `${barWidth}%`, marginLeft: isPositive ? `${100 - barWidth}%` : undefined }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <span className={`font-mono w-20 text-right ${isPositive ? 'text-red-600' : 'text-emerald-600'}`}>
+                                                        {isPositive ? '+' : ''}{sv.shap_value.toFixed(5)}
+                                                    </span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Fusion */}
+                            <div>
+                                <h5 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <Cpu className="w-3.5 h-3.5" /> FusionX Blending
+                                </h5>
+                                <div className="bg-slate-50 rounded-lg p-4">
+                                    <div className="flex gap-6 text-sm mb-3">
+                                        <div>
+                                            <span className="text-slate-400 text-xs">TARE weight</span>
+                                            <div className="font-semibold text-indigo-700">{(result.fusion_tare_weight * 100).toFixed(0)}%</div>
+                                        </div>
+                                        <div>
+                                            <span className="text-slate-400 text-xs">HABITAT weight</span>
+                                            <div className="font-semibold text-emerald-700">{(result.fusion_habitat_weight * 100).toFixed(0)}%</div>
+                                        </div>
+                                        <div>
+                                            <span className="text-slate-400 text-xs">95% CI</span>
+                                            <div className="font-mono text-slate-700 text-xs">[{(result.fusion_ci_lower * 100).toFixed(1)}%, {(result.fusion_ci_upper * 100).toFixed(1)}%]</div>
+                                        </div>
+                                    </div>
+                                    <div className="h-3 bg-slate-200 rounded-full overflow-hidden flex">
+                                        <div className="bg-indigo-400 h-full" style={{ width: `${result.fusion_tare_weight * 100}%` }} />
+                                        <div className="bg-emerald-400 h-full" style={{ width: `${result.fusion_habitat_weight * 100}%` }} />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </CardContent>
+                    )}
+                </Card>
+            </>
         );
     }
 

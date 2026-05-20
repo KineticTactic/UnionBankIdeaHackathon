@@ -32,6 +32,34 @@ class ChurnScoreResponse(BaseModel):
     is_cold_start: bool = False
 
 
+class AttentionWeight(BaseModel):
+    position: int
+    token: str
+    weight: float
+
+
+class ShapValue(BaseModel):
+    feature: str
+    shap_value: float
+    direction: str
+
+
+class AnalyzeResponse(ChurnScoreResponse):
+    token_count: int = 0
+    tabular_features: dict[str, float] = Field(default_factory=dict)
+    attention_weights: list[AttentionWeight] = Field(default_factory=list)
+    shap_values: list[ShapValue] = Field(default_factory=list)
+    fusion_tare_weight: float = 0.0
+    fusion_habitat_weight: float = 0.0
+    fusion_ci_lower: float = 0.0
+    fusion_ci_upper: float = 0.0
+    tare_duration_ms: float = 0.0
+    habitat_duration_ms: float = 0.0
+    fusion_duration_ms: float = 0.0
+    prism_duration_ms: float = 0.0
+    is_cold_start: bool = False
+
+
 class ChurnScoreListResponse(BaseModel):
     customers: list[ChurnScoreResponse]
     total: int

@@ -23,6 +23,16 @@ router.get('/scores/:customerId', verifyToken, async (req, res, next) => {
     }
 });
 
+router.post('/scores/:customerId/analyze', verifyToken, async (req, res, next) => {
+    try {
+        const data = await chronos.analyzeScore(req.params.customerId);
+        res.json(data);
+    } catch (err) {
+        if (err.response) return res.status(err.response.status).json(err.response.data);
+        res.status(502).json({ status: 'error', message: 'CHRONOS service unavailable' });
+    }
+});
+
 router.get('/scores/:customerId/reason-codes', verifyToken, async (req, res, next) => {
     try {
         const data = await chronos.getReasonCodes(req.params.customerId);

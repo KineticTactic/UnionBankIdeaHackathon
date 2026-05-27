@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { Send, CheckCircle, Clock, TrendingUp, Users, AlertCircle } from "lucide-react";
+import Link from "next/link";
 import { api } from '@/lib/api';
 import { OutreachRecord, Campaign } from '@/types';
 import { useAuth } from '@/hooks/useAuth';
@@ -281,9 +282,11 @@ export default function OutreachPage() {
                                                     </td>
                                                     {canManage && (
                                                         <td className="py-2 px-3 text-right">
-                                                            <Button variant="ghost" size="sm" className="h-7 text-xs">
-                                                                View
-                                                            </Button>
+                                                            <Link href={`/customers/${record.customer_id}`}>
+                                                                <Button variant="ghost" size="sm" className="h-7 text-xs">
+                                                                    View
+                                                                </Button>
+                                                            </Link>
                                                         </td>
                                                     )}
                                                 </tr>

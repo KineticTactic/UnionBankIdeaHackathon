@@ -1,18 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, IBM_Plex_Sans, Merriweather } from "next/font/google";
+import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/hooks/useAuth";
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
 
-const merriweatherHeading = Merriweather({ subsets: ['latin'], variable: '--font-heading' });
-
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  weight: ['400', '500', '600', '700', '800'],
 });
 
 const geistMono = Geist_Mono({
@@ -21,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PCOP Bank Admin",
+  title: "PCOP · Union Bank Intelligence",
   description: "Predictive Customer Outreach Platform",
 };
 
@@ -31,11 +28,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", geist.variable, merriweatherHeading.variable)}
-    >
-      <body className="min-h-full flex bg-slate-50 text-slate-900">
+    <html lang="en" className={cn("h-full antialiased", jakarta.variable, geistMono.variable)}>
+      <body className="min-h-full flex bg-[#F4F6F9] text-slate-900 font-sans">
         <AuthProvider>
           <Sidebar />
           <div className="flex-1 ml-60 flex flex-col min-h-screen">

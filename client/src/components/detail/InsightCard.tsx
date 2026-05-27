@@ -42,7 +42,9 @@ interface InsightCardProps {
 export function InsightCard({ insights }: InsightCardProps) {
     if (!insights) return null;
 
-    const { engagement, crm, stress, location } = insights;
+    const { engagement, crm } = insights;
+    const stress   = insights.stress   ?? { stress_related_mcc_count: 0, overdraft_related_txns: 0 };
+    const location = insights.location ?? [];
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

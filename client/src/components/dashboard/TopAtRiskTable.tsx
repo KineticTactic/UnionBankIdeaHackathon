@@ -1,87 +1,89 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 
 interface TopAtRiskTableProps {
     data: any[];
 }
 
+const TIER_STYLE: Record<string, string> = {
+    critical: "bg-red-100 text-red-700",
+    high:     "bg-orange-100 text-orange-700",
+    medium:   "bg-yellow-100 text-yellow-700",
+    watch:    "bg-blue-100 text-blue-700",
+    low:      "bg-emerald-100 text-emerald-700",
+};
+
+const TIER_BAR: Record<string, string> = {
+    critical: "#EF4444",
+    high:     "#F97316",
+    medium:   "#EAB308",
+    watch:    "#3B82F6",
+    low:      "#22C55E",
+};
+
 export function TopAtRiskTable({ data = [] }: TopAtRiskTableProps) {
     const router = useRouter();
 
-    const getTierColor = (tier: string) => {
-        switch (tier) {
-            case 'critical': return 'bg-red-500 hover:bg-red-600';
-            case 'high': return 'bg-orange-500 hover:bg-orange-600';
-            case 'medium': return 'bg-yellow-500 hover:bg-yellow-600';
-            case 'watch': return 'bg-blue-500 hover:bg-blue-600';
-            case 'low': return 'bg-green-500 hover:bg-green-600';
-            default: return 'bg-slate-500';
-        }
-    };
-
-    const formatSignal = (signal: string) => {
-        return signal ? signal.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'None';
-    };
-
     return (
-        <Card className="shadow-sm border-gray-200 h-full">
-            <CardHeader>
-                <CardTitle className="text-base font-semibold text-slate-900">Top At-Risk Customers</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="overflow-x-auto">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="border-b border-gray-100 pb-2">
-                                <TableHead className="text-xs font-medium text-slate-500">Name</TableHead>
-                                <TableHead className="text-xs font-medium text-slate-500">Segment</TableHead>
-                                <TableHead className="text-xs font-medium text-slate-500">Score</TableHead>
-                                <TableHead className="text-xs font-medium text-slate-500">Top Signal</TableHead>
-                                <TableHead className="text-xs font-medium text-slate-500 text-right">Action</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {data.map((customer) => (
-                                <TableRow
-                                    key={customer.id}
-                                    className="cursor-pointer hover:bg-slate-50 border-b border-gray-50 transition-colors"
-                                    onClick={() => router.push(`/customers/${customer.id}`)}
-                                >
-                                    <TableCell>
-                                        <div className="font-medium text-sm text-slate-900">{customer.full_name}</div>
-                                        <div className="text-xs text-slate-500 font-mono">{customer.id}</div>
-                                    </TableCell>
-                                    <TableCell className="text-sm text-slate-600">{customer.segment}</TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm font-semibold">{Math.round(customer.churn_score * 100)}%</span>
-                                            <Badge className={`${getTierColor(customer.risk_tier)} text-white border-none uppercase text-[10px] px-1.5 py-0`}>
-                                                {customer.risk_tier}
-                                            </Badge>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="text-xs text-slate-600">
-                                        {customer.active_signals?.length > 0 ? formatSignal(customer.active_signals[0]) : '-'}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm" className="h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50">View</Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                            {data.length === 0 && (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-8 text-slate-500 text-sm">No at-risk customers found.</TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                <p className="text-sm font-semibold text-slate-800">Top At-Risk Customers</p>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider">
+                    {data.filter(d => d.risk_tier === 'critical').length} critical
+                </span>
+            </div>
+            <div className="divide-y divide-slate-50">
+                {data.length === 0 && (
+                    <p className="text-center text-sm text-slate-400 py-10">No at-risk customers found.</p>
+                )}
+                {data.map((c) => (
+                    <div
+                        key={c.id}
+                        onClick={() => router.push(`/customers/${c.id}`)}
+                        className="flex items-center gap-4 px-5 py-3 hover:bg-slate-50 cursor-pointer transition-colors group"
+                    >
+                        {/* Avatar initial */}
+                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600 shrink-0">
+                            {c.full_name?.charAt(0) || "?"}
+                        </div>
+
+                        {/* Name + ID */}
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-slate-900 truncate group-hover:text-blue-700 transition-colors">{c.full_name}</p>
+                            <p className="text-[10px] font-mono text-slate-400">{c.id} · {c.segment}</p>
+                        </div>
+
+                        {/* Score bar */}
+                        <div className="flex items-center gap-2 shrink-0">
+                            <div className="w-20">
+                                <div className="flex justify-between items-center mb-0.5">
+                                    <span className="text-xs font-bold text-slate-700">{Math.round(c.churn_score * 100)}%</span>
+                                </div>
+                                <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full rounded-full"
+                                        style={{ width: `${c.churn_score * 100}%`, backgroundColor: TIER_BAR[c.risk_tier] || '#94a3b8' }}
+                                    />
+                                </div>
+                            </div>
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${TIER_STYLE[c.risk_tier] || 'bg-slate-100 text-slate-600'}`}>
+                                {c.risk_tier}
+                            </span>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            {data.length > 0 && (
+                <div className="px-5 py-3 border-t border-slate-100 text-center">
+                    <button
+                        onClick={() => router.push('/customers')}
+                        className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                    >
+                        View all customers →
+                    </button>
                 </div>
-            </CardContent>
-        </Card>
+            )}
+        </div>
     );
 }

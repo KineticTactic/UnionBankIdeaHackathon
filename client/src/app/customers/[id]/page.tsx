@@ -2,6 +2,7 @@
 
 import { useState, use } from "react";
 import { useCustomerDetail } from "@/hooks/useCustomerDetail";
+import { useV2CustomerData } from "@/hooks/useV2CustomerData";
 import { CustomerHeader } from "@/components/detail/CustomerHeader";
 import { RiskScoreCard } from "@/components/detail/RiskScoreCard";
 import { SignalPanel } from "@/components/detail/SignalPanel";
@@ -11,8 +12,11 @@ import { AnalysisPanel } from "@/components/detail/AnalysisPanel";
 import { OutreachPanel } from "@/components/detail/OutreachPanel";
 import { TokenTimeline } from "@/components/detail/TokenTimeline";
 import { InsightCard } from "@/components/detail/InsightCard";
+import { SurvivalPanel } from "@/components/detail/SurvivalPanel";
+import { CompassPanel } from "@/components/detail/CompassPanel";
+import { CompliancePanel } from "@/components/detail/CompliancePanel";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BrainCircuit } from "lucide-react";
+import { BrainCircuit, Activity, Zap, ShieldCheck } from "lucide-react";
 import { AnalysisResult } from "@/types";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
@@ -22,6 +26,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
 
     const { snapshot, signals, transactions, insights, isLoading, error } = useCustomerDetail(id);
     const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+    const v2 = useV2CustomerData(id);
 
     if (isLoading) {
         return (
@@ -81,7 +86,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         <section>
                             <h2 className="text-lg font-bold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
                                 <BrainCircuit className="w-5 h-5 text-blue-600" />
-                                AI Insight & Strategy
+                                Risk Intelligence & Outreach Strategy
                             </h2>
                             <AnalysisPanel
                                 customerId={customer?.customer_id}
@@ -135,8 +140,8 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                         </section>
                     </div>
 
-                    <div className="flex flex-col gap-8 h-full">
-                        <section className="sticky top-20">
+                    <div className="flex flex-col gap-8">
+                        <section>
                             <h2 className="text-lg font-bold text-slate-900 tracking-tight mb-4">Risk Summary</h2>
                             <RiskScoreCard
                                 score={analysisResult?.churn_score ?? customer?.churn_score ?? 0}
@@ -145,12 +150,40 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                                 reasonCodes={analysisResult?.reason_codes ?? customer?.reason_codes ?? []}
                             />
 
-                            <div className="mt-8">
+                            <div className="mt-6">
                                 <CrmNotesPanel notes={snapshot.crm_summary ? {
                                     total_complaints: snapshot.crm_summary.total_complaints || 0,
                                     unresolved_count: snapshot.crm_summary.unresolved_count || 0
                                 } : null} />
                             </div>
+                        </section>
+
+                        <section>
+                            <h2 className="text-lg font-bold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
+                                <Activity className="w-5 h-5 text-red-500" />
+                                Retention Intelligence · Departure Analytics
+                            </h2>
+                            <SurvivalPanel score={v2.score} loading={v2.loading} />
+                        </section>
+
+                        <section>
+                            <h2 className="text-lg font-bold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
+                                <Zap className="w-5 h-5 text-violet-600" />
+                                Action Intelligence · Next Best Offer
+                            </h2>
+                            <CompassPanel plan={v2.actionPlan} loading={v2.loading} />
+                        </section>
+
+                        <section>
+                            <h2 className="text-lg font-bold text-slate-900 tracking-tight mb-4 flex items-center gap-2">
+                                <ShieldCheck className="w-5 h-5 text-slate-500" />
+                                Compliance & Eligibility
+                            </h2>
+                            <CompliancePanel
+                                customer={customer}
+                                accounts={snapshot?.accounts ?? []}
+                                enrichment={snapshot?.enrichment ?? null}
+                            />
                         </section>
                     </div>
                 </div>

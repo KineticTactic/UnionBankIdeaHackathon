@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCustomers } from "@/hooks/useCustomers";
 import { CustomerTable } from "@/components/customers/CustomerTable";
+import { api } from "@/lib/api";
+import { V2Score } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
@@ -19,6 +21,16 @@ export default function CustomersPage() {
     const [search, setSearch] = useState("");
     const [riskTier, setRiskTier] = useState<string>("all");
     const [segment, setSegment] = useState<string>("all");
+    const [v2ScoreMap, setV2ScoreMap] = useState<Record<string, V2Score>>({});
+
+    useEffect(() => {
+        api.getV2Scores().then(data => {
+            const scores: V2Score[] = data?.data ?? data ?? [];
+            const map: Record<string, V2Score> = {};
+            scores.forEach((s: V2Score) => { map[s.customer_id] = s; });
+            setV2ScoreMap(map);
+        }).catch(() => {});
+    }, []);
 
     const filters = {
         search: search ? search : undefined,
@@ -89,7 +101,7 @@ export default function CustomersPage() {
                     )}
                 </div>
 
-                <CustomerTable customers={customers} isLoading={isLoading} />
+                <CustomerTable customers={customers} isLoading={isLoading} v2ScoreMap={v2ScoreMap} />
             </div>
         </ProtectedRoute>
     );

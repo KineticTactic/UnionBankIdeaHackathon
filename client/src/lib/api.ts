@@ -137,4 +137,18 @@ export const api = {
     getChronosModelHealth: () => fetchApi('/api/chronos/model-health'),
     getChronosScheduler: () => fetchApi('/api/chronos/model-health/scheduler'),
     getChronosStats: () => fetchApi('/api/chronos/stats'),
+
+    // ── CHRONOS v2 endpoints ──────────────────────────────────────────────────
+    getV2Scores: (params?: { tier?: string; urgency?: string }) => {
+        const sp = new URLSearchParams();
+        if (params?.tier) sp.set('tier', params.tier);
+        if (params?.urgency) sp.set('urgency', params.urgency);
+        return fetchApi(`/api/v2/scores?${sp}`);
+    },
+    getV2Score: (customerId: string) => fetchApi(`/api/v2/scores/${customerId}`),
+    getV2ActionPlan: (customerId: string) => fetchApi(`/api/v2/action-plans/${customerId}`),
+    getV2ActionPlans: () => fetchApi('/api/v2/action-plans'),
+    getV2Content: (customerId: string) => fetchApi(`/api/v2/content/${customerId}`),
+    getV2ModelHealth: () => fetchApi('/api/v2/model-health'),
+    getV2PortfolioSurvival: () => fetchApi('/api/v2/portfolio-survival'),
 };

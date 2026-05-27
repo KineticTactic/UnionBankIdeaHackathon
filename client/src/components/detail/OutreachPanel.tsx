@@ -37,7 +37,7 @@ export function OutreachPanel({ customerId, analysisResult }: OutreachPanelProps
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <CardTitle className="text-base font-semibold text-slate-900 flex items-center">
                         <Sparkles className="w-5 h-5 mr-2 text-purple-600" />
-                        Generate Personalised Outreach
+                        Outreach Intelligence · Personalised Engagement
                     </CardTitle>
 
                     <div className="flex bg-slate-100 p-1 rounded-lg">
@@ -65,16 +65,19 @@ export function OutreachPanel({ customerId, analysisResult }: OutreachPanelProps
 
             <CardContent className="pt-2">
                 {!content && !isStreaming && !error ? (
-                    <div className="flex flex-col items-center justify-center py-10 border border-dashed border-slate-200 rounded-lg bg-slate-50/50">
+                    <div className="flex flex-col items-center justify-center py-10 border border-dashed border-purple-100 rounded-lg bg-gradient-to-b from-purple-50/40 to-indigo-50/30">
+                        <div className="flex items-center gap-1.5 mb-3">
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-purple-400 px-2 py-0.5 bg-purple-100 rounded-full">Powered by Azure AI · DeepSeek</span>
+                        </div>
                         <Button
                             onClick={handleGenerate}
-                            className="bg-purple-600 hover:bg-purple-700 text-white shadow-sm h-10 px-6 mt-2"
+                            className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md h-10 px-6 font-semibold tracking-wide"
                         >
                             <Sparkles className="w-4 h-4 mr-2" />
-                            Generate with Claude
+                            Generate Personalised Outreach
                         </Button>
-                        <p className="text-xs text-slate-400 mt-4 text-center max-w-sm">
-                            Creates a tailored, empathetic message based on recent lifecycle events and churn indicators.
+                        <p className="text-xs text-slate-400 mt-3 text-center max-w-sm">
+                            Action Intelligence + Outreach Engine — synthesises all risk signals and life events into a channel-optimised retention message.
                         </p>
                     </div>
                 ) : (
@@ -110,9 +113,9 @@ export function OutreachPanel({ customerId, analysisResult }: OutreachPanelProps
                             </div>
 
                             {isComplete && (
-                                <Button variant="ghost" size="sm" onClick={handleGenerate} className="text-purple-700 hover:bg-purple-50">
+                                <Button variant="ghost" size="sm" onClick={handleGenerate} className="text-purple-700 hover:bg-purple-50 font-semibold">
                                     <Sparkles className="w-4 h-4 mr-2" />
-                                    Regenerate
+                                    Refresh Outreach
                                 </Button>
                             )}
                         </div>

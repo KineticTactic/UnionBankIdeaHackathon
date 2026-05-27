@@ -71,7 +71,7 @@ export interface ContentPreview {
 }
 
 export interface Warning {
-    severity: 'critical' | 'medium' | 'info';
+    severity: 'critical' | 'high' | 'medium' | 'info';
     title: string;
     description: string;
     affected_customers: number;
@@ -238,4 +238,101 @@ export interface AuthUser {
     username: string;
     role: 'analyst' | 'manager' | 'admin';
     name: string;
+}
+
+// ── CHRONOS v2 types ─────────────────────────────────────────────────────────
+
+export type UrgencyHorizon = '7d' | '30d' | '90d' | null;
+
+export interface V2Score {
+    customer_id: string;
+    final_score: number;
+    risk_tier: RiskTier;
+    tare_score: number;
+    habitat_score: number;
+    graph_score: number;
+    survival_7d: number;
+    survival_30d: number;
+    survival_90d: number;
+    urgency_horizon: UrgencyHorizon;
+    ensemble_disagreement: number;
+    conformal_lower: number;
+    conformal_upper: number;
+    model_version: string;
+    scored_at: string;
+}
+
+export interface ActionPlan {
+    customer_id: string;
+    channel: string;
+    offer_code: string;
+    offer_description: string;
+    offer_value: string;
+    timing: string;
+    priority: number;
+    rationale: string;
+    suppressed: boolean;
+    content_strategy: string;
+    urgency_horizon: UrgencyHorizon;
+    tone_modifiers: string[];
+    generated_at: string;
+}
+
+export interface HeraldContent {
+    customer_id: string;
+    channel: string;
+    compliance_status: string;
+    content_strategy: string;
+    urgency_horizon: UrgencyHorizon;
+    tone_modifiers: string[];
+    offer_code: string;
+    generated_at: string;
+    // email
+    subject_line?: string;
+    preview_text?: string;
+    body?: string;
+    ab_variant?: { subject_line: string; preview_text: string };
+    // sms
+    // push
+    title?: string;
+    cta?: string;
+    // call/rm_visit
+    opening?: string;
+    talking_points?: string[];
+}
+
+export interface V2ModelInfo {
+    name: string;
+    version: string;
+    status: string;
+    auc?: number;
+    val_loss?: number;
+    training_time_s?: number;
+    training_samples?: number;
+    epochs?: number;
+    params?: number;
+    checkpoint: string;
+    last_trained: string;
+    description: string;
+    weights?: Record<string, number>;
+}
+
+export interface V2ModelHealth {
+    models: V2ModelInfo[];
+    ensemble: {
+        version: string;
+        total_models: number;
+        avg_disagreement: number;
+        portfolio_urgency: Record<string, number>;
+        last_calibrated: string;
+    };
+}
+
+export interface PortfolioSurvival {
+    total: number;
+    by_urgency: Record<string, number>;
+    avg_survival_7d: number;
+    avg_survival_30d: number;
+    avg_survival_90d: number;
+    avg_disagreement: number;
 }

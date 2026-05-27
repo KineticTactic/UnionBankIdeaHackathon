@@ -1,53 +1,54 @@
 "use client";
 
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 interface SignalBreakdownChartProps {
     data: { signal_type: string; count: number }[];
 }
 
-const COLORS = ['#3B82F6', '#8B5CF6', '#EC4899', '#F43F5E', '#F97316', '#EAB308', '#22C55E', '#14B8A6'];
+const COLORS = ['#2563EB', '#7C3AED', '#DB2777', '#DC2626', '#EA580C', '#CA8A04', '#16A34A', '#0891B2'];
+
+function CustomTooltip({ active, payload }: any) {
+    if (!active || !payload?.length) return null;
+    return (
+        <div className="bg-white border border-slate-200 rounded-lg shadow-sm px-3 py-2">
+            <p className="text-xs font-bold text-slate-700">{payload[0]?.payload?.signal_type}</p>
+            <p className="text-sm font-bold text-blue-700">{payload[0]?.value} customers</p>
+        </div>
+    );
+}
 
 export function SignalBreakdownChart({ data = [] }: SignalBreakdownChartProps) {
-    // Sort data descending by count
-    const sortedData = [...data].sort((a, b) => b.count - a.count);
+    const sorted = [...data].sort((a, b) => b.count - a.count);
 
     return (
-        <Card className="shadow-sm border-gray-200 h-full">
-            <CardHeader>
-                <CardTitle className="text-base font-semibold text-slate-900">Active Signal Distribution</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="h-[300px] w-full pt-4">
-                    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                        <BarChart data={sortedData} layout="vertical" margin={{ top: 0, right: 20, left: 30, bottom: 0 }}>
-                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E5E7EB" />
-                            <XAxis type="number" hide />
-                            <YAxis
-                                type="category"
-                                dataKey="signal_type"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fontSize: 11, fill: '#475569' }}
-                                width={140}
-                                tickFormatter={(val: string) => val.split('_').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                            />
-                            <Tooltip
-                                cursor={{ fill: '#F1F5F9' }}
-                                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                                formatter={(value) => [value, 'Customers']}
-                                labelFormatter={(label) => String(label).split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                            />
-                            <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={24}>
-                                {sortedData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
-                </div>
-            </CardContent>
-        </Card>
+        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm h-full">
+            <div className="flex items-center justify-between mb-4">
+                <p className="text-sm font-semibold text-slate-800">Active Signal Distribution</p>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 uppercase tracking-wider">{sorted.length} signal types</span>
+            </div>
+            <div className="h-[260px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={sorted} layout="vertical" margin={{ top: 0, right: 24, left: 0, bottom: 0 }}>
+                        <XAxis type="number" hide />
+                        <YAxis
+                            type="category"
+                            dataKey="signal_type"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 11, fill: '#64748B' }}
+                            width={130}
+                            tickFormatter={(v: string) => v.split('_').map((w: string) => w[0].toUpperCase() + w.slice(1)).join(' ')}
+                        />
+                        <Tooltip content={<CustomTooltip />} cursor={{ fill: '#F8FAFC' }} />
+                        <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={18}>
+                            {sorted.map((_, i) => (
+                                <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                            ))}
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+            </div>
+        </div>
     );
 }

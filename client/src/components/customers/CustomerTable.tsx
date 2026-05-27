@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Customer } from "@/types";
+import { Customer, V2Score } from "@/types";
 import { RiskBadge } from "@/components/customers/RiskBadge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,27 @@ import { Button } from "@/components/ui/button";
 interface CustomerTableProps {
     customers: Customer[];
     isLoading: boolean;
+    v2ScoreMap?: Record<string, V2Score>;
 }
 
-export function CustomerTable({ customers, isLoading }: CustomerTableProps) {
+const URGENCY_STYLE: Record<string, { label: string; cls: string }> = {
+    "7d":  { label: "7d Alert",  cls: "bg-red-100 text-red-700 border-red-200" },
+    "30d": { label: "30d Risk",  cls: "bg-amber-100 text-amber-700 border-amber-200" },
+    "90d": { label: "90d Watch", cls: "bg-yellow-100 text-yellow-700 border-yellow-200" },
+};
+
+function UrgencyBadge({ horizon }: { horizon: string | null | undefined }) {
+    if (!horizon) return <span className="text-[10px] text-slate-400">—</span>;
+    const cfg = URGENCY_STYLE[horizon];
+    if (!cfg) return null;
+    return (
+        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${cfg.cls} uppercase tracking-wider`}>
+            {cfg.label}
+        </span>
+    );
+}
+
+export function CustomerTable({ customers, isLoading, v2ScoreMap = {} }: CustomerTableProps) {
     const router = useRouter();
 
     const formatSignals = (signals: string[]) => {
@@ -62,6 +80,7 @@ export function CustomerTable({ customers, isLoading }: CustomerTableProps) {
                         <TableHead className="w-[140px] font-semibold text-slate-700">Churn Score</TableHead>
                         <TableHead className="w-[100px] font-semibold text-slate-700">Risk Tier</TableHead>
                         <TableHead className="w-[200px] font-semibold text-slate-700">Active Signals</TableHead>
+                        <TableHead className="w-[90px] font-semibold text-slate-700">Urgency</TableHead>
                         <TableHead className="text-right font-semibold text-slate-700">Action</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -103,6 +122,9 @@ export function CustomerTable({ customers, isLoading }: CustomerTableProps) {
                             </TableCell>
                             <TableCell>
                                 {formatSignals(c.active_signals)}
+                            </TableCell>
+                            <TableCell>
+                                <UrgencyBadge horizon={v2ScoreMap[c.customer_id]?.urgency_horizon} />
                             </TableCell>
                             <TableCell className="text-right">
                                 <Button

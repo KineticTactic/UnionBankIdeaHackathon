@@ -1,2 +1,11 @@
 **/.DS_Store
 **/node_modules
+**/.env
+**/.env.*
+credentials.txt
+AZURE.txt
+p.txt
+*.pem
+*.key
+**/client/package-lock.json
+**/server/package-lock.json

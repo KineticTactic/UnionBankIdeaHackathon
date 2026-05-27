@@ -14,10 +14,12 @@ export function useOutreachStream() {
         setError(null);
 
         try {
+            const token = typeof window !== 'undefined' ? localStorage.getItem('pcop_token') : null;
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/outreach/generate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
                 },
                 body: JSON.stringify({
                     customer_id: customerId,

@@ -21,11 +21,11 @@ const COMPONENT_ICONS: Record<string, React.ReactNode> = {
 };
 
 const COMPONENT_LABELS: Record<string, string> = {
-    "tare-encoder": "TARE Encoder",
-    "habitat-pass1": "HABITAT Pass 1",
-    "genesis-scorer": "GENESIS Scorer",
-    "aegis-detector": "AEGIS Detector",
-    "fusion-x": "FusionX",
+    "tare-encoder":   "Transaction Analytics",
+    "habitat-pass1":  "Behavioural Patterns",
+    "genesis-scorer": "Risk Scoring Engine",
+    "aegis-detector": "Anomaly Detector",
+    "fusion-x":       "Ensemble Fusion",
 };
 
 function StatusIcon({ status }: { status: string }) {
@@ -49,7 +49,7 @@ export function ChronosDashboardCard({ stats, modelHealth, isLoading }: ChronosD
                 <CardHeader className="border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 pb-4">
                     <CardTitle className="text-base font-semibold text-slate-900 flex items-center gap-2">
                         <BrainCircuit className="w-5 h-5 text-indigo-600" />
-                        CHRONOS Neural Scoring Engine
+                        Precision Risk Engine · Scoring Suite
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="p-5 space-y-4">
@@ -73,7 +73,7 @@ export function ChronosDashboardCard({ stats, modelHealth, isLoading }: ChronosD
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-base font-semibold text-slate-900 flex items-center gap-2">
                         <BrainCircuit className="w-5 h-5 text-indigo-600" />
-                        CHRONOS Neural Scoring Engine
+                        Precision Risk Engine · Scoring Suite
                     </CardTitle>
                     {stats?.last_scored_at && (
                         <span className="text-[10px] text-slate-400 font-mono">
@@ -117,7 +117,7 @@ export function ChronosDashboardCard({ stats, modelHealth, isLoading }: ChronosD
                 {/* Score distribution */}
                 {stats?.tier_distribution && (
                     <div>
-                        <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2">CHRONOS Score Distribution</div>
+                        <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Retention Risk Score Distribution</div>
                         <div className="flex gap-1.5 h-6">
                             {["critical", "high", "medium", "low"].map((tier) => {
                                 const count = stats.tier_distribution[tier] || 0;

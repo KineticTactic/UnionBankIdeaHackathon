@@ -1,19 +1,17 @@
 const router = require('express').Router();
-const demoServerClient = require('../services/demoServerClient');
 const { verifyToken } = require('../middleware/auth');
+const localData = require('../services/localData');
 const dataStore = require('../services/dataStore');
-const chronos = require('../services/chronosClient');
 
-router.get('/', verifyToken, async (req, res, next) => {
+router.get('/', verifyToken, (req, res, next) => {
     try {
         const { segment, risk_tier, city, search, page = 1, limit = 20 } = req.query;
         const filters = {};
-        if (segment) filters.segment = segment;
+        if (segment)   filters.segment   = segment;
         if (risk_tier) filters.risk_tier = risk_tier;
-        if (city) filters.city = city;
+        if (city)      filters.city      = city;
 
-        const customersData = await demoServerClient.getCustomers(filters);
-        let results = customersData.data || [];
+        let { data: results } = localData.getCustomers(filters);
 
         if (search) {
             const q = search.toLowerCase();
@@ -23,161 +21,111 @@ router.get('/', verifyToken, async (req, res, next) => {
             );
         }
 
-        const { SIGNALS, LIFE_EVENTS } = dataStore;
-        let chronosMap = {};
-        try {
-            const chronosData = await chronos.getScores({ page_size: 100 });
-            for (const c of (chronosData.customers || [])) {
-                if (!chronosMap[c.customer_id]) {
-                    chronosMap[c.customer_id] = { churn_score: c.final_score, risk_tier: c.risk_tier, reason_codes: (c.reason_codes_v2 || []).map(r => r.description) };
-                }
-            }
-        } catch (_) { /* CHRONOS unavailable — scores will show as N/A */ }
-
-        results = results.map(customer => {
-            const cs = chronosMap[customer.customer_id];
-            return {
-                ...customer,
-                churn_score: cs?.churn_score ?? null,
-                risk_tier: cs?.risk_tier ?? null,
-                reason_codes: cs?.reason_codes ?? [],
-                active_signals: SIGNALS.filter(s => s.customer_id === customer.customer_id && s.detected).map(s => s.signal_type),
-                life_events: LIFE_EVENTS.filter(e => e.customer_id === customer.customer_id).map(e => e.event_type)
-            };
-        });
-
-        const total = results.length;
+        const total   = results.length;
         const pageNum = parseInt(page);
-        const limitNum = parseInt(limit);
+        const limitNum= parseInt(limit);
         const paginated = results.slice((pageNum - 1) * limitNum, pageNum * limitNum);
 
-        res.json({
-            status: 'ok',
-            data: paginated,
-            total,
-            page: pageNum,
-            limit: limitNum
-        });
-    } catch (error) {
-        next(error);
-    }
+        res.json({ status: 'ok', data: paginated, total, page: pageNum, limit: limitNum });
+    } catch (e) { next(e); }
 });
 
-router.get('/:id', verifyToken, async (req, res, next) => {
+router.get('/:id', verifyToken, (req, res, next) => {
     try {
-        const body = await demoServerClient.getCustomerById(req.params.id);
-        const snapshot = body.data;
-        if (!snapshot || !snapshot.customer) {
+        const snapshot = localData.getCustomerById(req.params.id);
+        if (!snapshot) {
             return res.status(404).json({ status: 'error', message: 'Customer not found' });
         }
-
-        const { SIGNALS, LIFE_EVENTS, getScoreHistory } = dataStore;
-        const customer = snapshot.customer;
-
-        let chronosScore = null;
-        try {
-            chronosScore = await chronos.getScore(customer.customer_id);
-        } catch (_) { /* CHRONOS unavailable — scores will show as N/A */ }
-
-        const enrichedCustomer = {
-            ...customer,
-            churn_score: chronosScore?.final_score ?? null,
-            risk_tier: chronosScore?.risk_tier ?? null,
-            reason_codes: (chronosScore?.reason_codes_v2 || []).map(r => r.description) || [],
-            active_signals: SIGNALS.filter(s => s.customer_id === customer.customer_id && s.detected).map(s => s.signal_type),
-            life_events: LIFE_EVENTS.filter(e => e.customer_id === customer.customer_id).map(e => e.event_type)
-        };
-
-        const scoreHistory = getScoreHistory(customer.customer_id, 90);
-
-        const customerSignals = SIGNALS.filter(s => s.customer_id === customer.customer_id);
-        const customerLifeEvents = LIFE_EVENTS.filter(e => e.customer_id === customer.customer_id);
-
-        res.json({
-            status: 'ok',
-            data: {
-                customer: enrichedCustomer,
-                accounts: snapshot.accounts || [],
-                score_history: scoreHistory,
-                active_signal_details: customerSignals.filter(s => s.detected),
-                life_event_details: customerLifeEvents,
-                engagement: snapshot.engagement_summary || {},
-                crm_summary: snapshot.crm_summary || {},
-                top_mccs: snapshot.latest_card_mccs || []
-            }
-        });
-    } catch (error) {
-        next(error);
-    }
+        res.json(snapshot);
+    } catch (e) { next(e); }
 });
 
-router.get('/:id/signals', verifyToken, async (req, res, next) => {
+router.get('/:id/signals', verifyToken, (req, res, next) => {
     try {
-        const { SIGNALS } = dataStore;
-        const signals = SIGNALS.filter(s => s.customer_id === req.params.id);
+        const signals = dataStore.SIGNALS.filter(s => s.customer_id === req.params.id);
+        res.json({ status: 'ok', data: signals });
+    } catch (e) { next(e); }
+});
 
-        if (signals.length === 0) {
-            const body = await demoServerClient.getCustomerById(req.params.id);
-            if (!body.data?.customer) {
-                return res.status(404).json({ status: 'error', message: 'Customer not found' });
+router.get('/:id/transactions', verifyToken, (req, res, next) => {
+    try {
+        const eventsRaw = localData.getCustomerById(req.params.id);
+        if (!eventsRaw) return res.status(404).json({ status: 'error', message: 'Customer not found' });
+
+        const customer   = eventsRaw.data.customer;
+        const base = { above_25L: 150000, between_10L_25L: 80000, between_5L_10L: 45000, below_5L: 25000 }[customer.annual_income_band] || 50000;
+
+        const DEBIT_TEMPLATES = [
+            { category: 'grocery',      channel: 'upi',        merchants: ['BigBasket', 'Zepto', 'Swiggy Instamart', 'DMart'] },
+            { category: 'utility',      channel: 'netbanking',  merchants: ['BSES Delhi', 'Tata Power', 'Jio Postpaid', 'Airtel'] },
+            { category: 'food',         channel: 'upi',        merchants: ['Zomato', 'Swiggy', 'Dominos', 'KFC'] },
+            { category: 'fuel',         channel: 'pos',        merchants: ['HPCL', 'BPCL', 'Indian Oil', 'Reliance Petrol'] },
+            { category: 'emi',          channel: 'nach',       merchants: ['HDFC Bank EMI', 'Home Loan EMI', 'Car Loan EMI'] },
+            { category: 'shopping',     channel: 'pos',        merchants: ['Amazon', 'Flipkart', 'Myntra', 'Nykaa'] },
+            { category: 'travel',       channel: 'netbanking',  merchants: ['MakeMyTrip', 'IRCTC', 'IndiGo Air', 'OYO Hotels'] },
+            { category: 'insurance',    channel: 'nach',       merchants: ['LIC Premium', 'Star Health', 'HDFC Life'] },
+            { category: 'entertainment',channel: 'upi',        merchants: ['Netflix', 'Hotstar', 'Spotify', 'BookMyShow'] },
+            { category: 'atm',          channel: 'atm',        merchants: ['ATM Withdrawal'] },
+        ];
+
+        const txns = [];
+        let runningBalance = base * 12;
+
+        for (let i = 60; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toISOString().split('T')[0];
+            const dom = date.getDate();
+
+            // Salary on 1st of month
+            if (dom === 1) {
+                const salary = Math.round(base * (1.7 + Math.sin(i) * 0.05));
+                runningBalance += salary;
+                txns.push({ txn_date: dateStr, direction: 'credit', amount: salary, category: 'salary', channel: 'neft', merchant_name: customer.employer_name || 'Employer', payment_ref: `SAL${date.getFullYear()}${String(date.getMonth()+1).padStart(2,'0')}` });
             }
-            const customerSignals = (body.data.customer.active_signals || []).map(sig => ({
-                signal_type: sig,
-                confidence: 0.85 + Math.random() * 0.1,
-                evidence: ['Detected pattern matching risk profile', 'Recent activity deviation'],
-                method_used: 'CUSUM / ML',
-                detected: true
-            }));
-            return res.json({ status: 'ok', data: customerSignals });
+
+            // 1-3 debit transactions per day
+            const numDebits = Math.floor(1 + Math.abs(Math.sin(i * 7.3)) * 2.5);
+            for (let j = 0; j < numDebits; j++) {
+                const tmpl = DEBIT_TEMPLATES[Math.floor(Math.abs(Math.sin(i * 3.1 + j * 7.7)) * DEBIT_TEMPLATES.length)];
+                const merchant = tmpl.merchants[Math.floor(Math.abs(Math.sin(i * 1.3 + j)) * tmpl.merchants.length)];
+                const debitMultiplier = { grocery: 0.03, utility: 0.05, food: 0.02, fuel: 0.04, emi: 0.12, shopping: 0.06, travel: 0.08, insurance: 0.07, entertainment: 0.01, atm: 0.05 }[tmpl.category] || 0.03;
+                const amt = Math.round(base * debitMultiplier * (0.7 + Math.abs(Math.sin(i * 2.1 + j)) * 0.6));
+                runningBalance -= amt;
+                txns.push({ txn_date: dateStr, direction: 'debit', amount: amt, category: tmpl.category, channel: tmpl.channel, merchant_name: merchant, payment_ref: `TXN${dateStr.replace(/-/g,'')}${j}` });
+            }
+
+            // Occasional inward transfers
+            if (Math.abs(Math.sin(i * 4.9)) > 0.92) {
+                const inward = Math.round(base * 0.3 * (0.8 + Math.sin(i) * 0.2));
+                runningBalance += inward;
+                txns.push({ txn_date: dateStr, direction: 'credit', amount: inward, category: 'transfer', channel: 'imps', merchant_name: 'Inward Transfer', payment_ref: `IMPS${dateStr.replace(/-/g,'')}` });
+            }
         }
 
-        res.json({ status: 'ok', data: signals });
-    } catch (error) {
-        next(error);
-    }
+        // Sort newest first
+        txns.sort((a, b) => b.txn_date.localeCompare(a.txn_date));
+        res.json({ status: 'ok', data: txns });
+    } catch (e) { next(e); }
 });
 
-router.get('/:id/transactions', verifyToken, async (req, res, next) => {
+router.get('/:id/insights', verifyToken, (req, res, next) => {
     try {
-        const { from, to, limit = 50 } = req.query;
-        const params = new URLSearchParams({ customer_id: req.params.id });
-        if (from) params.append('from', from);
-        if (to) params.append('to', to);
-        params.append('limit', limit);
+        const snapshot = localData.getCustomerById(req.params.id);
+        if (!snapshot) return res.status(404).json({ status: 'error', message: 'Customer not found' });
 
-        const resp = await demoServerClient.client.get(`/api/core-banking/transactions?${params.toString()}`);
-        res.json(resp.data);
-    } catch (error) {
-        next(error);
-    }
-});
-
-router.get('/:id/insights', verifyToken, async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        const [engagement, crm, stress, location] = await Promise.all([
-            demoServerClient.getAppEngagement(id),
-            demoServerClient.getCrmSummary(id),
-            demoServerClient.getStressIndicators(id),
-            demoServerClient.getLocationSeries(id)
-        ]);
-
-        const { LIFE_EVENTS } = dataStore;
-        const customerLifeEvents = LIFE_EVENTS.filter(e => e.customer_id === id);
-
+        const lifeEvents = dataStore.LIFE_EVENTS.filter(e => e.customer_id === req.params.id);
         res.json({
             status: 'ok',
             data: {
-                engagement: engagement.data,
-                crm: crm.data,
-                stress: stress.data,
-                location: location.data,
-                life_events: customerLifeEvents
-            }
+                engagement: snapshot.data.engagement,
+                crm: snapshot.data.crm_summary,
+                stress: null,
+                location: null,
+                life_events: lifeEvents,
+            },
         });
-    } catch (error) {
-        next(error);
-    }
+    } catch (e) { next(e); }
 });
 
 module.exports = router;

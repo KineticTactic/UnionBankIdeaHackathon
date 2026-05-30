@@ -98,7 +98,7 @@ def build_scheduler() -> AsyncIOScheduler:
     return scheduler
 
 
-def main():
+async def main():
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(name)s %(levelname)s %(message)s",
@@ -107,11 +107,12 @@ def main():
     scheduler.start()
     logger.info("ORACLE scheduler started. Press Ctrl+C to stop.")
     try:
-        asyncio.get_event_loop().run_forever()
+        while True:
+            await asyncio.sleep(3600)
     except (KeyboardInterrupt, SystemExit):
         scheduler.shutdown()
         logger.info("ORACLE scheduler stopped.")
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

@@ -151,4 +151,10 @@ export const api = {
     getV2Content: (customerId: string) => fetchApi(`/api/v2/content/${customerId}`),
     getV2ModelHealth: () => fetchApi('/api/v2/model-health'),
     getV2PortfolioSurvival: () => fetchApi('/api/v2/portfolio-survival'),
+
+    createCustomer: (data: CreateCustomerInput) =>
+        fetchApi('/api/customers', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
 };

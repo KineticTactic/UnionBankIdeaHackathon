@@ -1,5 +1,5 @@
 from langgraph.graph import StateGraph, START, END
-from langgraph.checkpoint.postgres import PostgresSaver
+from langgraph.checkpoint.memory import MemorySaver
 
 from ..state import CompassState
 from ..nodes.intake import intake_node

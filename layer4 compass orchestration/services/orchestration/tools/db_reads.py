@@ -22,7 +22,12 @@ async def get_churn_score_raw(customer_id: str) -> dict:
         """, customer_id)
         if row is None:
             return {"final_score": 0.0, "risk_tier": "low", "action_score": 0.0}
-        return dict(row)
+        result = dict(row)
+        # Convert None numeric fields to 0.0 to avoid crashes downstream
+        for key in ("final_score", "tare_score", "habitat_score", "treatability_score", "action_score"):
+            if key in result and result[key] is None:
+                result[key] = 0.0
+        return result
 
 
 async def get_consent_flags_raw(customer_id: str) -> dict:

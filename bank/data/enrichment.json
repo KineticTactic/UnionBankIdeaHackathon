@@ -238,5 +238,37 @@
     "news_risk_flag": false,
     "news_summary": "No recent market news",
     "captured_at": "2024-11-21"
+  },
+  "C-00000023": {
+    "linkedin_employer": "",
+    "linkedin_title": "",
+    "credit_score": 800,
+    "credit_score_band": "excellent",
+    "competitor_proximity": 0,
+    "news_risk_flag": false,
+    "news_summary": "No recent market news",
+    "captured_at": "2026-05-29",
+    "engagement_summary": {
+      "days_since_last_login": 3,
+      "total_sessions_30d": 16,
+      "avg_session_duration_s": 80,
+      "most_used_feature": "balance_check"
+    }
+  },
+  "C-00000024": {
+    "linkedin_employer": "AXiS BANK",
+    "linkedin_title": "",
+    "credit_score": 700,
+    "credit_score_band": "fair",
+    "competitor_proximity": 1,
+    "news_risk_flag": false,
+    "news_summary": "No recent market news",
+    "captured_at": "2026-05-29",
+    "engagement_summary": {
+      "days_since_last_login": 5,
+      "total_sessions_30d": 14,
+      "avg_session_duration_s": 210,
+      "most_used_feature": "balance_check"
+    }
   }
 }

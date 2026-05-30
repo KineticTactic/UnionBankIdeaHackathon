@@ -60,9 +60,9 @@ async def compass_nba_node(state: CompassState) -> dict:
 Customer ID: {customer_id}
 As-of date: {state['as_of_date']}
 Risk tier: {state.get('risk_tier', 'unknown')}
-Churn score: {state.get('final_score', 0.0):.3f}
-Action score: {state.get('action_score', 0.0):.3f}
-Risk adjustment applied: {state.get('risk_adjustment', 0.0):+.2f}
+Churn score: {(state.get('final_score') or 0.0):.3f}
+Action score: {(state.get('action_score') or 0.0):.3f}
+Risk adjustment applied: {(state.get('risk_adjustment') or 0.0):+.2f}
 
 ## Confirmed life events
 

@@ -87,8 +87,8 @@ async def brief_node(state: HeraldState) -> dict:
 
     offer_details = await get_offer_details(action_plan.get("offer_code"))
 
-    treatability = score_data.get("treatability_score", 0.5)
-    final_score = score_data.get("final_score", 0.5)
+    treatability = score_data.get("treatability_score") or 0.5
+    final_score = score_data.get("final_score") or 0.5
     content_strategy = derive_content_strategy(
         treatability=treatability,
         final_score=final_score,
@@ -99,7 +99,7 @@ async def brief_node(state: HeraldState) -> dict:
 
     confirmed_events = event.get("final_events", [])
     primary_event = (
-        max(confirmed_events, key=lambda e: e.get("confidence", 0))["event_type"]
+        max(confirmed_events, key=lambda e: e.get("confidence") or 0)["event_type"]
         if confirmed_events else None
     )
 

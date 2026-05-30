@@ -160,7 +160,7 @@
     "customer_id": "C-00000012",
     "note_type": "visit_note",
     "note_text": "Customer visited branch for documentation update prior to job change",
-    "sentiment_score": 0.0,
+    "sentiment_score": 0,
     "issue_category": "other",
     "resolved": true,
     "resolution_days": 2,
@@ -258,5 +258,53 @@
     "agent_id": "AGT-003",
     "channel": "branch",
     "created_at": "2024-11-08T13:00:00Z"
+  },
+  {
+    "note_id": "CRM-C-00000023-001",
+    "customer_id": "C-00000023",
+    "note_type": "onboarding",
+    "note_text": "Welcome Rajesh Kumar! Account opened successfully.",
+    "sentiment_score": 0.85,
+    "issue_category": "onboarding",
+    "resolved": true,
+    "channel": "branch",
+    "resolution_days": 0,
+    "created_at": "2026-05-29T15:17:43.794Z"
+  },
+  {
+    "note_id": "CRM-C-00000023-002",
+    "customer_id": "C-00000023",
+    "note_type": "check_in",
+    "note_text": "Initial check-in completed. Customer seems satisfied with onboarding.",
+    "sentiment_score": 0.7,
+    "issue_category": "general",
+    "resolved": true,
+    "channel": "call",
+    "resolution_days": 1,
+    "created_at": "2026-05-28T15:17:43.794Z"
+  },
+  {
+    "note_id": "CRM-C-00000024-001",
+    "customer_id": "C-00000024",
+    "note_type": "onboarding",
+    "note_text": "Welcome Perumal! Account opened successfully.",
+    "sentiment_score": 0.85,
+    "issue_category": "onboarding",
+    "resolved": true,
+    "channel": "branch",
+    "resolution_days": 0,
+    "created_at": "2026-05-29T15:19:12.064Z"
+  },
+  {
+    "note_id": "CRM-C-00000024-002",
+    "customer_id": "C-00000024",
+    "note_type": "check_in",
+    "note_text": "Initial check-in completed. Customer seems satisfied with onboarding.",
+    "sentiment_score": 0.7,
+    "issue_category": "general",
+    "resolved": true,
+    "channel": "call",
+    "resolution_days": 1,
+    "created_at": "2026-05-28T15:19:12.064Z"
   }
 ]

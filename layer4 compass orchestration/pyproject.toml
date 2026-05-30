@@ -3,7 +3,6 @@ name = "compass-orchestration"
 version = "1.0.0"
 description = "COMPASS Agentic Orchestration Engine — Layer 4"
 authors = ["PCOP ML Team"]
-python = "^3.11"
 
 [tool.poetry.dependencies]
 python = "^3.11"

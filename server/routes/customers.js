@@ -109,6 +109,17 @@ router.get('/:id/transactions', verifyToken, (req, res, next) => {
     } catch (e) { next(e); }
 });
 
+router.post('/', verifyToken, (req, res, next) => {
+    try {
+        const { full_name, email, age, city, segment } = req.body;
+        if (!full_name || !email) {
+            return res.status(400).json({ status: 'error', message: 'full_name and email are required' });
+        }
+        const customer = localData.generateCustomerProfile(req.body);
+        res.status(201).json({ status: 'ok', data: customer });
+    } catch (e) { next(e); }
+});
+
 router.get('/:id/insights', verifyToken, (req, res, next) => {
     try {
         const snapshot = localData.getCustomerById(req.params.id);

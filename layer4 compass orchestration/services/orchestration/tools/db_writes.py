@@ -115,7 +115,7 @@ async def adjust_risk_score_tool(
         if current is None:
             return {"success": False, "error": "No churn score found"}
 
-        old_score = float(current["final_score"])
+        old_score = float(current.get("final_score") or 0.0)
         new_score = max(0.0, min(1.0, old_score + adjustment))
         new_tier = _score_to_tier(new_score)
 

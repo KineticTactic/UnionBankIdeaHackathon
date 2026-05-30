@@ -15,9 +15,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function CustomersPage() {
+    const router = useRouter();
     const [search, setSearch] = useState("");
     const [riskTier, setRiskTier] = useState<string>("all");
     const [segment, setSegment] = useState<string>("all");
@@ -89,16 +91,25 @@ export default function CustomersPage() {
                         </Select>
                     </div>
 
-                    {(search || riskTier !== "all" || segment !== "all") && (
+                    <div className="flex items-center gap-2">
                         <Button
-                            variant="ghost"
-                            className="text-slate-500 hover:text-slate-800 h-10"
-                            onClick={clearFilters}
+                            className="h-10"
+                            onClick={() => router.push('/customers/new')}
                         >
-                            <X className="w-4 h-4 mr-2" />
-                            Clear Filters
+                            + Add Customer
                         </Button>
-                    )}
+
+                        {(search || riskTier !== "all" || segment !== "all") && (
+                            <Button
+                                variant="ghost"
+                                className="text-slate-500 hover:text-slate-800 h-10"
+                                onClick={clearFilters}
+                            >
+                                <X className="w-4 h-4 mr-2" />
+                                Clear Filters
+                            </Button>
+                        )}
+                    </div>
                 </div>
 
                 <CustomerTable customers={customers} isLoading={isLoading} v2ScoreMap={v2ScoreMap} />

@@ -3,7 +3,6 @@ name = "argus-detection"
 version = "1.0.0"
 description = "ARGUS Statistical Signal Detection Engine — Layer 2 PCOP v3"
 authors = ["PCOP ML Team"]
-python = "^3.11"
 
 [tool.poetry.dependencies]
 python = "^3.11"

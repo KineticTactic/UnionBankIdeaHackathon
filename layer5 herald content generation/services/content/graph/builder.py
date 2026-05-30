@@ -10,14 +10,14 @@ from ..nodes.chronicle import chronicle_node
 def build_herald_graph():
     workflow = StateGraph(HeraldState)
 
-    workflow.add_node("brief", brief_node)
+    workflow.add_node("briefing", brief_node)
     workflow.add_node("scribe", scribe_node)
     workflow.add_node("sentinel", sentinel_node)
     workflow.add_node("dispatch", dispatch_node)
     workflow.add_node("chronicle", chronicle_node)
 
-    workflow.set_entry_point("brief")
-    workflow.add_edge("brief", "scribe")
+    workflow.set_entry_point("briefing")
+    workflow.add_edge("briefing", "scribe")
     workflow.add_edge("scribe", "sentinel")
     workflow.add_edge("sentinel", "dispatch")
     workflow.add_edge("dispatch", "chronicle")

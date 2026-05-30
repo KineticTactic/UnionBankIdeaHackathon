@@ -328,6 +328,24 @@ export interface V2ModelHealth {
     };
 }
 
+export interface CreateCustomerInput {
+    full_name: string;
+    age: number;
+    city: string;
+    segment: Segment;
+    email: string;
+    phone_mobile?: string;
+    employer_name?: string;
+    employment_type?: string;
+    annual_income_band?: string;
+    tenure_years?: number;
+    preferred_channel?: Channel;
+    email_opt_in?: boolean;
+    sms_opt_in?: boolean;
+    push_opt_in?: boolean;
+    call_opt_in?: boolean;
+}
+
 export interface PortfolioSurvival {
     total: number;
     by_urgency: Record<string, number>;

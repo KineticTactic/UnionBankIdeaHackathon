@@ -29,7 +29,7 @@ async def gate_node(state: CompassState) -> dict:
             "action_plan": {**action_plan, "suppressed": False},
         }
 
-    final_score = state.get("final_score", 0.0)
+    final_score = state.get("final_score") or 0.0
 
     if final_score > RESCUE_THRESHOLD:
         logger.info(

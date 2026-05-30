@@ -9,3 +9,5 @@ p.txt
 *.key
 **/client/package-lock.json
 **/server/package-lock.json
+**/*.pyc
+**/demo*.json

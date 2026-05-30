@@ -44,7 +44,7 @@ async def verify_node(state: CompassState) -> dict:
     for signal in signal_results:
         if not signal.get("detected"):
             continue
-        if signal.get("confidence", 0) < 0.80:
+        if (signal.get("confidence") or 0) < 0.80:
             continue
 
         signal_type = signal["signal_type"]

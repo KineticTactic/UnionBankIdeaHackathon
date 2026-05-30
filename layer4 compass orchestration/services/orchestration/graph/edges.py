@@ -7,8 +7,8 @@ def route_after_intake(state: CompassState) -> str:
     if not signals:
         return "verify"
 
-    ambiguous = [s for s in signals if s["confidence"] < 0.80 and s["detected"]]
-    high_conf = [s for s in signals if s["confidence"] >= 0.80 and s["detected"]]
+    ambiguous = [s for s in signals if (s.get("confidence") or 0) < 0.80 and s.get("detected")]
+    high_conf = [s for s in signals if (s.get("confidence") or 0) >= 0.80 and s.get("detected")]
 
     if ambiguous:
         return "cognition"

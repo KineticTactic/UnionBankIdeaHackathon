@@ -2,16 +2,18 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, Bell, Send, BarChart3, LogOut, Workflow, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Users, Bell, Send, BarChart3, LogOut, Workflow, Shield, ChevronRight } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useReviewStats } from '@/hooks/useReviews';
 
 const navItems = [
     { href: '/dashboard', label: 'Dashboard',      icon: LayoutDashboard },
     { href: '/customers', label: 'Customers',       icon: Users },
     { href: '/signals',   label: 'Signal Monitor',  icon: Bell },
     { href: '/outreach',  label: 'Outreach Hub',    icon: Send },
+    { href: '/reviews',   label: 'Reviews',         icon: Shield },
     { href: '/analytics', label: 'Analytics',       icon: BarChart3 },
     { href: '/pipeline',  label: 'Pipeline',        icon: Workflow },
 ];
@@ -19,6 +21,8 @@ const navItems = [
 export default function Sidebar() {
     const pathname = usePathname();
     const { user, logout } = useAuth();
+    const { stats } = useReviewStats();
+    const pendingCount = (stats?.pending ?? 0) + (stats?.in_review ?? 0);
 
     const getInitials = (name: string) =>
         name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
@@ -46,6 +50,7 @@ export default function Sidebar() {
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+                        const showBadge = item.href === '/reviews' && pendingCount > 0;
                         return (
                             <Link
                                 key={item.href}
@@ -58,7 +63,13 @@ export default function Sidebar() {
                             >
                                 <Icon className={`w-4 h-4 ${isActive ? 'text-blue-600' : 'text-slate-400'}`} />
                                 <span className="flex-1">{item.label}</span>
-                                {isActive && <ChevronRight className="w-3 h-3 text-blue-400" />}
+                                {showBadge && (
+                                    <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1.5 rounded-full bg-amber-500 text-white text-[10px] font-bold leading-none">
+                                        {pendingCount > 99 ? '99+' : pendingCount}
+                                    </span>
+                                )}
+                                {isActive && !showBadge && <ChevronRight className="w-3 h-3 text-blue-400" />}
+                                {isActive && showBadge && <ChevronRight className="w-3 h-3 text-blue-400" />}
                             </Link>
                         );
                     })}

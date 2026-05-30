@@ -346,6 +346,56 @@ export interface CreateCustomerInput {
     call_opt_in?: boolean;
 }
 
+export type ReviewStatus = 'pending' | 'in_review' | 'approved' | 'rejected' | 'escalated';
+export type ReviewType = 'score_alert' | 'compliance_flag' | 'outreach_approval' | 'manual';
+export type ReviewPriority = 'critical' | 'high' | 'medium' | 'low';
+export type ReviewActionType = 'approve' | 'reject' | 'escalate' | 'comment' | 'assign' | 'start_review';
+
+export interface ReviewOfficer {
+    id: string;
+    name: string;
+    role: string;
+}
+
+export interface ReviewCase {
+    id: string;
+    customer_id: string;
+    type: ReviewType;
+    priority: ReviewPriority;
+    title: string;
+    description: string;
+    status: ReviewStatus;
+    createdBy: string;
+    createdAt: string;
+    assignedTo: string | null;
+    context: Record<string, unknown>;
+    actions?: ReviewActionEntry[];
+}
+
+export interface ReviewActionEntry {
+    id: string;
+    caseId: string;
+    officerId: string | null;
+    officerName: string;
+    action: ReviewActionType;
+    comment: string;
+    timestamp: string;
+    previousStatus: ReviewStatus;
+    newStatus: ReviewStatus;
+}
+
+export interface ReviewStats {
+    total: number;
+    pending: number;
+    in_review: number;
+    approved: number;
+    rejected: number;
+    escalated: number;
+    by_type: Record<string, number>;
+    by_priority: Record<string, number>;
+    avg_resolution_hours: number;
+}
+
 export interface PortfolioSurvival {
     total: number;
     by_urgency: Record<string, number>;

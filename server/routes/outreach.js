@@ -7,6 +7,7 @@ const dataStore = require("../services/dataStore");
 const localData = require("../services/localData");
 const config = require("../config");
 const claudeService = require("../services/claudeService");
+const reviewStore = require("../services/reviewStore");
 
 const AZURE_ENDPOINT =
   "https://kensara.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview";
@@ -386,6 +387,25 @@ router.post("/", verifyToken, requireRole("manager", "admin"), (req, res) => {
     risk_tier: "medium",
     reason_codes: [],
   };
+
+  // Hard gate: critical/high-risk outreach requires officer approval
+  if (score.risk_tier === "critical" || score.risk_tier === "high") {
+    const reviewCase = reviewStore.createCase({
+      customer_id,
+      type: "outreach_approval",
+      priority: score.risk_tier === "critical" ? "critical" : "high",
+      title: `Outreach approval required — ${score.risk_tier} risk`,
+      description: `${customer_id} is ${score.risk_tier}-risk (score ${score.churn_score}). AI-generated ${channel} outreach requires officer approval before dispatch per hard-gate policy.`,
+      createdBy: req.user?.username || "system",
+      context: { channel, risk_tier: score.risk_tier, churn_score: score.churn_score },
+    });
+
+    return res.status(202).json({
+      status: "ok",
+      message: "Outreach queued for officer approval — hard gate active",
+      reviewCase: reviewCase.data,
+    });
+  }
 
   const record = dataStore.addOutreachRecord({
     customer_id,

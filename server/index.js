@@ -19,6 +19,7 @@ app.use('/api/outreach',  require('./routes/outreach'));
 app.use('/api/chronos',   require('./routes/chronos'));
 app.use('/api/v2',        require('./routes/v2'));
 app.use('/api/kafka',     require('./routes/kafka'));
+app.use('/api/reviews',   require('./routes/reviews'));
 
 app.use((req, res, next) => {
     res.status(404).json({ status: 'error', message: 'Route not found' });

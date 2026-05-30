@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const { verifyToken } = require('../middleware/auth');
 const chronos = require('../services/chronosClient');
+const reviewStore = require('../services/reviewStore');
 
 function loadV2Scores() {
     try {
@@ -99,14 +100,46 @@ router.get('/scores/:customerId', verifyToken, async (req, res, next) => {
 router.post('/scores/:customerId/analyze', verifyToken, async (req, res, next) => {
     try {
         const data = await chronos.analyzeScore(req.params.customerId);
-        res.json(data);
+        autoCreateScoreAlert(req.params.customerId, data);
+        return res.json(data);
     } catch (err) {
         // CHRONOS v1 offline — serve from pre-computed local data
         const local = buildLocalAnalysis(req.params.customerId);
         if (!local) return res.status(404).json({ status: 'error', message: `No score data for ${req.params.customerId}` });
-        res.json(local);
+
+        const { CHURN_SCORES } = require('../services/dataStore');
+        const score = local.final_score ?? CHURN_SCORES[req.params.customerId];
+        if (score && (score > 0.85 || score.risk_tier === 'critical')) {
+            reviewStore.createCase({
+                customer_id: req.params.customerId,
+                type: 'score_alert',
+                priority: 'critical',
+                title: `Critical churn risk — score ${typeof score === 'object' ? score.churn_score : score}`,
+                description: `${req.params.customerId} scored critical after analysis. Requires immediate officer review.`,
+                createdBy: 'chronos',
+                context: { score: typeof score === 'object' ? score : { churn_score: score } },
+            });
+        }
+
+        return res.json(local);
     }
 });
+
+function autoCreateScoreAlert(customerId, data) {
+    const finalScore = data?.final_score ?? data?.data?.final_score;
+    const riskTier = data?.risk_tier ?? data?.data?.risk_tier;
+    if (!finalScore || (finalScore <= 0.85 && riskTier !== 'critical')) return;
+
+    reviewStore.createCase({
+        customer_id: customerId,
+        type: 'score_alert',
+        priority: riskTier === 'critical' ? 'critical' : 'high',
+        title: `${riskTier === 'critical' ? 'Critical' : 'High'} churn risk — score ${finalScore.toFixed(2)}`,
+        description: `${customerId} scored ${(finalScore * 100).toFixed(0)}% (${riskTier}) after analysis. Officer review recommended.`,
+        createdBy: 'chronos',
+        context: { final_score: finalScore, risk_tier: riskTier },
+    });
+}
 
 router.get('/scores/:customerId/reason-codes', verifyToken, async (req, res, next) => {
     try {

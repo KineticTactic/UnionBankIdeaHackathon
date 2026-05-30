@@ -159,4 +159,33 @@ export const api = {
             method: 'POST',
             body: JSON.stringify(data),
         }),
+
+    // ── Review Queue ─────────────────────────────────────────────────────────
+    getReviews: (params?: { status?: string; type?: string; priority?: string; assignedTo?: string; page?: number; limit?: number }) => {
+        const sp = new URLSearchParams();
+        if (params) {
+            Object.entries(params).forEach(([key, value]) => {
+                if (value !== undefined && value !== '') sp.append(key, value.toString());
+            });
+        }
+        return fetchApi(`/api/reviews?${sp.toString()}`);
+    },
+    getReviewById: (id: string) => fetchApi(`/api/reviews/${id}`),
+    createReviewCase: (data: { customer_id: string; type?: string; priority?: string; title?: string; description?: string; context?: Record<string, unknown> }) =>
+        fetchApi('/api/reviews', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+    takeReviewAction: (id: string, data: { action: string; comment?: string }) =>
+        fetchApi(`/api/reviews/${id}/action`, {
+            method: 'PATCH',
+            body: JSON.stringify(data),
+        }),
+    assignReview: (id: string, officerId: string) =>
+        fetchApi(`/api/reviews/${id}/assign`, {
+            method: 'PATCH',
+            body: JSON.stringify({ officerId }),
+        }),
+    getReviewStats: () => fetchApi('/api/reviews/stats'),
+    getReviewOfficers: () => fetchApi('/api/reviews/officers'),
 };

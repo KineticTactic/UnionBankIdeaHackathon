@@ -3,6 +3,7 @@
  * Replaces demoServerClient calls that require localhost:3001.
  */
 const path = require('path');
+const CHRONOS_API = process.env.CHRONOS_API_URL || 'http://localhost:8001';
 const fs = require('fs');
 const http = require('http');
 const dataStore = require('./dataStore');
@@ -52,7 +53,7 @@ function refreshChronosCache() {
         }
     }
     // Try the live Chronos API (non-blocking)
-    http.get('http://localhost:8001/scores?page_size=100', (res) => {
+    http.get(`${CHRONOS_API}/scores?page_size=100`, (res) => {
         let body = '';
         res.on('data', (chunk) => body += chunk);
         res.on('end', () => {

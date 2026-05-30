@@ -61,16 +61,17 @@ export function useReviewDetail(id: string) {
     return { review, loading, error, refetch: fetch };
 }
 
-export function useReviewStats() {
+export function useReviewStats(options?: { skip?: boolean }) {
     const [stats, setStats] = useState<ReviewStats | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (options?.skip) { setLoading(false); return; }
         api.getReviewStats()
             .then((res) => setStats(res.data))
             .catch(() => {})
             .finally(() => setLoading(false));
-    }, []);
+    }, [options?.skip]);
 
     return { stats, loading };
 }

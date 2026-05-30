@@ -33,7 +33,7 @@ async function fetchApi(endpoint: string, options: RequestInit = {}) {
 
     if (response.status === 401) {
         clearToken();
-        if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
             window.location.href = '/login';
         }
         throw new Error('Unauthorized');

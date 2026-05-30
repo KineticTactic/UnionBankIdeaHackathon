@@ -20,8 +20,8 @@ const navItems = [
 
 export default function Sidebar() {
     const pathname = usePathname();
-    const { user, logout } = useAuth();
-    const { stats } = useReviewStats();
+    const { user, isAuthenticated, logout } = useAuth();
+    const { stats } = useReviewStats({ skip: !isAuthenticated });
     const pendingCount = (stats?.pending ?? 0) + (stats?.in_review ?? 0);
 
     const getInitials = (name: string) =>

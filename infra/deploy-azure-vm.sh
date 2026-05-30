@@ -1,18 +1,34 @@
 #!/usr/bin/env bash
 # ──────────────────────────────────────────────────────────────────────────────
 # deploy-azure-vm.sh — Deploy PCOP to a single Azure VM with Docker Compose
-# Usage:  ./deploy-azure-vm.sh [--location eastus] [--vm-size Standard_B2s]
+# Usage:
+#   ./deploy-azure-vm.sh [location] [vm-size]
+#   ./deploy-azure-vm.sh westus Standard_B2ms
+#   ./deploy-azure-vm.sh --list-sizes [location]
 # ──────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
 # ── Config ───────────────────────────────────────────────────────────────────
 RG="pcop-rg"
 VM_NAME="pcop-vm"
-LOCATION="${1:-eastus}"
-VM_SIZE="${2:-Standard_B2s}"
+LOCATION="${1:-southeastasia}"
+VM_SIZE="${2:-Standard_B1s}"
 ADMIN_USER="azureuser"
 DNS_PREFIX="pcop-app"
 AUTO_SHUTDOWN_TIME="0000"   # UTC (midnight) — saves money
+
+# Show help / list sizes
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
+  sed -n '2,7p' "$0"
+  exit 0
+fi
+if [ "${1:-}" = "--list-sizes" ]; then
+  LOC="${2:-$LOCATION}"
+  echo "Available B-series sizes in ${LOC}:"
+  az vm list-skus --location "$LOC" \
+    --query "[?contains(name, 'Standard_B')].name" -o tsv | sort
+  exit 0
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
@@ -37,7 +53,19 @@ echo "  DNS:            ${DNS_PREFIX}.${LOCATION}.cloudapp.azure.com"
 echo ""
 
 # ── Resource Group ───────────────────────────────────────────────────────────
-az group create --name "$RG" --location "$LOCATION" --output none
+EXISTING_LOCATION=$(az group show --name "$RG" --query location -o tsv 2>/dev/null || true)
+if [ -n "$EXISTING_LOCATION" ] && [ "$EXISTING_LOCATION" != "$LOCATION" ]; then
+  echo "  ⚠️  Resource group '$RG' exists in '$EXISTING_LOCATION' but you requested '$LOCATION'."
+  echo "     Deleting and recreating (may take ~1 min)..."
+  az group delete --name "$RG" --yes --no-wait
+  az group wait --name "$RG" --deleted --timeout 180
+  az group create --name "$RG" --location "$LOCATION" --output none
+elif [ -n "$EXISTING_LOCATION" ]; then
+  echo "  Resource group '$RG' already exists in '$LOCATION' — reusing"
+else
+  az group create --name "$RG" --location "$LOCATION" --output none
+fi
+FQDN="${DNS_PREFIX}.${LOCATION}.cloudapp.azure.com"
 
 # ── NSG Rules ────────────────────────────────────────────────────────────────
 echo "=== Creating NSG rules ==="

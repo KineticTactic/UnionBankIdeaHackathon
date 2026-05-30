@@ -60,7 +60,8 @@ export function KafkaStreamCard() {
         const token = getToken();
         if (!token) return;
 
-        const url = `http://localhost:8000/api/kafka/stream`;
+        const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const url = `${API}/api/kafka/stream`;
 
         function connect() {
             if (esRef.current) esRef.current.close();
@@ -88,7 +89,7 @@ export function KafkaStreamCard() {
         }
 
         // Fetch initial status with auth header (SSE doesn't support headers; use fetch for initial load)
-        fetch('http://localhost:8000/api/kafka/status', {
+        fetch(`${API}/api/kafka/status`, {
             headers: { Authorization: `Bearer ${token}` },
         }).then(r => r.json()).then(d => {
             if (d.data) {

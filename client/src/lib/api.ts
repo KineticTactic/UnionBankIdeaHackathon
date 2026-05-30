@@ -1,6 +1,8 @@
 import type { CreateCustomerInput } from "@/types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// Use relative URLs so Next.js rewrites proxy to the backend (avoids CORS + mixed-content in production).
+// Falls back to absolute localhost URL only when running outside of a Next.js server (e.g. unit tests).
+const API_URL = typeof window !== 'undefined' ? '' : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000');
 const TOKEN_KEY = 'pcop_token';
 
 export function getToken(): string | null {
@@ -33,6 +35,7 @@ async function fetchApi(endpoint: string, options: RequestInit = {}) {
 
     if (response.status === 401) {
         clearToken();
+        // Only redirect to /login if we're not already there — prevents hard-reload loops.
         if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
             window.location.href = '/login';
         }

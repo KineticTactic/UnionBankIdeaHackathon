@@ -60,15 +60,19 @@ export function KafkaStreamCard() {
         const token = getToken();
         if (!token) return;
 
-        const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-        const url = `${API}/api/kafka/stream`;
+        // Use relative URL — Next.js rewrites proxy /api/* to the backend, avoiding
+        // mixed-content blocks on HTTPS deployments.
+        const streamUrl = `/api/kafka/stream`;
+        let retryDelay = 3000;
+        let retryTimer: ReturnType<typeof setTimeout> | null = null;
 
         function connect() {
             if (esRef.current) esRef.current.close();
-            const es = new EventSource(url);
+            const es = new EventSource(streamUrl);
             esRef.current = es;
 
             es.onmessage = (e) => {
+                retryDelay = 3000; // reset backoff on successful message
                 try {
                     const data = JSON.parse(e.data);
                     if (data.type === 'status' || data.type === 'heartbeat') {
@@ -78,18 +82,20 @@ export function KafkaStreamCard() {
                         setEvents(prev => [data as StreamEvent, ...prev].slice(0, 25));
                         setStatus(prev => prev ? { ...prev, messagesProcessed: (prev.messagesProcessed || 0) + 1, lastEventAt: data.ts } : prev);
                     }
-                } catch { /* ignore */ }
+                } catch { /* ignore parse errors */ }
             };
 
             es.onerror = () => {
                 setConnected(false);
                 es.close();
-                setTimeout(connect, 5000);
+                // Exponential backoff — cap at 30s to avoid hammering the server
+                retryDelay = Math.min(retryDelay * 1.5, 30000);
+                retryTimer = setTimeout(connect, retryDelay);
             };
         }
 
-        // Fetch initial status with auth header (SSE doesn't support headers; use fetch for initial load)
-        fetch(`${API}/api/kafka/status`, {
+        // Fetch initial status snapshot (SSE doesn't support custom headers; use fetch for auth)
+        fetch('/api/kafka/status', {
             headers: { Authorization: `Bearer ${token}` },
         }).then(r => r.json()).then(d => {
             if (d.data) {
@@ -101,6 +107,7 @@ export function KafkaStreamCard() {
         connect();
 
         return () => {
+            if (retryTimer) clearTimeout(retryTimer);
             esRef.current?.close();
         };
     }, []);

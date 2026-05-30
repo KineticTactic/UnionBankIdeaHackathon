@@ -2,6 +2,7 @@ services:
   # ── Infrastructure ──────────────────────────────────────────────────────────
   postgres:
     image: postgres:15-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-pcop}
       POSTGRES_USER: ${POSTGRES_USER:-pcop}
@@ -18,6 +19,7 @@ services:
 
   redis:
     image: redis:7-alpine
+    restart: unless-stopped
     ports:
       - "6379:6379"
     healthcheck:
@@ -28,6 +30,7 @@ services:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.0
+    restart: unless-stopped
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -36,6 +39,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.6.0
+    restart: unless-stopped
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -54,6 +58,7 @@ services:
 
   mlflow:
     image: ghcr.io/mlflow/mlflow:v2.12.1
+    restart: unless-stopped
     ports:
       - "5000:5000"
     volumes:
@@ -70,6 +75,7 @@ services:
     build:
       context: ./bank
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - "3001:3001"
     depends_on:
@@ -84,6 +90,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - "8000:8000"
     depends_on:
@@ -103,16 +110,18 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
 
   # ── Chronos ML Scoring ──────────────────────────────────────────────────────
   scoring:
     build:
       context: ./chronos
       dockerfile: services/scoring/Dockerfile
+    restart: unless-stopped
     ports:
       - "8001:8003"
     depends_on:

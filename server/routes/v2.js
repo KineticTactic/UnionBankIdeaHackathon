@@ -7,7 +7,7 @@ const { verifyToken } = require('../middleware/auth');
 const path = require('path');
 const fs = require('fs');
 
-const DATA_DIR = path.join(__dirname, '..', '..', 'chronos', 'data');
+const DATA_DIR = process.env.CHRONOS_DATA_DIR || path.join(__dirname, '..', '..', 'chronos', 'data');
 
 function loadJson(filename) {
     try {

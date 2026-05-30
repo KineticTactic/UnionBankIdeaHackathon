@@ -4,8 +4,8 @@ WORKDIR /app
 ENV CI=true
 COPY pnpm-lock.yaml package.json .npmrc ./
 RUN pnpm install --ignore-scripts || true
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ARG API_BACKEND_URL
+ENV API_BACKEND_URL=$API_BACKEND_URL
 COPY . .
 RUN ./node_modules/.bin/next build
 

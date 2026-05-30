@@ -1,3 +1,5 @@
+import type { CreateCustomerInput } from "@/types";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const TOKEN_KEY = 'pcop_token';
 

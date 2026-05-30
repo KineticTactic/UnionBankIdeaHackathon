@@ -15,6 +15,7 @@ interface StreamEvent {
 interface KafkaStatus {
     mode: 'kafka' | 'simulation' | 'initialising';
     connected: boolean;
+    brokers?: string[];
     messagesProcessed: number;
     lastEventAt: string | null;
     recentEvents: StreamEvent[];

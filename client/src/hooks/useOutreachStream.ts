@@ -15,7 +15,7 @@ export function useOutreachStream() {
 
         try {
             const token = typeof window !== 'undefined' ? localStorage.getItem('pcop_token') : null;
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/outreach/generate`, {
+            const response = await fetch(`/api/outreach/generate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

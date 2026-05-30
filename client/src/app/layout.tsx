@@ -3,8 +3,7 @@ import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/hooks/useAuth";
-import Sidebar from "@/components/layout/Sidebar";
-import Topbar from "@/components/layout/Topbar";
+import ConditionalShell from "@/components/ConditionalShell";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -31,13 +30,9 @@ export default function RootLayout({
     <html lang="en" className={cn("h-full antialiased", jakarta.variable, geistMono.variable)}>
       <body className="min-h-full flex bg-[#F4F6F9] text-slate-900 font-sans">
         <AuthProvider>
-          <Sidebar />
-          <div className="flex-1 ml-60 flex flex-col min-h-screen">
-            <Topbar />
-            <main className="p-8 flex-1">
-              {children}
-            </main>
-          </div>
+          <ConditionalShell>
+            {children}
+          </ConditionalShell>
         </AuthProvider>
       </body>
     </html>

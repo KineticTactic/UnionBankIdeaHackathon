@@ -4,8 +4,8 @@ from dataclasses import dataclass
 
 @dataclass
 class CompassConfig:
-    azure_foundry_endpoint: str = os.environ.get("AZURE_FOUNDRY_ENDPOINT", "")
-    azure_foundry_key: str = os.environ.get("AZURE_FOUNDRY_KEY", "")
+    nvidia_endpoint: str = os.environ.get("NVIDIA_ENDPOINT", "")
+    nvidia_api_key: str = os.environ.get("NVIDIA_API_KEY", "")
     cognition_model: str = os.environ.get("COGNITION_MODEL", "kimi-k2-6-thinking")
     compass_model: str = os.environ.get("COMPASS_MODEL", "kimi-k2-5")
 

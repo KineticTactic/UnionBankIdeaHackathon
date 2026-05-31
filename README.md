@@ -83,9 +83,9 @@ BANK_API_BASE_URL=http://localhost:3001
 CHRONOS_BASE_URL=http://localhost:8001
 
 # NVIDIA DeepSeek V4 Pro (for HERALD outreach generation)
-AZURE_AI_ENDPOINT=https://integrate.api.nvidia.com/v1/chat/completions
-AZURE_AI_API_KEY=<your-nvidia-api-key>
-AZURE_AI_MODEL=deepseek-ai/deepseek-v4-pro
+NVIDIA_ENDPOINT=https://integrate.api.nvidia.com/v1/chat/completions
+NVIDIA_API_KEY=<your-nvidia-api-key>
+NVIDIA_MODEL=deepseek-ai/deepseek-v4-pro
 
 # Kafka (optional — simulation fallback fires automatically if absent)
 KAFKA_BROKERS=localhost:9092

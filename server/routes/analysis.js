@@ -3,20 +3,20 @@ const https   = require('https');
 const { verifyToken } = require('../middleware/auth');
 const ds = require('../services/dataStore');
 
-const AZURE_ENDPOINT = process.env.AZURE_AI_ENDPOINT ||
+const NVIDIA_ENDPOINT = process.env.NVIDIA_ENDPOINT ||
     'https://integrate.api.nvidia.com/v1/chat/completions';
-const AZURE_KEY   = process.env.AZURE_AI_API_KEY  || '';
-const AZURE_MODEL = process.env.AZURE_AI_MODEL    || 'deepseek-ai/deepseek-v4-pro';
+const NVIDIA_KEY   = process.env.NVIDIA_API_KEY  || '';
+const NVIDIA_MODEL = process.env.NVIDIA_MODEL    || 'deepseek-ai/deepseek-v4-pro';
 
-function callAzure(messages) {
+function callNvidia(messages) {
     return new Promise((resolve, reject) => {
-        const body = JSON.stringify({ model: AZURE_MODEL, messages, max_tokens: 400, temperature: 0.4 });
-        const url  = new URL(AZURE_ENDPOINT);
+        const body = JSON.stringify({ model: NVIDIA_MODEL, messages, max_tokens: 400, temperature: 0.4 });
+        const url  = new URL(NVIDIA_ENDPOINT);
         const opts = {
             hostname: url.hostname,
             path:     url.pathname + url.search,
             method:   'POST',
-            headers:  { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AZURE_KEY}`,
+            headers:  { 'Content-Type': 'application/json', 'Authorization': `Bearer ${NVIDIA_KEY}`,
                         'Content-Length': Buffer.byteLength(body) },
         };
         const req = https.request(opts, (r) => {
@@ -51,7 +51,7 @@ router.post('/analyze', verifyToken, async (req, res) => {
         `Life event: ${customer.life_event||'none'} | Balance: ₹${customer.balance?.toLocaleString('en-IN')}\n` +
         `Inactivity: ${customer.inactivity_days}d | Complaints: ${customer.complaint_count}`;
 
-    if (!AZURE_KEY) {
+    if (!NVIDIA_KEY) {
         return res.json({
             status: 'ok', source: 'mock',
             analysis:
@@ -64,7 +64,7 @@ router.post('/analyze', verifyToken, async (req, res) => {
     }
 
     try {
-        const resp = await callAzure([
+        const resp = await callNvidia([
             { role: 'system', content: sysPrompt },
             { role: 'user',   content: userPrompt },
         ]);

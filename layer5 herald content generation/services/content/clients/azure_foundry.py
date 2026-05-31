@@ -4,15 +4,14 @@ from langchain_openai import ChatOpenAI
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_ENDPOINT = "https://kensara.services.ai.azure.com/models"
+_DEFAULT_ENDPOINT = "https://integrate.api.nvidia.com/v1"
 
 
 def get_scribe_llm() -> ChatOpenAI:
-    # Azure AI Foundry /models endpoint is OpenAI-compatible (Azure AI Inference)
     return ChatOpenAI(
-        base_url=os.environ.get("AZURE_FOUNDRY_ENDPOINT", _DEFAULT_ENDPOINT),
-        model=os.environ.get("SCRIBE_MODEL", "DeepSeek-V3"),
-        api_key=os.environ.get("AZURE_API_KEY", "placeholder"),
+        base_url=os.environ.get("NVIDIA_ENDPOINT", _DEFAULT_ENDPOINT),
+        model=os.environ.get("SCRIBE_MODEL", "deepseek-ai/deepseek-v4-pro"),
+        api_key=os.environ.get("NVIDIA_API_KEY", "placeholder"),
         temperature=0.3,
         max_tokens=2000,
     )

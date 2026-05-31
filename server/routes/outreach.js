@@ -7,23 +7,23 @@ const https  = require('https');
 const { verifyToken } = require('../middleware/auth');
 const ds = require('../services/dataStore');
 
-// ── Azure DeepSeek helper ──────────────────────────────────────────────────────
-const AZURE_ENDPOINT = process.env.AZURE_AI_ENDPOINT ||
+// ── NVIDIA DeepSeek helper ─────────────────────────────────────────────────────
+const NVIDIA_ENDPOINT = process.env.NVIDIA_ENDPOINT ||
     'https://integrate.api.nvidia.com/v1/chat/completions';
-const AZURE_KEY   = process.env.AZURE_AI_API_KEY || '';
-const AZURE_MODEL = process.env.AZURE_AI_MODEL   || 'deepseek-ai/deepseek-v4-pro';
+const NVIDIA_KEY   = process.env.NVIDIA_API_KEY || '';
+const NVIDIA_MODEL = process.env.NVIDIA_MODEL   || 'deepseek-ai/deepseek-v4-pro';
 
-function callAzure(messages, maxTokens = 600) {
+function callNvidia(messages, maxTokens = 600) {
     return new Promise((resolve, reject) => {
-        const body = JSON.stringify({ model: AZURE_MODEL, messages, max_tokens: maxTokens, temperature: 0.7 });
-        const url  = new URL(AZURE_ENDPOINT);
+        const body = JSON.stringify({ model: NVIDIA_MODEL, messages, max_tokens: maxTokens, temperature: 0.7 });
+        const url  = new URL(NVIDIA_ENDPOINT);
         const opts = {
             hostname: url.hostname,
             path:     url.pathname + url.search,
             method:   'POST',
             headers:  {
                 'Content-Type':   'application/json',
-                'Authorization':  `Bearer ${AZURE_KEY}`,
+                'Authorization':  `Bearer ${NVIDIA_KEY}`,
                 'Content-Length': Buffer.byteLength(body),
             },
         };
@@ -98,8 +98,8 @@ router.post('/generate', verifyToken, async (req, res) => {
 
     const { customer: c, score, signals, plan } = snap;
 
-    // If no Azure key, fall back to pre-generated static HERALD content
-    if (!AZURE_KEY) {
+    // If no NVIDIA key, fall back to pre-generated static HERALD content
+    if (!NVIDIA_KEY) {
         const cached = ds.getHerald(customer_id);
         if (cached) return res.json({ status: 'ok', source: 'cached', herald: cached });
         return res.status(404).json({ status: 'error', message: 'No HERALD content and NVIDIA API key not configured' });
@@ -222,7 +222,7 @@ Fill word_count and char_count with actual counts. Return only the JSON, nothing
 
     try {
         console.log(`[HERALD] Generating live content for ${customer_id} via NVIDIA DeepSeek V4 Pro`);
-        const resp = await callAzure([
+        const resp = await callNvidia([
             { role: 'system', content: systemPrompt },
             { role: 'user',   content: userPrompt },
         ], 1200);
@@ -260,7 +260,7 @@ Fill word_count and char_count with actual counts. Return only the JSON, nothing
         res.json({ status: 'ok', source: 'nvidia', herald, plan });
 
     } catch (err) {
-        console.error('[HERALD] Azure call failed:', err.message);
+        console.error('[HERALD] NVIDIA call failed:', err.message);
         // Graceful fallback to cached static content
         const cached = ds.getHerald(customer_id);
         if (cached) {

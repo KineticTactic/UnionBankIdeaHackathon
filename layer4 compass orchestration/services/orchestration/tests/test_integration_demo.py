@@ -40,7 +40,7 @@ def _mock_all_db():
 
 
 def _mock_llm_tools():
-    """Mocks LLM clients so tests don't hit Azure."""
+    """Mocks LLM clients so tests don't hit NVIDIA API."""
     from unittest.mock import MagicMock
     mock_response = MagicMock()
     mock_response.tool_calls = []

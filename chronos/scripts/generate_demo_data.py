@@ -15,10 +15,10 @@ BANK_DATA = ROOT.parent / "bank" / "data"
 OUT_DIR   = ROOT / "data"
 OUT_DIR.mkdir(exist_ok=True)
 
-# ── Azure / DeepSeek credentials ───────────────────────────────────────────
-AZURE_ENDPOINT = "https://kensara.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview"
-AZURE_KEY      = "AcBR2FelM3JboPVb4kchmdFNOdXjkyWcgg5oHfB1pFpTpLbu1Iz4JQQJ99CEACYeBjFXJ3w3AAAAACOGLc3P"
-MODEL_NAME     = "DeepSeek-V4-Pro-4"
+# ── NVIDIA DeepSeek credentials ────────────────────────────────────────────
+NVIDIA_ENDPOINT = os.environ.get("NVIDIA_ENDPOINT", "https://integrate.api.nvidia.com/v1/chat/completions")
+NVIDIA_KEY      = os.environ.get("NVIDIA_API_KEY", "")
+MODEL_NAME      = os.environ.get("NVIDIA_MODEL", "deepseek-ai/deepseek-v4-pro")
 
 # ── Load customer data ──────────────────────────────────────────────────────
 customers  = json.loads((BANK_DATA / "customers.json").read_text())
@@ -195,7 +195,7 @@ def make_action_plan(c, score):
     }
 
 def llm_call(prompt: str) -> str:
-    headers = {"api-key": AZURE_KEY, "Content-Type": "application/json"}
+    headers = {"Authorization": f"Bearer {NVIDIA_KEY}", "Content-Type": "application/json"}
     body = {
         "model": MODEL_NAME,
         "messages": [{"role": "user", "content": prompt}],
@@ -203,7 +203,7 @@ def llm_call(prompt: str) -> str:
         "max_tokens": 600,
     }
     try:
-        r = requests.post(AZURE_ENDPOINT, json=body, headers=headers, timeout=30)
+        r = requests.post(NVIDIA_ENDPOINT, json=body, headers=headers, timeout=30)
         r.raise_for_status()
         return r.json()["choices"][0]["message"]["content"].strip()
     except Exception as e:

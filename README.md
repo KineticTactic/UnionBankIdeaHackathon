@@ -327,9 +327,9 @@ All data used in this project is **100% synthetic** — no real customer PII was
 
 | Name | Role |
 |------|------|
-| **Atrijo Pal** | Full-stack development, ML pipeline, system architecture |
-| **Rudrajeet Pal** | ML models (TARE, GraphSAGE, DeepHit), CHRONOS engine |
-| **Isam Ahammed** | ARGUS signal detection, COMPASS orchestration, analytics |
+| **Isam Ahammed** | ARGUS signal detection + CHRONOS ensemble — statistical modelling and ML |
+| **Atrijo Pal** | COMPASS, HERALD, VERDICT, ORACLE — agentic orchestration, personalisation, causal measurement |
+| **Rudrajeet Pal** | REST API, database layer, full-stack dashboard — infrastructure and delivery |
 
 ---
 

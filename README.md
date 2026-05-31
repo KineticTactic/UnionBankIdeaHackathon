@@ -14,11 +14,11 @@ Banks lose customers silently — churn typically takes 60–90 days to manifest
 
 ## Live Demo
 
-🔗 **Live App:** [https://your-railway-url.up.railway.app](https://your-railway-url.up.railway.app)
+🔗 **Live App:** [https://moneylords-pcop.up.railway.app](https://moneylords-pcop.up.railway.app)
 
-🎥 **Demo Video:** [https://youtube.com/](https://youtube.com/)
+🎥 **Demo Video:** [https://www.youtube.com/watch?v=HVEjXQ74iBo](https://www.youtube.com/watch?v=HVEjXQ74iBo)
 
-📓 **Technical Walkthrough:** [`PCOP_Technical_Walkthrough.ipynb`](PCOP_Technical_Walkthrough.ipynb)
+📓 **Technical Walkthrough:** [Open in Google Colab](https://colab.research.google.com/drive/1tOCU-VWpDs-SW6dNmlDM_rAdbpCsEbit?usp=sharing)
 
 **Demo credentials:**
 

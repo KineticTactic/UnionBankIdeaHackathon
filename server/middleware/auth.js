@@ -3,15 +3,20 @@ const config = require('../config');
 
 function verifyToken(req, res, next) {
     const authHeader = req.headers.authorization;
+    // Also accept ?token= query param for SSE connections (EventSource can't set headers)
+    const queryToken = req.query.token;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    let token;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7);
+    } else if (queryToken) {
+        token = queryToken;
+    } else {
         return res.status(401).json({
             status: 'error',
             message: 'Authorization header missing or invalid'
         });
     }
-
-    const token = authHeader.substring(7);
 
     try {
         const decoded = jwt.verify(token, config.jwtSecret);

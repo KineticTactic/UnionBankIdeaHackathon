@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { api } from "@/lib/api";
-import type { ReviewCase, ReviewStats, ReviewOfficer } from "@/types";
+import type { ReviewCase, ReviewItem, ReviewStats, ReviewOfficer, ReviewActionType, ReviewStatus, ReviewType, ReviewPriority } from "@/types";
 
 interface ReviewFilters {
     status?: string;
@@ -10,6 +10,37 @@ interface ReviewFilters {
     priority?: string;
     page?: number;
     limit?: number;
+}
+
+function tierToPriority(tier: string): ReviewPriority {
+    if (tier === 'PRIORITY') return 'critical';
+    if (tier === 'ESCALATE') return 'high';
+    if (tier === 'STANDARD') return 'medium';
+    return 'low';
+}
+
+function enrichReview(r: ReviewItem): ReviewCase {
+    const actions = r.reviewer ? [{
+        id:             `${r.id}-1`,
+        action:         r.status as ReviewActionType,
+        comment:        r.notes ?? undefined,
+        timestamp:      r.reviewed_at ?? r.created_at,
+        officerName:    r.reviewer,
+        previousStatus: 'pending' as ReviewStatus,
+        newStatus:      r.status as ReviewStatus,
+    }] : [];
+    return {
+        ...r,
+        status:      r.status as ReviewStatus,
+        type:        'score_alert' as ReviewType,
+        title:       `Risk Alert — ${r.full_name}`,
+        description: `${r.risk_tier} risk customer flagged for ${r.action.replace(/_/g, ' ')} intervention.`,
+        priority:    tierToPriority(r.risk_tier),
+        createdAt:   r.created_at,
+        createdBy:   'CHRONOS (system)',
+        context:     {},
+        actions,
+    };
 }
 
 export function useReviews(filters: ReviewFilters = {}) {
@@ -23,8 +54,8 @@ export function useReviews(filters: ReviewFilters = {}) {
         setError(null);
         try {
             const res = await api.getReviews(filters as Record<string, string | number | undefined>);
-            setCases(res.data);
-            setTotal(res.total);
+            setCases((res.reviews || []).map(enrichReview));
+            setTotal(res.total ?? 0);
         } catch (e: unknown) {
             setError(e instanceof Error ? e.message : "Failed to load reviews");
         } finally {
@@ -48,7 +79,8 @@ export function useReviewDetail(id: string) {
         setError(null);
         try {
             const res = await api.getReviewById(id);
-            setReview(res.data);
+            const raw: ReviewItem = res.review ?? res;
+            setReview(enrichReview(raw));
         } catch (e: unknown) {
             setError(e instanceof Error ? e.message : "Failed to load review");
         } finally {
@@ -68,7 +100,7 @@ export function useReviewStats(options?: { skip?: boolean }) {
     useEffect(() => {
         if (options?.skip) { setLoading(false); return; }
         api.getReviewStats()
-            .then((res) => setStats(res.data))
+            .then((res) => setStats(res.data ?? res))
             .catch(() => {})
             .finally(() => setLoading(false));
     }, [options?.skip]);
@@ -82,7 +114,7 @@ export function useReviewOfficers() {
 
     useEffect(() => {
         api.getReviewOfficers()
-            .then((res) => setOfficers(res.data))
+            .then((res) => setOfficers(res.data ?? res.officers ?? []))
             .catch(() => {})
             .finally(() => setLoading(false));
     }, []);

@@ -1,142 +1,112 @@
 const router = require('express').Router();
 const { verifyToken } = require('../middleware/auth');
-const localData = require('../services/localData');
-const dataStore = require('../services/dataStore');
+const ds = require('../services/dataStore');
 
-router.get('/', verifyToken, (req, res, next) => {
-    try {
-        const { segment, risk_tier, city, search, page = 1, limit = 20 } = req.query;
-        const filters = {};
-        if (segment)   filters.segment   = segment;
-        if (risk_tier) filters.risk_tier = risk_tier;
-        if (city)      filters.city      = city;
-
-        let { data: results } = localData.getCustomers(filters);
-
-        if (search) {
-            const q = search.toLowerCase();
-            results = results.filter(c =>
-                c.full_name.toLowerCase().includes(q) ||
-                c.customer_id.toLowerCase().includes(q)
-            );
-        }
-
-        const total   = results.length;
-        const pageNum = parseInt(page);
-        const limitNum= parseInt(limit);
-        const paginated = results.slice((pageNum - 1) * limitNum, pageNum * limitNum);
-
-        res.json({ status: 'ok', data: paginated, total, page: pageNum, limit: limitNum });
-    } catch (e) { next(e); }
+// GET /api/customers  — list with optional filters
+router.get('/', verifyToken, (req, res) => {
+    const { segment, risk_tier, city, archetype, search, sort,
+            page = 1, limit = 100 } = req.query;
+    const list  = ds.getCustomers({ segment, risk_tier, city, archetype, search, sort });
+    const total = list.length;
+    const p = parseInt(page), l = Math.min(parseInt(limit), 200);
+    const items = list.slice((p - 1) * l, p * l);
+    res.json({ status: 'ok', total, page: p, limit: l, customers: items });
 });
 
-router.get('/:id', verifyToken, (req, res, next) => {
-    try {
-        const snapshot = localData.getCustomerById(req.params.id);
-        if (!snapshot) {
-            return res.status(404).json({ status: 'error', message: 'Customer not found' });
-        }
-        res.json(snapshot);
-    } catch (e) { next(e); }
+// GET /api/customers/:id  — full snapshot
+router.get('/:id', verifyToken, (req, res) => {
+    const snap = ds.getCustomerSnapshot(req.params.id);
+    if (!snap) return res.status(404).json({ status: 'error', message: 'Customer not found' });
+    res.json({ status: 'ok', ...snap });
 });
 
-router.get('/:id/signals', verifyToken, (req, res, next) => {
-    try {
-        const signals = dataStore.SIGNALS.filter(s => s.customer_id === req.params.id);
-        res.json({ status: 'ok', data: signals });
-    } catch (e) { next(e); }
+// GET /api/customers/:id/signals
+router.get('/:id/signals', verifyToken, (req, res) => {
+    if (!ds.getCustomerById(req.params.id))
+        return res.status(404).json({ status: 'error', message: 'Not found' });
+    const signals = ds.getSignals(req.params.id);
+    res.json({ status: 'ok', customer_id: req.params.id,
+               signals, alarm_count: signals.length });
 });
 
-router.get('/:id/transactions', verifyToken, (req, res, next) => {
-    try {
-        const eventsRaw = localData.getCustomerById(req.params.id);
-        if (!eventsRaw) return res.status(404).json({ status: 'error', message: 'Customer not found' });
-
-        const customer   = eventsRaw.data.customer;
-        const base = { above_25L: 150000, between_10L_25L: 80000, between_5L_10L: 45000, below_5L: 25000 }[customer.annual_income_band] || 50000;
-
-        const DEBIT_TEMPLATES = [
-            { category: 'grocery',      channel: 'upi',        merchants: ['BigBasket', 'Zepto', 'Swiggy Instamart', 'DMart'] },
-            { category: 'utility',      channel: 'netbanking',  merchants: ['BSES Delhi', 'Tata Power', 'Jio Postpaid', 'Airtel'] },
-            { category: 'food',         channel: 'upi',        merchants: ['Zomato', 'Swiggy', 'Dominos', 'KFC'] },
-            { category: 'fuel',         channel: 'pos',        merchants: ['HPCL', 'BPCL', 'Indian Oil', 'Reliance Petrol'] },
-            { category: 'emi',          channel: 'nach',       merchants: ['HDFC Bank EMI', 'Home Loan EMI', 'Car Loan EMI'] },
-            { category: 'shopping',     channel: 'pos',        merchants: ['Amazon', 'Flipkart', 'Myntra', 'Nykaa'] },
-            { category: 'travel',       channel: 'netbanking',  merchants: ['MakeMyTrip', 'IRCTC', 'IndiGo Air', 'OYO Hotels'] },
-            { category: 'insurance',    channel: 'nach',       merchants: ['LIC Premium', 'Star Health', 'HDFC Life'] },
-            { category: 'entertainment',channel: 'upi',        merchants: ['Netflix', 'Hotstar', 'Spotify', 'BookMyShow'] },
-            { category: 'atm',          channel: 'atm',        merchants: ['ATM Withdrawal'] },
-        ];
-
-        const txns = [];
-        let runningBalance = base * 12;
-
-        for (let i = 60; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            const dateStr = date.toISOString().split('T')[0];
-            const dom = date.getDate();
-
-            // Salary on 1st of month
-            if (dom === 1) {
-                const salary = Math.round(base * (1.7 + Math.sin(i) * 0.05));
-                runningBalance += salary;
-                txns.push({ txn_date: dateStr, direction: 'credit', amount: salary, category: 'salary', channel: 'neft', merchant_name: customer.employer_name || 'Employer', payment_ref: `SAL${date.getFullYear()}${String(date.getMonth()+1).padStart(2,'0')}` });
-            }
-
-            // 1-3 debit transactions per day
-            const numDebits = Math.floor(1 + Math.abs(Math.sin(i * 7.3)) * 2.5);
-            for (let j = 0; j < numDebits; j++) {
-                const tmpl = DEBIT_TEMPLATES[Math.floor(Math.abs(Math.sin(i * 3.1 + j * 7.7)) * DEBIT_TEMPLATES.length)];
-                const merchant = tmpl.merchants[Math.floor(Math.abs(Math.sin(i * 1.3 + j)) * tmpl.merchants.length)];
-                const debitMultiplier = { grocery: 0.03, utility: 0.05, food: 0.02, fuel: 0.04, emi: 0.12, shopping: 0.06, travel: 0.08, insurance: 0.07, entertainment: 0.01, atm: 0.05 }[tmpl.category] || 0.03;
-                const amt = Math.round(base * debitMultiplier * (0.7 + Math.abs(Math.sin(i * 2.1 + j)) * 0.6));
-                runningBalance -= amt;
-                txns.push({ txn_date: dateStr, direction: 'debit', amount: amt, category: tmpl.category, channel: tmpl.channel, merchant_name: merchant, payment_ref: `TXN${dateStr.replace(/-/g,'')}${j}` });
-            }
-
-            // Occasional inward transfers
-            if (Math.abs(Math.sin(i * 4.9)) > 0.92) {
-                const inward = Math.round(base * 0.3 * (0.8 + Math.sin(i) * 0.2));
-                runningBalance += inward;
-                txns.push({ txn_date: dateStr, direction: 'credit', amount: inward, category: 'transfer', channel: 'imps', merchant_name: 'Inward Transfer', payment_ref: `IMPS${dateStr.replace(/-/g,'')}` });
-            }
-        }
-
-        // Sort newest first
-        txns.sort((a, b) => b.txn_date.localeCompare(a.txn_date));
-        res.json({ status: 'ok', data: txns });
-    } catch (e) { next(e); }
+// GET /api/customers/:id/transactions
+router.get('/:id/transactions', verifyToken, (req, res) => {
+    if (!ds.getCustomerById(req.params.id))
+        return res.status(404).json({ status: 'error', message: 'Not found' });
+    const txns = ds.getTransactions(req.params.id, parseInt(req.query.limit) || 60);
+    res.json({ status: 'ok', customer_id: req.params.id,
+               transactions: txns, count: txns.length });
 });
 
-router.post('/', verifyToken, (req, res, next) => {
-    try {
-        const { full_name, email, age, city, segment } = req.body;
-        if (!full_name || !email) {
-            return res.status(400).json({ status: 'error', message: 'full_name and email are required' });
-        }
-        const customer = localData.generateCustomerProfile(req.body);
-        res.status(201).json({ status: 'ok', data: customer });
-    } catch (e) { next(e); }
+// GET /api/customers/:id/survival
+router.get('/:id/survival', verifyToken, (req, res) => {
+    const data = ds.getSurvival(req.params.id);
+    if (!data) return res.status(404).json({ status: 'error', message: 'Not found' });
+    res.json({ status: 'ok', ...data });
 });
 
-router.get('/:id/insights', verifyToken, (req, res, next) => {
-    try {
-        const snapshot = localData.getCustomerById(req.params.id);
-        if (!snapshot) return res.status(404).json({ status: 'error', message: 'Customer not found' });
+// GET /api/customers/:id/score
+router.get('/:id/score', verifyToken, (req, res) => {
+    const score = ds.getScore(req.params.id);
+    if (!score) return res.status(404).json({ status: 'error', message: 'Not found' });
+    res.json({ status: 'ok', ...score });
+});
 
-        const lifeEvents = dataStore.LIFE_EVENTS.filter(e => e.customer_id === req.params.id);
-        res.json({
-            status: 'ok',
-            data: {
-                engagement: snapshot.data.engagement,
-                crm: snapshot.data.crm_summary,
-                stress: null,
-                location: null,
-                life_events: lifeEvents,
-            },
-        });
-    } catch (e) { next(e); }
+// GET /api/customers/:id/plan
+router.get('/:id/plan', verifyToken, (req, res) => {
+    const plan = ds.getActionPlan(req.params.id);
+    if (!plan) return res.status(404).json({ status: 'error', message: 'Not found' });
+    res.json({ status: 'ok', ...plan });
+});
+
+// GET /api/customers/:id/herald
+router.get('/:id/herald', verifyToken, (req, res) => {
+    const herald = ds.getHerald(req.params.id);
+    if (!herald) return res.status(404).json({ status: 'error', message: 'No content generated' });
+    res.json({ status: 'ok', ...herald });
+});
+
+// POST /api/customers  — create a new customer (stub: returns a synthetic record)
+router.post('/', verifyToken, (req, res) => {
+    const body = req.body || {};
+    if (!body.full_name) return res.status(400).json({ status: 'error', message: 'full_name is required' });
+    const now = Date.now();
+    const customer_id = `CUST-NEW-${now.toString(36).toUpperCase()}`;
+    const newCustomer = {
+        customer_id,
+        full_name:            body.full_name,
+        first_name:           body.full_name.split(' ')[0],
+        email:                body.email || '',
+        phone:                body.phone_mobile || '',
+        age:                  body.age || 30,
+        income:               500000,
+        tenure_months:        Math.round((body.tenure_years || 0) * 12),
+        segment:              body.segment || 'Mass Market',
+        archetype:            'healthy_active',
+        city:                 body.city || 'Mumbai',
+        city_tier:            2,
+        product_count:        1,
+        employer:             body.employer_name || '',
+        relationship_manager: 'System',
+        preferred_channel:    body.preferred_channel || 'email',
+        email_opt_in:         body.email_opt_in ?? true,
+        sms_opt_in:           body.sms_opt_in ?? true,
+        txn_freq_90d:         0,
+        avg_txn_amount:       0,
+        inactivity_days:      0,
+        digital_ratio:        0.5,
+        complaint_count:      0,
+        atm_withdrawals_90d:  0,
+        app_logins_30d:       0,
+        balance:              10000,
+        salary_credit_count:  0,
+        nps:                  7,
+        risk_tier:            'MONITOR',
+        churn_score:          0.15,
+        life_event:           null,
+        life_event_desc:      null,
+    };
+    res.status(201).json({ status: 'ok', data: newCustomer });
 });
 
 module.exports = router;

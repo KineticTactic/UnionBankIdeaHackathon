@@ -1,304 +1,200 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import { Send, CheckCircle, Clock, TrendingUp, Users, AlertCircle } from "lucide-react";
-import Link from "next/link";
-import { api } from '@/lib/api';
-import { OutreachRecord, Campaign } from '@/types';
-import { useAuth } from '@/hooks/useAuth';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { getToken, api } from '@/lib/api';
+import { Campaign, OutreachRecord, RiskTier } from '@/types';
+import RiskBadge from '@/components/RiskBadge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Mail, MessageSquare, Bell, Phone, Users, TrendingUp, Send } from 'lucide-react';
+
+const CHANNEL_ICONS: Record<string, React.ElementType> = {
+  email: Mail, sms: MessageSquare, push: Bell, phone: Phone,
+};
+
+const STATUS_STYLES: Record<string, string> = {
+  sent:      'bg-slate-100 text-slate-600',
+  delivered: 'bg-blue-100 text-blue-700',
+  opened:    'bg-amber-100 text-amber-700',
+  clicked:   'bg-green-100 text-green-700',
+  failed:    'bg-red-100 text-red-700',
+};
 
 export default function OutreachPage() {
-    const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-    const [outreachRecords, setOutreachRecords] = useState<OutreachRecord[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [statusFilter, setStatusFilter] = useState<string>('all');
-    const { user } = useAuth();
-    const canManage = user?.role === 'manager' || user?.role === 'admin';
+  const router  = useRouter();
+  const [campaigns,   setCampaigns]  = useState<Campaign[]>([]);
+  const [records,     setRecords]    = useState<OutreachRecord[]>([]);
+  const [selected,    setSelected]   = useState<OutreachRecord | null>(null);
+  const [loading,     setLoading]    = useState(true);
+  const [filterChan,  setFilterChan] = useState('');
+  const [filterStatus,setFilterStatus]=useState('');
 
-    useEffect(() => {
-        async function loadData() {
-            try {
-                setIsLoading(true);
-                const [campaignsData, outreachData] = await Promise.all([
-                    api.getCampaigns(),
-                    api.getOutreach({ limit: 50 })
-                ]);
-                setCampaigns(campaignsData.data || campaignsData || []);
-                setOutreachRecords(outreachData.data || outreachData || []);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to load data');
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        loadData();
-    }, []);
+  useEffect(() => {
+    if (!getToken()) { router.push('/login'); return; }
+    Promise.all([api.getCampaigns(), api.getOutreach({ limit: 100 })])
+      .then(([cRes, oRes]) => {
+        setCampaigns(cRes.campaigns || []);
+        setRecords(oRes.records || []);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [router]);
 
-    const pendingRecords = outreachRecords.filter(r => r.status === 'failed' || r.status === 'sent');
-    const totalSent = campaigns.reduce((acc, c) => acc + (c.stats?.sent || 0), 0);
-    const totalDelivered = campaigns.reduce((acc, c) => acc + (c.stats?.delivered || 0), 0);
-    const deliveryRate = totalSent > 0 ? Math.round((totalDelivered / totalSent) * 100) : 0;
+  const filtered = records.filter(r =>
+    (!filterChan   || r.channel === filterChan) &&
+    (!filterStatus || r.status  === filterStatus)
+  );
 
-    const channelPerformance = campaigns.reduce((acc, c) => {
-        const records = outreachRecords.filter(r => r.campaign_id === c.campaign_id);
-        const byChannel = records.reduce((channelAcc, r) => {
-            channelAcc[r.channel] = (channelAcc[r.channel] || 0) + 1;
-            return channelAcc;
-        }, {} as Record<string, number>);
-        Object.entries(byChannel).forEach(([channel, count]) => {
-            if (!acc[channel]) acc[channel] = 0;
-            acc[channel] += count;
-        });
-        return acc;
-    }, {} as Record<string, number>);
+  const stats = {
+    sent:       records.length,
+    opened:     records.filter(r=>['opened','clicked'].includes(r.status)).length,
+    clicked:    records.filter(r=>r.status==='clicked').length,
+    open_rate:  records.length ? (records.filter(r=>['opened','clicked'].includes(r.status)).length / records.length * 100).toFixed(1) : '0',
+    click_rate: records.length ? (records.filter(r=>r.status==='clicked').length / records.length * 100).toFixed(1) : '0',
+  };
 
-    const channelData = Object.entries(channelPerformance).map(([channel, count]) => ({
-        channel: channel.replace(/_/g, ' '),
-        count
-    }));
+  return (
+    <div className="p-6 space-y-6">
+      <div>
+        <h1 className="text-[22px] font-black text-slate-900">HERALD Outreach Hub</h1>
+        <p className="text-[13px] text-slate-400 mt-0.5">Hyper-personalised content generation · campaigns · dispatch status</p>
+      </div>
 
-    const filteredRecords = statusFilter === 'all' 
-        ? outreachRecords 
-        : outreachRecords.filter(r => r.status === statusFilter);
-
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case 'sent': return <Badge className="bg-slate-100 text-slate-700">Sent</Badge>;
-            case 'delivered': return <Badge className="bg-blue-100 text-blue-700">Delivered</Badge>;
-            case 'opened': return <Badge className="bg-purple-100 text-purple-700">Opened</Badge>;
-            case 'clicked': return <Badge className="bg-green-100 text-green-700">Clicked</Badge>;
-            case 'failed': return <Badge className="bg-red-100 text-red-700">Failed</Badge>;
-            default: return <Badge>{status}</Badge>;
-        }
-    };
-
-    const getCampaignStatusBadge = (status: string) => {
-        switch (status) {
-            case 'active': return <Badge className="bg-green-100 text-green-700">Active</Badge>;
-            case 'completed': return <Badge className="bg-slate-100 text-slate-600">Completed</Badge>;
-            case 'paused': return <Badge className="bg-amber-100 text-amber-700">Paused</Badge>;
-            default: return <Badge>{status}</Badge>;
-        }
-    };
-
-    return (
-        <ProtectedRoute>
-            <div className="flex flex-col gap-6 max-w-7xl">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                        <Send className="w-5 h-5 text-green-600" />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-900">Outreach Hub</h1>
-                        <p className="text-slate-500">Manage campaigns and outreach records</p>
-                    </div>
-                </div>
-
-                {isLoading ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {[1, 2, 3].map(i => (
-                            <Card key={i}><CardContent className="p-6 h-24 animate-pulse bg-slate-100" /></Card>
-                        ))}
-                    </div>
-                ) : error ? (
-                    <Card className="border-red-200 bg-red-50">
-                        <CardContent className="p-4 text-red-600">{error}</CardContent>
-                    </Card>
-                ) : (
-                    <>
-                        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                            <Send className="w-5 h-5 text-blue-600" />
-                                        </div>
-                                        <div>
-                                            <p className="text-2xl font-bold text-slate-900">{totalSent}</p>
-                                            <p className="text-sm text-slate-500">Sent This Week</p>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                            <CheckCircle className="w-5 h-5 text-green-600" />
-                                        </div>
-                                        <div>
-                                            <p className="text-2xl font-bold text-slate-900">{deliveryRate}%</p>
-                                            <p className="text-sm text-slate-500">Delivery Rate</p>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                                            <TrendingUp className="w-5 h-5 text-purple-600" />
-                                        </div>
-                                        <div>
-                                            <p className="text-2xl font-bold text-slate-900">18.5%</p>
-                                            <p className="text-sm text-slate-500">Avg Uplift</p>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-                                            <Clock className="w-5 h-5 text-amber-600" />
-                                        </div>
-                                        <div>
-                                            <p className="text-2xl font-bold text-slate-900">{pendingRecords.length}</p>
-                                            <p className="text-sm text-slate-500">Pending Review</p>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Active Campaigns</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="space-y-4">
-                                        {campaigns.map((campaign) => (
-                                            <div key={campaign.campaign_id} className="p-4 border border-slate-200 rounded-lg">
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <span className="font-medium text-slate-900">{campaign.campaign_name}</span>
-                                                    {getCampaignStatusBadge(campaign.status)}
-                                                </div>
-                                                <p className="text-sm text-slate-500 mb-3">{campaign.campaign_id}</p>
-<div className="grid grid-cols-4 gap-2 text-sm">
-                                                        <div className="text-center p-2 bg-slate-50 rounded">
-                                                            <p className="font-bold text-slate-900">{campaign.stats?.sent || 0}</p>
-                                                            <p className="text-xs text-slate-500">Sent</p>
-                                                        </div>
-                                                        <div className="text-center p-2 bg-slate-50 rounded">
-                                                            <p className="font-bold text-slate-900">{campaign.stats?.sent ? Math.round((campaign.stats?.delivered || 0) / campaign.stats.sent * 100) : 0}%</p>
-                                                            <p className="text-xs text-slate-500">Delivered</p>
-                                                        </div>
-                                                        <div className="text-center p-2 bg-slate-50 rounded">
-                                                            <p className="font-bold text-slate-900">{campaign.stats?.sent ? Math.round((campaign.stats?.opened || 0) / campaign.stats.sent * 100) : 0}%</p>
-                                                            <p className="text-xs text-slate-500">Opened</p>
-                                                        </div>
-                                                        <div className="text-center p-2 bg-green-50 rounded">
-                                                            <p className="font-bold text-green-700">+{campaign.stats?.uplift_pct || 0}%</p>
-                                                            <p className="text-xs text-green-600">Uplift</p>
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Channel Performance</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    {channelData.length > 0 ? (
-                                        <div className="h-64">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <BarChart data={channelData}>
-                                                    <CartesianGrid strokeDasharray="3 3" />
-                                                    <XAxis dataKey="channel" tick={{ fontSize: 12 }} />
-                                                    <YAxis />
-                                                    <Tooltip />
-                                                    <Bar dataKey="count" fill="#22C55E" radius={[4, 4, 0, 0]} />
-                                                </BarChart>
-                                            </ResponsiveContainer>
-                                        </div>
-                                    ) : (
-                                        <p className="text-slate-500 text-center py-8">No channel data</p>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        </div>
-
-                        <Card>
-                            <CardHeader>
-                                <div className="flex items-center justify-between">
-                                    <CardTitle>Recent Outreach Records</CardTitle>
-                                    <Select value={statusFilter} onValueChange={setStatusFilter}>
-                                        <SelectTrigger className="w-[160px]">
-                                            <SelectValue placeholder="Filter by status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">All Status</SelectItem>
-                                            <SelectItem value="sent">Sent</SelectItem>
-                                            <SelectItem value="delivered">Delivered</SelectItem>
-                                            <SelectItem value="opened">Opened</SelectItem>
-                                            <SelectItem value="clicked">Clicked</SelectItem>
-                                            <SelectItem value="failed">Failed</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-sm">
-                                        <thead>
-                                            <tr className="border-b">
-                                                <th className="text-left py-2 px-3 font-medium text-slate-500">ID</th>
-                                                <th className="text-left py-2 px-3 font-medium text-slate-500">Customer</th>
-                                                <th className="text-left py-2 px-3 font-medium text-slate-500">Channel</th>
-                                                <th className="text-left py-2 px-3 font-medium text-slate-500">Campaign</th>
-                                                <th className="text-left py-2 px-3 font-medium text-slate-500">Status</th>
-                                                <th className="text-left py-2 px-3 font-medium text-slate-500">Date</th>
-                                                {canManage && <th className="text-right py-2 px-3 font-medium text-slate-500">Action</th>}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filteredRecords.slice(0, 20).map((record) => (
-                                                <tr key={record.outreach_id} className="border-b border-slate-50 hover:bg-slate-50">
-                                                    <td className="py-2 px-3 font-mono text-xs">{record.outreach_id}</td>
-                                                    <td className="py-2 px-3">{record.customer_id}</td>
-                                                    <td className="py-2 px-3 capitalize">{record.channel.replace(/_/g, ' ')}</td>
-                                                    <td className="py-2 px-3 text-xs">{record.campaign_id || '-'}</td>
-                                                    <td className="py-2 px-3">{getStatusBadge(record.status)}</td>
-                                                    <td className="py-2 px-3 text-xs text-slate-500">
-                                                        {new Date(record.dispatched_at).toLocaleDateString()}
-                                                    </td>
-                                                    {canManage && (
-                                                        <td className="py-2 px-3 text-right">
-                                                            <Link href={`/customers/${record.customer_id}`}>
-                                                                <Button variant="ghost" size="sm" className="h-7 text-xs">
-                                                                    View
-                                                                </Button>
-                                                            </Link>
-                                                        </td>
-                                                    )}
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </>
-                )}
+      {/* Stats bar */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: 'Total Dispatched', value: stats.sent,       icon: Send },
+          { label: 'Opened',           value: stats.opened,     icon: Mail },
+          { label: 'Open Rate',        value: `${stats.open_rate}%`, icon: TrendingUp },
+          { label: 'Click Rate',       value: `${stats.click_rate}%`, icon: Users },
+        ].map(({ label, value, icon: Icon }) => (
+          <div key={label} className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-[#0f2d5c]/8 flex items-center justify-center shrink-0">
+              <Icon className="w-4 h-4 text-[#0f2d5c]" />
             </div>
-        </ProtectedRoute>
-    );
+            <div>
+              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{label}</p>
+              <p className="text-xl font-black text-slate-900">{value}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {loading ? <Skeleton className="h-48 rounded-xl" /> : (
+        <>
+          {/* Campaign cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {campaigns.map(c => {
+              const ChannelIcon = CHANNEL_ICONS[c.channel] || Mail;
+              const conversion  = c.customers > 0 ? ((c.conversions/c.customers)*100).toFixed(1) : '0';
+              return (
+                <div key={c.id} className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <p className="text-[14px] font-bold text-slate-800">{c.name}</p>
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <ChannelIcon className="w-3.5 h-3.5 text-slate-400" />
+                        <span className="text-[11px] text-slate-400 capitalize">{c.channel}</span>
+                      </div>
+                    </div>
+                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                      c.status==='active' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'
+                    }`}>
+                      {c.status}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="bg-slate-50 rounded-lg p-2">
+                      <p className="text-[16px] font-black text-slate-800">{c.customers}</p>
+                      <p className="text-[9px] text-slate-400">customers</p>
+                    </div>
+                    <div className="bg-slate-50 rounded-lg p-2">
+                      <p className="text-[16px] font-black text-slate-800">{c.opens}</p>
+                      <p className="text-[9px] text-slate-400">opens</p>
+                    </div>
+                    <div className="bg-green-50 rounded-lg p-2">
+                      <p className="text-[16px] font-black text-green-700">{conversion}%</p>
+                      <p className="text-[9px] text-green-500">conv.</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Filters + records table */}
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex-1 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+              {/* Filters */}
+              <div className="flex gap-3 p-4 border-b border-slate-100 bg-slate-50">
+                <select value={filterChan} onChange={e=>setFilterChan(e.target.value)}
+                  className="px-3 py-1.5 text-[12px] rounded-lg border border-slate-200 bg-white text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20">
+                  <option value="">All Channels</option>
+                  {['email','sms','push','phone'].map(c=><option key={c} value={c}>{c}</option>)}
+                </select>
+                <select value={filterStatus} onChange={e=>setFilterStatus(e.target.value)}
+                  className="px-3 py-1.5 text-[12px] rounded-lg border border-slate-200 bg-white text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20">
+                  <option value="">All Statuses</option>
+                  {['sent','delivered','opened','clicked','failed'].map(s=><option key={s} value={s}>{s}</option>)}
+                </select>
+                <span className="text-[12px] text-slate-400 self-center">{filtered.length} records</span>
+              </div>
+
+              {/* Table */}
+              <div className="overflow-y-auto max-h-[500px]">
+                <table className="w-full text-[12px]">
+                  <thead className="sticky top-0 bg-slate-50 border-b border-slate-200">
+                    <tr className="text-[10px] text-slate-400 uppercase tracking-wider">
+                      {['Customer','Channel','Status','Offer','Dispatched'].map(h=>(
+                        <th key={h} className="text-left py-2.5 px-4 font-semibold">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map(r => {
+                      const ChIcon = CHANNEL_ICONS[r.channel] || Mail;
+                      return (
+                        <tr key={r.id}
+                          onClick={() => setSelected(r === selected ? null : r)}
+                          className={`border-b border-slate-100 cursor-pointer transition-colors ${r===selected?'bg-slate-50':'hover:bg-slate-50'}`}>
+                          <td className="py-2 px-4 font-semibold text-slate-800">{r.customer_id}</td>
+                          <td className="py-2 px-4">
+                            <span className="flex items-center gap-1.5 text-slate-500">
+                              <ChIcon className="w-3.5 h-3.5" />
+                              {r.channel}
+                            </span>
+                          </td>
+                          <td className="py-2 px-4">
+                            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded uppercase ${STATUS_STYLES[r.status]||'bg-slate-100 text-slate-600'}`}>
+                              {r.status}
+                            </span>
+                          </td>
+                          <td className="py-2 px-4 text-slate-500">{r.offer_code.replace(/_/g,' ')}</td>
+                          <td className="py-2 px-4 text-slate-400">{new Date(r.dispatched_at).toLocaleDateString()}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Content preview panel */}
+            {selected && (
+              <div className="w-full lg:w-80 bg-white rounded-xl border border-slate-200 shadow-sm p-5 shrink-0">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-[13px] font-bold text-slate-800">Content Preview</p>
+                  <button onClick={()=>setSelected(null)} className="text-slate-400 hover:text-slate-600 text-[18px] leading-none">×</button>
+                </div>
+                <p className="text-[11px] text-slate-500 mb-3">{selected.customer_id} · {selected.channel} · {selected.status}</p>
+                <div className="bg-slate-50 rounded-lg border border-slate-200 p-3">
+                  <p className="text-[12px] text-slate-600 leading-relaxed">{selected.content_preview}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
 }

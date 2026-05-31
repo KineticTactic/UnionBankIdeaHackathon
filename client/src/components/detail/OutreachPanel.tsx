@@ -67,7 +67,7 @@ export function OutreachPanel({ customerId, analysisResult }: OutreachPanelProps
                 {!content && !isStreaming && !error ? (
                     <div className="flex flex-col items-center justify-center py-10 border border-dashed border-purple-100 rounded-lg bg-gradient-to-b from-purple-50/40 to-indigo-50/30">
                         <div className="flex items-center gap-1.5 mb-3">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-purple-400 px-2 py-0.5 bg-purple-100 rounded-full">Powered by Azure AI · DeepSeek</span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-purple-400 px-2 py-0.5 bg-purple-100 rounded-full">Powered by NVIDIA · DeepSeek V4 Pro</span>
                         </div>
                         <Button
                             onClick={handleGenerate}

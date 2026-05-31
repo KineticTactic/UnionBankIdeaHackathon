@@ -76,12 +76,7 @@ function pushEvent(topic, customerId, payload, description) {
 function handleScoreUpdate({ customer_id, churn_score, risk_tier, model_version, reason }) {
     if (!customer_id) return;
     liveState.scoreOverrides[customer_id] = { churn_score, risk_tier, model_version, updated_at: new Date().toISOString() };
-    // Sync into dataStore so API endpoints pick it up immediately
-    if (dataStore.CHURN_SCORES[customer_id]) {
-        dataStore.CHURN_SCORES[customer_id].churn_score = churn_score;
-        dataStore.CHURN_SCORES[customer_id].risk_tier   = risk_tier;
-        if (reason) dataStore.CHURN_SCORES[customer_id].reason_codes.unshift(reason);
-    }
+    dataStore.applyScoreOverride(customer_id, { final_score: churn_score, risk_tier });
     pushEvent(TOPICS.SCORES, customer_id,
         { churn_score, risk_tier, model_version },
         `Retention Risk Index updated → ${Math.round(churn_score * 100)}% (${risk_tier})`
@@ -90,11 +85,10 @@ function handleScoreUpdate({ customer_id, churn_score, risk_tier, model_version,
 
 function handleSignalDetection({ customer_id, signal_type, confidence, cusum_value, alarm_threshold, method, evidence }) {
     if (!customer_id) return;
+    const sig = { signal_type, confidence, cusum_value, alarm_threshold, method, detected: true, days_active: 1 };
+    dataStore.applySignalOverride(customer_id, sig);
     if (!liveState.signalOverrides[customer_id]) liveState.signalOverrides[customer_id] = [];
-    const existing = liveState.signalOverrides[customer_id].findIndex(s => s.signal_type === signal_type);
-    const sig = { customer_id, signal_type, confidence, cusum_value, alarm_threshold, method_used: method, detected: true, evidence: [evidence], updated_at: new Date().toISOString() };
-    if (existing >= 0) liveState.signalOverrides[customer_id][existing] = sig;
-    else liveState.signalOverrides[customer_id].push(sig);
+    liveState.signalOverrides[customer_id].push(sig);
     pushEvent(TOPICS.SIGNALS, customer_id,
         { signal_type, confidence, cusum_value },
         `Signal detected: ${signal_type.replace(/_/g,' ')} · ${method} · conf ${Math.round(confidence*100)}%`
@@ -152,7 +146,7 @@ function routeMessage(topic, value) {
 
 // ── Simulation mode ──────────────────────────────────────────────────────────
 
-const SIM_CUSTOMERS = Object.keys(dataStore.CHURN_SCORES);
+const SIM_CUSTOMERS = dataStore.CUSTOMERS.map(c => c.customer_id);
 const SIM_SIGNAL_TYPES = ['transaction_frequency','salary_amount','digital_engagement','complaint_sentiment','stress_overdraft','location_city','lifecycle_mcc'];
 const SIM_CATEGORIES   = ['grocery','utility','food','fuel','emi','shopping','travel'];
 const SIM_CHANNELS     = ['upi','netbanking','pos','nach','atm'];
@@ -166,32 +160,33 @@ function pickCustomer() { return getRandomItem(SIM_CUSTOMERS); }
 
 function runSimulationTick() {
     simTick++;
-    const id = pickCustomer();
-    const score = dataStore.CHURN_SCORES[id];
-    if (!score) return;
+    const id    = pickCustomer();
+    const score = dataStore.getScore(id);
+    const cust  = dataStore.getCustomerById(id);
+    if (!score || !cust) return;
 
     const roll = simTick % 6;
 
     if (roll === 0) {
         // Score refresh — small drift
-        const delta = (Math.random() - 0.5) * 0.03;
-        const newScore = Math.max(0.05, Math.min(0.98, score.churn_score + delta));
-        let tier = 'low';
-        if (newScore >= 0.85) tier = 'critical';
-        else if (newScore >= 0.65) tier = 'high';
-        else if (newScore >= 0.40) tier = 'medium';
-        else if (newScore >= 0.25) tier = 'watch';
+        const delta    = (Math.random() - 0.5) * 0.03;
+        const newScore = Math.max(0.05, Math.min(0.98, score.final_score + delta));
+        let tier = 'NONE';
+        if (newScore >= 0.80) tier = 'PRIORITY';
+        else if (newScore >= 0.60) tier = 'ESCALATE';
+        else if (newScore >= 0.40) tier = 'STANDARD';
+        else if (newScore >= 0.20) tier = 'MONITOR';
+        dataStore.applyScoreOverride(id, { final_score: +newScore.toFixed(4), risk_tier: tier });
         handleScoreUpdate({ customer_id: id, churn_score: +newScore.toFixed(4), risk_tier: tier, model_version: 'FusionXV2-sim', reason: null });
 
     } else if (roll === 1) {
         // Transaction event
         const isCredit = Math.random() < 0.25;
-        const base = { above_25L: 150000, between_10L_25L: 80000, '10L_25L': 80000, between_5L_10L: 45000, '5L_10L': 45000, below_5L: 25000 };
-        const salary = base[score.annual_income_band] || 60000;
-        const amount = isCredit ? salary : Math.round(500 + Math.random() * 8000);
+        const salary   = Math.round(cust.income / 12);
+        const amount   = isCredit ? salary : Math.round(500 + Math.random() * 8000);
         handleTransaction({ customer_id: id, amount, direction: isCredit ? 'credit' : 'debit', category: isCredit ? 'salary' : getRandomItem(SIM_CATEGORIES), channel: getRandomItem(SIM_CHANNELS), merchant_name: getRandomItem(SIM_MERCHANTS) });
 
-    } else if (roll === 2 && score.churn_score > 0.55) {
+    } else if (roll === 2 && score.final_score > 0.55) {
         // Signal detection for high-risk customers
         const sigType = getRandomItem(SIM_SIGNAL_TYPES);
         const threshold = sigType === 'stress_overdraft' ? 2.5 : sigType === 'location_city' ? 3.5 : 3.0;
@@ -203,7 +198,7 @@ function runSimulationTick() {
         const delta = Math.round((Math.random() - 0.4) * 15000);
         handleAccountUpdate({ customer_id: id, account_type: getRandomItem(['savings','current','fd']), balance_delta: delta, status: 'active' });
 
-    } else if (roll === 4 && score.churn_score > 0.70) {
+    } else if (roll === 4 && score.final_score > 0.60) {
         // CRM complaint for high-risk
         const complaints = [
             'Customer called about unexpected fee deduction on savings account.',

@@ -139,7 +139,7 @@ export function KnowledgeGraphCard() {
       api.getTopAtRisk(14),
       api.getV2Signals(),
     ]).then(([atRiskRes, sigRes]) => {
-      const customers = (atRiskRes.customers || []) as {
+      const customers = (atRiskRes.data || atRiskRes.customers || []) as {
         customer_id: string; full_name: string; churn_score: number;
         risk_tier: RiskTier; segment: string; alarm_count: number;
       }[];

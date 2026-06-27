@@ -1,74 +1,48 @@
+'use strict';
 /**
- * /api/outreach  — HERALD content generation + campaign and outreach record endpoints
- * POST /api/outreach/generate calls NVIDIA DeepSeek V4 Pro live to produce email/SMS/push content.
+ * /api/outreach — HERALD content generation + approval gate + campaign endpoints.
+ * RBI AI Governance 2024 — Human override required before adverse customer-facing AI actions.
+ * DPDPA 2023 + TRAI TCCCPR 2025 — consent verified before every outreach action.
+ *
+ * POST /generate now returns 202 + jobId immediately; LLM call is async via BullMQ.
+ * GET  /job/:jobId polls job state.
  */
-const router = require('express').Router();
-const https  = require('https');
+const router      = require('express').Router();
+const crypto      = require('crypto');
 const { verifyToken } = require('../middleware/auth');
-const ds = require('../services/dataStore');
+const ds          = require('../services/dataStore');
+const consentSvc  = require('../services/consentService');
+const approvalSvc = require('../services/approvalService');
+const traiSvc     = require('../services/traiComplianceService');
+const auditLog    = require('../services/auditLogService');
+const { enqueueHerald, getJobStatus } = require('../queue/heraldQueue');
 
-// ── NVIDIA DeepSeek helper ─────────────────────────────────────────────────────
-const NVIDIA_ENDPOINT = process.env.NVIDIA_ENDPOINT ||
-    'https://integrate.api.nvidia.com/v1/chat/completions';
-const NVIDIA_KEY   = process.env.NVIDIA_API_KEY || '';
-const NVIDIA_MODEL = process.env.NVIDIA_MODEL   || 'deepseek-ai/deepseek-v4-pro';
-
-function callNvidia(messages, maxTokens = 600) {
-    return new Promise((resolve, reject) => {
-        const body = JSON.stringify({ model: NVIDIA_MODEL, messages, max_tokens: maxTokens, temperature: 0.7 });
-        const url  = new URL(NVIDIA_ENDPOINT);
-        const opts = {
-            hostname: url.hostname,
-            path:     url.pathname + url.search,
-            method:   'POST',
-            headers:  {
-                'Content-Type':   'application/json',
-                'Authorization':  `Bearer ${NVIDIA_KEY}`,
-                'Content-Length': Buffer.byteLength(body),
-            },
-        };
-        const req = https.request(opts, (r) => {
-            let data = '';
-            r.on('data', d => { data += d; });
-            r.on('end', () => {
-                try { resolve(JSON.parse(data)); }
-                catch(e) { reject(new Error(`JSON parse error: ${data.slice(0,200)}`)); }
-            });
-        });
-        req.on('error', reject);
-        req.write(body);
-        req.end();
-    });
-}
-
-// ── In-memory outreach log (seeded from herald data) ─────────────────────────
+// ── In-memory outreach log (seeded from HERALD static data — DEMO_MODE) ───────
+// In prod mode this comes from outreachRepo; HERALD and PLANS_MAP are synchronous
+// module-level exports so this seeding code runs fine before async routes are hit.
 const outreachLog = ds.HERALD.map((h, i) => ({
-    id:              `OR-${String(i+1).padStart(4,'0')}`,
+    id:              `OR-${String(i + 1).padStart(4, '0')}`,
     customer_id:     h.customer_id,
-    channel:         h.risk_tier === 'PRIORITY' ? 'phone' :
-                     h.risk_tier === 'ESCALATE' ? 'email' : 'sms',
+    channel:         h.risk_tier === 'PRIORITY' ? 'phone' : h.risk_tier === 'ESCALATE' ? 'email' : 'sms',
     risk_tier:       h.risk_tier,
-    status:          ['sent','delivered','opened','clicked'][Math.floor(Math.random()*4)],
+    status:          ['sent', 'delivered', 'opened', 'clicked'][i % 4], // deterministic
     offer_code:      ds.PLANS_MAP[h.customer_id]?.offer_code || 'NONE',
-    dispatched_at:   new Date(Date.now() - Math.random()*7*86400_000).toISOString(),
-    content_preview: h.email?.body?.slice(0, 120) + '...',
+    dispatched_at:   new Date(Date.now() - (i % 7) * 86_400_000).toISOString(),
+    content_preview: (h.email?.body || '').slice(0, 120) + '...',
 }));
 
-// ── 3 static campaigns ───────────────────────────────────────────────────────
 const CAMPAIGNS = [
     { id: 'C001', name: 'Q1 Retention Drive',   status: 'active',    channel: 'email', customers: 18, opens: 11, conversions: 4 },
     { id: 'C002', name: 'High-Risk SMS Blitz',   status: 'active',    channel: 'sms',   customers: 10, opens: 7,  conversions: 2 },
     { id: 'C003', name: 'VIP Loyalty Programme', status: 'completed', channel: 'phone', customers: 8,  opens: 8,  conversions: 6 },
 ];
 
-// ── Routes ────────────────────────────────────────────────────────────────────
+// ── List / campaign routes (unchanged contract) ───────────────────────────────
 
-// GET /api/outreach/campaigns
 router.get('/campaigns', verifyToken, (req, res) => {
     res.json({ status: 'ok', campaigns: CAMPAIGNS });
 });
 
-// GET /api/outreach
 router.get('/', verifyToken, (req, res) => {
     const { customer_id, status, channel, page = 1, limit = 20 } = req.query;
     let list = [...outreachLog];
@@ -76,197 +50,171 @@ router.get('/', verifyToken, (req, res) => {
     if (status)      list = list.filter(o => o.status      === status);
     if (channel)     list = list.filter(o => o.channel     === channel);
     const p = parseInt(page), l = parseInt(limit);
-    res.json({ status: 'ok', total: list.length, page: p, limit: l, records: list.slice((p-1)*l, p*l) });
+    res.json({ status: 'ok', total: list.length, page: p, limit: l, records: list.slice((p - 1) * l, p * l) });
 });
 
-// GET /api/outreach/:id
-router.get('/:id', verifyToken, (req, res) => {
+router.get('/pending', verifyToken, (req, res) => {
+    const { customer_id, status } = req.query;
+    const list = approvalSvc.getPendingApprovals({ customerId: customer_id, status });
+    res.json({ status: 'ok', approvals: list, total: list.length });
+});
+
+router.get('/approval/:approvalId', verifyToken, (req, res) => {
+    const entry = approvalSvc.getApprovalById(req.params.approvalId);
+    if (!entry) return res.status(404).json({ status: 'error', message: 'Approval not found' });
+    res.json({ status: 'ok', approval: entry });
+});
+
+// ── Job status endpoint ───────────────────────────────────────────────────────
+
+router.get('/job/:jobId', verifyToken, async (req, res) => {
+    try {
+        const status = await getJobStatus(req.params.jobId);
+        res.json({ status: 'ok', ...status });
+    } catch (err) {
+        res.status(500).json({ status: 'error', message: err.message });
+    }
+});
+
+// ── GET /:id (must come after named routes) ────────────────────────────────────
+
+router.get('/:id', verifyToken, async (req, res) => {
+    if (['campaigns', 'pending', 'job'].includes(req.params.id))
+        return res.status(404).json({ status: 'error', message: 'Not found' });
     const record = outreachLog.find(o => o.id === req.params.id);
     if (!record) return res.status(404).json({ status: 'error', message: 'Not found' });
-    res.json({ status: 'ok', data: { ...record, full_content: ds.getHerald(record.customer_id) } });
+    const herald = await ds.getHerald(record.customer_id);
+    res.json({ status: 'ok', data: { ...record, full_content: herald } });
 });
 
-// POST /api/outreach/generate  — HERALD: live NVIDIA DeepSeek V4 Pro content generation
+// ── POST /generate — enqueue async HERALD job (202) ──────────────────────────
+
 router.post('/generate', verifyToken, async (req, res) => {
     const { customer_id } = req.body;
     if (!customer_id)
         return res.status(400).json({ status: 'error', message: 'customer_id required' });
 
-    const snap = ds.getCustomerSnapshot(customer_id);
+    const snap = await ds.getCustomerSnapshot(customer_id);
     if (!snap)
         return res.status(404).json({ status: 'error', message: 'Customer not found' });
 
-    const { customer: c, score, signals, plan } = snap;
+    const requestedBy = req.user?.username || 'system';
 
-    // If no NVIDIA key, fall back to pre-generated static HERALD content
-    if (!NVIDIA_KEY) {
-        const cached = ds.getHerald(customer_id);
-        if (cached) return res.json({ status: 'ok', source: 'cached', herald: cached });
-        return res.status(404).json({ status: 'error', message: 'No HERALD content and NVIDIA API key not configured' });
+    let job;
+    try {
+        job = await enqueueHerald(customer_id, snap, requestedBy);
+    } catch (queueErr) {
+        // BullMQ unavailable (DEMO_MODE without Redis) — fall back to synchronous path
+        return _syncGenerate(req, res, snap, requestedBy);
     }
 
-    const firstName  = c.first_name || c.full_name.split(' ')[0];
-    const tier       = score?.risk_tier || c.risk_tier;
-    const offerText  = plan?.offer_display || plan?.offer_code?.replace(/_/g,' ') || 'a personalised banking offer';
-    const channel    = plan?.channel || 'email';
+    res.status(202).json({
+        status:  'queued',
+        jobId:   job.id,
+        message: 'HERALD generation in progress — poll GET /api/outreach/job/:jobId',
+    });
+});
 
-    // Rich signal descriptions — give the LLM context not just labels
-    const signalDetails = signals.length > 0
-        ? signals.map(s => {
-            const desc = {
-                balance_decline:      'account balance has been steadily declining over the past weeks',
-                inactivity:           `no transactions for ${c.inactivity_days} days — account appears dormant`,
-                login_drop:           `app logins dropped to ${c.app_logins_30d} in the last 30 days`,
-                salary_miss:          `salary credits have stopped — only ${c.salary_credit_count} credits in last 3 months`,
-                complaint_spike:      `${c.complaint_count} service complaint(s) filed recently`,
-                digital_ratio_drop:   `digital channel usage has dropped to ${Math.round(c.digital_ratio*100)}%`,
-                competitor_transfer:  'large outward transfers detected to competitor bank accounts',
-                txn_frequency_drop:   `transaction frequency dropped to ${c.txn_freq_90d} in last 90 days`,
-                atm_spike:            `unusual ATM withdrawal activity — ${c.atm_withdrawals_90d} withdrawals in 90 days`,
-            }[s.signal_type] || s.signal_type.replace(/_/g,' ');
-            return `  • ${s.signal_type.replace(/_/g,' ')} (${s.method}, confidence ${Math.round(s.confidence*100)}%, active ${s.days_active} days): ${desc}`;
-          }).join('\n')
-        : '  • No active behavioural signals detected';
+// Synchronous fallback used when Redis/BullMQ is unavailable (DEMO_MODE)
+async function _syncGenerate(req, res, snap, requestedBy) {
+    const { customer_id } = snap.customer || snap;
+    const id = snap.customer?.customer_id || customer_id;
 
-    const lifeEventContext = c.life_event
-        ? `LIFE EVENT DETECTED: ${c.life_event.replace(/_/g,' ')} — ${c.life_event_desc || 'significant life transition detected'}. Acknowledge this sensitively in your message without being intrusive.`
-        : '';
+    const channels     = ['EMAIL', 'SMS', 'PUSH'];
+    const consentStatus = {};
+    for (const ch of channels) consentStatus[ch] = consentSvc.canSendOutreach(id, ch);
+    const allowedChannels = channels.filter(ch => consentStatus[ch].allowed);
 
-    const urgencyInstruction = tier === 'PRIORITY'
-        ? 'URGENCY: HIGH. This customer shows multiple strong distress signals. Write with genuine warmth and urgency. Make them feel valued and heard. The relationship manager wants to personally reconnect.'
-        : tier === 'ESCALATE'
-        ? 'URGENCY: MEDIUM. Customer engagement is declining. Write a reconnection message that reminds them of the value Union Bank provides and presents the offer as a reward for their loyalty.'
-        : 'URGENCY: LOW. Customer is stable but engagement could improve. Write an appreciative, value-adding message.';
+    const cached = await ds.getHerald(id);
+    const heraldContent = cached || { email: { body: '' }, sms: { body: '' }, push: { body: '' } };
 
-    const systemPrompt = `You are HERALD, the AI personalisation engine for Union Bank's customer retention platform.
-Your job is to write hyper-personalised, empathetic, compliance-safe outreach content for at-risk customers.
+    const plan = snap.plan || {};
+    const compassRecommendation = {
+        offer:     plan.offer_display || plan.offer_code || 'personalised_offer',
+        channel:   plan.channel       || 'email',
+        timing:    plan.timing        || 'immediate',
+        rationale: plan.rationale     || 'High churn risk detected by CHRONOS ensemble.',
+    };
 
-STRICT RULES:
-1. NEVER use the words: churn, risk, score, monitored, flagged, alert, detected, warning, attrition
-2. NEVER make specific interest rate or return promises
-3. NEVER sound like a generic marketing email — every sentence must feel written specifically for this person
-4. Address customer by their first name throughout
-5. Reference their specific situation (tenure, city, life event, behaviour patterns) naturally
-6. The tone should feel like a caring relationship manager reaching out personally, not a corporate blast
-7. All content must be complete — no ellipsis (...) as placeholder, no truncation
-8. Sign off warmly as Union Bank`;
+    const approvalId = await approvalSvc.createApprovalRequest(id, requestedBy, compassRecommendation, heraldContent);
 
-    const userPrompt = `Write personalised retention outreach for the following Union Bank customer.
-Return ONLY a valid raw JSON object. No markdown fences, no explanation, no extra text.
+    await auditLog.logEvent({
+        eventType:    'OUTREACH_QUEUED',
+        customerId:   id,
+        actor:        requestedBy,
+        layer:        'HERALD',
+        payload:      { approvalId, allowedChannels, consentStatus },
+        modelVersion: 'HERALD-v1.0',
+    });
 
-═══════════════════════════════════════════
-CUSTOMER INTELLIGENCE BRIEF
-═══════════════════════════════════════════
+    res.json({
+        status:           'ok',
+        approvalId,
+        pendingApproval:  true,
+        message:          'Outreach queued for RM review — DPDPA/TRAI compliant approval required before send.',
+        compassRecommendation,
+        heraldContent,
+        consentStatus,
+        allowedChannels,
+    });
+}
 
-IDENTITY:
-- Full name: ${c.full_name} | First name: ${firstName}
-- Customer ID: ${c.customer_id}
-- Age: ${c.age} | City: ${c.city} | Segment: ${c.segment}
-- Employer: ${c.employer}
-- Relationship Manager: ${c.relationship_manager}
+// ── POST /approve/:approvalId ─────────────────────────────────────────────────
 
-BANKING RELATIONSHIP:
-- Tenure: ${c.tenure_months} months with Union Bank
-- Account balance: ₹${c.balance?.toLocaleString('en-IN')}
-- Annual income: ₹${c.income?.toLocaleString('en-IN')}
-- Products held: ${c.product_count} (cross-sell opportunity if low)
-- NPS score: ${c.nps}/10 ${c.nps < 4 ? '(very dissatisfied — handle with care)' : c.nps < 7 ? '(neutral)' : '(satisfied)'}
-
-RECENT BEHAVIOUR (last 30-90 days):
-- Days since last transaction: ${c.inactivity_days}
-- App logins last 30 days: ${c.app_logins_30d}
-- Transaction frequency (90d): ${c.txn_freq_90d}
-- Digital channel usage: ${Math.round(c.digital_ratio*100)}%
-- Salary credits (last 3 months): ${c.salary_credit_count}
-- Complaints filed: ${c.complaint_count}
-
-ACTIVE BEHAVIOURAL SIGNALS FROM ARGUS:
-${signalDetails}
-
-${lifeEventContext ? lifeEventContext + '\n' : ''}
-RECOMMENDED ACTION: ${plan?.action || channel.toUpperCase()} via ${channel}
-OFFER TO PRESENT: ${offerText}
-CONTENT STRATEGY: ${plan?.content_strategy || 'empathy_lead'}
-TONE MODIFIERS: ${plan?.tone_modifiers?.join(', ') || 'professional, warm, empathetic'}
-
-${urgencyInstruction}
-
-═══════════════════════════════════════════
-WRITING INSTRUCTIONS
-═══════════════════════════════════════════
-
-EMAIL (150-200 words):
-- Subject: Compelling, personal, 8-12 words — make ${firstName} want to open it
-- Body:
-  Paragraph 1 (2-3 sentences): Warm personal opening. Reference their ${c.tenure_months}-month relationship. Make them feel valued.
-  Paragraph 2 (2-3 sentences): Gently acknowledge their situation using the behavioural context WITHOUT mentioning any monitoring. Frame it as "we noticed we haven't connected recently" or similar.
-  ${lifeEventContext ? 'Paragraph 3 (1-2 sentences): Sensitively acknowledge the life event and how Union Bank can support them through it.' : ''}
-  Paragraph ${lifeEventContext ? '4' : '3'} (2-3 sentences): Introduce the offer (${offerText}) as a reward/exclusive benefit for loyal customers like them.
-  Paragraph ${lifeEventContext ? '5' : '4'} (1-2 sentences): Clear, friendly call to action — invite them to call, visit the branch in ${c.city}, or reply to this email.
-  Sign off: Warm, from their RM ${c.relationship_manager} / Union Bank team.
-
-SMS (under 155 characters total including opt-out):
-- Personal, conversational, creates curiosity or urgency without being pushy
-- Must end with: Reply STOP to opt out
-
-PUSH NOTIFICATION:
-- Title: 5-8 words, personal to ${firstName}, creates curiosity
-- Body: 1-2 short punchy sentences, under 90 characters, makes them want to tap
-
-═══════════════════════════════════════════
-
-Return this exact JSON structure with all fields filled with real written content:
-{"email":{"subject":"<write subject here>","body":"<write full email body here>","compliance_status":"APPROVED","word_count":0},"sms":{"body":"<write sms here>","compliance_status":"APPROVED","char_count":0},"push":{"title":"<write push title here>","body":"<write push body here>","compliance_status":"APPROVED"}}
-
-Fill word_count and char_count with actual counts. Return only the JSON, nothing else.`;
+router.post('/approve/:approvalId', verifyToken, async (req, res) => {
+    const { approvalId } = req.params;
+    const reviewedBy    = req.body?.reviewedBy || req.user?.username || 'rm_user';
 
     try {
-        console.log(`[HERALD] Generating live content for ${customer_id} via NVIDIA DeepSeek V4 Pro`);
-        const resp = await callNvidia([
-            { role: 'system', content: systemPrompt },
-            { role: 'user',   content: userPrompt },
-        ], 1200);
+        const approval = await approvalSvc.approveOutreach(approvalId, reviewedBy);
+        const { customerId, heraldContent, compassRecommendation } = approval;
+        const customer = await ds.getCustomerById(customerId);
 
-        const raw = resp?.choices?.[0]?.message?.content || '';
+        const channels        = ['EMAIL', 'SMS', 'PUSH'];
+        const sentChannels    = [];
+        const blockedChannels = [];
+        const traiMetadata    = [];
 
-        let generated;
-        try {
-            // Strip any accidental markdown fences
-            const cleaned = raw.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
-            generated = JSON.parse(cleaned);
-        } catch {
-            console.error('[HERALD] JSON parse failed, raw:', raw.slice(0, 300));
-            const cached = ds.getHerald(customer_id);
-            if (cached) return res.json({ status: 'ok', source: 'cached_fallback', herald: cached, plan });
-            return res.status(500).json({ status: 'error', message: 'DeepSeek returned malformed JSON and no cached content exists.' });
+        for (const ch of channels) {
+            const check = consentSvc.canSendOutreach(customerId, ch);
+            if (!check.allowed) {
+                blockedChannels.push({ channel: ch, reason: check.reason });
+                await auditLog.logEvent({ eventType: 'OUTREACH_BLOCKED', customerId, actor: reviewedBy, layer: 'HERALD', payload: { approvalId, channel: ch, reason: check.reason }, modelVersion: 'HERALD-v1.0' });
+                continue;
+            }
+            if (ch === 'SMS' && customer?.phone) {
+                const dnd = traiSvc.checkDndRegistry(customer.phone);
+                if (dnd.onDnd) { blockedChannels.push({ channel: ch, reason: 'DND_REGISTRY' }); continue; }
+            }
+            const contentForChannel = ch === 'EMAIL' ? heraldContent?.email?.body || '' : ch === 'SMS' ? heraldContent?.sms?.body || '' : heraldContent?.push?.body || '';
+            let meta;
+            try {
+                meta = traiSvc.buildOutreachMetadata(customerId, ch, contentForChannel, 'DEMO-DLT-001');
+                traiMetadata.push(meta);
+            } catch { blockedChannels.push({ channel: ch, reason: 'DLT_NOT_REGISTERED' }); continue; }
+
+            const contentHash = crypto.createHash('sha256').update(contentForChannel).digest('hex');
+            await auditLog.logEvent({ eventType: 'OUTREACH_SENT', customerId, actor: reviewedBy, layer: 'HERALD', payload: { approvalId, channel: ch, contentHash, traiType: meta.outreachType, numberSeries: meta.requiredNumberSeries }, modelVersion: 'HERALD-v1.0' });
+            sentChannels.push(ch);
         }
 
-        // Recompute counts from actual content (model often returns 0)
-        if (generated.email?.body) {
-            generated.email.word_count = generated.email.body.trim().split(/\s+/).length;
-        }
-        if (generated.sms?.body) {
-            generated.sms.char_count = generated.sms.body.length;
-        }
-
-        const herald = {
-            customer_id,
-            risk_tier: tier,
-            generated_at: new Date().toISOString(),
-            source: 'nvidia_deepseek_v4_pro',
-            ...generated,
-        };
-
-        res.json({ status: 'ok', source: 'nvidia', herald, plan });
-
+        res.json({ status: 'ok', approvalId, sentChannels, blockedChannels, traiMetadata });
     } catch (err) {
-        console.error('[HERALD] NVIDIA call failed:', err.message);
-        // Graceful fallback to cached static content
-        const cached = ds.getHerald(customer_id);
-        if (cached) {
-            return res.json({ status: 'ok', source: 'cached_fallback', herald: cached, plan });
-        }
-        res.status(500).json({ status: 'error', message: err.message });
+        res.status(400).json({ status: 'error', message: err.message });
+    }
+});
+
+// ── POST /reject/:approvalId ──────────────────────────────────────────────────
+
+router.post('/reject/:approvalId', verifyToken, async (req, res) => {
+    const { approvalId }    = req.params;
+    const { rejectionReason } = req.body;
+    const reviewedBy        = req.body?.reviewedBy || req.user?.username || 'rm_user';
+    try {
+        await approvalSvc.rejectOutreach(approvalId, reviewedBy, rejectionReason || 'No reason provided');
+        res.json({ status: 'ok', approvalId });
+    } catch (err) {
+        res.status(400).json({ status: 'error', message: err.message });
     }
 });
 

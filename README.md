@@ -337,6 +337,7 @@ All data used in this project is **100% synthetic** — no real customer PII was
 
 **Team MoneyLords**
 Institute: Indian Institute of Technology Guwahati
+Email: kensaraworks@gmail.com
 
 **UnionBank iDEA 2.0 Phase 2 Submission**
 

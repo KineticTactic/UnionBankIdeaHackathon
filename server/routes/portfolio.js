@@ -1,58 +1,64 @@
+'use strict';
 const router = require('express').Router();
 const { verifyToken } = require('../middleware/auth');
 const ds = require('../services/dataStore');
 
-// GET /api/portfolio/summary
-router.get('/summary', verifyToken, (req, res) => {
-    res.json({ status: 'ok', data: ds.getPortfolioSummary() });
+router.get('/summary', verifyToken, async (req, res) => {
+    res.json({ status: 'ok', data: await ds.getPortfolioSummary() });
 });
 
-// GET /api/portfolio/tier-distribution
-router.get('/tier-distribution', verifyToken, (req, res) => {
-    const port = ds.getPortfolio();
+router.get('/tier-distribution', verifyToken, async (req, res) => {
+    const port = await ds.getPortfolio();
     res.json({ status: 'ok', data: port.tier_distribution || [] });
 });
 
-// GET /api/portfolio/churn-trend
-router.get('/churn-trend', verifyToken, (req, res) => {
-    const port = ds.getPortfolio();
+router.get('/churn-trend', verifyToken, async (req, res) => {
+    const port = await ds.getPortfolio();
     res.json({ status: 'ok', data: port.churn_trend || [] });
 });
 
-// GET /api/portfolio/signal-breakdown
-router.get('/signal-breakdown', verifyToken, (req, res) => {
-    const port = ds.getPortfolio();
+router.get('/signal-breakdown', verifyToken, async (req, res) => {
+    const port = await ds.getPortfolio();
     res.json({ status: 'ok', data: port.signal_breakdown || [] });
 });
 
-// GET /api/portfolio/top-at-risk
-router.get('/top-at-risk', verifyToken, (req, res) => {
-    const port = ds.getPortfolio();
+router.get('/top-at-risk', verifyToken, async (req, res) => {
+    const port  = await ds.getPortfolio();
     const limit = parseInt(req.query.limit) || 10;
     res.json({ status: 'ok', data: (port.top_at_risk || []).slice(0, limit) });
 });
 
-// GET /api/portfolio/model-health
-router.get('/model-health', verifyToken, (req, res) => {
-    const port = ds.getPortfolio();
+router.get('/model-health', verifyToken, async (req, res) => {
+    const port = await ds.getPortfolio();
     res.json({ status: 'ok', data: port.model_health || {} });
 });
 
-// GET /api/portfolio/uplift
-router.get('/uplift', verifyToken, (req, res) => {
-    const port = ds.getPortfolio();
+router.get('/uplift', verifyToken, async (req, res) => {
+    const port = await ds.getPortfolio();
     res.json({ status: 'ok', data: port.uplift_stats || {} });
 });
 
-// GET /api/portfolio/bandit
-router.get('/bandit', verifyToken, (req, res) => {
-    const port = ds.getPortfolio();
+router.get('/bandit', verifyToken, async (req, res) => {
+    const port = await ds.getPortfolio();
     res.json({ status: 'ok', data: port.bandit_state || {} });
 });
 
-// GET /api/portfolio/full  — everything in one call (used by dashboard)
-router.get('/full', verifyToken, (req, res) => {
-    res.json({ status: 'ok', data: ds.getPortfolio() });
+router.get('/full', verifyToken, async (req, res) => {
+    res.json({ status: 'ok', data: await ds.getPortfolio() });
+});
+
+// GET /api/portfolio/stats — aggregate churn stats
+router.get('/stats', verifyToken, async (req, res) => {
+    const config = require('../config');
+    if (!config.demoMode) {
+        try {
+            const { getPortfolioAggregates } = require('../repositories/scoreRepo');
+            const cached = await getPortfolioAggregates();
+            if (cached) return res.json({ status: 'ok', data: cached });
+        } catch (_) {}
+    }
+    const port = await ds.getPortfolio();
+    res.json({ status: 'ok', data: port.summary || {} });
 });
 
 module.exports = router;

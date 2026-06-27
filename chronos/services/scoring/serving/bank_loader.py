@@ -12,7 +12,8 @@ from services.scoring.serving.batch_scorer import CustomerRecord
 
 logger = logging.getLogger(__name__)
 
-BANK_API_BASE = "http://localhost:3001/api"
+import os as _os
+BANK_API_BASE = _os.getenv("BANK_API_BASE_URL", "http://localhost:3001") + "/api"
 
 # All tokens remapped to the 8 types TARE was fine-tuned on
 _TRANSACTION_TOKEN_MAP: dict[str, str] = {

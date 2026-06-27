@@ -1,18 +1,20 @@
+'use strict';
 const router = require('express').Router();
 const { verifyToken, requireRole } = require('../middleware/auth');
 const ds = require('../services/dataStore');
 
-// In-memory review queue — seeded with PRIORITY + ESCALATE customers
+// In-memory review queue — seeded at startup from static CUSTOMERS data.
+// In DEMO_MODE CUSTOMERS is a synchronous array export (no await needed here).
 const reviewQueue = ds.CUSTOMERS
-    .filter(c => ['PRIORITY','ESCALATE'].includes(c.risk_tier))
+    .filter(c => ['PRIORITY', 'ESCALATE'].includes(c.risk_tier))
     .slice(0, 10)
     .map((c, i) => ({
-        id:          `REV-${String(i+1).padStart(4,'0')}`,
+        id:          `REV-${String(i + 1).padStart(4, '0')}`,
         customer_id: c.customer_id,
         full_name:   c.full_name,
         risk_tier:   c.risk_tier,
         churn_score: c.churn_score,
-        action:      ds.getActionPlan(c.customer_id)?.action || 'EMAIL',
+        action:      ds.PLANS_MAP[c.customer_id]?.action || 'EMAIL',
         status:      'pending',
         created_at:  new Date(Date.now() - i * 3_600_000).toISOString(),
         reviewed_at: null,
@@ -25,9 +27,7 @@ const reviewQueue = ds.CUSTOMERS
 router.get('/', verifyToken, (req, res) => {
     const { status } = req.query;
     const list = status ? reviewQueue.filter(r => r.status === status) : reviewQueue;
-    // Strip internal actionLog
-    const out = list.map(({ actionLog, ...r }) => r);
-    res.json({ status: 'ok', reviews: out, total: out.length });
+    res.json({ status: 'ok', reviews: list.map(({ actionLog, ...r }) => r), total: list.length });
 });
 
 // GET /api/reviews/stats
@@ -36,34 +36,28 @@ router.get('/stats', verifyToken, (req, res) => {
     const approved  = reviewQueue.filter(r => r.status === 'approved').length;
     const rejected  = reviewQueue.filter(r => r.status === 'rejected').length;
     const in_review = reviewQueue.filter(r => r.status === 'in_review').length;
-    res.json({
-        status: 'ok',
-        data: { pending, in_review, approved, rejected, total: reviewQueue.length },
-    });
+    res.json({ status: 'ok', data: { pending, in_review, approved, rejected, total: reviewQueue.length } });
 });
 
 // GET /api/reviews/officers
 router.get('/officers', verifyToken, (req, res) => {
-    res.json({
-        status: 'ok',
-        data: [
-            { id: 'manager', name: 'Portfolio Manager', role: 'manager' },
-            { id: 'admin',   name: 'Administrator',     role: 'admin'   },
-        ],
-    });
+    res.json({ status: 'ok', data: [
+        { id: 'manager', name: 'Portfolio Manager', role: 'manager' },
+        { id: 'admin',   name: 'Administrator',     role: 'admin' },
+    ]});
 });
 
 // GET /api/reviews/:id
-router.get('/:id', verifyToken, (req, res) => {
+router.get('/:id', verifyToken, async (req, res) => {
     const r = reviewQueue.find(x => x.id === req.params.id);
     if (!r) return res.status(404).json({ status: 'error', message: 'Not found' });
-    const snap = ds.getCustomerSnapshot(r.customer_id);
+    const snap = await ds.getCustomerSnapshot(r.customer_id);
     const { actionLog, ...review } = r;
     res.json({ status: 'ok', review, snapshot: snap });
 });
 
 // POST /api/reviews/:id/approve
-router.post('/:id/approve', verifyToken, requireRole(['manager','admin']), (req, res) => {
+router.post('/:id/approve', verifyToken, requireRole(['manager', 'admin']), (req, res) => {
     const r = reviewQueue.find(x => x.id === req.params.id);
     if (!r) return res.status(404).json({ status: 'error', message: 'Not found' });
     r.status      = 'approved';
@@ -75,7 +69,7 @@ router.post('/:id/approve', verifyToken, requireRole(['manager','admin']), (req,
 });
 
 // POST /api/reviews/:id/reject
-router.post('/:id/reject', verifyToken, requireRole(['manager','admin']), (req, res) => {
+router.post('/:id/reject', verifyToken, requireRole(['manager', 'admin']), (req, res) => {
     const r = reviewQueue.find(x => x.id === req.params.id);
     if (!r) return res.status(404).json({ status: 'error', message: 'Not found' });
     r.status      = 'rejected';
@@ -86,23 +80,14 @@ router.post('/:id/reject', verifyToken, requireRole(['manager','admin']), (req, 
     res.json({ status: 'ok', review });
 });
 
-// POST /api/reviews/:id/action  (escalate, comment, start_review, assign)
+// POST /api/reviews/:id/action
 router.post('/:id/action', verifyToken, (req, res) => {
     const r = reviewQueue.find(x => x.id === req.params.id);
     if (!r) return res.status(404).json({ status: 'error', message: 'Not found' });
     const { action, comment } = req.body;
-    if (action === 'start_review') {
-        r.status = 'in_review';
-    } else if (action === 'escalate') {
-        r.status = 'escalated';
-    }
-    r.actionLog.push({
-        id:        `${r.id}-${Date.now()}`,
-        action,
-        comment:   comment || null,
-        timestamp: new Date().toISOString(),
-        actor:     req.user?.name || 'system',
-    });
+    if (action === 'start_review') r.status = 'in_review';
+    else if (action === 'escalate') r.status = 'escalated';
+    r.actionLog.push({ id: `${r.id}-${Date.now()}`, action, comment: comment || null, timestamp: new Date().toISOString(), actor: req.user?.name || 'system' });
     const { actionLog, ...review } = r;
     res.json({ status: 'ok', review });
 });

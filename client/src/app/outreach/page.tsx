@@ -7,6 +7,7 @@ import { Campaign, OutreachRecord, RiskTier } from '@/types';
 import RiskBadge from '@/components/RiskBadge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Mail, MessageSquare, Bell, Phone, Users, TrendingUp, Send } from 'lucide-react';
+import { ApprovalQueuePanel } from '@/components/compliance/ApprovalQueuePanel';
 
 const CHANNEL_ICONS: Record<string, React.ElementType> = {
   email: Mail, sms: MessageSquare, push: Bell, phone: Phone,
@@ -59,6 +60,9 @@ export default function OutreachPage() {
         <h1 className="text-[22px] font-black text-slate-900">HERALD Outreach Hub</h1>
         <p className="text-[13px] text-slate-400 mt-0.5">Hyper-personalised content generation · campaigns · dispatch status</p>
       </div>
+
+      {/* RM Approval Queue — RBI AI Governance 2024 human-in-the-loop */}
+      <ApprovalQueuePanel />
 
       {/* Stats bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

@@ -94,14 +94,24 @@ services:
     ports:
       - "8000:8000"
     depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
       kafka:
         condition: service_started
       bank:
         condition: service_started
     environment:
       PORT: 8000
+      DEMO_MODE: "false"
       JWT_SECRET: ${JWT_SECRET:-change-this-in-production}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-pcop}:${POSTGRES_PASSWORD:-pcop_dev}@postgres:5432/${POSTGRES_DB:-pcop}
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+      CHRONOS_BASE_URL: http://scoring:8003
       BANK_API_BASE_URL: http://bank:3001
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
     env_file:
       - ./server/.env
 

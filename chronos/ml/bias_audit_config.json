@@ -1,0 +1,9 @@
+{
+  "schedule": "quarterly",
+  "protectedAttributes": ["gender", "region", "age_group"],
+  "adverseImpactThreshold": 0.80,
+  "autoBlockPromotion": true,
+  "notifyOnFlag": ["admin@bank.internal"],
+  "lastAuditDate": null,
+  "nextAuditDue": null
+}

@@ -1,17 +1,2 @@
-import os
-import logging
-from langchain_openai import ChatOpenAI
-
-logger = logging.getLogger(__name__)
-
-_DEFAULT_ENDPOINT = "https://integrate.api.nvidia.com/v1"
-
-
-def get_scribe_llm() -> ChatOpenAI:
-    return ChatOpenAI(
-        base_url=os.environ.get("NVIDIA_ENDPOINT", _DEFAULT_ENDPOINT),
-        model=os.environ.get("SCRIBE_MODEL", "deepseek-ai/deepseek-v4-pro"),
-        api_key=os.environ.get("NVIDIA_API_KEY", "placeholder"),
-        temperature=0.3,
-        max_tokens=2000,
-    )
+# Backwards-compat shim — use nvidia_client directly for new code.
+from .nvidia_client import get_scribe_llm, track_llm_call  # noqa: F401

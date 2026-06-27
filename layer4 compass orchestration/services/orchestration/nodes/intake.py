@@ -27,12 +27,20 @@ async def intake_node(state: CompassState) -> dict:
             f"(tier={risk_tier}, alarm={alarm_severity})"
         )
 
+    ensemble_disagreement = float(score_data.get("ensemble_disagreement") or 0.0)
+
     return {
         "risk_tier": risk_tier,
         "final_score": final_score,
         "action_score": action_score,
+        "ensemble_disagreement": ensemble_disagreement,
         "confirmed_events": [],
         "llm_inferred_events": [],
         "final_events": [],
         "risk_adjustment": 0.0,
+        # Item 2 — initialize dynamic routing fields
+        "cognition_rounds": 0,
+        "evidence_sufficient": None,
+        "escalation_reason": None,
+        "routing_path": ["intake"],
     }

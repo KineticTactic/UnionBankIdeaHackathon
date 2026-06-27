@@ -90,6 +90,12 @@ class CompassConsumer:
                 "gate_reason": None,
                 "dispatch_timestamp": None,
                 "outreach_id": None,
+                # Item 2: dynamic routing fields
+                "cognition_rounds": 0,
+                "evidence_sufficient": None,
+                "ensemble_disagreement": float(alarm.get("ensemble_disagreement") or 0.0),
+                "escalation_reason": None,
+                "routing_path": [],
             }
 
             result = await self.graph.ainvoke(initial_state)

@@ -30,7 +30,10 @@ async def merge_node(state: CompassState) -> dict:
         f"adjustment={total_adjustment:+.2f}"
     )
 
+    path = list(state.get("routing_path", []))
+    path.append("merge")
     return {
         "final_events": final_events,
         "risk_adjustment": total_adjustment,
+        "routing_path": path,
     }

@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
 from .kafka.consumer import CompassConsumer
+from .copilot.router import router as copilot_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -19,6 +20,8 @@ app = FastAPI(
     description="PCOP Layer 4 — Next-Best-Action Agentic Orchestration",
     version="1.0.0",
 )
+
+app.include_router(copilot_router)   # Item 5: /copilot/ask
 
 _consumer_task: asyncio.Task | None = None
 

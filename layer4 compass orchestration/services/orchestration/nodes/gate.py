@@ -31,6 +31,9 @@ async def gate_node(state: CompassState) -> dict:
 
     final_score = state.get("final_score") or 0.0
 
+    path = list(state.get("routing_path", []))
+    path.append("gate")
+
     if final_score > RESCUE_THRESHOLD:
         logger.info(
             f"GATE: Rescue override for {customer_id} "
@@ -40,6 +43,7 @@ async def gate_node(state: CompassState) -> dict:
             "gate_decision": "approved",
             "gate_reason": "rescue_override",
             "action_plan": {**action_plan, "suppressed": False},
+            "routing_path": path,
         }
 
     consent_flags = await get_consent_flags_raw(customer_id)
@@ -53,6 +57,7 @@ async def gate_node(state: CompassState) -> dict:
             "gate_decision": "suppressed",
             "gate_reason": reason,
             "action_plan": {**action_plan, "suppressed": True},
+            "routing_path": path,
         }
 
     cooldown_hours = COOLDOWN_HOURS.get(channel, 24)
@@ -69,6 +74,7 @@ async def gate_node(state: CompassState) -> dict:
                 "gate_decision": "suppressed",
                 "gate_reason": reason,
                 "action_plan": {**action_plan, "suppressed": True},
+                "routing_path": path,
             }
 
     touches_30d = len(channel_history)
@@ -79,6 +85,7 @@ async def gate_node(state: CompassState) -> dict:
             "gate_decision": "suppressed",
             "gate_reason": reason,
             "action_plan": {**action_plan, "suppressed": True},
+            "routing_path": path,
         }
 
     logger.info(
@@ -88,6 +95,7 @@ async def gate_node(state: CompassState) -> dict:
         "gate_decision": "approved",
         "gate_reason": None,
         "action_plan": {**action_plan, "suppressed": False},
+        "routing_path": path,
     }
 
 

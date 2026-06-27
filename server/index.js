@@ -51,7 +51,8 @@ app.use('/api/v2',        require('./routes/v2'));
 app.use('/api/kafka',     require('./routes/kafka'));
 app.use('/api/reviews',   require('./routes/reviews'));
 app.use('/api/rights',    require('./routes/dataRights'));
-app.use('/api/explain',   require('./routes/explainability'));
+app.use('/api/explain',    require('./routes/explainability'));
+app.use('/api/llm-usage', require('./routes/llmUsage'));
 
 // ── Health endpoints ──────────────────────────────────────────────────────────
 

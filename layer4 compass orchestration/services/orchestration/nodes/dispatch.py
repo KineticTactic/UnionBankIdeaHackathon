@@ -63,7 +63,10 @@ async def dispatch_node(state: CompassState) -> dict:
             f"(suppressed={action_plan.get('suppressed')})"
         )
 
+    path = list(state.get("routing_path", []))
+    path.append("dispatch")
     return {
         "dispatch_timestamp": dispatch_ts,
         "outreach_id": outreach_id,
+        "routing_path": path,
     }

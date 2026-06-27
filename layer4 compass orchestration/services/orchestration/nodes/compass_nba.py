@@ -3,7 +3,7 @@ import logging
 from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
 
 from ..state import CompassState
-from ..clients.azure_foundry import get_langchain_compass_llm
+from ..clients.nvidia_client import get_langchain_compass_llm
 from ..prompts.compass_system import COMPASS_SYSTEM_PROMPT
 from ..tools.db_reads import (
     get_offer_eligibility_tool,
@@ -13,6 +13,7 @@ from ..tools.db_reads import (
     get_life_events_tool,
 )
 from ..tools.db_writes import write_action_plan_tool
+from ..tools.rag_tool import retrieve_playbook_tool
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +45,7 @@ async def compass_nba_node(state: CompassState) -> dict:
     llm = get_langchain_compass_llm()
 
     tools = [
+        retrieve_playbook_tool,         # [LLM:0] local RAG — Item 3
         get_offer_eligibility_tool,
         get_channel_history_tool,
         get_rm_availability_tool,
@@ -55,6 +57,10 @@ async def compass_nba_node(state: CompassState) -> dict:
     llm_with_tools = llm.bind_tools(tools)
 
     events_summary = _format_events_summary(state.get("final_events", []))
+
+    # [LLM:0] Pre-fetch RAG context before invoking the LLM (no extra LLM call)
+    rag_query = _build_rag_query(state)
+    playbook_context = _fetch_rag_context(rag_query)
 
     human_message = HumanMessage(content=f"""
 Customer ID: {customer_id}
@@ -68,13 +74,18 @@ Risk adjustment applied: {(state.get('risk_adjustment') or 0.0):+.2f}
 
 {events_summary}
 
+## Retention playbook context (retrieved — use as guidance)
+
+{playbook_context}
+
 ## Your task
 
-1. Call get_offer_eligibility to see what offers this customer can receive
-2. Call get_channel_history to check recent outreach
-3. Call get_consent_flags to check opt-outs
-4. If considering rm_visit or call: call get_rm_availability
-5. Select the best channel and offer, then call write_action_plan
+1. Call retrieve_playbook_tool if you need more specific playbook or product terms context
+2. Call get_offer_eligibility to see what offers this customer can receive
+3. Call get_channel_history to check recent outreach
+4. Call get_consent_flags to check opt-outs
+5. If considering rm_visit or call: call get_rm_availability
+6. Select the best channel and offer aligned with the playbook context, then call write_action_plan
 """)
 
     messages = [
@@ -123,7 +134,38 @@ Risk adjustment applied: {(state.get('risk_adjustment') or 0.0):+.2f}
         )
         action_plan = _fallback_action_plan(state)
 
-    return {"action_plan": action_plan}
+    path = list(state.get("routing_path", []))
+    path.append("compass_nba")
+    return {"action_plan": action_plan, "routing_path": path}
+
+
+def _build_rag_query(state: dict) -> str:
+    tier = state.get("risk_tier", "")
+    events = [e["event_type"] for e in state.get("final_events", [])]
+    score = state.get("final_score") or 0.0
+    parts = [f"{tier} tier customer"]
+    if events:
+        parts.append(f"with life events: {', '.join(events)}")
+    if score > 0.80:
+        parts.append("high churn risk")
+    elif score > 0.60:
+        parts.append("medium churn risk")
+    return " ".join(parts) + " — best channel and offer"
+
+
+def _fetch_rag_context(query: str) -> str:
+    try:
+        from chronos.rag.retriever import retrieve
+        results = retrieve(query, k=3)
+        if not results:
+            return "No playbook context retrieved."
+        lines = []
+        for r in results:
+            lines.append(f"[{r['source']} / {r['section']}] {r['text'][:400]}")
+        return "\n\n".join(lines)
+    except Exception as e:
+        logger.debug("RAG fetch failed (non-fatal): %s", e)
+        return "Playbook retrieval unavailable."
 
 
 def _format_events_summary(events: list) -> str:

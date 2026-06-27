@@ -29,6 +29,9 @@ class ActionPlan(TypedDict):
     priority: int
     rationale: str
     suppressed: bool
+    # Item 2 additions
+    requires_human_approval: Optional[bool]
+    status: Optional[str]   # "PENDING_APPROVAL" | "QUEUED" | "SUPPRESSED"
 
 
 class CompassState(TypedDict):
@@ -43,6 +46,7 @@ class CompassState(TypedDict):
     risk_tier: Optional[str]
     final_score: Optional[float]
     action_score: Optional[float]
+    ensemble_disagreement: Optional[float]   # from CHRONOS score metadata
 
     # Populated by COGNITION or VERIFY
     confirmed_events: list[LifeEvent]
@@ -62,3 +66,9 @@ class CompassState(TypedDict):
     # Populated by DISPATCH
     dispatch_timestamp: Optional[str]
     outreach_id: Optional[int]
+
+    # Item 2 — dynamic routing fields
+    cognition_rounds: int           # how many evidence loops cognition has done
+    evidence_sufficient: Optional[bool]      # set by cognition self-assessment
+    escalation_reason: Optional[str]         # why routed to human review
+    routing_path: list[str]         # ordered list of nodes visited (for demo viz)

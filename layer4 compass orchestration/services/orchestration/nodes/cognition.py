@@ -1,9 +1,18 @@
+"""
+cognition.py — LLM reasoning node for ambiguous signal interpretation.
+
+[LLM:capped:2] per customer (MAX_EVIDENCE_LOOPS=2 enforces this).
+
+Item 2: tracks cognition_rounds and evidence_sufficient for the self-loop edge.
+Self-loop: if round 1 finds no events and budget remains → route_after_cognition
+returns "cognition" and we run again with expanded tool evidence. Hard cap at 2.
+"""
 import json
 import logging
 from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
 
 from ..state import CompassState
-from ..clients.azure_foundry import get_langchain_cognition_llm
+from ..clients.nvidia_client import get_langchain_cognition_llm
 from ..prompts.cognition_system import COGNITION_SYSTEM_PROMPT
 from ..tools.db_reads import (
     get_signal_results_tool,
@@ -14,19 +23,26 @@ from ..tools.db_reads import (
     get_enrichment_tool,
 )
 from ..tools.db_writes import write_life_event_tool, adjust_risk_score_tool
+from ..tools.rag_tool import retrieve_playbook_tool
 
 logger = logging.getLogger(__name__)
 
 MAX_TOOL_ROUNDS = 5
+MAX_EVIDENCE_LOOPS = 2   # hard cap on cognition self-loops [LLM:capped:2]
 
 
 async def cognition_node(state: CompassState) -> dict:
     customer_id = state["customer_id"]
-    logger.info(f"COGNITION: Starting inference for customer {customer_id}")
+    rounds = state.get("cognition_rounds", 0) + 1
+    logger.info(f"COGNITION [LLM:1]: {customer_id} (evidence loop {rounds}/{MAX_EVIDENCE_LOOPS})")
 
-    llm = get_langchain_cognition_llm()
+    path = list(state.get("routing_path", []))
+    path.append(f"cognition:{rounds}")
+
+    llm = get_langchain_cognition_llm(node=f"cognition_round{rounds}")
 
     read_tools = [
+        retrieve_playbook_tool,          # [LLM:0] local RAG — Item 3
         get_signal_results_tool,
         get_crm_notes_tool,
         get_transactions_tool,
@@ -39,7 +55,16 @@ async def cognition_node(state: CompassState) -> dict:
 
     llm_with_tools = llm.bind_tools(all_tools)
 
-    signal_summary = _format_signal_summary(state["signal_results"])
+    # On loop-back (rounds > 1), instruct the model to dig deeper
+    loop_instruction = ""
+    if rounds > 1:
+        loop_instruction = (
+            "\n\n## Evidence loop 2 of 2\n"
+            "You previously found no conclusive events. "
+            "Use additional tools (transactions, KYC, enrichment) to look harder. "
+            "If still inconclusive, conclude with your best assessment."
+        )
+
     human_message = HumanMessage(content=f"""
 Customer ID: {customer_id}
 As-of date: {state['as_of_date']}
@@ -48,13 +73,14 @@ Churn score: {(state.get('final_score') or 0.0):.3f}
 
 ## ARGUS signals detected
 
-{signal_summary}
+{_format_signal_summary(state["signal_results"])}
 
 ## Your task
 
 Analyse these signals and determine which life events are occurring.
 Use the available tools to gather evidence.
 Confirm events by calling write_life_event for each one with confidence >= 0.60.
+{loop_instruction}
 """)
 
     messages = [
@@ -62,7 +88,7 @@ Confirm events by calling write_life_event for each one with confidence >= 0.60.
         human_message,
     ]
 
-    inferred_events = []
+    inferred_events = list(state.get("llm_inferred_events", []))
     tool_call_count = 0
 
     for round_num in range(MAX_TOOL_ROUNDS):
@@ -71,9 +97,8 @@ Confirm events by calling write_life_event for each one with confidence >= 0.60.
 
         if not response.tool_calls:
             logger.info(
-                f"COGNITION: Agent completed after {round_num + 1} rounds, "
-                f"{tool_call_count} tool calls, "
-                f"{len(inferred_events)} events inferred"
+                f"COGNITION: Completed loop {rounds} after {round_num + 1} steps, "
+                f"{tool_call_count} tool calls, {len(inferred_events)} events total"
             )
             break
 
@@ -82,8 +107,7 @@ Confirm events by calling write_life_event for each one with confidence >= 0.60.
             tool_name = tool_call["name"]
             tool_args = tool_call["args"]
 
-            logger.debug(f"COGNITION: Tool call {tool_call_count} - {tool_name}({tool_args})")
-
+            logger.debug(f"COGNITION: Tool {tool_call_count} — {tool_name}({tool_args})")
             tool_result = await _execute_tool(tool_name, tool_args, customer_id, all_tools)
 
             if tool_name == "write_life_event_tool" and tool_result.get("success"):
@@ -94,19 +118,23 @@ Confirm events by calling write_life_event for each one with confidence >= 0.60.
                 tool_call_id=tool_call["id"],
             ))
     else:
-        logger.warning(
-            f"COGNITION: Reached MAX_TOOL_ROUNDS={MAX_TOOL_ROUNDS} "
-            f"for customer {customer_id}"
-        )
+        logger.warning(f"COGNITION: MAX_TOOL_ROUNDS={MAX_TOOL_ROUNDS} reached for {customer_id}")
 
-    return {"llm_inferred_events": inferred_events}
+    # Evidence sufficiency: if no events found on first loop and budget allows → loop back
+    evidence_sufficient = bool(inferred_events) or rounds >= MAX_EVIDENCE_LOOPS
+
+    return {
+        "llm_inferred_events": inferred_events,
+        "cognition_rounds": rounds,
+        "evidence_sufficient": evidence_sufficient,
+        "routing_path": path,
+    }
 
 
 def _format_signal_summary(signal_results: list) -> str:
     detected = [s for s in signal_results if s.get("detected")]
     if not detected:
         return "No signals detected."
-
     lines = []
     for s in detected:
         lines.append(
@@ -122,29 +150,11 @@ async def _execute_tool(
     tool_name: str, tool_args: dict, customer_id: str, all_tools: list
 ) -> dict:
     tool_args["customer_id"] = customer_id
-
     tool_map = {t.name: t for t in all_tools}
     if tool_name not in tool_map:
         return {"error": f"Unknown tool: {tool_name}"}
-
     try:
-        result = await tool_map[tool_name].ainvoke(tool_args)
-        return result
+        return await tool_map[tool_name].ainvoke(tool_args)
     except Exception as e:
         logger.error(f"Tool {tool_name} failed: {e}")
         return {"error": str(e), "tool": tool_name}
-
-
-def _should_use_full_cognition(state: CompassState) -> bool:
-    signals = state.get("signal_results", [])
-    ambiguous = [
-        s for s in signals if 0.40 <= s.get("confidence", 0) < 0.80 and s["detected"]
-    ]
-    tier = state.get("risk_tier", "watch")
-    severity = state.get("alarm_severity", "LOW")
-
-    if not ambiguous:
-        return False
-    if tier in ["watch", "low"] and severity not in ["CRITICAL", "HIGH"]:
-        return False
-    return True

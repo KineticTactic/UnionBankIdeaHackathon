@@ -19,6 +19,7 @@ import {
 import { ExplainabilityPanel } from '@/components/compliance/ExplainabilityPanel';
 import { DataRightsPanel } from '@/components/compliance/DataRightsPanel';
 import { ConsentStatusBadge } from '@/components/compliance/ConsentStatusBadge';
+import { RMCopilotPanel } from '@/components/copilot/RMCopilotPanel';
 
 const TABS = ['Overview','Risk Score','Signals','Transactions','Action Plan','Outreach','Survival','Explain','Data Rights'] as const;
 type Tab = typeof TABS[number];
@@ -562,6 +563,12 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
           </div>
         )}
       </div>
+
+      {/* Item 5: RM Copilot — on-demand, slide-in chat panel [LLM:1 per turn] */}
+      <RMCopilotPanel
+        customerId={c.customer_id}
+        customerName={c.full_name}
+      />
     </div>
   );
 }

@@ -84,4 +84,6 @@ async def verify_node(state: CompassState) -> dict:
                 f"(confidence={signal['confidence']:.2f})"
             )
 
-    return {"confirmed_events": confirmed_events}
+    path = list(state.get("routing_path", []))
+    path.append("verify")
+    return {"confirmed_events": confirmed_events, "routing_path": path}

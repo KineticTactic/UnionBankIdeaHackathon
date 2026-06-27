@@ -30,6 +30,16 @@ AIR_UPPER_BOUND = float(os.getenv("BIAS_AUDIT_AIR_UPPER", "1.20"))
 PROTECTED_ATTRIBUTES = ["gender", "region", "age_group"]
 
 RESULTS_FILE = Path(__file__).parent / "checkpoints" / "bias_audit_results.json"
+_CONFIG_FILE = Path(__file__).parent / "bias_audit_config.json"
+
+
+def _load_config() -> dict:
+    try:
+        if _CONFIG_FILE.exists():
+            return json.loads(_CONFIG_FILE.read_text())
+    except Exception:
+        pass
+    return {}
 
 
 def _age_group(age: int) -> str:
@@ -58,6 +68,10 @@ def run_bias_audit(
 
     Returns a dict with per-attribute AIR values and overall PASS/FAIL.
     """
+    cfg = _load_config()
+    protected_attrs = cfg.get("protectedAttributes", PROTECTED_ATTRIBUTES)
+    air_lower = cfg.get("adverseImpactThreshold", AIR_LOWER_BOUND)
+
     if not records:
         return {
             "status": "SKIPPED",
@@ -73,7 +87,7 @@ def run_bias_audit(
     results_by_attr: dict[str, Any] = {}
     overall_pass = True
 
-    for attr in PROTECTED_ATTRIBUTES:
+    for attr in protected_attrs:
         groups: dict[str, dict[str, int]] = {}
         for r in records:
             val = r.get(attr)
@@ -106,7 +120,7 @@ def run_bias_audit(
                 air = 1.0
             else:
                 air = rate / ref_rate if ref_rate > 0 else float("inf")
-            group_pass = AIR_LOWER_BOUND <= air <= AIR_UPPER_BOUND or g == ref_group
+            group_pass = air_lower <= air <= AIR_UPPER_BOUND or g == ref_group
             if not group_pass:
                 attr_pass = False
                 overall_pass = False
@@ -123,7 +137,7 @@ def run_bias_audit(
         results_by_attr[attr] = {
             "status":       "PASS" if attr_pass else "FAIL",
             "reference_group": ref_group,
-            "air_lower_bound": AIR_LOWER_BOUND,
+            "air_lower_bound": air_lower,
             "air_upper_bound": AIR_UPPER_BOUND,
             "groups":       sorted(group_results, key=lambda x: x["adverse_rate"], reverse=True),
         }

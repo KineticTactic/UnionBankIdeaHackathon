@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
@@ -355,15 +356,16 @@ class BatchScorer:
         return results
 
 
-def load_customers_from_db(bank_api_base: str | None = "http://localhost:3001") -> list[CustomerRecord]:
+def load_customers_from_db(bank_api_base: str | None = None) -> list[CustomerRecord]:
     """Load customer data from the PCOP Bank Demo API, falling back to DB query.
 
     Args:
-        bank_api_base: Base URL of the bank API server. If None, skips API call.
+        bank_api_base: Base URL of the bank API server. Defaults to BANK_API_BASE_URL env var.
 
     Returns:
         List of CustomerRecord objects ready for scoring.
     """
+    bank_api_base = bank_api_base or os.getenv("BANK_API_BASE_URL", "http://localhost:3001")
     if bank_api_base:
         from services.scoring.serving.bank_loader import load_customers_from_bank_api
         try:
@@ -460,7 +462,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="CHRONOS batch scorer")
     parser.add_argument("--customer-id", help="Score a single customer (debug mode)")
     parser.add_argument("--batch-size", type=int, default=DEFAULT_BATCH_SIZE)
-    parser.add_argument("--bank-api", default="http://localhost:3001", help="Bank API base URL (set to '' to disable)")
+    parser.add_argument("--bank-api", default=os.getenv("BANK_API_BASE_URL", "http://localhost:3001"), help="Bank API base URL (set to '' to disable)")
     parser.add_argument("--write-db", action="store_true", help="Write results to churn_scores table")
     args = parser.parse_args()
 

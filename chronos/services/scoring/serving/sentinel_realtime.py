@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import time
 from dataclasses import dataclass
 from typing import Any
@@ -57,9 +58,9 @@ class SENTINELRealTimeScorer:
     def __init__(
         self,
         onnx_path: str | None = None,
-        redis_url: str = "redis://localhost:6379",
+        redis_url: str = os.getenv("REDIS_URL", "redis://localhost:6379"),
         db_url: str | None = None,
-        kafka_brokers: str = "localhost:9092",
+        kafka_brokers: str = os.getenv("KAFKA_BROKERS", "localhost:9092"),
     ) -> None:
         from services.scoring.serving.onnx_runtime import TARERuntimeSession
 

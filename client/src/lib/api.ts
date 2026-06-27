@@ -90,8 +90,22 @@ export const api = {
     return fetchApi(`/api/outreach?${sp}`);
   },
   getOutreachById:    (id: string) => fetchApi(`/api/outreach/${id}`),
-  generateOutreach:   (customer_id: string) =>
-    fetchApi('/api/outreach/generate', { method: 'POST', body: JSON.stringify({ customer_id }) }),
+  getOutreachJob:     (jobId: string) => fetchApi(`/api/outreach/job/${jobId}`),
+
+  // generateOutreach: POST /generate → if 202+jobId, poll until complete (max 30s).
+  // Falls back transparently when the queue is unavailable (sync 200 response).
+  generateOutreach: async (customer_id: string) => {
+    const initial = await fetchApi('/api/outreach/generate', { method: 'POST', body: JSON.stringify({ customer_id }) });
+    if (!initial.jobId || initial.status !== 'queued') return initial; // sync fallback path
+    const jobId = initial.jobId;
+    for (let i = 0; i < 20; i++) {
+      await new Promise(r => setTimeout(r, 1500));
+      const poll = await fetchApi(`/api/outreach/job/${jobId}`);
+      if (poll.state === 'completed') return { status: 'ok', ...poll.result };
+      if (poll.state === 'failed')    throw new Error(poll.failedReason || 'HERALD generation failed');
+    }
+    throw new Error('HERALD generation timed out — check approval queue');
+  },
 
   // ── Analysis ────────────────────────────────────────────────────────────────
   analyzeCustomer:    (customer_id: string) =>

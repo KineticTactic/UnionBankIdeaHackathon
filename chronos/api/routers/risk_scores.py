@@ -7,8 +7,12 @@ from collections.abc import Generator
 from datetime import date, datetime
 from typing import Annotated, Optional
 
+import os
+
 import requests
 from fastapi import APIRouter, Depends, HTTPException, Query
+
+BANK_API_BASE = os.getenv("BANK_API_BASE_URL", "http://localhost:3001")
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -66,7 +70,7 @@ async def get_token_sequence(
     db: Annotated[Session, Depends(_get_db)] = None,  # type: ignore[assignment]
 ) -> TokenSequenceResponse:
     """Build the TARE token sequence for a customer from live bank data."""
-    bank_api = "http://localhost:3001/api"
+    bank_api = f"{BANK_API_BASE}/api"
 
     if as_of_date_str:
         as_of_date = date.fromisoformat(as_of_date_str)
@@ -114,7 +118,7 @@ async def analyze_customer(
     TARE + HABITAT + FusionX, generates PRISM reason codes, persists to
     the database, and returns the scored result with full diagnostics.
     """
-    bank_api = "http://localhost:3001/api"
+    bank_api = f"{BANK_API_BASE}/api"
     as_of_date = date.today()
 
     from services.scoring.serving.bank_loader import (

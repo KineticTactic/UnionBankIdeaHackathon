@@ -127,7 +127,7 @@ router.get('/export', verifyToken, async (req, res) => {
 
     const actor = req.user?.username || 'system';
 
-    const customer  = ds.getCustomerById(customerId);
+    const customer  = await ds.getCustomerById(customerId);
     if (!customer) return res.status(404).json({ status: 'error', message: 'Customer not found' });
 
     // Strip sensitive PII fields before export — export purpose is accountability, not surveillance

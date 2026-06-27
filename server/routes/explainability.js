@@ -97,11 +97,11 @@ function generateNarrative(customer, score, shapValues) {
 }
 
 // ── GET /api/explain/churn-score?customerId=C-0000001 ────────────────────────
-router.get('/churn-score', verifyToken, (req, res) => {
+router.get('/churn-score', verifyToken, async (req, res) => {
     const { customerId } = req.query;
     if (!customerId) return res.status(400).json({ status: 'error', message: 'customerId required' });
 
-    const snap = ds.getCustomerSnapshot(customerId);
+    const snap = await ds.getCustomerSnapshot(customerId);
     if (!snap) return res.status(404).json({ status: 'error', message: 'Customer not found' });
 
     const { customer, score } = snap;
@@ -127,11 +127,11 @@ router.get('/churn-score', verifyToken, (req, res) => {
 });
 
 // ── GET /api/explain/signals?customerId=C-0000001 ────────────────────────────
-router.get('/signals', verifyToken, (req, res) => {
+router.get('/signals', verifyToken, async (req, res) => {
     const { customerId } = req.query;
     if (!customerId) return res.status(400).json({ status: 'error', message: 'customerId required' });
 
-    const snap = ds.getCustomerSnapshot(customerId);
+    const snap = await ds.getCustomerSnapshot(customerId);
     if (!snap) return res.status(404).json({ status: 'error', message: 'Customer not found' });
 
     const { signals } = snap;

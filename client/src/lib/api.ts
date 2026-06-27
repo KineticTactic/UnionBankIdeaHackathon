@@ -124,4 +124,40 @@ export const api = {
 
   // ── Kafka ────────────────────────────────────────────────────────────────────
   getKafkaStatus:     () => fetchApi('/api/kafka/status'),
+
+  // ── Approval Queue (HERALD human-in-the-loop) ────────────────────────────────
+  getPendingApprovals: (params: Record<string, string | undefined> = {}) => {
+    const sp = new URLSearchParams();
+    Object.entries(params).forEach(([k, v]) => { if (v !== undefined) sp.set(k, v); });
+    return fetchApi(`/api/outreach/pending?${sp}`);
+  },
+  getApprovalById:  (id: string) => fetchApi(`/api/outreach/approval/${id}`),
+  approveOutreach:  (id: string, reviewedBy?: string) =>
+    fetchApi(`/api/outreach/approve/${id}`, { method: 'POST', body: JSON.stringify({ reviewedBy }) }),
+  rejectOutreach:   (id: string, rejectionReason: string, reviewedBy?: string) =>
+    fetchApi(`/api/outreach/reject/${id}`, { method: 'POST', body: JSON.stringify({ rejectionReason, reviewedBy }) }),
+
+  // ── Consent & Data Rights (DPDPA 2023 + TRAI TCCCPR 2025) ────────────────────
+  getConsent:       (customerId: string) => fetchApi(`/api/rights/consent?customerId=${encodeURIComponent(customerId)}`),
+  grantDpdpaConsent:(customerId: string) =>
+    fetchApi('/api/rights/consent/dpdpa', { method: 'POST', body: JSON.stringify({ customerId, grant: true }) }),
+  revokeDpdpaConsent:(customerId: string) =>
+    fetchApi('/api/rights/consent/dpdpa', { method: 'POST', body: JSON.stringify({ customerId, grant: false }) }),
+  grantTraiConsent: (customerId: string, channels: string[]) =>
+    fetchApi('/api/rights/consent/trai', { method: 'POST', body: JSON.stringify({ customerId, grant: true, channels }) }),
+  revokeTraiConsent:(customerId: string) =>
+    fetchApi('/api/rights/consent/trai', { method: 'POST', body: JSON.stringify({ customerId, grant: false }) }),
+  addOptOut:        (customerId: string, channel: string) =>
+    fetchApi('/api/rights/optout', { method: 'POST', body: JSON.stringify({ customerId, channel }) }),
+  removeOptOut:     (customerId: string, channel: string) =>
+    fetchApi('/api/rights/optout', { method: 'POST', body: JSON.stringify({ customerId, channel, remove: true }) }),
+  exportCustomerData:(customerId: string) => fetchApi(`/api/rights/export?customerId=${encodeURIComponent(customerId)}`),
+  requestErasure:   (customerId: string, reason?: string) =>
+    fetchApi('/api/rights/erase', { method: 'POST', body: JSON.stringify({ customerId, reason }) }),
+  getErasureStatus: (customerId: string) => fetchApi(`/api/rights/erasure-status?customerId=${encodeURIComponent(customerId)}`),
+
+  // ── Explainability (RBI AI Governance 2024) ───────────────────────────────────
+  getChurnExplanation:(customerId: string) => fetchApi(`/api/explain/churn-score?customerId=${encodeURIComponent(customerId)}`),
+  getSignalExplanations:(customerId: string) => fetchApi(`/api/explain/signals?customerId=${encodeURIComponent(customerId)}`),
+  getExplainModelHealth:() => fetchApi('/api/explain/model-health'),
 };

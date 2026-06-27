@@ -9,6 +9,7 @@ import {
   AreaChart, Area, BarChart, Bar, LineChart, Line,
   ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Legend,
 } from 'recharts';
+import { BiasAuditCard } from '@/components/compliance/BiasAuditCard';
 
 export default function AnalyticsPage() {
   const router  = useRouter();
@@ -32,6 +33,9 @@ export default function AnalyticsPage() {
         <h1 className="text-[22px] font-black text-slate-900">Analytics — VERDICT &amp; ORACLE</h1>
         <p className="text-[13px] text-slate-400 mt-0.5">Causal uplift measurement · channel optimisation · continuous learning</p>
       </div>
+
+      {/* Bias Audit — RBI AI Governance 2024 §9 */}
+      <BiasAuditCard />
 
       {loading ? (
         <div className="space-y-4">{Array.from({length:4}).map((_,i)=><Skeleton key={i} className="h-48 rounded-xl"/>)}</div>

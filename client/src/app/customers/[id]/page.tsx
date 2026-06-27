@@ -16,8 +16,11 @@ import {
   ArrowLeft, Building2, MapPin, Clock, User, TrendingUp,
   AlertCircle, CheckCircle, Mail, MessageSquare, Bell, Phone, ChevronRight, Zap,
 } from 'lucide-react';
+import { ExplainabilityPanel } from '@/components/compliance/ExplainabilityPanel';
+import { DataRightsPanel } from '@/components/compliance/DataRightsPanel';
+import { ConsentStatusBadge } from '@/components/compliance/ConsentStatusBadge';
 
-const TABS = ['Overview','Risk Score','Signals','Transactions','Action Plan','Outreach','Survival'] as const;
+const TABS = ['Overview','Risk Score','Signals','Transactions','Action Plan','Outreach','Survival','Explain','Data Rights'] as const;
 type Tab = typeof TABS[number];
 
 const METHOD_COLORS: Record<string, string> = {
@@ -147,6 +150,9 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
             </div>
             <div className="flex flex-col gap-1.5 items-end">
               <RiskBadge tier={c.risk_tier} size="md" />
+              <div className="relative">
+                <ConsentStatusBadge customerId={c.customer_id} />
+              </div>
               {c.life_event && (
                 <span className="inline-flex items-center gap-1 text-[10px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full border border-purple-200">
                   {c.life_event.replace(/_/g,' ')}
@@ -505,6 +511,16 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
               </>
             )}
           </div>
+        )}
+
+        {/* ── Explainability ───────────────────────────────────────────────── */}
+        {tab === 'Explain' && (
+          <ExplainabilityPanel customerId={c.customer_id} />
+        )}
+
+        {/* ── Data Rights ──────────────────────────────────────────────────── */}
+        {tab === 'Data Rights' && (
+          <DataRightsPanel customerId={c.customer_id} />
         )}
 
         {/* ── Survival ─────────────────────────────────────────────────────── */}

@@ -1,0 +1,422 @@
+[
+  {
+    "customerId": "C-00000001",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000002",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000003",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000004",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000005",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000006",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000007",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000008",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000009",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000010",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000011",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000012",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000013",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000014",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000015",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000016",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000017",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000018",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000019",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customerId": "C-00000020",
+    "dpdpaConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "purpose": "retention_outreach",
+      "version": "v1.0"
+    },
+    "traiConsent": {
+      "granted": true,
+      "timestamp": "2026-06-27T19:50:48.745Z",
+      "channel": [
+        "SMS",
+        "EMAIL",
+        "PUSH"
+      ],
+      "dltEntityId": "DEMO-DLT-001"
+    },
+    "optOutChannels": [],
+    "lastUpdated": "2026-06-27T19:50:48.745Z"
+  }
+]

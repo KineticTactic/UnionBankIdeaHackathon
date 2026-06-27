@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const config = require('./config');
 const errorHandler = require('./middleware/errorHandler');
 const kafkaService = require('./services/kafkaService');
+const retentionService = require('./services/retentionService');
+const approvalService  = require('./services/approvalService');
 
 const app = express();
 
@@ -20,6 +22,8 @@ app.use('/api/chronos',   require('./routes/chronos'));
 app.use('/api/v2',        require('./routes/v2'));
 app.use('/api/kafka',     require('./routes/kafka'));
 app.use('/api/reviews',   require('./routes/reviews'));
+app.use('/api/rights',    require('./routes/dataRights'));
+app.use('/api/explain',   require('./routes/explainability'));
 
 app.use((req, res, next) => {
     res.status(404).json({ status: 'error', message: 'Route not found' });
@@ -31,6 +35,13 @@ const server = app.listen(config.port, async () => {
     console.log(`[PCOP Server] Listening on port ${config.port}`);
     console.log(`[PCOP Server] Bank API URL: ${config.bankApiBaseUrl}`);
     await kafkaService.init();
+
+    // Compliance background jobs
+    retentionService.scheduleRetentionChecks();
+    setInterval(async () => {
+        try { await approvalService.expireStaleApprovals(); }
+        catch (e) { console.error('[ApprovalExpiry ERROR]', e.message); }
+    }, 60 * 60 * 1000); // hourly
 });
 
 process.on('SIGTERM', async () => { await kafkaService.shutdown(); server.close(() => process.exit(0)); });

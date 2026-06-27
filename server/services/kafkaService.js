@@ -18,6 +18,18 @@
 const { Kafka, logLevel } = require('kafkajs');
 const { EventEmitter } = require('events');
 const dataStore = require('./dataStore');
+const auditLog  = require('./auditLogService');
+const { readJson } = require('../utils/jsonStore');
+const path = require('path');
+
+const ERASURE_FILE = path.join(__dirname, '..', 'data', 'erasureList.json');
+
+function isErased(customerId) {
+    try {
+        const list = readJson(ERASURE_FILE, []);
+        return list.some(e => e.customerId === customerId && e.status !== 'REJECTED');
+    } catch { return false; }
+}
 
 // ── Configuration ────────────────────────────────────────────────────────────
 
@@ -85,6 +97,11 @@ function handleScoreUpdate({ customer_id, churn_score, risk_tier, model_version,
 
 function handleSignalDetection({ customer_id, signal_type, confidence, cusum_value, alarm_threshold, method, evidence }) {
     if (!customer_id) return;
+    // DPDPA 2023 §14 — do not process signals for customers who have requested erasure
+    if (isErased(customer_id)) {
+        console.log(`[KafkaService] Signal suppressed for erased customer ${customer_id}`);
+        return;
+    }
     const sig = { signal_type, confidence, cusum_value, alarm_threshold, method, detected: true, days_active: 1 };
     dataStore.applySignalOverride(customer_id, sig);
     if (!liveState.signalOverrides[customer_id]) liveState.signalOverrides[customer_id] = [];
@@ -93,6 +110,14 @@ function handleSignalDetection({ customer_id, signal_type, confidence, cusum_val
         { signal_type, confidence, cusum_value },
         `Signal detected: ${signal_type.replace(/_/g,' ')} · ${method} · conf ${Math.round(confidence*100)}%`
     );
+    auditLog.logEvent({
+        eventType:    'SIGNAL_FIRED',
+        customerId:   customer_id,
+        actor:        'ARGUS',
+        layer:        'ARGUS',
+        payload:      { signal_type, confidence, cusum_value, alarm_threshold, method },
+        modelVersion: 'ARGUS-v1.0',
+    }).catch(err => console.error('[KafkaService] Audit log error:', err.message));
 }
 
 function handleTransaction({ customer_id, amount, direction, category, channel, merchant_name }) {

@@ -1,0 +1,112 @@
+[
+  {
+    "segment": "HNI_high_churn",
+    "signals": ["churn_score_gt_0.80", "portfolio_value_gt_500k", "app_inactive_30d"],
+    "channel": "call",
+    "offer": "premium_fd_rate_bump",
+    "outcome": "converted",
+    "uplift_pct": 34.2,
+    "sample_size": 812,
+    "notes": "RM call within 48h. Rate bump framing outperformed fee waiver framing 2:1."
+  },
+  {
+    "segment": "HNI_high_churn",
+    "signals": ["churn_score_gt_0.80", "portfolio_value_gt_500k"],
+    "channel": "email",
+    "offer": "premium_fd_rate_bump",
+    "outcome": "neutral",
+    "uplift_pct": 6.1,
+    "sample_size": 403,
+    "notes": "Email alone insufficient for HNI segment. Always pair with call."
+  },
+  {
+    "segment": "mid_tier_salary_gap",
+    "signals": ["salary_credit_gap_gt_2m", "churn_score_0.60_0.80"],
+    "channel": "email",
+    "offer": "zero_balance_waiver_3m",
+    "outcome": "converted",
+    "uplift_pct": 22.8,
+    "sample_size": 2341,
+    "notes": "Waiver + overdraft pre-approval bundle 38% better than waiver alone."
+  },
+  {
+    "segment": "mid_tier_salary_gap",
+    "signals": ["salary_credit_gap_gt_2m"],
+    "channel": "sms",
+    "offer": "zero_balance_waiver_3m",
+    "outcome": "low_response",
+    "uplift_pct": 4.3,
+    "sample_size": 1102,
+    "notes": "SMS open rate too low for this segment. Use email as primary."
+  },
+  {
+    "segment": "digital_dropout",
+    "signals": ["app_logins_30d_eq_0", "was_active_prior_90d"],
+    "channel": "app_push",
+    "offer": "reactivation_cashback_100",
+    "outcome": "converted",
+    "uplift_pct": 41.5,
+    "sample_size": 5820,
+    "notes": "Best performing offer for digital dropout. Send at 10AM or 6PM. Avoid Mondays."
+  },
+  {
+    "segment": "digital_dropout",
+    "signals": ["app_logins_30d_eq_0", "was_active_prior_90d"],
+    "channel": "sms",
+    "offer": "reactivation_cashback_100",
+    "outcome": "converted",
+    "uplift_pct": 28.7,
+    "sample_size": 3210,
+    "notes": "Fallback when push not available (notifications disabled)."
+  },
+  {
+    "segment": "job_change_risk",
+    "signals": ["employer_change_detected", "salary_credit_source_changed"],
+    "channel": "call",
+    "offer": "loan_preapproval_letter",
+    "outcome": "converted",
+    "uplift_pct": 29.1,
+    "sample_size": 634,
+    "notes": "Congratulatory framing on new job performs best. Loan pre-approval as 'welcome gift'."
+  },
+  {
+    "segment": "job_change_risk",
+    "signals": ["employer_change_detected"],
+    "channel": "email",
+    "offer": "salary_account_benefits_deck",
+    "outcome": "neutral",
+    "uplift_pct": 8.4,
+    "sample_size": 891,
+    "notes": "Email alone for job change segment underperforms. Pair with RM call for HNI."
+  },
+  {
+    "segment": "festival_reactivation",
+    "signals": ["dormant_days_gt_60", "seasonal_spend_profile_match"],
+    "channel": "email",
+    "offer": "festival_cashback_300",
+    "outcome": "converted",
+    "uplift_pct": 18.6,
+    "sample_size": 4102,
+    "notes": "Launch 7 days before festival. Personalize to spend category (groceries/travel/electronics)."
+  },
+  {
+    "segment": "fee_sensitive_low_balance",
+    "signals": ["avg_balance_lt_threshold", "non_maintenance_charge_triggered"],
+    "channel": "sms",
+    "offer": "fee_reversal_one_time",
+    "outcome": "converted",
+    "uplift_pct": 31.0,
+    "sample_size": 7834,
+    "notes": "One-time fee reversal with upgrade nudge. Best if sent same day as charge debit."
+  },
+  {
+    "segment": "credit_card_lapsing",
+    "signals": ["cc_transactions_30d_lt_2", "cc_active_gt_6m"],
+    "channel": "app",
+    "offer": "milestone_cashback_activation",
+    "outcome": "converted",
+    "uplift_pct": 25.3,
+    "sample_size": 2109,
+    "notes": "In-app banner with spend milestone (e.g. 'Spend ₹5,000 this month, earn ₹250 extra cashback')."
+  }
+]

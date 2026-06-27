@@ -60,3 +60,6 @@ class HeraldState(TypedDict):
     dispatch_provider_id: Optional[str]
     content_store_id: Optional[int]
     human_review_required: bool
+    # Item 4 — deterministic fact-check (populated by fact_check_node)
+    fact_check_violations: Optional[list]
+    fact_check_passed: Optional[bool]

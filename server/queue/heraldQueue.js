@@ -21,7 +21,9 @@ let heraldQueue  = null;
 let heraldWorker = null;
 
 function _connection() {
-    return new Redis(config.redisUrl, { maxRetriesPerRequest: null, enableOfflineQueue: false });
+    const conn = new Redis(config.redisUrl, { maxRetriesPerRequest: null, enableOfflineQueue: false });
+    conn.on('error', () => {}); // suppress unhandled-error crashes; BullMQ logs failures internally
+    return conn;
 }
 
 // ── Cache helpers ─────────────────────────────────────────────────────────────
@@ -143,8 +145,25 @@ function enqueueHerald(customerId, snapshot, requestedBy) {
     });
 }
 
-function startHeraldWorker() {
+async function startHeraldWorker() {
     if (heraldWorker) return;
+
+    // Probe Redis before creating BullMQ connections — avoids infinite retry spam.
+    const probe = new Redis(config.redisUrl, {
+        lazyConnect: true, connectTimeout: 1500,
+        maxRetriesPerRequest: 1, enableOfflineQueue: false,
+    });
+    probe.on('error', () => {});
+    try {
+        await probe.connect();
+        await probe.ping();
+    } catch {
+        try { probe.disconnect(); } catch (_) {}
+        console.warn('[HERALD] Redis unavailable — BullMQ worker disabled, using synchronous fallback');
+        return;
+    }
+    await probe.disconnect().catch(() => {});
+
     try {
         const connection = _connection();
         heraldQueue  = new Queue(QUEUE_NAME, { connection: _connection() });
@@ -155,8 +174,6 @@ function startHeraldWorker() {
         heraldWorker.on('failed', (job, err) => console.error(`[HERALD worker] job ${job?.id} failed:`, err.message));
         console.log('[HERALD] BullMQ worker started');
     } catch (exc) {
-        // Redis / BullMQ unavailable (DEMO_MODE without Redis) — the API
-        // will fall back to a synchronous HERALD path automatically.
         console.warn('[HERALD] BullMQ worker unavailable, using synchronous fallback:', exc.message);
         heraldQueue  = null;
         heraldWorker = null;

@@ -1,0 +1,12 @@
+{
+  "name": "pcop",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --names server,client --prefix-colors blue,green \"cd server && node index.js\" \"npm run dev --prefix client\"",
+    "start": "concurrently --names server,client --prefix-colors blue,green \"cd server && node index.js\" \"npm start --prefix client\"",
+    "install:all": "npm install --prefix server && npm install --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

@@ -285,8 +285,8 @@ async function startKafka() {
     const kafka = new Kafka({
         clientId: KAFKA_CLIENT_ID,
         brokers:  KAFKA_BROKERS,
-        logLevel: logLevel.ERROR,
-        retry:    { retries: 3, initialRetryTime: 300 },
+        logLevel: logLevel.NOTHING,
+        retry:    { retries: 2, initialRetryTime: 300 },
         connectionTimeout: 3_000,
         requestTimeout:    5_000,
     });

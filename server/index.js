@@ -116,7 +116,7 @@ async function start() {
 
     try {
         const { startHeraldWorker } = require('./queue/heraldQueue');
-        startHeraldWorker();
+        await startHeraldWorker();
     } catch (e) {
         console.warn('[PCOP] HERALD worker unavailable (Redis not configured):', e.message);
     }
@@ -142,6 +142,7 @@ async function start() {
 
 async function shutdown(signal) {
     console.log(`[PCOP] ${signal} — graceful shutdown`);
+    setTimeout(() => process.exit(1), 10_000).unref(); // backstop if cleanup hangs
     if (_server) _server.close();
     try { const { closeHeraldWorker } = require('./queue/heraldQueue'); await closeHeraldWorker(); } catch (_) {}
     try { const { shutdown: ks } = require('./services/kafkaService'); await ks(); } catch (_) {}
@@ -149,8 +150,6 @@ async function shutdown(signal) {
     try { await require('./services/eventBus').close(); } catch (_) {}
     process.exit(0);
 }
-
-setTimeout(() => process.exit(1), 10_000).unref(); // backstop if shutdown hangs
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT',  () => shutdown('SIGINT'));

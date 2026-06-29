@@ -1,5 +1,5 @@
 'use strict';
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 
 const _list = (s, def) => (s || def || '').split(',').map(x => x.trim()).filter(Boolean);
 

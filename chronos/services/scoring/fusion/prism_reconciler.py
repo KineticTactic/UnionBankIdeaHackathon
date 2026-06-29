@@ -109,14 +109,19 @@ class PRISMReconciler:
         shap_codes: list[dict],
         fusion_weights: dict[str, float],
         top_k: int = 3,
+        graph_reason_codes: list[dict] | None = None,
     ) -> list[ReasonCode]:
-        """Produce top-k unified reason codes from both model outputs.
+        """Produce top-k unified reason codes from TARE, HABITAT, and optionally GraphSAGE.
 
         Args:
             attention_token_ids: Top attention token IDs from TARE (non-PAD).
-            shap_codes: List of SHAP reason code dicts from HABITATScorer.shap_reason_codes().
-            fusion_weights: Dict with 'tare' and 'habitat' weight floats.
+            shap_codes: SHAP reason code dicts from HABITATScorer.shap_reason_codes().
+            fusion_weights: Dict with 'tare', 'habitat', and optionally 'graphsage' weights.
             top_k: Number of reason codes to return.
+            graph_reason_codes: Optional attribution codes from
+                GraphSAGEScorer.attribution_reason_codes(). Same format as shap_codes:
+                [{"feature": str, "shap_value": float, "direction": str}, ...].
+                If None or graphsage weight is 0, GraphSAGE is not included.
 
         Returns:
             List of ReasonCode objects ordered by importance.
@@ -124,6 +129,7 @@ class PRISMReconciler:
         id_to_token = {v: k for k, v in VOCAB.items()}
         w_tare = fusion_weights.get("tare", 0.55)
         w_hab = fusion_weights.get("habitat", 0.45)
+        w_graph = fusion_weights.get("graphsage", 0.0)
 
         category_scores: dict[str, dict] = {}
 
@@ -144,6 +150,16 @@ class PRISMReconciler:
                 continue
             importance = w_hab * abs(code.get("shap_value", 0.0))
             _accumulate(category_scores, category, importance, "tabular")
+
+        # Accumulate GraphSAGE contributions (uses same FEATURE_TAXONOMY as HABITAT)
+        if graph_reason_codes and w_graph > 0.0:
+            for code in graph_reason_codes:
+                feature = code["feature"]
+                category = FEATURE_TAXONOMY.get(feature)
+                if not category:
+                    continue
+                importance = w_graph * abs(code.get("shap_value", 0.0))
+                _accumulate(category_scores, category, importance, "tabular")
 
         # Normalize and sort
         if not category_scores:

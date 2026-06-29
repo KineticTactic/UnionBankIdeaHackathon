@@ -1,1 +1,8 @@
-{"tare": 0.50, "habitat": 0.50}
+{
+  "tare": 0.35,
+  "habitat": 0.30,
+  "graphsage": 0.20,
+  "genesis": 0.15,
+  "version": "v2",
+  "note": "GraphSAGE trained on 10k real bank customers (peer-similarity graph). Genesis weight applied as cold-start fallback blend. When FusionX.calibrate3() runs with real outcomes it will override tare/habitat/graphsage using inverse-Brier weighting."
+}

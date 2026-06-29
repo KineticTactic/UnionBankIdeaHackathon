@@ -52,6 +52,9 @@ ml/checkpoints/*.onnx
 !ml/checkpoints/tare_finetune_best.pt
 !ml/checkpoints/tare_finetune_final.pt
 !ml/checkpoints/tare_pretrain_final.pt
+!ml/checkpoints/graphsage_churn.pt
+!ml/checkpoints/graphsage_best.pt
+!ml/checkpoints/graphsage_node_attr.json
 *.h5
 *.hdf5
 mlruns/

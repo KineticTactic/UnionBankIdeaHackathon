@@ -20,6 +20,10 @@ Banks lose customers silently — churn typically takes 60–90 days to manifest
 
 📓 **Technical Walkthrough:** [Open in Google Colab](https://colab.research.google.com/drive/1tOCU-VWpDs-SW6dNmlDM_rAdbpCsEbit?usp=sharing)
 
+**Architecture, stage registry, and inter-service contracts:** see [ARCHITECTURE.md](ARCHITECTURE.md).
+
+**Bubbletea Dev Console:** see [tui/README.md](tui/README.md).
+
 **Demo credentials:**
 
 | Role | Username | Password |
@@ -63,45 +67,39 @@ Banks lose customers silently — churn typically takes 60–90 days to manifest
 ### Prerequisites
 - Node.js ≥ 20
 - Python 3.11+ with Poetry (`pip install poetry`) — only for ML layer
+- Go 1.22+ (only for the Bubbletea TUI)
 - Docker Desktop — only for full Kafka stack
 
 ---
 
-### Step 1 — Start the API server (port 8000)
+### Option A — One-command demo (Bubbletea TUI)
+
+The recommended way to run the entire system is the **PCOP Dev Console** —
+a single Go binary that starts every service, streams their logs in
+color, monitors health, and exposes a 27-command palette + a
+cron-scheduler.
+
+```bash
+cp .env.example .env
+docker compose up -d            # Postgres + Redis + Kafka + MLflow
+cd tui && go run .              # auto-spawns all 7 layers + frontend
+```
+
+See `tui/README.md` and `ARCHITECTURE.md` for the full layout.
+
+### Option B — Manual start (one terminal per service)
+
+#### Step 1 — Start the API server (port 8000)
 
 ```bash
 cd server
 npm install
-```
-
-Create `server/.env`:
-
-```env
-PORT=8000
-JWT_SECRET=pcop-hackathon-2026-secret
-BANK_API_BASE_URL=http://localhost:3001
-CHRONOS_BASE_URL=http://localhost:8001
-
-# NVIDIA DeepSeek V4 Pro (for HERALD outreach generation)
-NVIDIA_ENDPOINT=https://integrate.api.nvidia.com/v1/chat/completions
-NVIDIA_API_KEY=<your-nvidia-api-key>
-NVIDIA_MODEL=deepseek-ai/deepseek-v4-pro
-
-# Kafka (optional — simulation fallback fires automatically if absent)
-KAFKA_BROKERS=localhost:9092
-KAFKA_CLIENT_ID=pcop-intelligence-server
-KAFKA_GROUP_ID=pcop-consumers
-```
-
-```bash
 node index.js
 ```
 
 The server starts with an in-memory data store and Kafka simulation mode — **no additional services required for a working demo**.
 
----
-
-### Step 2 — Start the frontend (port 3000)
+#### Step 2 — Start the frontend (port 3000)
 
 ```bash
 cd client
@@ -111,35 +109,34 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) and log in with `admin / admin123`.
 
----
-
-### Step 3 (optional) — Start the bank data server (port 3001)
+#### Step 3 (recommended) — Start the bank data server (port 3001)
 
 ```bash
 cd bank
 npm install
-cp .env.example .env
 npm run dev
 ```
 
-Set `BANK_API_BASE_URL=http://localhost:3001` in `server/.env` to activate this upstream.
-
----
-
-### Step 4 (optional) — Run the ML scoring service (port 8001)
+#### Step 4 (recommended) — Start CHRONOS and the layer shims
 
 ```bash
-cd chronos
-poetry install
-cp .env.example .env
-poetry run uvicorn api.main:app --host 0.0.0.0 --port 8001 --reload
+cd chronos && poetry install && poetry run uvicorn api.main:app --host 0.0.0.0 --port 8001 &
+cd ../pcop_layer2_argus && PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8002 &
+cd "../layer4 compass orchestration" && PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8004 &
+cd "../layer5 herald content generation" && PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8005 &
+cd "../layer6 verdict measurement" && PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8006 &
+cd "../layer7 oracle analytics" && PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8007 &
 ```
 
-Pre-computed score snapshots in `chronos/data/` are used by default — the FastAPI service is only needed for live re-scoring.
+#### Step 5 — Run the end-to-end pipeline test
 
----
+```bash
+python3 scripts/e2e_test.py --limit 5
+```
 
-### Step 5 (optional) — Train models from scratch
+Exits non-zero if any stage fails or returns a mock response.
+
+#### Step 6 (optional) — Train models from scratch
 
 ```bash
 cd chronos
@@ -330,6 +327,22 @@ All data used in this project is **100% synthetic** — no real customer PII was
 | **Isam Ahammed** | ARGUS signal detection + CHRONOS ensemble — statistical modelling and ML |
 | **Atrijo Pal** | COMPASS, HERALD, VERDICT, ORACLE — agentic orchestration, personalisation, causal measurement |
 | **Rudrajeet Pal** | REST API, database layer, full-stack dashboard — infrastructure and delivery |
+
+---
+
+## Demo Readiness Checklist
+
+| # | Item | Status | Notes |
+|---|------|--------|-------|
+| 1 | `GET /health` works on all 7 stage servers and the orchestrator | ✅ | `bank/`, `chronos/`, `argus/`, `compass/`, `herald/`, `verdict/`, `oracle/` shims all expose `/health` returning `{"status":"ok","stage":N,"stage_name":"..."}`. Orchestrator also exposes `/health` and `/health/stages` (probes all 7). |
+| 2 | Pipeline run with a real Bank API input produces real output (no mocks) | ✅ | `scripts/e2e_test.py` walks the full Bank → ARGUS → CHRONOS → COMPASS → HERALD → VERDICT → ORACLE pipeline; refuses to run if any stage returns a mock-shaped response. |
+| 3 | All inter-stage schemas agree (no field name mismatches) | ✅ | Shared `pcop_schemas/` package (Python + TypeScript) is the source of truth for `CustomerSnapshot`, `ChurnScore`, `SignalResult`, `ActionPlan`, `HeraldResponse`, `ObservationResult`, `AttributeResult`, `OracleCycleResult`. Each stage's FastAPI `response_model` is pinned to these. |
+| 4 | `.env.example` covers every required variable | ✅ | Root `.env.example` lists every var for every service, grouped. |
+| 5 | TUI starts, shows all services, streams logs in color | ✅ | `cd tui && go run .` — single binary, 2000-line ring buffer, per-service color, status dots polled every 2s. |
+| 6 | TUI command `/chronos train` (and 26 others) runs the correct subprocess | ✅ | `tui/config/services.yaml` declares 27 commands; type `/` in the dashboard or browse the Commands page. |
+| 7 | Scheduler page shows tasks, their last-run time, and allows re-running | ✅ | Page 2 reads `tui/data/task_history.db` (SQLite); `r` re-runs, `l` views the last output. Cron expressions evaluated by `github.com/robfig/cron/v3`. |
+| 8 | `q` in TUI cleanly shuts down all spawned processes | ✅ | Bubbletea `Ctrl+C` / `q` → `mgr.StopAll()` → `SIGTERM` to the process group created with `Setpgid`; 2-second `SIGKILL` backstop. |
+| 9 | `e2e_test.sh` / `scripts/e2e_test.py` passes end-to-end without mocked data | ✅ | Run from the TUI: Commands page → "pipeline run" → exits 0 when all stages return real data. The script actively rejects responses containing mock markers. |
 
 ---
 

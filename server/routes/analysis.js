@@ -1,12 +1,12 @@
 const router  = require('express').Router();
 const https   = require('https');
 const { verifyToken } = require('../middleware/auth');
+const config = require('../config');
 const ds = require('../services/dataStore');
 
-const NVIDIA_ENDPOINT = process.env.NVIDIA_ENDPOINT ||
-    'https://integrate.api.nvidia.com/v1/chat/completions';
-const NVIDIA_KEY   = process.env.NVIDIA_API_KEY  || '';
-const NVIDIA_MODEL = process.env.NVIDIA_MODEL    || 'deepseek-ai/deepseek-v4-pro';
+const NVIDIA_ENDPOINT = config.nvidia.endpoint;
+const NVIDIA_KEY      = config.nvidia.apiKey;
+const NVIDIA_MODEL    = config.nvidia.model;
 
 function callNvidia(messages) {
     return new Promise((resolve, reject) => {
@@ -18,6 +18,7 @@ function callNvidia(messages) {
             method:   'POST',
             headers:  { 'Content-Type': 'application/json', 'Authorization': `Bearer ${NVIDIA_KEY}`,
                         'Content-Length': Buffer.byteLength(body) },
+            timeout:  config.nvidia.timeoutMs,
         };
         const req = https.request(opts, (r) => {
             let data = '';
@@ -25,6 +26,7 @@ function callNvidia(messages) {
             r.on('end', () => { try { resolve(JSON.parse(data)); } catch(e){ reject(e); } });
         });
         req.on('error', reject);
+        req.on('timeout', () => req.destroy(new Error(`NVIDIA request timed out after ${config.nvidia.timeoutMs}ms`)));
         req.write(body); req.end();
     });
 }
@@ -33,10 +35,27 @@ function callNvidia(messages) {
 router.post('/analyze', verifyToken, async (req, res) => {
     const { customer_id } = req.body;
     if (!customer_id)
-        return res.status(400).json({ status: 'error', message: 'customer_id required' });
+        return res.status(400).json({
+            error: true, stage: 0, stage_name: 'orchestrator',
+            message: 'customer_id required',
+        });
 
-    const snap = ds.getCustomerSnapshot(customer_id);
-    if (!snap) return res.status(404).json({ status: 'error', message: 'Not found' });
+    const snap = await ds.getCustomerSnapshot(customer_id);
+    if (!snap) return res.status(404).json({
+        error: true, stage: 0, stage_name: 'orchestrator',
+        message: `Customer ${customer_id} not found`,
+    });
+
+    if (!NVIDIA_KEY) {
+        // Rule A: never return a hand-written mock analysis.  Surface a
+        // structured error so the operator knows to set NVIDIA_API_KEY.
+        return res.status(503).json({
+            error: true, stage: 0, stage_name: 'analysis',
+            message: 'AI analysis unavailable: NVIDIA_API_KEY is not configured. '
+                    + 'Set it in the .env file (see .env.example) to enable risk analysis.',
+            detail: 'NVIDIA_API_KEY is empty',
+        });
+    }
 
     const { customer, score, signals } = snap;
     const sysPrompt = (
@@ -46,22 +65,10 @@ router.post('/analyze', verifyToken, async (req, res) => {
     );
     const userPrompt =
         `Customer: ${customer.full_name} | ${customer.segment} | ${customer.tenure_months}mo tenure\n` +
-        `Churn score: ${score.final_score} (${score.risk_tier}) | P(churn<30d): ${score.p30}\n` +
+        `Churn score: ${score?.final_score} (${score?.risk_tier}) | P(churn<30d): ${score?.p30}\n` +
         `Signals: ${signals.map(s=>s.signal_type).join(', ')||'none'}\n` +
         `Life event: ${customer.life_event||'none'} | Balance: ₹${customer.balance?.toLocaleString('en-IN')}\n` +
         `Inactivity: ${customer.inactivity_days}d | Complaints: ${customer.complaint_count}`;
-
-    if (!NVIDIA_KEY) {
-        return res.json({
-            status: 'ok', source: 'mock',
-            analysis:
-                `**Risk Assessment — ${customer.full_name}**\n\n` +
-                `Score: ${score.final_score} (${score.risk_tier}). ` +
-                `Primary drivers: ${signals.slice(0,3).map(s=>s.signal_type.replace(/_/g,' ')).join(', ')||'inactivity streak'}. ` +
-                `${customer.life_event ? `Life event detected: ${customer.life_event}. ` : ''}` +
-                `Recommend ${score.risk_tier==='PRIORITY'?'immediate RM call':'targeted email within 24h'}.`,
-        });
-    }
 
     try {
         const resp = await callNvidia([
@@ -71,7 +78,10 @@ router.post('/analyze', verifyToken, async (req, res) => {
         const text = resp?.choices?.[0]?.message?.content || 'Analysis unavailable.';
         res.json({ status: 'ok', analysis: text, source: 'nvidia' });
     } catch (err) {
-        res.status(500).json({ status: 'error', message: err.message });
+        res.status(502).json({
+            error: true, stage: 0, stage_name: 'analysis',
+            message: `NVIDIA DeepSeek call failed: ${err.message}`,
+        });
     }
 });
 

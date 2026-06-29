@@ -2,10 +2,15 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
+// Demo accounts — keep this list aligned with:
+//   - README.md "Demo credentials" table
+//   - client/src/app/login/page.tsx `DEMO` array
 const USERS = [
-    { id: 1, username: 'analyst', password: 'analyst123', role: 'analyst', name: 'Analytics User' },
-    { id: 2, username: 'manager', password: 'manager123', role: 'manager', name: 'Portfolio Manager' },
-    { id: 3, username: 'admin', password: 'admin123', role: 'admin', name: 'System Administrator' }
+    { id: 1, username: 'analyst',    password: 'analyst123', role: 'analyst', name: 'Analytics User' },
+    { id: 2, username: 'manager',    password: 'manager123', role: 'manager', name: 'Portfolio Manager' },
+    { id: 3, username: 'admin',      password: 'admin123',   role: 'admin',   name: 'System Administrator' },
+    { id: 4, username: 'rm_user',    password: 'rm123',      role: 'rm',      name: 'Relationship Manager' },
+    { id: 5, username: 'risk_user',  password: 'risk123',    role: 'risk',    name: 'Risk Officer' },
 ];
 
 router.post('/login', (req, res) => {

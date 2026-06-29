@@ -145,14 +145,22 @@ function enqueueHerald(customerId, snapshot, requestedBy) {
 
 function startHeraldWorker() {
     if (heraldWorker) return;
-    const connection = _connection();
-    heraldQueue  = new Queue(QUEUE_NAME, { connection: _connection() });
-    heraldWorker = new Worker(QUEUE_NAME, _processJob, {
-        connection,
-        concurrency: config.nvidia.maxConcurrency,
-    });
-    heraldWorker.on('failed', (job, err) => console.error(`[HERALD worker] job ${job?.id} failed:`, err.message));
-    console.log('[HERALD] BullMQ worker started');
+    try {
+        const connection = _connection();
+        heraldQueue  = new Queue(QUEUE_NAME, { connection: _connection() });
+        heraldWorker = new Worker(QUEUE_NAME, _processJob, {
+            connection,
+            concurrency: config.nvidia.maxConcurrency,
+        });
+        heraldWorker.on('failed', (job, err) => console.error(`[HERALD worker] job ${job?.id} failed:`, err.message));
+        console.log('[HERALD] BullMQ worker started');
+    } catch (exc) {
+        // Redis / BullMQ unavailable (DEMO_MODE without Redis) — the API
+        // will fall back to a synchronous HERALD path automatically.
+        console.warn('[HERALD] BullMQ worker unavailable, using synchronous fallback:', exc.message);
+        heraldQueue  = null;
+        heraldWorker = null;
+    }
 }
 
 async function getJobStatus(jobId) {

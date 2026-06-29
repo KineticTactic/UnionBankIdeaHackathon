@@ -5,7 +5,21 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import sys
 from pathlib import Path
+
+# Ensure ``from ml.…`` imports resolve regardless of cwd.
+# We must tolerate two invocation styles:
+#   1. `poetry run python -m ml.training.habitat_train`  (package)
+#   2. `poetry run python ml/training/habitat_train.py`  (script)
+try:
+    from ._setup import configure_logging
+except ImportError:
+    # Script mode — add chronos/ to sys.path so ``from ml…`` works.
+    _CHRONOS_ROOT = Path(__file__).resolve().parents[2]
+    if str(_CHRONOS_ROOT) not in sys.path:
+        sys.path.insert(0, str(_CHRONOS_ROOT))
+    from _setup import configure_logging  # type: ignore[no-redef]
 
 import mlflow
 import numpy as np
@@ -14,6 +28,7 @@ import xgboost as xgb
 from sklearn.metrics import roc_auc_score, log_loss
 from sklearn.model_selection import train_test_split
 
+configure_logging()
 logger = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parents[2]

@@ -241,6 +241,9 @@ async function initializeServer() {
       const uptime = Math.floor((Date.now() - startTime) / 1000);
       res.json({
         status: "ok",
+        service: "bank-api",
+        stage: 1,
+        stage_name: "bank",
         timestamp: new Date().toISOString(),
         uptime_s: uptime,
         records: {

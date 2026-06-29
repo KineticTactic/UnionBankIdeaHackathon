@@ -5,8 +5,19 @@ from __future__ import annotations
 import argparse
 import logging
 import math
+import sys
 from pathlib import Path
 from typing import Any
+
+# Ensure ``from ml.…`` imports resolve regardless of cwd.
+try:
+    from ._setup import configure_logging
+except ImportError:
+    _CHRONOS_ROOT = Path(__file__).resolve().parents[2]
+    if str(_CHRONOS_ROOT) not in sys.path:
+        sys.path.insert(0, str(_CHRONOS_ROOT))
+    from _setup import configure_logging  # type: ignore[no-redef]
+configure_logging()
 
 import mlflow
 import torch

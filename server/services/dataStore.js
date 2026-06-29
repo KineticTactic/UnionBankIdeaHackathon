@@ -33,9 +33,11 @@ const ACTION_PLANS = load('action_plans.json') || [];
 const HERALD       = load('herald.json')       || [];
 const PORTFOLIO    = load('portfolio.json')    || {};
 
-// Derived convenience exports (kept for backward-compat — e.g. reviewStore.js)
+// Derived convenience exports (kept for backward-compat — e.g. reviewStore.js,
+// localData.js).  CHURN_SCORES is derived from scores.json (per-customer
+// {final_score, risk_tier, …}), not from customers.json.
 const CUSTOMER_IDS = CUSTOMERS.map(c => c.customer_id);
-const CHURN_SCORES = CUSTOMERS.reduce((m, c) => { m[c.customer_id] = c.churn_score; return m; }, {});
+const CHURN_SCORES = SCORES.reduce((m, s) => { m[s.customer_id] = s; return m; }, {});
 
 // Lookup maps for O(1) access in DEMO_MODE
 const CUSTOMERS_MAP    = CUSTOMERS.reduce((m, c) => { m[c.customer_id] = c; return m; }, {});
@@ -45,6 +47,15 @@ const TRANSACTIONS_MAP = TRANSACTIONS.reduce((m, t) => { m[t.customer_id] = t; r
 const SURVIVAL_MAP     = SURVIVAL.reduce((m, s)  => { m[s.customer_id] = s; return m; }, {});
 const PLANS_MAP        = ACTION_PLANS.reduce((m, p) => { m[p.customer_id] = p; return m; }, {});
 const HERALD_MAP       = HERALD.reduce((m, h)    => { m[h.customer_id] = h; return m; }, {});
+
+// Signal-level convenience accessor (e.g. LIFE_EVENTS) — derived from signals.json.
+const LIFE_EVENTS = SIGNALS.filter(s => s.signal_type === 'life_event' || s.life_event).map(s => ({
+    customer_id: s.customer_id,
+    event_type:  s.life_event || s.signal_type,
+    confidence:  s.confidence,
+    evidence:    s.evidence,
+    detected_at: s.detected_at,
+}));
 
 console.log(`[dataStore] Loaded ${CUSTOMERS.length} customers, ${HERALD.length} HERALD records (demo=${DEMO})`);
 
@@ -204,7 +215,7 @@ module.exports = {
     CUSTOMERS, SCORES, SIGNALS, TRANSACTIONS, SURVIVAL,
     ACTION_PLANS, HERALD, PORTFOLIO,
     CUSTOMERS_MAP, SCORES_MAP, SIGNALS_MAP, PLANS_MAP, HERALD_MAP,
-    CUSTOMER_IDS, CHURN_SCORES,
+    CUSTOMER_IDS, CHURN_SCORES, LIFE_EVENTS,
 
     // Async facade
     getCustomers, getCustomerById, getCustomerSnapshot,

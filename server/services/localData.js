@@ -162,6 +162,20 @@ function getPortfolioStats() {
         if (counts[c.risk_tier] !== undefined) counts[c.risk_tier]++;
         scoreSum += c.churn_score;
     });
+
+    // outreach_sent_this_week — derived from HERALD.json dispatched_at if present,
+    // otherwise from the live eventBus Kafka buffer.  Never throws on undefined.
+    let outreachSent = 0;
+    try {
+        const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+        const herald = dataStore.HERALD || [];
+        outreachSent = herald.filter(h => {
+            if (!h.dispatched_at) return false;
+            const t = new Date(h.dispatched_at).getTime();
+            return t > weekAgo;
+        }).length;
+    } catch (_) { outreachSent = 0; }
+
     return {
         status: 'ok',
         data: {
@@ -172,11 +186,7 @@ function getPortfolioStats() {
             watch_count: counts.watch,
             low_count: counts.low,
             avg_churn_score: list.length ? scoreSum / list.length : 0,
-            outreach_sent_this_week: dataStore.outreachRecords.filter(r => {
-                const d = new Date(r.dispatched_at);
-                const week = Date.now() - 7 * 24 * 60 * 60 * 1000;
-                return d.getTime() > week;
-            }).length,
+            outreach_sent_this_week: outreachSent,
         },
     };
 }

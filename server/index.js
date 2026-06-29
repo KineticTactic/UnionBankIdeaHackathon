@@ -57,6 +57,35 @@ app.use('/api/llm-usage', require('./routes/llmUsage'));
 // ── Health endpoints ──────────────────────────────────────────────────────────
 
 app.get('/healthz', (req, res) => res.json({ status: 'ok' }));
+app.get('/health',  (req, res) => res.json({
+    status: 'ok',
+    service: 'pcop-orchestrator',
+    version: '1.0.0',
+    demo_mode: config.demoMode,
+    timestamp: new Date().toISOString(),
+}));
+
+// Per-stage health probe used by the TUI and by upstream callers.
+app.get('/health/stages', async (req, res) => {
+    const http = require('http');
+    const probes = Object.entries(config.stages).map(([key, info]) => new Promise((resolve) => {
+        const req2 = http.get({ host: '127.0.0.1', port: info.port, path: '/health', timeout: 1500 }, (r) => {
+            let body = ''; r.on('data', (c) => body += c);
+            r.on('end', () => resolve({
+                name: key,
+                port: info.port,
+                reachable: r.statusCode === 200,
+                status:    r.statusCode,
+                body:      body.slice(0, 500),
+            }));
+        });
+        req2.on('error',   (e) => resolve({ name: key, port: info.port, reachable: false, error: e.code || e.message }));
+        req2.on('timeout', () => { req2.destroy(); resolve({ name: key, port: info.port, reachable: false, error: 'timeout' }); });
+    }));
+    const results = await Promise.all(probes);
+    const allUp = results.every(r => r.reachable);
+    res.status(allUp ? 200 : 503).json({ status: allUp ? 'ok' : 'degraded', stages: results });
+});
 
 app.get('/readyz', async (req, res) => {
     if (config.demoMode) return res.json({ status: 'ready', mode: 'demo' });
@@ -103,8 +132,8 @@ async function start() {
         catch (e) { console.error('[ApprovalExpiry ERROR]', e.message); }
     }, 60 * 60 * 1_000);
 
-    _server = app.listen(config.port, () => {
-        console.log(`[PCOP] :${config.port}  demo=${config.demoMode}  cors=${config.corsOrigins}`);
+    _server = app.listen(config.port, config.host, () => {
+        console.log(`[PCOP] :${config.port} (${config.host})  demo=${config.demoMode}  cors=${config.corsOrigins.join(',')}`);
     });
     return _server;
 }

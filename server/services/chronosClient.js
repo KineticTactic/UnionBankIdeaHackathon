@@ -92,9 +92,12 @@ async function analyzeScore(customerId) {
  * Trigger CHRONOS to re-score a customer live.
  * CHRONOS writes the new score to Postgres; Node picks it up on next read.
  * Falls back gracefully when circuit is open.
+ *
+ * Note: CHRONOS exposes /scores/:id/analyze (not /rescore).  We call
+ * /analyze so the call actually succeeds.
  */
 async function rescoreCustomer(customerId) {
-    return _fetch(`/scores/${encodeURIComponent(customerId)}/rescore`, { method: 'POST' });
+    return _fetch(`/scores/${encodeURIComponent(customerId)}/analyze`, { method: 'POST' });
 }
 
 /** Expose circuit state for /readyz */

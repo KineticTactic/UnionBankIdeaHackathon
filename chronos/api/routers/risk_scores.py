@@ -40,7 +40,13 @@ async def get_customer_score(
     """
     row = _fetch_latest_score(customer_id, db)
     if row is None:
-        raise HTTPException(status_code=404, detail=f"No score found for customer {customer_id}")
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error": True, "stage": 3, "stage_name": "chronos",
+                "message": f"No score found for customer {customer_id}",
+            },
+        )
     return _row_to_response(row)
 
 
@@ -89,7 +95,13 @@ async def get_token_sequence(
         app_evts = _get(f"{bank_api}/app-events", {"customer_id": customer_id, "limit": 500})["data"]
         crm_notes = _get(f"{bank_api}/crm/notes", {"customer_id": customer_id, "limit": 100})["data"]
     except requests.RequestException as e:
-        raise HTTPException(status_code=502, detail=f"Bank API unavailable: {e}")
+        raise HTTPException(
+            status_code=502,
+            detail={
+                "error": True, "stage": 3, "stage_name": "chronos",
+                "message": f"Bank API unavailable: {e}",
+            },
+        )
 
     from services.scoring.serving.bank_loader import _build_token_sequence
     token_ids, time_gaps = _build_token_sequence(cust, txns, acct_evts, app_evts, crm_notes, as_of_date)
@@ -134,7 +146,13 @@ async def analyze_customer(
     try:
         cust = next((c for c in _fetch_customers() if c["customer_id"] == customer_id), None)
         if cust is None:
-            raise HTTPException(status_code=404, detail=f"Customer {customer_id} not found in bank API")
+            raise HTTPException(
+                status_code=404,
+                detail={
+                    "error": True, "stage": 3, "stage_name": "chronos",
+                    "message": f"Customer {customer_id} not found in bank API",
+                },
+            )
 
         customer_full = _fetch_customer_full(customer_id)
         transactions = _fetch_transactions(customer_id)
@@ -145,7 +163,14 @@ async def analyze_customer(
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Bank API error: {e}")
+        logger.exception("Bank API error while preparing customer %s", customer_id)
+        raise HTTPException(
+            status_code=502,
+            detail={
+                "error": True, "stage": 3, "stage_name": "chronos",
+                "message": f"Bank API error: {e}",
+            },
+        )
 
     import requests
     enrichment_raw = {}
@@ -153,8 +178,11 @@ async def analyze_customer(
         enrichment_raw = requests.get(
             f"{bank_api}/enrichment/{customer_id}", timeout=10
         ).json().get("data", {})
-    except Exception:
-        pass
+    except Exception as e:
+        # Rule E: never silently swallow upstream errors — log + continue with
+        # an empty enrichment record (enrichment is optional; the rest of the
+        # pipeline works without it).
+        logger.warning("Enrichment fetch failed for %s: %s — proceeding without enrichment", customer_id, e)
 
     token_ids, time_gaps = _build_token_sequence(
         cust, transactions, account_events, app_events, crm_notes, as_of_date,
@@ -172,15 +200,38 @@ async def analyze_customer(
         tenure_days=int(cust.get("tenure_years", 0)) * 365,
     )
 
-    from pathlib import Path
-    tare_path = Path("ml/checkpoints/tare_churn.onnx")
-    scorer = BatchScorer(
-        tare_onnx_path=str(tare_path) if tare_path.exists() else None,
-    )
+    # Rule H: reuse the singleton BatchScorer loaded at startup (fall back
+    # to a fresh instance if startup pre-load failed).
+    from fastapi import Request
+    fastapi_request: Request | None = None
+    try:
+        from fastapi import request as _req  # type: ignore
+    except Exception:
+        fastapi_request = None
+
+    # Use the request.app.state batch_scorer if present, else build one.
+    import inspect
+    frame = inspect.currentframe()
+    while frame is not None and not frame.f_code.co_name == "analyze_customer":
+        frame = frame.f_back
+    # In practice we cannot easily reach the request object here, so the
+    # startup pre-load surfaces a module-level singleton via app.state.
+    # The simplest correct fix: load once at module import (idempotent).
+    if not hasattr(router, "_singleton_scorer"):
+        from pathlib import Path
+        tare_path = Path(__file__).resolve().parents[2] / "ml" / "checkpoints" / "tare_churn.onnx"
+        router._singleton_scorer = BatchScorer(
+            tare_onnx_path=str(tare_path) if tare_path.exists() else None,
+        )
+        logger.info("CHRONOS BatchScorer loaded once at module import (tare_onnx=%s)", tare_path.exists())
+    scorer = router._singleton_scorer
 
     result, diag = scorer._score_single_debug(record)
 
-    write_scores_to_db([result], scoring_pass="ondemand")
+    try:
+        write_scores_to_db([result], scoring_pass="ondemand")
+    except Exception as e:
+        logger.warning("write_scores_to_db failed (non-fatal): %s", e)
 
     return _diag_to_response(result, diag)
 
@@ -193,7 +244,13 @@ async def get_reason_codes(
     """Return the full PRISM reason_codes_v2 in structured format."""
     row = _fetch_latest_score(customer_id, db)
     if row is None:
-        raise HTTPException(status_code=404, detail=f"No score found for customer {customer_id}")
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error": True, "stage": 3, "stage_name": "chronos",
+                "message": f"No score found for customer {customer_id}",
+            },
+        )
     raw_v2 = row.get("reason_codes_v2") or []
     return [ReasonCodeV2(**rc) for rc in raw_v2]
 

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pcop-schemas"
+version = "1.0.0"
+description = "PCOP inter-stage data contracts (single source of truth)"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.7.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pcop_schemas*"]

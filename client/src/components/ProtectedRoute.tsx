@@ -4,9 +4,11 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 
+import type { AuthRole } from '@/types';
+
 interface ProtectedRouteProps {
     children: React.ReactNode;
-    allowedRoles?: ('analyst' | 'manager' | 'admin')[];
+    allowedRoles?: AuthRole[];
 }
 
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {

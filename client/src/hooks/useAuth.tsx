@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { api, getToken, clearToken } from '@/lib/api';
-import { AuthUser } from '@/types';
+import { AuthUser, AuthRole } from '@/types';
 
 interface AuthContextType {
     user: AuthUser | null;
@@ -70,14 +70,14 @@ export function useAuth() {
     return context;
 }
 
-export function useRequireRole(allowedRoles: AuthUser['role'][]) {
+export function useRequireRole(allowedRoles: AuthRole[]) {
     const { user, isLoading } = useAuth();
-    
+
     if (!isLoading && user && !allowedRoles.includes(user.role)) {
         if (typeof window !== 'undefined') {
             window.location.href = '/dashboard';
         }
     }
-    
+
     return { user, isLoading, hasAccess: !isLoading && !!user && allowedRoles.includes(user.role) };
 }

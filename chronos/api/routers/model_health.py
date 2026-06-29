@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import logging
+import os
 from datetime import datetime
+from pathlib import Path
 
 from fastapi import APIRouter
 
@@ -21,6 +23,22 @@ _COMPONENT_REGISTRY = [
     "genesis",
     "aegis",
 ]
+
+
+def _checkpoint_root() -> Path:
+    """Resolve the checkpoint directory.
+
+    Priority:
+      1. ``CHRONOS_CHECKPOINT_DIR`` env var (absolute or relative to repo root)
+      2. ``<repo_root>/chronos/ml/checkpoints`` (default for the Docker image)
+    """
+    env_dir = os.getenv("CHRONOS_CHECKPOINT_DIR")
+    if env_dir:
+        p = Path(env_dir).expanduser()
+        if not p.is_absolute():
+            p = Path(__file__).resolve().parents[2] / p
+        return p
+    return Path(__file__).resolve().parents[2] / "ml" / "checkpoints"
 
 
 @router.get("", response_model=ModelHealthResponse)
@@ -81,16 +99,14 @@ def _get_fusion_instance() -> "FusionX":
 
 def _check_component(name: str) -> ModelComponentStatus:
     """Check if a model component's checkpoint exists and is loadable."""
-    from pathlib import Path
-
-    root = Path(__file__).resolve().parents[2]
+    root = _checkpoint_root()
     checkpoint_map = {
-        "tare-encoder": root / "ml" / "checkpoints" / "tare_churn.onnx",
-        "habitat-pass1": root / "ml" / "checkpoints" / "habitat_pass1.json",
-        "fusion-x": root / "ml" / "checkpoints" / "fusion_weights.json",
-        "causal-net": root / "ml" / "checkpoints" / "causal_net_treated.json",
-        "genesis": root / "ml" / "checkpoints" / "genesis_lr.pkl",
-        "aegis": root / "ml" / "checkpoints" / "aegis_reference.json",
+        "tare-encoder": root / "tare_churn.onnx",
+        "habitat-pass1": root / "habitat_pass1.json",
+        "fusion-x": root / "fusion_weights.json",
+        "causal-net": root / "causal_net_treated.json",
+        "genesis": root / "genesis_lr.pkl",
+        "aegis": root / "aegis_reference.json",
     }
 
     checkpoint = checkpoint_map.get(name)

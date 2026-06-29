@@ -207,9 +207,11 @@ export interface Portfolio {
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 
+export type AuthRole = 'analyst' | 'risk' | 'rm' | 'manager' | 'admin';
+
 export interface AuthUser {
   username: string;
-  role:     'analyst' | 'manager' | 'admin';
+  role:     AuthRole;
   name:     string;
 }
 

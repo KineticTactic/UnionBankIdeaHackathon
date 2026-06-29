@@ -1,0 +1,319 @@
+# PCOP TUI — service registry.
+# Edit this file to add new services, commands, or scheduled tasks.
+# The TUI uses it as the single source of truth for the dashboard,
+# command palette, and scheduler.
+
+docker_services:
+  - name: postgres
+    container: pcop_postgres
+    health_cmd: "pg_isready -U $POSTGRES_USER"
+    description: "PostgreSQL — durable store for scores, signals, audit, consent"
+
+  - name: redis
+    container: pcop_redis
+    health_cmd: "redis-cli ping"
+    description: "Redis — BullMQ + event-bus pub/sub"
+
+  - name: kafka
+    container: pcop_kafka
+    health_cmd: "kafka-topics --bootstrap-server localhost:9092 --list"
+    description: "Kafka — real-time event streaming (with simulation fallback)"
+
+  - name: mlflow
+    container: pcop_mlflow
+    health_cmd: "curl -sf http://localhost:5000/health"
+    description: "MLflow — experiment tracking + model registry"
+
+app_services:
+  # ── Orchestrator (Node) ──────────────────────────────────────────────────
+  - name: orchestrator
+    color: "#7C3AED"   # purple
+    dir: ./server
+    start_cmd: node index.js
+    health_url: http://localhost:8000/health
+    port: 8000
+    kind: node
+    description: "Express API gateway — JWT, routes, Kafka producer/consumer"
+
+  # ── Layer 1 · Bank API ───────────────────────────────────────────────────
+  - name: bank
+    color: "#0EA5E9"   # sky
+    dir: ./bank
+    start_cmd: node server.js
+    health_url: http://localhost:3001/health
+    port: 3001
+    kind: node
+    description: "Bank API — live Core-Banking + CRM + App-Events + Card-Network + Enrichment"
+
+  # ── Layer 2 · ARGUS ──────────────────────────────────────────────────────
+  - name: argus
+    color: "#DC2626"   # red
+    dir: ./pcop_layer2_argus
+    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8002"
+    health_url: http://localhost:8002/health
+    port: 8002
+    kind: python
+    description: "ARGUS — statistical signal detection (HERALD + NEXUS + ORACLE + WARDEN)"
+
+  # ── Layer 3 · CHRONOS ───────────────────────────────────────────────────
+  - name: chronos
+    color: "#2563EB"   # blue
+    dir: ./chronos
+    start_cmd: "poetry run uvicorn api.main:app --host 0.0.0.0 --port 8001"
+    health_url: http://localhost:8001/health
+    port: 8001
+    kind: python
+    description: "CHRONOS — 5-model ensemble (TARE + HABITAT + FUSIONX + CAUSAL-NET + GENESIS)"
+
+  # ── Layer 4 · COMPASS ───────────────────────────────────────────────────
+  - name: compass
+    color: "#F59E0B"   # amber
+    dir: ./layer4 compass orchestration
+    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8004"
+    health_url: http://localhost:8004/health
+    port: 8004
+    kind: python
+    description: "COMPASS — LangGraph 7-node action-intelligence agent"
+
+  # ── Layer 5 · HERALD ────────────────────────────────────────────────────
+  - name: herald
+    color: "#EC4899"   # pink
+    dir: ./layer5 herald content generation
+    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8005"
+    health_url: http://localhost:8005/health
+    port: 8005
+    kind: python
+    description: "HERALD — NVIDIA DeepSeek outreach generation + SENTINEL compliance"
+
+  # ── Layer 6 · VERDICT ───────────────────────────────────────────────────
+  - name: verdict
+    color: "#14B8A6"   # teal
+    dir: ./layer6 verdict measurement
+    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8006"
+    health_url: http://localhost:8006/health
+    port: 8006
+    kind: python
+    description: "VERDICT — T+N outcome measurement + DR-Learner uplift attribution"
+
+  # ── Layer 7 · ORACLE ────────────────────────────────────────────────────
+  - name: oracle
+    color: "#A855F7"   # purple-light
+    dir: ./layer7 oracle analytics
+    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8007"
+    health_url: http://localhost:8007/health
+    port: 8007
+    kind: python
+    description: "ORACLE — RETRAIN + REFINE + ROUTE + NARRATE cycles"
+
+  # ── Frontend ─────────────────────────────────────────────────────────────
+  - name: client
+    color: "#059669"   # green
+    dir: ./client
+    start_cmd: npm run dev
+    health_url: http://localhost:3000
+    port: 3000
+    kind: node
+    description: "Next.js frontend — dashboard, customer detail, signals, outreach"
+
+commands:
+  # ── Top-level orchestration ─────────────────────────────────────────────
+  - name: "pipeline run"
+    description: "Trigger the full Bank → ARGUS → CHRONOS → COMPASS → HERALD → VERDICT → ORACLE pipeline"
+    service: orchestrator
+    cmd: "python3 scripts/e2e_test.py --limit 5"
+    dir: .
+
+  - name: "pipeline run (all customers)"
+    description: "Run the pipeline for every customer in the Bank API"
+    service: orchestrator
+    cmd: "python3 scripts/e2e_test.py --limit 100"
+    dir: .
+
+  - name: "e2e json dump"
+    description: "Run pipeline and write a full result JSON to pipeline_runs/<ts>.json"
+    service: orchestrator
+    cmd: "python3 scripts/e2e_test.py --limit 20 --json pipeline_runs/run.json"
+    dir: .
+
+  # ── Infra ───────────────────────────────────────────────────────────────
+  - name: "infra up"
+    description: "Start Postgres + Redis + Kafka + MLflow via docker compose"
+    service: infra
+    cmd: "docker compose up -d postgres redis kafka mlflow"
+    dir: .
+
+  - name: "infra down"
+    description: "Stop the docker compose stack"
+    service: infra
+    cmd: "docker compose down"
+    dir: .
+
+  - name: "mlflow ui"
+    description: "Open MLflow tracking UI in default browser"
+    service: mlflow
+    cmd: "open http://localhost:5000"
+    dir: .
+
+  # ── Bank ────────────────────────────────────────────────────────────────
+  - name: "bank list customers"
+    description: "List all customers from the Bank API"
+    service: bank
+    cmd: "curl -s http://localhost:3001/api/core-banking/customers?limit=5 | head -100"
+    dir: .
+
+  - name: "bank portfolio stats"
+    description: "Get portfolio-level statistics from the Bank API"
+    service: bank
+    cmd: "curl -s http://localhost:3001/api/core-banking/portfolio-stats"
+    dir: .
+
+  # ── CHRONOS training/eval ───────────────────────────────────────────────
+  - name: "chronos train tare-pretrain"
+    description: "Pre-train the TARE temporal sequence encoder"
+    service: chronos
+    cmd: "PYTHONPATH=. poetry run python ml/training/tare_pretrain.py --epochs 10"
+    dir: ./chronos
+
+  - name: "chronos train tare-finetune"
+    description: "Fine-tune TARE for churn prediction"
+    service: chronos
+    cmd: "PYTHONPATH=. poetry run python ml/training/tare_finetune.py --pretrain-checkpoint ml/checkpoints/tare_pretrain_final.pt"
+    dir: ./chronos
+
+  - name: "chronos export onnx"
+    description: "Export TARE to ONNX for inference"
+    service: chronos
+    cmd: "PYTHONPATH=. poetry run python ml/training/export_onnx.py --checkpoint ml/checkpoints/tare_finetune_final.pt --output ml/checkpoints/tare_churn.onnx"
+    dir: ./chronos
+
+  - name: "chronos train habitat"
+    description: "Train the HABITAT XGBoost tabular scorer"
+    service: chronos
+    cmd: "PYTHONPATH=. poetry run python ml/training/habitat_train.py"
+    dir: ./chronos
+
+  - name: "chronos train genesis"
+    description: "Train the GENESIS cold-start LR"
+    service: chronos
+    cmd: "PYTHONPATH=. poetry run python ml/training/genesis_train.py"
+    dir: ./chronos
+
+  - name: "chronos train causal-net"
+    description: "Train the CAUSAL-NET T/S learners"
+    service: chronos
+    cmd: "PYTHONPATH=. poetry run python ml/training/causal_net_train.py"
+    dir: ./chronos
+
+  - name: "chronos batch score"
+    description: "Run the full batch scoring pipeline and persist to DB"
+    service: chronos
+    cmd: "poetry run python -m services.scoring.serving.batch_scorer"
+    dir: ./chronos
+
+  - name: "chronos register models"
+    description: "Register all CHRONOS models with MLflow"
+    service: chronos
+    cmd: "poetry run python ml/register_all_models.py"
+    dir: ./chronos
+
+  - name: "chronos bias audit"
+    description: "Run a bias audit on the latest CHRONOS scores"
+    service: chronos
+    cmd: "curl -s -X POST http://localhost:8001/bias-audit/run -H 'Content-Type: application/json' -d '{}'"
+    dir: .
+
+  # ── ARGUS eval (in-process) ─────────────────────────────────────────────
+  - name: "argus evaluate C-00000001"
+    description: "Run ARGUS for customer C-00000001"
+    service: argus
+    cmd: "curl -s -X POST http://localhost:8002/evaluate -H 'Content-Type: application/json' -d '{\"customer_id\": \"C-00000001\"}'"
+    dir: .
+
+  # ── COMPASS ─────────────────────────────────────────────────────────────
+  - name: "compass orchestrate C-00000001"
+    description: "Run COMPASS action planning for customer C-00000001"
+    service: compass
+    cmd: "curl -s -X POST http://localhost:8004/orchestrate -H 'Content-Type: application/json' -d '{\"customer_id\": \"C-00000001\", \"live_fetch\": true}'"
+    dir: .
+
+  - name: "compass demo (legacy)"
+    description: "Run the COMPASS demo with hardcoded profiles (legacy script)"
+    service: compass
+    cmd: "python3 scripts/run_demo_compass.py"
+    dir: ./layer4 compass orchestration
+
+  # ── HERALD ──────────────────────────────────────────────────────────────
+  - name: "herald generate C-00000001"
+    description: "Generate HERALD outreach content for customer C-00000001 (email)"
+    service: herald
+    cmd: "curl -s -X POST http://localhost:8005/generate -H 'Content-Type: application/json' -d '{\"customer_id\": \"C-00000001\", \"channel\": \"email\", \"live_fetch\": true}'"
+    dir: .
+
+  - name: "herald demo (legacy)"
+    description: "Run the HERALD demo with hardcoded action plans (legacy script)"
+    service: herald
+    cmd: "python3 scripts/run_demo_herald.py"
+    dir: ./layer5 herald content generation
+
+  # ── VERDICT ─────────────────────────────────────────────────────────────
+  - name: "verdict measure"
+    description: "Run VERDICT T+30 outcome measurement on the Bank API cohort"
+    service: verdict
+    cmd: "curl -s -X POST http://localhost:8006/measure -H 'Content-Type: application/json' -d '{\"window_days\": 30, \"customers\": [{\"customer_id\": \"C-00000001\", \"score_at_send\": 0.87, \"score_at_measure\": 0.32, \"products_closed\": 0, \"signals_cleared\": true, \"holdout\": false}, {\"customer_id\": \"C-00000002\", \"score_at_send\": 0.72, \"score_at_measure\": 0.55, \"products_closed\": 0, \"signals_cleared\": true, \"holdout\": true}, {\"customer_id\": \"C-00000003\", \"score_at_send\": 0.71, \"score_at_measure\": 0.78, \"products_closed\": 0, \"signals_cleared\": false, \"holdout\": false}]}'"
+    dir: .
+
+  - name: "verdict demo (legacy)"
+    description: "Run the VERDICT demo with hardcoded outcomes (legacy script)"
+    service: verdict
+    cmd: "python3 scripts/run_demo_verdict.py"
+    dir: ./layer6 verdict measurement
+
+  # ── ORACLE ──────────────────────────────────────────────────────────────
+  - name: "oracle cycle narrate"
+    description: "Run the ORACLE narrate cycle to generate insight cards"
+    service: oracle
+    cmd: "curl -s -X POST http://localhost:8007/cycle/narrate -H 'Content-Type: application/json' -d '{\"name\": \"narrate\"}'"
+    dir: .
+
+  - name: "oracle cycle all"
+    description: "Run all 4 ORACLE cycles in sequence"
+    service: oracle
+    cmd: "for c in retrain refine route narrate; do curl -s -X POST http://localhost:8007/cycle/$c -H 'Content-Type: application/json' -d \"{\\\"name\\\": \\\"$c\\\"}\"; done"
+    dir: .
+
+  - name: "oracle demo (legacy)"
+    description: "Run the ORACLE demo with all 4 cycles (legacy script)"
+    service: oracle
+    cmd: "python3 scripts/run_demo_oracle.py"
+    dir: ./layer7 oracle analytics
+
+scheduled_tasks:
+  - name: "chronos batch score"
+    command_ref: "chronos batch score"
+    schedule: "0 */6 * * *"
+    enabled: true
+    description: "Run the full CHRONOS batch scoring pipeline every 6 hours"
+
+  - name: "chronos bias audit"
+    command_ref: "chronos bias audit"
+    schedule: "0 4 * * *"
+    enabled: true
+    description: "Run a daily bias audit at 04:00 UTC"
+
+  - name: "pipeline run"
+    command_ref: "pipeline run"
+    schedule: "0 */6 * * *"
+    enabled: false
+    description: "Trigger an end-to-end pipeline run every 6 hours (off by default — set enabled=true)"
+
+  - name: "verdict measure"
+    command_ref: "verdict measure"
+    schedule: "0 2 * * *"
+    enabled: false
+    description: "T+30 outcome measurement at 02:00 UTC (requires VERDICT cohort data)"
+
+  - name: "oracle cycle all"
+    command_ref: "oracle cycle all"
+    schedule: "0 5 * * 0"
+    enabled: true
+    description: "Weekly ORACLE cycles (Sundays at 05:00 UTC)"

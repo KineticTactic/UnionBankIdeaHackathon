@@ -6,9 +6,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { Eye, EyeOff, AlertCircle, TrendingUp, Activity, Shield, Brain } from 'lucide-react';
 
 const DEMO = [
-  { user: 'analyst',  pass: 'analyst123',  role: 'Risk Analyst',       desc: 'Read-only · signals & analytics' },
-  { user: 'manager',  pass: 'manager123',  role: 'Portfolio Manager',  desc: 'Campaigns · review approvals'   },
-  { user: 'admin',    pass: 'admin123',    role: 'Administrator',      desc: 'Full platform access'           },
+  { user: 'analyst',   pass: 'analyst123',  role: 'Risk Analyst',       desc: 'Read-only · signals & analytics' },
+  { user: 'risk_user', pass: 'risk123',     role: 'Risk Officer',       desc: 'Approvals · bias & compliance'   },
+  { user: 'rm_user',   pass: 'rm123',       role: 'Relationship Mgr',   desc: 'Outreach queue · customer notes' },
+  { user: 'manager',   pass: 'manager123',  role: 'Portfolio Manager',  desc: 'Campaigns · review approvals'   },
+  { user: 'admin',     pass: 'admin123',    role: 'Administrator',      desc: 'Full platform access'           },
 ];
 
 const STATS = [

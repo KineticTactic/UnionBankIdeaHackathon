@@ -12,7 +12,7 @@
     {
       "name": "pkdd99",
       "source": "kaggle",
-      "dataset": "niteshyadav3103/czech-financial-dataset-pkdd-1999",
+      "dataset": "marceloventura/the-berka-dataset",
       "subdirectory": "data/datasets/pkdd99",
       "expected_files": ["account.csv", "card.csv", "client.csv", "disp.csv", "district.csv", "loan.csv", "order.csv", "trans.csv"],
       "sha256": {}

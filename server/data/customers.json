@@ -31,7 +31,14 @@
     "risk_tier": "NONE",
     "churn_score": 0.1442,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "DEMAT_ACCOUNT",
+      "CREDIT_CARD_PREMIUM",
+      "LIFE_INSURANCE",
+      "HEALTH_INSURANCE",
+      "HOME_LOAN"
+    ]
   },
   {
     "customer_id": "CUST-002",
@@ -65,7 +72,15 @@
     "risk_tier": "NONE",
     "churn_score": 0.1252,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_PREMIUM",
+      "LIFE_INSURANCE",
+      "HEALTH_INSURANCE",
+      "DEMAT_ACCOUNT",
+      "HOME_LOAN",
+      "FIXED_DEPOSIT"
+    ]
   },
   {
     "customer_id": "CUST-003",
@@ -99,7 +114,13 @@
     "risk_tier": "NONE",
     "churn_score": 0.1176,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "FIXED_DEPOSIT",
+      "HEALTH_INSURANCE",
+      "CREDIT_CARD_BASIC",
+      "LIFE_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-004",
@@ -133,7 +154,13 @@
     "risk_tier": "NONE",
     "churn_score": 0.0684,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "DEMAT_ACCOUNT",
+      "CREDIT_CARD_PREMIUM",
+      "FIXED_DEPOSIT",
+      "LIFE_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-005",
@@ -167,7 +194,15 @@
     "risk_tier": "NONE",
     "churn_score": 0.1172,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "FIXED_DEPOSIT",
+      "CREDIT_CARD_PREMIUM",
+      "HEALTH_INSURANCE",
+      "DEMAT_ACCOUNT",
+      "LIFE_INSURANCE",
+      "CAR_LOAN"
+    ]
   },
   {
     "customer_id": "CUST-006",
@@ -201,7 +236,14 @@
     "risk_tier": "NONE",
     "churn_score": 0.1681,
     "life_event": "SALARY_CHANGE",
-    "life_event_desc": "Significant income variation detected over 60 days"
+    "life_event_desc": "Significant income variation detected over 60 days",
+    "products": [
+      "CREDIT_CARD_BASIC",
+      "FIXED_DEPOSIT",
+      "HEALTH_INSURANCE",
+      "HOME_LOAN",
+      "LIFE_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-007",
@@ -235,7 +277,15 @@
     "risk_tier": "NONE",
     "churn_score": 0.1104,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_PREMIUM",
+      "DEMAT_ACCOUNT",
+      "LIFE_INSURANCE",
+      "FIXED_DEPOSIT",
+      "HOME_LOAN",
+      "HEALTH_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-008",
@@ -269,7 +319,15 @@
     "risk_tier": "NONE",
     "churn_score": 0.0443,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "FIXED_DEPOSIT",
+      "CAR_LOAN",
+      "LIFE_INSURANCE",
+      "CREDIT_CARD_BASIC",
+      "HOME_LOAN",
+      "HEALTH_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-009",
@@ -303,7 +361,12 @@
     "risk_tier": "MONITOR",
     "churn_score": 0.1988,
     "life_event": "COMPLAINT_DRIVEN",
-    "life_event_desc": "Escalated complaint not resolved — service dissatisfaction"
+    "life_event_desc": "Escalated complaint not resolved — service dissatisfaction",
+    "products": [
+      "RECURRING_DEPOSIT",
+      "HEALTH_INSURANCE",
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-010",
@@ -337,7 +400,13 @@
     "risk_tier": "MONITOR",
     "churn_score": 0.2658,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "RECURRING_DEPOSIT",
+      "CREDIT_CARD_BASIC",
+      "FIXED_DEPOSIT",
+      "PERSONAL_LOAN"
+    ]
   },
   {
     "customer_id": "CUST-011",
@@ -371,7 +440,13 @@
     "risk_tier": "MONITOR",
     "churn_score": 0.2511,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_BASIC",
+      "PERSONAL_LOAN",
+      "RECURRING_DEPOSIT",
+      "FIXED_DEPOSIT"
+    ]
   },
   {
     "customer_id": "CUST-012",
@@ -405,7 +480,11 @@
     "risk_tier": "MONITOR",
     "churn_score": 0.3256,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "PERSONAL_LOAN",
+      "FIXED_DEPOSIT"
+    ]
   },
   {
     "customer_id": "CUST-013",
@@ -439,7 +518,13 @@
     "risk_tier": "MONITOR",
     "churn_score": 0.3097,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_BASIC",
+      "CAR_LOAN",
+      "HEALTH_INSURANCE",
+      "RECURRING_DEPOSIT"
+    ]
   },
   {
     "customer_id": "CUST-014",
@@ -473,7 +558,13 @@
     "risk_tier": "MONITOR",
     "churn_score": 0.2011,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_BASIC",
+      "PERSONAL_LOAN",
+      "RECURRING_DEPOSIT",
+      "FIXED_DEPOSIT"
+    ]
   },
   {
     "customer_id": "CUST-015",
@@ -507,7 +598,11 @@
     "risk_tier": "MONITOR",
     "churn_score": 0.2951,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "PERSONAL_LOAN",
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-016",
@@ -541,7 +636,12 @@
     "risk_tier": "MONITOR",
     "churn_score": 0.2284,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "FIXED_DEPOSIT",
+      "HEALTH_INSURANCE",
+      "CAR_LOAN"
+    ]
   },
   {
     "customer_id": "CUST-017",
@@ -575,7 +675,11 @@
     "risk_tier": "MONITOR",
     "churn_score": 0.2987,
     "life_event": "SALARY_CHANGE",
-    "life_event_desc": "Significant income variation detected over 60 days"
+    "life_event_desc": "Significant income variation detected over 60 days",
+    "products": [
+      "CREDIT_CARD_BASIC",
+      "LIFE_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-018",
@@ -609,7 +713,12 @@
     "risk_tier": "MONITOR",
     "churn_score": 0.3362,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "FIXED_DEPOSIT",
+      "HEALTH_INSURANCE",
+      "LIFE_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-019",
@@ -643,7 +752,11 @@
     "risk_tier": "MONITOR",
     "churn_score": 0.2662,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "PERSONAL_LOAN",
+      "RECURRING_DEPOSIT"
+    ]
   },
   {
     "customer_id": "CUST-020",
@@ -677,7 +790,11 @@
     "risk_tier": "MONITOR",
     "churn_score": 0.3435,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "RECURRING_DEPOSIT",
+      "HEALTH_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-021",
@@ -711,7 +828,10 @@
     "risk_tier": "STANDARD",
     "churn_score": 0.5738,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-022",
@@ -745,7 +865,10 @@
     "risk_tier": "STANDARD",
     "churn_score": 0.4451,
     "life_event": "JOB_CHANGE",
-    "life_event_desc": "Changed employer recently — income pattern shifted"
+    "life_event_desc": "Changed employer recently — income pattern shifted",
+    "products": [
+      "HEALTH_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-023",
@@ -779,7 +902,10 @@
     "risk_tier": "STANDARD",
     "churn_score": 0.4076,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "RECURRING_DEPOSIT"
+    ]
   },
   {
     "customer_id": "CUST-024",
@@ -813,7 +939,10 @@
     "risk_tier": "STANDARD",
     "churn_score": 0.5832,
     "life_event": "JOB_CHANGE",
-    "life_event_desc": "Changed employer recently — income pattern shifted"
+    "life_event_desc": "Changed employer recently — income pattern shifted",
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-025",
@@ -847,7 +976,11 @@
     "risk_tier": "STANDARD",
     "churn_score": 0.4722,
     "life_event": "SALARY_CHANGE",
-    "life_event_desc": "Significant income variation detected over 60 days"
+    "life_event_desc": "Significant income variation detected over 60 days",
+    "products": [
+      "RECURRING_DEPOSIT",
+      "HEALTH_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-026",
@@ -881,7 +1014,11 @@
     "risk_tier": "STANDARD",
     "churn_score": 0.5679,
     "life_event": "LIFE_MILESTONE",
-    "life_event_desc": "Wedding / new baby / home purchase detected via MCC pattern"
+    "life_event_desc": "Wedding / new baby / home purchase detected via MCC pattern",
+    "products": [
+      "RECURRING_DEPOSIT",
+      "PERSONAL_LOAN"
+    ]
   },
   {
     "customer_id": "CUST-027",
@@ -915,7 +1052,12 @@
     "risk_tier": "STANDARD",
     "churn_score": 0.4658,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_BASIC",
+      "PERSONAL_LOAN",
+      "RECURRING_DEPOSIT"
+    ]
   },
   {
     "customer_id": "CUST-028",
@@ -949,7 +1091,10 @@
     "risk_tier": "STANDARD",
     "churn_score": 0.4577,
     "life_event": "COMPLAINT_DRIVEN",
-    "life_event_desc": "Escalated complaint not resolved — service dissatisfaction"
+    "life_event_desc": "Escalated complaint not resolved — service dissatisfaction",
+    "products": [
+      "CAR_LOAN"
+    ]
   },
   {
     "customer_id": "CUST-029",
@@ -983,7 +1128,11 @@
     "risk_tier": "STANDARD",
     "churn_score": 0.4609,
     "life_event": "LIFE_MILESTONE",
-    "life_event_desc": "Wedding / new baby / home purchase detected via MCC pattern"
+    "life_event_desc": "Wedding / new baby / home purchase detected via MCC pattern",
+    "products": [
+      "CREDIT_CARD_BASIC",
+      "PERSONAL_LOAN"
+    ]
   },
   {
     "customer_id": "CUST-030",
@@ -1017,7 +1166,10 @@
     "risk_tier": "STANDARD",
     "churn_score": 0.4648,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-031",
@@ -1051,7 +1203,10 @@
     "risk_tier": "STANDARD",
     "churn_score": 0.4054,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "HEALTH_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-032",
@@ -1085,7 +1240,12 @@
     "risk_tier": "STANDARD",
     "churn_score": 0.4656,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_BASIC",
+      "FIXED_DEPOSIT",
+      "HOME_LOAN"
+    ]
   },
   {
     "customer_id": "CUST-033",
@@ -1119,7 +1279,10 @@
     "risk_tier": "ESCALATE",
     "churn_score": 0.6538,
     "life_event": "COMPETITOR_INQUIRY",
-    "life_event_desc": "Possible inquiry at competitor bank detected via enrichment"
+    "life_event_desc": "Possible inquiry at competitor bank detected via enrichment",
+    "products": [
+      "HEALTH_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-034",
@@ -1153,7 +1316,11 @@
     "risk_tier": "ESCALATE",
     "churn_score": 0.6374,
     "life_event": "COMPLAINT_DRIVEN",
-    "life_event_desc": "Escalated complaint not resolved — service dissatisfaction"
+    "life_event_desc": "Escalated complaint not resolved — service dissatisfaction",
+    "products": [
+      "RECURRING_DEPOSIT",
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-035",
@@ -1187,7 +1354,11 @@
     "risk_tier": "ESCALATE",
     "churn_score": 0.6314,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "RECURRING_DEPOSIT",
+      "PERSONAL_LOAN"
+    ]
   },
   {
     "customer_id": "CUST-036",
@@ -1221,7 +1392,10 @@
     "risk_tier": "ESCALATE",
     "churn_score": 0.7956,
     "life_event": "LIFE_MILESTONE",
-    "life_event_desc": "Wedding / new baby / home purchase detected via MCC pattern"
+    "life_event_desc": "Wedding / new baby / home purchase detected via MCC pattern",
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-037",
@@ -1255,7 +1429,11 @@
     "risk_tier": "ESCALATE",
     "churn_score": 0.7075,
     "life_event": "RELOCATION",
-    "life_event_desc": "Moved to a new city — branch / ATM usage changed"
+    "life_event_desc": "Moved to a new city — branch / ATM usage changed",
+    "products": [
+      "RECURRING_DEPOSIT",
+      "PERSONAL_LOAN"
+    ]
   },
   {
     "customer_id": "CUST-038",
@@ -1289,7 +1467,10 @@
     "risk_tier": "ESCALATE",
     "churn_score": 0.6556,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-039",
@@ -1323,7 +1504,10 @@
     "risk_tier": "ESCALATE",
     "churn_score": 0.7874,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-040",
@@ -1357,7 +1541,11 @@
     "risk_tier": "ESCALATE",
     "churn_score": 0.6733,
     "life_event": "FINANCIAL_STRESS",
-    "life_event_desc": "Overdraft pattern and late-payment signals detected"
+    "life_event_desc": "Overdraft pattern and late-payment signals detected",
+    "products": [
+      "FIXED_DEPOSIT",
+      "HEALTH_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-041",
@@ -1391,7 +1579,10 @@
     "risk_tier": "ESCALATE",
     "churn_score": 0.6938,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-042",
@@ -1425,7 +1616,11 @@
     "risk_tier": "ESCALATE",
     "churn_score": 0.658,
     "life_event": "COMPETITOR_INQUIRY",
-    "life_event_desc": "Possible inquiry at competitor bank detected via enrichment"
+    "life_event_desc": "Possible inquiry at competitor bank detected via enrichment",
+    "products": [
+      "CREDIT_CARD_BASIC",
+      "FIXED_DEPOSIT"
+    ]
   },
   {
     "customer_id": "CUST-043",
@@ -1459,7 +1654,10 @@
     "risk_tier": "PRIORITY",
     "churn_score": 0.9057,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-044",
@@ -1493,7 +1691,10 @@
     "risk_tier": "PRIORITY",
     "churn_score": 0.8446,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "HEALTH_INSURANCE"
+    ]
   },
   {
     "customer_id": "CUST-045",
@@ -1527,7 +1728,10 @@
     "risk_tier": "PRIORITY",
     "churn_score": 0.8801,
     "life_event": "LIFE_MILESTONE",
-    "life_event_desc": "Wedding / new baby / home purchase detected via MCC pattern"
+    "life_event_desc": "Wedding / new baby / home purchase detected via MCC pattern",
+    "products": [
+      "PERSONAL_LOAN"
+    ]
   },
   {
     "customer_id": "CUST-046",
@@ -1561,7 +1765,10 @@
     "risk_tier": "PRIORITY",
     "churn_score": 0.9206,
     "life_event": "COMPETITOR_INQUIRY",
-    "life_event_desc": "Possible inquiry at competitor bank detected via enrichment"
+    "life_event_desc": "Possible inquiry at competitor bank detected via enrichment",
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-047",
@@ -1595,7 +1802,10 @@
     "risk_tier": "PRIORITY",
     "churn_score": 0.8555,
     "life_event": null,
-    "life_event_desc": null
+    "life_event_desc": null,
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-048",
@@ -1629,7 +1839,10 @@
     "risk_tier": "PRIORITY",
     "churn_score": 0.8117,
     "life_event": "JOB_CHANGE",
-    "life_event_desc": "Changed employer recently — income pattern shifted"
+    "life_event_desc": "Changed employer recently — income pattern shifted",
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-049",
@@ -1663,7 +1876,10 @@
     "risk_tier": "PRIORITY",
     "churn_score": 0.8217,
     "life_event": "RETIREMENT",
-    "life_event_desc": "Approaching / recently retired — income cadence changed"
+    "life_event_desc": "Approaching / recently retired — income cadence changed",
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   },
   {
     "customer_id": "CUST-050",
@@ -1697,6 +1913,9 @@
     "risk_tier": "PRIORITY",
     "churn_score": 0.877,
     "life_event": "COMPETITOR_INQUIRY",
-    "life_event_desc": "Possible inquiry at competitor bank detected via enrichment"
+    "life_event_desc": "Possible inquiry at competitor bank detected via enrichment",
+    "products": [
+      "CREDIT_CARD_BASIC"
+    ]
   }
 ]

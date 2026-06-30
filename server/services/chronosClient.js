@@ -109,8 +109,63 @@ function getCircuitStatus() {
     };
 }
 
+/**
+ * Cold-start risk scoring for newly onboarded customers (no behavioural history).
+ * Uses GENESIS (logistic regression, demographic features only).
+ * Falls back to a deterministic heuristic if CHRONOS is unavailable.
+ */
+async function scoreColdStart(profile) {
+    // Deterministic fallback — runs without CHRONOS, never crashes the demo.
+    function heuristic() {
+        const balance     = profile.balance      || 0;
+        const products    = profile.product_count|| 1;
+        const age         = profile.age          || 35;
+        const income      = profile.income       || 500_000;
+        const cityTier    = profile.city_tier    || 2;
+        const segment     = profile.segment      || 'Mass Market';
+
+        // Base churn: younger, fewer products, lower balance → higher risk
+        let score = 0.50
+            - (balance   / 10_000_000) * 0.20
+            - (products  / 10)         * 0.08
+            + ((35 - Math.min(age, 60)) / 100) * 0.05
+            - (income    / 5_000_000)  * 0.05
+            - (cityTier === 1 ? 0.05 : 0)  // tier-1 cities → slightly more stable
+            + ({ HNW: -0.10, 'Mass Affluent': -0.05, SME: 0.02, 'Mass Market': 0.08 }[segment] || 0);
+
+        score = Math.max(0.05, Math.min(0.95, score));
+        const risk_tier = score >= 0.70 ? 'PRIORITY'
+                        : score >= 0.50 ? 'ESCALATE'
+                        : score >= 0.30 ? 'STANDARD'
+                        : score >= 0.15 ? 'MONITOR'
+                        : 'NONE';
+        return { churn_score: +score.toFixed(3), risk_tier, model: 'genesis-heuristic', confidence: 'cold_start' };
+    }
+
+    try {
+        const mapped = {
+            tenure_days:        profile.tenure_days      || 0,
+            product_count:      profile.product_count    || 1,
+            age_bucket:         profile.age <= 25 ? '18-25' : profile.age <= 35 ? '26-35'
+                                : profile.age <= 45 ? '36-45' : profile.age <= 55 ? '46-55' : '55+',
+            income_band:        profile.income >= 2_000_000 ? 'high' : profile.income >= 500_000 ? 'mid' : 'low',
+            channel_acquisition: profile.channel_acquisition || 'branch',
+            credit_score_band:  profile.credit_score_band || 'good',
+            city_tier:          profile.city_tier || 2,
+        };
+        const result = await _fetch('/score/cold-start', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(mapped),
+        });
+        return { ...result, model: 'genesis', confidence: 'cold_start' };
+    } catch (_) {
+        return heuristic();
+    }
+}
+
 module.exports = {
     getScores, getScore, getReasonCodes, getModelHealth,
     getSchedulerStatus, getTokenSequence, analyzeScore,
-    rescoreCustomer, getCircuitStatus,
+    rescoreCustomer, getCircuitStatus, scoreColdStart,
 };

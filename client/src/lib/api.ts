@@ -185,6 +185,21 @@ export const api = {
     fetchApi('/api/rights/correct', { method: 'PUT', body: JSON.stringify({ customerId, field, newValue, reason }) }),
   getArgusModelStats: () => fetchApi('/api/argus/model-stats'),
 
+  // ── NEXUS — Product Recommendation & Cross-Sell ──────────────────────────────
+  getNexusOverview:    () => fetchApi('/api/nexus/overview'),
+  getNexusForCustomer: (customerId: string) => fetchApi(`/api/nexus/customer/${encodeURIComponent(customerId)}`),
+  getNexusGraph:       () => fetchApi('/api/nexus/graph'),
+  sendNexusToCompass:  (customerId: string) => fetchApi(`/api/nexus/send-to-compass/${encodeURIComponent(customerId)}`, { method: 'POST' }),
+
+  // ── RM Assignment Engine ─────────────────────────────────────────────────────
+  recommendRM: (profile: Record<string, any>) =>
+    fetchApi('/api/admin/onboard/recommend-rm', { method: 'POST', body: JSON.stringify(profile) }),
+  assignRM: (customer: any, rmName: string, overridden: boolean, overrideReason?: string) =>
+    fetchApi('/api/admin/onboard/assign', { method: 'POST', body: JSON.stringify({ customer, rmName, overridden, overrideReason }) }),
+  getAssignmentWeights: () => fetchApi('/api/admin/onboard/weights'),
+  setAssignmentWeights: (w: { fit: number; capacity: number; fairness: number }) =>
+    fetchApi('/api/admin/onboard/weights', { method: 'PUT', body: JSON.stringify(w) }),
+
   // ── Explainability (RBI AI Governance 2024) ───────────────────────────────────
   getChurnExplanation:(customerId: string) => fetchApi(`/api/explain/churn-score?customerId=${encodeURIComponent(customerId)}`),
   getSignalExplanations:(customerId: string) => fetchApi(`/api/explain/signals?customerId=${encodeURIComponent(customerId)}`),

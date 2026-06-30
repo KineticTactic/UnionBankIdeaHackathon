@@ -7,6 +7,7 @@ from ..clients.nvidia_client import get_langchain_compass_llm
 from ..prompts.compass_system import COMPASS_SYSTEM_PROMPT
 from ..tools.db_reads import (
     get_offer_eligibility_tool,
+    get_product_recommendations_tool,
     get_channel_history_tool,
     get_rm_availability_tool,
     get_consent_flags_tool,
@@ -47,6 +48,7 @@ async def compass_nba_node(state: CompassState) -> dict:
     tools = [
         retrieve_playbook_tool,         # [LLM:0] local RAG — Item 3
         get_offer_eligibility_tool,
+        get_product_recommendations_tool,   # NEXUS cross-sell (eligibility + churn-deferral pre-applied)
         get_channel_history_tool,
         get_rm_availability_tool,
         get_consent_flags_tool,

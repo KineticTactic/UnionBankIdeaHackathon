@@ -69,6 +69,7 @@ app.use('/api/llm-usage', require('./routes/llmUsage'));
 app.use('/api/rm',        require('./routes/rm'));
 app.use('/api/admin',     require('./routes/admin'));
 app.use('/api/argus',     require('./routes/argus'));
+app.use('/api/nexus',     require('./routes/nexus'));
 
 // ── Health endpoints ──────────────────────────────────────────────────────────
 

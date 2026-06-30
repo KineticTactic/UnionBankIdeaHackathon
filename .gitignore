@@ -15,3 +15,5 @@ chronos/data/
 mlruns/
 *.db
 **/demo*.json
+# NEXUS dataset source zip (CSVs extracted to gitignored chronos/data/datasets/)
+archive.zip

@@ -1,0 +1,556 @@
+{
+  "_meta": {
+    "model_version": "nexus-baseline-v1",
+    "trainable_products": [
+      "CREDIT_CARD_BASIC",
+      "CREDIT_CARD_PREMIUM",
+      "PERSONAL_LOAN",
+      "CAR_LOAN",
+      "LIFE_INSURANCE"
+    ],
+    "method": "trained XGBoost (PKDD'99) + quantile domain-bridge",
+    "note": "Real model scores for the 5 PKDD'99-labelled products; other catalog products fall back to the transparent heuristic in Node."
+  },
+  "CUST-001": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.042,
+      "PERSONAL_LOAN": 0.562,
+      "CAR_LOAN": 0.8659
+    },
+    "held_trainable": [
+      "CREDIT_CARD_PREMIUM",
+      "LIFE_INSURANCE"
+    ]
+  },
+  "CUST-002": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.0178,
+      "PERSONAL_LOAN": 0.0781,
+      "CAR_LOAN": 0.7694
+    },
+    "held_trainable": [
+      "CREDIT_CARD_PREMIUM",
+      "LIFE_INSURANCE"
+    ]
+  },
+  "CUST-003": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0035,
+      "PERSONAL_LOAN": 0.0602,
+      "CAR_LOAN": 0.6881
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC",
+      "LIFE_INSURANCE"
+    ]
+  },
+  "CUST-004": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.0265,
+      "PERSONAL_LOAN": 0.0015,
+      "CAR_LOAN": 0.008
+    },
+    "held_trainable": [
+      "CREDIT_CARD_PREMIUM",
+      "LIFE_INSURANCE"
+    ]
+  },
+  "CUST-005": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.0442,
+      "PERSONAL_LOAN": 0.0332
+    },
+    "held_trainable": [
+      "CAR_LOAN",
+      "CREDIT_CARD_PREMIUM",
+      "LIFE_INSURANCE"
+    ]
+  },
+  "CUST-006": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0119,
+      "PERSONAL_LOAN": 0.0429,
+      "CAR_LOAN": 0.5653
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC",
+      "LIFE_INSURANCE"
+    ]
+  },
+  "CUST-007": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.0152,
+      "PERSONAL_LOAN": 0.0963,
+      "CAR_LOAN": 0.6559
+    },
+    "held_trainable": [
+      "CREDIT_CARD_PREMIUM",
+      "LIFE_INSURANCE"
+    ]
+  },
+  "CUST-008": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0006,
+      "PERSONAL_LOAN": 0.0056
+    },
+    "held_trainable": [
+      "CAR_LOAN",
+      "CREDIT_CARD_BASIC",
+      "LIFE_INSURANCE"
+    ]
+  },
+  "CUST-009": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0346,
+      "PERSONAL_LOAN": 0.1456,
+      "CAR_LOAN": 0.5641,
+      "LIFE_INSURANCE": 0.0003
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-010": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0031,
+      "CAR_LOAN": 0.0073,
+      "LIFE_INSURANCE": 0.0003
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC",
+      "PERSONAL_LOAN"
+    ]
+  },
+  "CUST-011": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0006,
+      "CAR_LOAN": 0.0027,
+      "LIFE_INSURANCE": 0.0036
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC",
+      "PERSONAL_LOAN"
+    ]
+  },
+  "CUST-012": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.6425,
+      "CREDIT_CARD_PREMIUM": 0.0476,
+      "CAR_LOAN": 0.0212,
+      "LIFE_INSURANCE": 0.0007
+    },
+    "held_trainable": [
+      "PERSONAL_LOAN"
+    ]
+  },
+  "CUST-013": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0018,
+      "PERSONAL_LOAN": 0.0494,
+      "LIFE_INSURANCE": 0.0079
+    },
+    "held_trainable": [
+      "CAR_LOAN",
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-014": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0018,
+      "CAR_LOAN": 0.0176,
+      "LIFE_INSURANCE": 0.0038
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC",
+      "PERSONAL_LOAN"
+    ]
+  },
+  "CUST-015": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0007,
+      "CAR_LOAN": 0.0094,
+      "LIFE_INSURANCE": 0.0006
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC",
+      "PERSONAL_LOAN"
+    ]
+  },
+  "CUST-016": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.6051,
+      "CREDIT_CARD_PREMIUM": 0.075,
+      "PERSONAL_LOAN": 0.034,
+      "LIFE_INSURANCE": 0.0035
+    },
+    "held_trainable": [
+      "CAR_LOAN"
+    ]
+  },
+  "CUST-017": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0097,
+      "PERSONAL_LOAN": 0.1978,
+      "CAR_LOAN": 0.8814
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC",
+      "LIFE_INSURANCE"
+    ]
+  },
+  "CUST-018": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.0896,
+      "CREDIT_CARD_PREMIUM": 0.0021,
+      "PERSONAL_LOAN": 0.4205,
+      "CAR_LOAN": 0.531
+    },
+    "held_trainable": [
+      "LIFE_INSURANCE"
+    ]
+  },
+  "CUST-019": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.6458,
+      "CREDIT_CARD_PREMIUM": 0.0424,
+      "CAR_LOAN": 0.0102,
+      "LIFE_INSURANCE": 0.0006
+    },
+    "held_trainable": [
+      "PERSONAL_LOAN"
+    ]
+  },
+  "CUST-020": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.5751,
+      "CREDIT_CARD_PREMIUM": 0.0103,
+      "PERSONAL_LOAN": 0.0263,
+      "CAR_LOAN": 0.3359,
+      "LIFE_INSURANCE": 0.0007
+    },
+    "held_trainable": []
+  },
+  "CUST-021": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0015,
+      "PERSONAL_LOAN": 0.1896,
+      "CAR_LOAN": 0.3829,
+      "LIFE_INSURANCE": 0.0015
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-022": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.7303,
+      "CREDIT_CARD_PREMIUM": 0.0256,
+      "PERSONAL_LOAN": 0.667,
+      "CAR_LOAN": 0.3536,
+      "LIFE_INSURANCE": 0.006
+    },
+    "held_trainable": []
+  },
+  "CUST-023": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.0862,
+      "CREDIT_CARD_PREMIUM": 0.0024,
+      "PERSONAL_LOAN": 0.4123,
+      "CAR_LOAN": 0.3431,
+      "LIFE_INSURANCE": 0.0015
+    },
+    "held_trainable": []
+  },
+  "CUST-024": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0006,
+      "PERSONAL_LOAN": 0.3653,
+      "CAR_LOAN": 0.2279,
+      "LIFE_INSURANCE": 0.0519
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-025": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.6303,
+      "CREDIT_CARD_PREMIUM": 0.0466,
+      "PERSONAL_LOAN": 0.16,
+      "CAR_LOAN": 0.4166,
+      "LIFE_INSURANCE": 0.0009
+    },
+    "held_trainable": []
+  },
+  "CUST-026": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.102,
+      "CREDIT_CARD_PREMIUM": 0.0023,
+      "CAR_LOAN": 0.0098,
+      "LIFE_INSURANCE": 0.0019
+    },
+    "held_trainable": [
+      "PERSONAL_LOAN"
+    ]
+  },
+  "CUST-027": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0007,
+      "CAR_LOAN": 0.0015,
+      "LIFE_INSURANCE": 0.0261
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC",
+      "PERSONAL_LOAN"
+    ]
+  },
+  "CUST-028": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.4856,
+      "CREDIT_CARD_PREMIUM": 0.0009,
+      "PERSONAL_LOAN": 0.0042,
+      "LIFE_INSURANCE": 0.0192
+    },
+    "held_trainable": [
+      "CAR_LOAN"
+    ]
+  },
+  "CUST-029": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0005,
+      "CAR_LOAN": 0.0019,
+      "LIFE_INSURANCE": 0.0027
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC",
+      "PERSONAL_LOAN"
+    ]
+  },
+  "CUST-030": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.001,
+      "PERSONAL_LOAN": 0.0372,
+      "CAR_LOAN": 0.1257,
+      "LIFE_INSURANCE": 0.0029
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-031": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.686,
+      "CREDIT_CARD_PREMIUM": 0.1376,
+      "PERSONAL_LOAN": 0.9029,
+      "CAR_LOAN": 0.7984,
+      "LIFE_INSURANCE": 0.0094
+    },
+    "held_trainable": []
+  },
+  "CUST-032": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0017,
+      "PERSONAL_LOAN": 0.5576,
+      "CAR_LOAN": 0.2472,
+      "LIFE_INSURANCE": 0.0365
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-033": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.0578,
+      "CREDIT_CARD_PREMIUM": 0.0041,
+      "PERSONAL_LOAN": 0.4819,
+      "CAR_LOAN": 0.1066,
+      "LIFE_INSURANCE": 0.0895
+    },
+    "held_trainable": []
+  },
+  "CUST-034": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0004,
+      "PERSONAL_LOAN": 0.0157,
+      "CAR_LOAN": 0.0039,
+      "LIFE_INSURANCE": 0.93
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-035": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.0414,
+      "CREDIT_CARD_PREMIUM": 0.0008,
+      "CAR_LOAN": 0.0242,
+      "LIFE_INSURANCE": 0.9241
+    },
+    "held_trainable": [
+      "PERSONAL_LOAN"
+    ]
+  },
+  "CUST-036": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0015,
+      "PERSONAL_LOAN": 0.9208,
+      "CAR_LOAN": 0.569,
+      "LIFE_INSURANCE": 0.4124
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-037": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.0431,
+      "CREDIT_CARD_PREMIUM": 0.0005,
+      "CAR_LOAN": 0.0025,
+      "LIFE_INSURANCE": 0.9845
+    },
+    "held_trainable": [
+      "PERSONAL_LOAN"
+    ]
+  },
+  "CUST-038": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0013,
+      "PERSONAL_LOAN": 0.58,
+      "CAR_LOAN": 0.2619,
+      "LIFE_INSURANCE": 0.3524
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-039": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0009,
+      "PERSONAL_LOAN": 0.772,
+      "CAR_LOAN": 0.3936,
+      "LIFE_INSURANCE": 0.482
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-040": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.0097,
+      "CREDIT_CARD_PREMIUM": 0.0021,
+      "PERSONAL_LOAN": 0.1243,
+      "CAR_LOAN": 0.0462,
+      "LIFE_INSURANCE": 0.05
+    },
+    "held_trainable": []
+  },
+  "CUST-041": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0006,
+      "PERSONAL_LOAN": 0.1227,
+      "CAR_LOAN": 0.1272,
+      "LIFE_INSURANCE": 0.9732
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-042": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0005,
+      "PERSONAL_LOAN": 0.0045,
+      "CAR_LOAN": 0.0096,
+      "LIFE_INSURANCE": 0.7048
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-043": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0012,
+      "PERSONAL_LOAN": 0.0273,
+      "CAR_LOAN": 0.1169,
+      "LIFE_INSURANCE": 0.3815
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-044": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.1645,
+      "CREDIT_CARD_PREMIUM": 0.0106,
+      "PERSONAL_LOAN": 0.1652,
+      "CAR_LOAN": 0.2983,
+      "LIFE_INSURANCE": 0.7581
+    },
+    "held_trainable": []
+  },
+  "CUST-045": {
+    "scores": {
+      "CREDIT_CARD_BASIC": 0.0102,
+      "CREDIT_CARD_PREMIUM": 0.0005,
+      "CAR_LOAN": 0.0107,
+      "LIFE_INSURANCE": 0.9723
+    },
+    "held_trainable": [
+      "PERSONAL_LOAN"
+    ]
+  },
+  "CUST-046": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0005,
+      "PERSONAL_LOAN": 0.6844,
+      "CAR_LOAN": 0.2255,
+      "LIFE_INSURANCE": 0.9594
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-047": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0004,
+      "PERSONAL_LOAN": 0.0889,
+      "CAR_LOAN": 0.0027,
+      "LIFE_INSURANCE": 0.982
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-048": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0017,
+      "PERSONAL_LOAN": 0.822,
+      "CAR_LOAN": 0.1255,
+      "LIFE_INSURANCE": 0.9838
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-049": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0007,
+      "PERSONAL_LOAN": 0.0665,
+      "CAR_LOAN": 0.0855,
+      "LIFE_INSURANCE": 0.4874
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  },
+  "CUST-050": {
+    "scores": {
+      "CREDIT_CARD_PREMIUM": 0.0007,
+      "PERSONAL_LOAN": 0.4053,
+      "CAR_LOAN": 0.1331,
+      "LIFE_INSURANCE": 0.6966
+    },
+    "held_trainable": [
+      "CREDIT_CARD_BASIC"
+    ]
+  }
+}

@@ -334,6 +334,57 @@ async def get_offer_eligibility_tool(customer_id: str) -> dict:
 
 
 @tool
+async def get_product_recommendations_tool(customer_id: str) -> dict:
+    """
+    Fetches NEXUS cross-sell recommendations for the customer: ranked, eligible
+    products (loans, cards, deposits, insurance) with fit scores and reason codes.
+
+    COMPASS uses this alongside churn risk to decide whether to pitch retention,
+    cross-sell, both, or neither. NEXUS has ALREADY applied eligibility +
+    churn-deferral gates, so anything returned here is safe to offer; if the
+    customer is high churn-risk, new-credit products are suppressed upstream and
+    only safe products (deposits/insurance) appear.
+
+    In production this reads the `product_recommendations` table; here it calls
+    the NEXUS service HTTP endpoint. Returns {} on any failure (fail-open: absence
+    of cross-sell simply means COMPASS proceeds with retention-only logic).
+
+    Args:
+        customer_id: Customer identifier
+    """
+    import os
+    nexus_base = os.getenv("NEXUS_API_BASE_URL", "http://localhost:8000")
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            r = await client.get(f"{nexus_base}/api/nexus/customer/{customer_id}")
+            r.raise_for_status()
+            data = r.json()
+    except Exception as exc:  # noqa: BLE001 — fail-open by design
+        logger.warning("NEXUS recommendations unavailable for %s: %s", customer_id, exc)
+        return {"recommendations": [], "top_offer": None, "available": False}
+
+    recs = data.get("recommendations", [])[:3]
+    top = data.get("top_offer")
+    return {
+        "available": True,
+        "churn_deferral_active": data.get("churn_deferral_active", False),
+        "top_offer": None if not top else {
+            "offer_code": f"CROSS_SELL_{top['product']}",
+            "product": top["label"],
+            "fit_score": top["score"],
+            "rationale": (top.get("reason_codes") or [{}])[0].get("detail"),
+            "source_model": top.get("source_model"),
+        },
+        "alternatives": [
+            {"offer_code": f"CROSS_SELL_{r['product']}", "product": r["label"], "fit_score": r["score"]}
+            for r in recs[1:]
+        ],
+        "model_version": data.get("model_version"),
+    }
+
+
+@tool
 async def get_channel_history_tool(customer_id: str, days: int = 30) -> dict:
     """
     Fetches recent outreach history for a customer.

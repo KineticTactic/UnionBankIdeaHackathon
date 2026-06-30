@@ -10,7 +10,7 @@ from typing import Any
 from fastapi import BackgroundTasks, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers import model_health, risk_scores
+from api.routers import model_health, risk_scores, recommendations
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +73,7 @@ app.add_middleware(
 
 app.include_router(risk_scores.router)
 app.include_router(model_health.router)
+app.include_router(recommendations.router)
 
 
 @app.get("/health")

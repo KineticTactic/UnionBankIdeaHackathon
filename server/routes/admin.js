@@ -624,4 +624,108 @@ router.post('/broadcast', adminOnly, async (req, res) => {
     }
 });
 
+// ── RM Assignment Engine ───────────────────────────────────────────────────────
+const rmAssignment   = require('../services/rmAssignment');
+const chronosClient  = require('../services/chronosClient');
+
+// POST /api/admin/onboard/recommend-rm
+router.post('/onboard/recommend-rm', adminOnly, async (req, res) => {
+    try {
+        const { full_name, segment, balance, income, city, city_tier, product_count, age } = req.body;
+        if (!full_name || !segment) return res.status(400).json({ status: 'error', message: 'full_name and segment required' });
+
+        const profile = { full_name, segment, balance: +balance || 0, income: +income || 0, city, city_tier: +city_tier || 2, product_count: +product_count || 1, age: +age || 35 };
+
+        // Cold-start risk score (GENESIS or heuristic fallback)
+        const coldScore = await chronosClient.scoreColdStart(profile).catch(() => ({
+            churn_score: 0.40, risk_tier: 'STANDARD', model: 'genesis-heuristic', confidence: 'cold_start',
+        }));
+        const customer = { ...profile, churn_score: coldScore.churn_score, risk_tier: coldScore.risk_tier };
+
+        const rec = rmAssignment.recommendRM(customer);
+
+        await auditLog.logEvent({
+            eventType: 'RM_ASSIGNMENT_RECOMMENDED',
+            customerId: null,
+            actor: req.user.username,
+            layer: 'ADMIN',
+            payload: { customer_name: full_name, recommended_rm: rec.recommended?.rmName, churn_score: coldScore.churn_score },
+            modelVersion: 'ASSIGNMENT-v1.0',
+        }).catch(() => {});
+
+        res.json({
+            status: 'ok',
+            customer: { ...customer, cold_score_model: coldScore.model },
+            recommended:  rec.recommended,
+            alternatives: rec.alternatives,
+            all:          rec.all,
+            weights:      rec.weights,
+            disclaimer:   'Recommendation weighs fit, capacity and fairness. Admin confirms final assignment.',
+        });
+    } catch (e) {
+        res.status(500).json({ status: 'error', message: e.message });
+    }
+});
+
+// POST /api/admin/onboard/assign
+router.post('/onboard/assign', adminOnly, async (req, res) => {
+    try {
+        const { customer, rmName, overridden = false, overrideReason } = req.body;
+        if (!customer || !rmName) return res.status(400).json({ status: 'error', message: 'customer and rmName required' });
+
+        // Generate next customer ID (in-memory for demo; production persists to Postgres)
+        const ids    = ds.CUSTOMERS.map(c => parseInt((c.customer_id || '').replace('CUST-', '')) || 0);
+        const nextId = Math.max(0, ...ids) + 1;
+        const customer_id = `CUST-${String(nextId).padStart(3, '0')}`;
+
+        const newCustomer = {
+            ...customer,
+            customer_id,
+            relationship_manager: rmName,
+            created_at: new Date().toISOString(),
+            onboarded_via: 'admin_onboarding',
+        };
+        ds.CUSTOMERS.push(newCustomer);
+        ds.CUSTOMERS_MAP[customer_id] = newCustomer;
+        ds.SCORES_MAP[customer_id] = {
+            customer_id,
+            final_score: customer.churn_score || 0.40,
+            risk_tier:   customer.risk_tier   || 'STANDARD',
+            genesis_score: customer.churn_score || 0.40,
+        };
+
+        await auditLog.logEvent({
+            eventType: overridden ? 'RM_ASSIGNMENT_OVERRIDDEN' : 'RM_ASSIGNMENT_CONFIRMED',
+            customerId: customer_id,
+            actor: req.user.username,
+            layer: 'ADMIN',
+            payload: { customer_id, rmName, overridden, overrideReason: overrideReason || null },
+            modelVersion: 'ASSIGNMENT-v1.0',
+        }).catch(() => {});
+
+        res.json({ status: 'ok', customer_id, rmName, assignedAt: new Date().toISOString() });
+    } catch (e) {
+        res.status(500).json({ status: 'error', message: e.message });
+    }
+});
+
+// GET /api/admin/onboard/weights
+router.get('/onboard/weights', adminOnly, (req, res) => {
+    try { res.json({ status: 'ok', weights: rmAssignment.getWeights() }); }
+    catch (e) { res.status(500).json({ status: 'error', message: e.message }); }
+});
+
+// PUT /api/admin/onboard/weights
+router.put('/onboard/weights', adminOnly, async (req, res) => {
+    try {
+        const { fit, capacity, fairness } = req.body;
+        if ([fit, capacity, fairness].some(v => typeof v !== 'number' || v < 0))
+            return res.status(400).json({ status: 'error', message: 'fit, capacity, fairness must be non-negative numbers' });
+        const saved = await rmAssignment.saveWeights({ fit, capacity, fairness });
+        res.json({ status: 'ok', weights: saved });
+    } catch (e) {
+        res.status(500).json({ status: 'error', message: e.message });
+    }
+});
+
 module.exports = router;

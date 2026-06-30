@@ -8,7 +8,7 @@ import {
   CalendarDays, BookOpen, ClipboardList,
   TrendingUp, CheckSquare, FileText, Mic,
   Command, UserCog, Scale, AlertTriangle, Settings,
-  Network, Cpu, Zap, Map,
+  Network, Cpu, Zap, Map, UserPlus, Package,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -30,6 +30,7 @@ const NAV_GROUPS = [
       { href: '/models',          label: 'CHRONOS Models', icon: BrainCircuit },
       { href: '/admin/argus',     label: 'ARGUS Models',   icon: Activity     },
       { href: '/admin/graphsage', label: 'GraphSAGE',      icon: Network      },
+      { href: '/admin/nexus',     label: 'NEXUS Cross-Sell', icon: Package    },
     ],
   },
   {
@@ -61,8 +62,9 @@ const ADMIN_NAV_GROUPS = [
     label: 'Operations',
     roles: ['admin', 'manager'] as const,
     items: [
+      { href: '/admin/onboarding',    label: 'RM Assignment',   icon: UserPlus,      roles: ['admin', 'manager'] as const },
       { href: '/admin/rms',           label: 'RM Management',   icon: UserCog,       roles: ['admin', 'manager'] as const },
-{ href: '/admin/escalations',   label: 'Escalations',     icon: AlertTriangle, roles: ['admin', 'manager'] as const },
+      { href: '/admin/escalations',   label: 'Escalations',     icon: AlertTriangle, roles: ['admin', 'manager'] as const },
       { href: '/admin/pipeline',      label: 'Live Pipeline',   icon: Zap,           roles: ['admin', 'manager'] as const },
     ],
   },

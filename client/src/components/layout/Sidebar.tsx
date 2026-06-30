@@ -122,6 +122,7 @@ export default function Sidebar() {
 
   return (
     <aside className="w-[220px] shrink-0 h-screen fixed top-0 left-0 flex flex-col bg-white text-[#2A161B] border-r border-[#E5E0DF] select-none z-40">
+
       {/* Logo */}
       <div className="h-14 flex items-center px-4 border-b border-[#E5E0DF]">
         <Link href="/dashboard" className="flex items-center gap-2.5">

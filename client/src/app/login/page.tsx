@@ -47,8 +47,18 @@ export default function LoginPage() {
   return (
     <div className="w-full min-h-screen flex bg-cream">
 
-      {/* ── Left panel — white branding with crimson accents ──────────── */}
+      {/* ── Left panel — gradient + dot grid ──────────────────────────── */}
       <div className="hidden lg:flex lg:w-[52%] flex-col justify-between relative overflow-hidden bg-white border-r border-soft">
+
+        {/* Mesh gradient blobs */}
+        <div className="absolute inset-0 bg-mesh-gradient animate-pulse-soft" />
+        <div className="absolute top-[20%] left-[15%] w-[500px] h-[500px] opacity-70 pointer-events-none"
+             style={{ background: 'radial-gradient(circle, rgba(180,107,62,0.5) 0%, transparent 60%)' }} />
+        <div className="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] opacity-60 pointer-events-none"
+             style={{ background: 'radial-gradient(circle, rgba(107,19,43,0.4) 0%, transparent 60%)' }} />
+
+        {/* Dot grid */}
+        <div className="absolute inset-0 bg-dot-grid" />
 
         {/* Content */}
         <div className="relative z-10 p-12 flex flex-col h-full">

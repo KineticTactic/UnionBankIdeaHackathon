@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Users, Activity, BrainCircuit,
   Send, BarChart3, Workflow, Shield, LogOut,
+  CalendarDays, BookOpen, PhoneCall, ClipboardList,
+  TrendingUp, CheckSquare, FileText, Mic,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -42,6 +44,22 @@ const NAV_GROUPS = [
   },
 ];
 
+const RM_NAV_GROUPS = [
+  {
+    label: 'RM Portal',
+    roles: ['rm', 'manager', 'admin'] as const,
+    items: [
+      { href: '/rm/today',       label: 'My Day',         icon: CalendarDays  },
+      { href: '/rm/book',        label: 'My Book',        icon: BookOpen      },
+      { href: '/rm/outreach',    label: 'Outreach',       icon: Send          },
+      { href: '/rm/outcomes',    label: 'Outcome Log',    icon: ClipboardList },
+      { href: '/rm/calls',       label: 'Call Log',       icon: Mic           },
+      { href: '/rm/tasks',       label: 'Follow-ups',     icon: CheckSquare   },
+      { href: '/rm/performance', label: 'My Performance', icon: TrendingUp    },
+    ],
+  },
+];
+
 export default function Sidebar() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
@@ -55,6 +73,33 @@ export default function Sidebar() {
     href === '/dashboard'
       ? pathname === '/dashboard'
       : pathname === href || pathname.startsWith(href + '/');
+
+  const userRole = user?.role as string;
+
+  const renderNavItem = (item: { href: string; label: string; icon: React.ElementType; roles?: readonly string[] }) => {
+    if (item.roles && !item.roles.includes(userRole as 'manager' | 'admin')) return null;
+    const Icon   = item.icon;
+    const active = isActive(item.href);
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] font-medium mb-0.5 transition-all duration-150 ${
+          active
+            ? 'bg-white/12 text-white'
+            : 'text-white/60 hover:text-white hover:bg-white/8'
+        }`}
+      >
+        <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-white/50'}`} />
+        <span>{item.label}</span>
+        {active && (
+          <span className="ml-auto w-1.5 h-1.5 rounded-full bg-sky-400" />
+        )}
+      </Link>
+    );
+  };
+
+  const isRmUser = ['rm', 'manager', 'admin'].includes(userRole);
 
   return (
     <aside className="w-[220px] shrink-0 h-screen fixed top-0 left-0 flex flex-col bg-[#0f2d5c] text-white select-none z-40">
@@ -73,6 +118,7 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-3 px-2">
+        {/* Standard nav groups */}
         {NAV_GROUPS.map((group) => {
           const visibleItems = group.items.filter(item => {
             if (!('roles' in item) || !item.roles) return true;
@@ -86,30 +132,25 @@ export default function Sidebar() {
                   {group.label}
                 </p>
               )}
-              {visibleItems.map(item => {
-                const Icon  = item.icon;
-                const active = isActive(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] font-medium mb-0.5 transition-all duration-150 ${
-                      active
-                        ? 'bg-white/12 text-white'
-                        : 'text-white/60 hover:text-white hover:bg-white/8'
-                    }`}
-                  >
-                    <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-white/50'}`} />
-                    <span>{item.label}</span>
-                    {active && (
-                      <span className="ml-auto w-1.5 h-1.5 rounded-full bg-sky-400" />
-                    )}
-                  </Link>
-                );
-              })}
+              {visibleItems.map(item => renderNavItem(item))}
             </div>
           );
         })}
+
+        {/* RM Portal section — divider */}
+        {isRmUser && (
+          <div className="my-2 mx-3 border-t border-white/10" />
+        )}
+
+        {/* RM Portal nav groups */}
+        {isRmUser && RM_NAV_GROUPS.map((group) => (
+          <div key={group.label} className="mb-4">
+            <p className="text-[9px] font-semibold uppercase tracking-widest text-sky-400/70 px-3 py-1 mb-0.5">
+              {group.label}
+            </p>
+            {group.items.map(item => renderNavItem(item))}
+          </div>
+        ))}
       </nav>
 
       {/* User footer */}

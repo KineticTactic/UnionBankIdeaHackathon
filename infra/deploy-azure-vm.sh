@@ -35,7 +35,7 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 # ── Pre-flight checks ────────────────────────────────────────────────────────
 for envfile in server/.env chronos/.env; do
-  [ -f "$PROJECT_DIR/$envfile" ] || echo "⚠️  Missing $envfile — Azure AI keys may not be set"
+  [ -f "$PROJECT_DIR/$envfile" ] || echo "⚠️  Missing $envfile — NVIDIA API keys may not be set"
 done
 
 # ── Prerequisites ────────────────────────────────────────────────────────────

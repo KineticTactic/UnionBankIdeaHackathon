@@ -1,7 +1,6 @@
 """
 nvidia_client.py — NVIDIA DeepSeek LLM clients for COMPASS.
 
-Replaces the misleadingly-named azure_foundry.py.
 All endpoints point at integrate.api.nvidia.com (free tier).
 
 LLM call counter: every get_*_llm() call is counted and tagged by node.

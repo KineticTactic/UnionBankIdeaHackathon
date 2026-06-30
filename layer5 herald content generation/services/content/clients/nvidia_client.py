@@ -1,7 +1,6 @@
 """
 nvidia_client.py — NVIDIA DeepSeek LLM client for HERALD.
 
-Replaces the misleadingly-named azure_foundry.py.
 Shares the same LLM call counter design as COMPASS nvidia_client.
 """
 from __future__ import annotations

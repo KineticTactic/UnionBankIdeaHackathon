@@ -77,6 +77,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ── RM Copilot router ────────────────────────────────────────────────────────
+# Serves POST /copilot/ask — the endpoint the frontend RMCopilotPanel calls.
+# Guarded so missing optional deps (langchain, etc.) never block the rest of the
+# COMPASS API from starting. Run/fake-mode details: COPILOT_RUNBOOK.md.
+try:
+    from services.orchestration.copilot.router import router as _copilot_router  # type: ignore
+    app.include_router(_copilot_router)
+    logger.info("RM Copilot router mounted at /copilot")
+except Exception as exc:  # pragma: no cover — optional-dependency guard
+    logger.warning("RM Copilot router NOT mounted (%s) — /copilot/ask unavailable", exc)
+
 _GRAPH = None  # lazy-init to avoid loading at import time in dev
 
 

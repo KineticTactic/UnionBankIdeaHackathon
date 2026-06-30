@@ -1,0 +1,46 @@
+[
+  {
+    "id": "TASK-0001",
+    "customer_id": "CUST-049",
+    "rm_username": "rm_user",
+    "due_date": "2026-07-02T10:00:00Z",
+    "note": "Follow up on salary redirect — check if salary has come back to Union Bank account",
+    "type": "callback",
+    "status": "pending",
+    "created_at": "2026-06-22T14:00:00Z",
+    "updated_at": "2026-06-22T14:00:00Z"
+  },
+  {
+    "id": "TASK-0002",
+    "customer_id": "CUST-034",
+    "rm_username": "rm_user",
+    "due_date": "2026-07-05T11:00:00Z",
+    "note": "Send FD renewal reminder — FD matures next week",
+    "type": "follow_up",
+    "status": "pending",
+    "created_at": "2026-06-25T08:30:00Z",
+    "updated_at": "2026-06-25T08:30:00Z"
+  },
+  {
+    "id": "TASK-0003",
+    "customer_id": "CUST-038",
+    "rm_username": "rm_user",
+    "due_date": "2026-06-28T14:00:00Z",
+    "note": "Confirm home loan top-up application status with operations team",
+    "type": "internal",
+    "status": "done",
+    "created_at": "2026-06-25T09:20:00Z",
+    "updated_at": "2026-06-27T10:00:00Z"
+  },
+  {
+    "id": "TASK-0004",
+    "customer_id": "CUST-025",
+    "rm_username": "rm_user",
+    "due_date": "2026-07-08T10:00:00Z",
+    "note": "Check on business loan inquiry — customer asked about SME loan last week",
+    "type": "callback",
+    "status": "pending",
+    "created_at": "2026-06-27T16:00:00Z",
+    "updated_at": "2026-06-27T16:00:00Z"
+  }
+]

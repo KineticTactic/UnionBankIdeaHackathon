@@ -47,7 +47,7 @@ cells.append(mc(
 
 ---
 
-**Stack:** Python 3.11 · PyTorch · XGBoost · LangGraph · Azure AI Foundry (DeepSeek-V4-Pro-4) · Kafka · PostgreSQL · Plotly · scikit-uplift · lifelines"""
+**Stack:** Python 3.11 · PyTorch · XGBoost · LangGraph · NVIDIA DeepSeek V4 Pro · Kafka · PostgreSQL · Plotly · scikit-uplift · lifelines"""
 ))
 
 cells.append(mc(
@@ -92,7 +92,7 @@ cells.append(mc(
 | **L3E** | DeepHit — Survival Analysis | Synthetic survival 5K | ~1.5 min |
 | **L3F** | FusionXV2 — Score Fusion | All model outputs | — |
 | **L4** | COMPASS — Orchestration | Synthetic profiles | — |
-| **L5** | HERALD — Content Generation | Live LLM (Azure / Ollama / Mock) | — |
+| **L5** | HERALD — Content Generation | Live LLM (NVIDIA / Ollama / Mock) | — |
 | **L6** | VERDICT — Uplift Modeling | Hillstrom 64K (scikit-uplift) | ~2 min |
 | **L7** | ORACLE — Bandit + Learning | Thompson simulation | — |
 
@@ -179,26 +179,26 @@ GPU    = torch.cuda.is_available()
 EMULT  = 2 if GPU else 1
 print(f"Device : {DEVICE}  |  GPU={GPU}  |  EMULT={EMULT}")
 
-# ── LLM Backend: "azure" | "ollama" | "mock" ──────────────────────────────
-LLM_BACKEND    = "azure"
-AZURE_ENDPOINT = "https://kensara.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview"
-AZURE_MODEL    = "DeepSeek-V4-Pro-4"
-OLLAMA_URL     = "http://localhost:11434/api/chat"
-OLLAMA_MODEL   = "llama3.2"          # swap: mistral, phi3, qwen2.5 ...
+# ── LLM Backend: "nvidia" | "ollama" | "mock" ─────────────────────────────
+LLM_BACKEND     = "nvidia"
+NVIDIA_ENDPOINT = "https://integrate.api.nvidia.com/v1/chat/completions"
+NVIDIA_MODEL    = "deepseek-ai/deepseek-v4-pro"
+OLLAMA_URL      = "http://localhost:11434/api/chat"
+OLLAMA_MODEL    = "llama3.2"          # swap: mistral, phi3, qwen2.5 ...
 
-AZURE_API_KEY = ""
+NVIDIA_API_KEY = ""
 try:
     from google.colab import userdata
-    AZURE_API_KEY = userdata.get("AZURE_API_KEY") or ""
+    NVIDIA_API_KEY = userdata.get("NVIDIA_API_KEY") or ""
 except Exception:
-    AZURE_API_KEY = os.environ.get("AZURE_API_KEY", "")
+    NVIDIA_API_KEY = os.environ.get("NVIDIA_API_KEY", "")
 
-if not AZURE_API_KEY:
+if not NVIDIA_API_KEY:
     LLM_BACKEND = "mock"
-    print("⚠  No AZURE_API_KEY found — L5 HERALD will use mock responses")
-    print("   To enable: Colab ▸ Secrets ▸ AZURE_API_KEY")
+    print("⚠  No NVIDIA_API_KEY found — L5 HERALD will use mock responses")
+    print("   To enable: Colab ▸ Secrets ▸ NVIDIA_API_KEY")
 else:
-    print(f"LLM : {LLM_BACKEND}  model={AZURE_MODEL}")
+    print(f"LLM : {LLM_BACKEND}  model={NVIDIA_MODEL}")
 
 # ── Colour palette ─────────────────────────────────────────────────────────
 C = dict(
@@ -2543,7 +2543,7 @@ passes it through a two-pass compliance gate, and dispatches to the delivery ser
 | **CHRONICLE** | Writes feedback record for VERDICT | No |
 
 **LLM options in this notebook:**
-- `azure` → DeepSeek-V4-Pro-4 via Azure AI Foundry (set `AZURE_API_KEY` in Colab Secrets)
+- `nvidia` → DeepSeek V4 Pro via NVIDIA NIM (set `NVIDIA_API_KEY` in Colab Secrets)
 - `ollama` → any local Ollama model (set `LLM_BACKEND = "ollama"` in config cell)
 - `mock` → pre-written realistic responses (no API key needed — used as fallback)"""
 ))
@@ -2559,19 +2559,19 @@ COMPLIANCE_BLOCKLIST = [
 ]
 
 def call_llm(messages: list, max_tokens: int = 600, temperature: float = 0.7) -> str:
-    \"\"\"Route to Azure, Ollama, or mock backend.\"\"\"
-    if LLM_BACKEND == "azure" and AZURE_API_KEY:
+    \"\"\"Route to NVIDIA, Ollama, or mock backend.\"\"\"
+    if LLM_BACKEND == "nvidia" and NVIDIA_API_KEY:
         import urllib.request, json as _json
         body = _json.dumps({
-            "model": AZURE_MODEL,
+            "model": NVIDIA_MODEL,
             "messages": messages,
             "max_tokens": max_tokens,
             "temperature": temperature,
         }).encode()
         req  = urllib.request.Request(
-            AZURE_ENDPOINT,
+            NVIDIA_ENDPOINT,
             data=body,
-            headers={"api-key": AZURE_API_KEY, "Content-Type": "application/json"},
+            headers={"Authorization": f"Bearer {NVIDIA_API_KEY}", "Content-Type": "application/json"},
         )
         with urllib.request.urlopen(req, timeout=30) as r:
             resp = _json.loads(r.read())
@@ -2671,7 +2671,7 @@ for k, v in brief.items():
 ))
 
 cells.append(cc(
-"""# ══ L5: SCRIBE — Generate Email Content (Azure / Ollama / Mock) ══════════
+"""# ══ L5: SCRIBE — Generate Email Content (NVIDIA / Ollama / Mock) ═════════
 SYSTEM_PROMPT_EMAIL = (
     "You are a senior relationship manager at Union Bank writing a personalised retention email. "
     "Tone: warm, professional, empathetic. Never make guarantees about returns or interest rates. "
@@ -2692,7 +2692,7 @@ user_prompt_email = f\"\"\"Write a personalised retention email for this custome
 The email must feel hand-written, not templated. Reference their specific signals naturally.\"\"\"
 
 print("Calling LLM for EMAIL content...")
-print(f"Backend: {LLM_BACKEND}  |  model: {AZURE_MODEL if LLM_BACKEND=='azure' else OLLAMA_MODEL}")
+print(f"Backend: {LLM_BACKEND}  |  model: {NVIDIA_MODEL if LLM_BACKEND=='nvidia' else OLLAMA_MODEL}")
 print("=" * 65)
 
 t0 = time.time()
@@ -3321,7 +3321,7 @@ display(scorecard.to_string(index=False))
 
 print(f"\\nNotebook completed at {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 print(f"Total cells : {len(cells) if 'cells' in dir() else '~100'}")
-print(f"Platform    : PCOP v3.0  |  Stack: PyTorch + XGBoost + LangGraph + Azure AI")"""
+print(f"Platform    : PCOP v3.0  |  Stack: PyTorch + XGBoost + LangGraph + NVIDIA DeepSeek")"""
 ))
 
 cells.append(mc(
@@ -3336,7 +3336,7 @@ This notebook demonstrated all seven layers of PCOP end-to-end:
 | **L2 ARGUS** | BH-FDR reduces false alarm rate from 37% to < 5% across 9 signal streams |
 | **L3 CHRONOS** | 5-model ensemble — FusionXV2 calibrated AUC with ECE < 0.05 |
 | **L4 COMPASS** | LangGraph pipeline routes 20 customers in < 1ms, suppression gate fires correctly |
-| **L5 HERALD** | Azure/Ollama/Mock LLM generates compliant, personalised email + SMS + push |
+| **L5 HERALD** | NVIDIA/Ollama/Mock LLM generates compliant, personalised email + SMS + push |
 | **L6 VERDICT** | Doubly-robust ATE isolates genuine email uplift from selection bias |
 | **L7 ORACLE** | Thompson bandit reduces channel selection regret vs random policy |
 

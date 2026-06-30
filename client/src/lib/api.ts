@@ -174,4 +174,49 @@ export const api = {
   getChurnExplanation:(customerId: string) => fetchApi(`/api/explain/churn-score?customerId=${encodeURIComponent(customerId)}`),
   getSignalExplanations:(customerId: string) => fetchApi(`/api/explain/signals?customerId=${encodeURIComponent(customerId)}`),
   getExplainModelHealth:() => fetchApi('/api/explain/model-health'),
+
+  // ── RM Portal — Book ─────────────────────────────────────────────────────────
+  getRmBook: (params: Record<string, string | undefined> = {}) => {
+    const sp = new URLSearchParams();
+    Object.entries(params).forEach(([k,v]) => { if (v) sp.set(k, v); });
+    return fetchApi(`/api/rm/book?${sp}`);
+  },
+  getRmBookSummary: () => fetchApi('/api/rm/book/summary'),
+
+  // ── RM Portal — Tasks ────────────────────────────────────────────────────────
+  getRmTasks: (status?: string) => fetchApi(`/api/rm/tasks${status ? `?status=${status}` : ''}`),
+  createRmTask: (data: { customer_id: string; due_date: string; note?: string; type?: string }) =>
+    fetchApi('/api/rm/tasks', { method: 'POST', body: JSON.stringify(data) }),
+  updateRmTask: (id: string, data: Record<string, unknown>) =>
+    fetchApi(`/api/rm/tasks/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+
+  // ── RM Portal — Outcomes ─────────────────────────────────────────────────────
+  getRmOutcomes: (customerId?: string) =>
+    fetchApi(`/api/rm/outcomes${customerId ? `?customer_id=${encodeURIComponent(customerId)}` : ''}`),
+  logRmOutcome: (data: Record<string, unknown>) =>
+    fetchApi('/api/rm/outcomes', { method: 'POST', body: JSON.stringify(data) }),
+  updateRmOutcome: (id: string, data: Record<string, unknown>) =>
+    fetchApi(`/api/rm/outcomes/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+
+  // ── RM Portal — Calls ────────────────────────────────────────────────────────
+  getRmCalls: (params: Record<string, string | undefined> = {}) => {
+    const sp = new URLSearchParams();
+    Object.entries(params).forEach(([k,v]) => { if (v) sp.set(k, v); });
+    return fetchApi(`/api/rm/calls?${sp}`);
+  },
+  getRmCall: (id: string) => fetchApi(`/api/rm/calls/${id}`),
+  startCall: (customer_id: string) =>
+    fetchApi('/api/rm/calls/start', { method: 'POST', body: JSON.stringify({ customer_id, consent_to_record: true }) }),
+  analyzeCall: (customer_id: string, transcript: string) =>
+    fetchApi('/api/rm/calls/analyze', { method: 'POST', body: JSON.stringify({ customer_id, transcript }) }),
+  commitCall: (data: Record<string, unknown>) =>
+    fetchApi('/api/rm/calls/commit', { method: 'POST', body: JSON.stringify(data) }),
+
+  // ── RM Portal — Performance ──────────────────────────────────────────────────
+  getRmPerformance: () => fetchApi('/api/rm/performance'),
+
+  // ── Outreach — Translate + Call Script ──────────────────────────────────────
+  translateOutreach: (data: { customer_id: string; content: Record<string, unknown>; target_language: string }) =>
+    fetchApi('/api/outreach/translate', { method: 'POST', body: JSON.stringify(data) }),
+  getCallScript: (customerId: string) => fetchApi(`/api/outreach/call-script/${encodeURIComponent(customerId)}`),
 };

@@ -2,7 +2,7 @@ import json
 import logging
 from datetime import date
 from langchain_core.messages import SystemMessage, HumanMessage
-from ..clients.azure_foundry import get_narrate_llm
+from ..clients.nvidia_client import get_narrate_llm
 from ..db.reads import get_top_metric_changes
 from ..db.writes import write_insight_cards
 from ..kafka.producer import get_kafka_producer

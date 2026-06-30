@@ -1,3 +1,7 @@
+"""
+nvidia_client.py — NVIDIA DeepSeek LLM client for the ORACLE NARRATE cycle.
+
+"""
 import os
 import logging
 from langchain_openai import ChatOpenAI

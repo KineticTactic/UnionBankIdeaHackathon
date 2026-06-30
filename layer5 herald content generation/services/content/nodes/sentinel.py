@@ -3,7 +3,7 @@ import json
 import logging
 from langchain_core.messages import SystemMessage, HumanMessage
 from ..state import HeraldState
-from ..clients.azure_foundry import get_scribe_llm
+from ..clients.nvidia_client import get_scribe_llm
 from ..prompts.prohibited_phrases import PROHIBITED_PHRASES, PROHIBITED_PATTERNS
 
 logger = logging.getLogger(__name__)

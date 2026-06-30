@@ -3,7 +3,7 @@ import logging
 from langchain_core.messages import SystemMessage, HumanMessage
 from ..state import HeraldState
 from ..prompts.channel_prompts import CHANNEL_PROMPTS
-from ..clients.azure_foundry import get_scribe_llm
+from ..clients.nvidia_client import get_scribe_llm
 
 logger = logging.getLogger(__name__)
 

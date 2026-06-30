@@ -88,7 +88,7 @@ async def test_c00000001_relocation_confirmed(graph):
                new_callable=AsyncMock,
                return_value={"final_score": 0.87, "risk_tier": "critical",
                              "action_score": 0.52}), \
-         patch("services.orchestration.clients.azure_foundry.get_langchain_compass_llm",
+         patch("services.orchestration.clients.nvidia_client.get_langchain_compass_llm",
                return_value=mock_llm), \
          patch("services.orchestration.nodes.gate.get_consent_flags_raw",
                new_callable=AsyncMock,
@@ -134,7 +134,7 @@ async def test_c00000006_bereavement_confirmed(graph):
                new_callable=AsyncMock,
                return_value={"final_score": 0.87, "risk_tier": "critical",
                              "action_score": 0.52}), \
-         patch("services.orchestration.clients.azure_foundry.get_langchain_compass_llm",
+         patch("services.orchestration.clients.nvidia_client.get_langchain_compass_llm",
                return_value=mock_llm), \
          patch("services.orchestration.nodes.gate.get_consent_flags_raw",
                new_callable=AsyncMock,

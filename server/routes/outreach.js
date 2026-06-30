@@ -204,6 +204,59 @@ router.post('/approve/:approvalId', verifyToken, async (req, res) => {
     }
 });
 
+// ── POST /translate — NVIDIA transcreation ───────────────────────────────────
+router.post('/translate', verifyToken, async (req, res) => {
+  const { customer_id, content, target_language } = req.body;
+  if (!customer_id || !content || !target_language)
+    return res.status(400).json({ status: 'error', message: 'customer_id, content, and target_language required' });
+
+  try {
+    const customer = await ds.getCustomerById(customer_id);
+    if (!customer) return res.status(404).json({ status: 'error', message: 'Customer not found' });
+    const firstName = customer.first_name || customer.full_name?.split(' ')[0] || 'Customer';
+
+    const { translateOutreach } = require('../services/translationService');
+    const result = await translateOutreach(content, target_language, firstName);
+
+    await auditLog.logEvent({
+      eventType:    'OUTREACH_TRANSLATED',
+      customerId:   customer_id,
+      actor:        req.user?.username || 'rm_user',
+      layer:        'HERALD',
+      payload:      {
+        target_language,
+        content_hash: require('crypto').createHash('sha256').update(JSON.stringify(content)).digest('hex'),
+      },
+      modelVersion: 'HERALD-v1.0',
+    });
+
+    res.json({ status: 'ok', ...result });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
+// ── GET /call-script/:customerId — HERALD pre-call brief ─────────────────────
+router.get('/call-script/:customerId', verifyToken, async (req, res) => {
+  try {
+    const snap = await ds.getCustomerSnapshot(req.params.customerId);
+    if (!snap) return res.status(404).json({ status: 'error', message: 'Customer not found' });
+
+    const { generateCallScript } = require('../services/callAnalysisService');
+    const script = await generateCallScript(
+      snap.customer,
+      snap.score,
+      snap.signals?.signals || [],
+      snap.plan,
+      [],  // RAG passages — wired when COMPASS is running
+    );
+
+    res.json({ status: 'ok', customer_id: req.params.customerId, script });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
 // ── POST /reject/:approvalId ──────────────────────────────────────────────────
 
 router.post('/reject/:approvalId', verifyToken, async (req, res) => {

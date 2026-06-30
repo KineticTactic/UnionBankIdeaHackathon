@@ -23,7 +23,7 @@
      │  (system of    │    │ Pub/Sub + BullMQ  │    │  (HERALD LLM)   │
      │   record)      │    │  event bus        │    └────────┬────────┘
      └────────────────┘    └──────────────────┘             │
-                                                            NVIDIA / Azure AI
+                                                            NVIDIA DeepSeek
               ┌────────────────────────────────────────────┐
               │              CHRONOS FastAPI                │
               │  (scoring service — writes to Postgres)     │

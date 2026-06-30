@@ -27,8 +27,9 @@ const NAV_GROUPS = [
   {
     label: 'Models',
     items: [
-      { href: '/models',       label: 'CHRONOS Models', icon: BrainCircuit },
-      { href: '/admin/argus',  label: 'ARGUS Models',   icon: Activity     },
+      { href: '/models',          label: 'CHRONOS Models', icon: BrainCircuit },
+      { href: '/admin/argus',     label: 'ARGUS Models',   icon: Activity     },
+      { href: '/admin/graphsage', label: 'GraphSAGE',      icon: Network      },
     ],
   },
   {
@@ -69,7 +70,6 @@ const ADMIN_NAV_GROUPS = [
     label: 'Models & AI',
     roles: ['admin', 'manager', 'risk'] as const,
     items: [
-      { href: '/admin/graphsage',     label: 'GraphSAGE',       icon: Network,       roles: ['admin', 'manager', 'risk'] as const },
       { href: '/admin/relearning',    label: 'ORACLE Relearning',icon: Cpu,          roles: ['admin', 'manager', 'risk'] as const },
     ],
   },

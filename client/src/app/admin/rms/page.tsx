@@ -6,11 +6,11 @@ import { api } from '@/lib/api';
 import { Search, RefreshCw, Users, AlertTriangle, TrendingUp, Phone } from 'lucide-react';
 
 const TIER_BADGE: Record<string, string> = {
-  PRIORITY: 'bg-red-100 text-red-700 border border-red-200',
-  ESCALATE: 'bg-orange-100 text-orange-700 border border-orange-200',
-  STANDARD: 'bg-amber-100 text-amber-700 border border-amber-200',
-  MONITOR:  'bg-blue-100 text-blue-700 border border-blue-200',
-  NONE:     'bg-emerald-100 text-emerald-700 border border-emerald-200',
+  PRIORITY: 'bg-crimson-soft text-crimson border border-soft',
+  ESCALATE: 'bg-copper-soft text-copper-dark border border-soft',
+  STANDARD: 'bg-copper-soft text-copper-dark border border-soft',
+  MONITOR:  'bg-teal-soft text-teal-dark border border-soft',
+  NONE:     'bg-sage-soft text-sage-brand border border-soft',
 };
 
 export default function RmsPage() {
@@ -54,7 +54,7 @@ export default function RmsPage() {
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total RMs',    value: rms.length,  icon: Users,         accent: 'border-l-[#0f2d5c]' },
+          { label: 'Total RMs',    value: rms.length,  icon: Users,         accent: 'border-l-[var(--crimson)]' },
           { label: 'Total Book',   value: totalBook,   icon: Users,         accent: 'border-l-sky-500' },
           { label: 'Total At-Risk',value: totalRisk,   icon: AlertTriangle, accent: 'border-l-red-500' },
           { label: 'Saves (30d)',  value: totalSaves,  icon: TrendingUp,    accent: 'border-l-emerald-500' },
@@ -75,7 +75,7 @@ export default function RmsPage() {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input
-          className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#0f2d5c]/40 shadow-sm"
+          className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[var(--crimson)]/40 shadow-sm"
           placeholder="Search by RM name or username…"
           value={search} onChange={e => setSearch(e.target.value)}
         />
@@ -90,16 +90,16 @@ export default function RmsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filtered.map((rm: any, i: number) => (
             <Link key={rm.username} href={`/admin/rms/${rm.username}`}
-              className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:border-[#0f2d5c]/30 hover:shadow-md transition-all group">
+              className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:border-[var(--crimson)]/30 hover:shadow-md transition-all group">
               <div className="flex items-start gap-3 mb-4">
-                <div className="w-11 h-11 rounded-full bg-[#0f2d5c] flex items-center justify-center text-white text-sm font-bold shrink-0">
+                <div className="w-11 h-11 rounded-full bg-[var(--crimson)] flex items-center justify-center text-white text-sm font-bold shrink-0">
                   {rm.rm_name?.split(' ').map((n: string) => n[0]).join('').slice(0,2)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-slate-900 truncate">{rm.rm_name}</p>
                   <p className="text-[11px] text-slate-400">@{rm.username}</p>
                 </div>
-                <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${rm.active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${rm.active ? 'bg-sage-soft text-sage-brand' : 'bg-slate-100 text-slate-500'}`}>
                   {rm.active ? 'ACTIVE' : 'INACTIVE'}
                 </span>
               </div>
@@ -111,7 +111,7 @@ export default function RmsPage() {
                   { label: 'Saves',   value: rm.saves_this_month || 0, green: true },
                 ].map(m => (
                   <div key={m.label} className="bg-slate-50 rounded-lg p-2.5 text-center">
-                    <p className={`text-lg font-bold tabular-nums ${m.red ? 'text-red-600' : m.green ? 'text-emerald-600' : 'text-slate-900'}`}>{m.value}</p>
+                    <p className={`text-lg font-bold tabular-nums ${m.red ? 'text-crimson' : m.green ? 'text-sage-brand' : 'text-slate-900'}`}>{m.value}</p>
                     <p className="text-[9px] text-slate-400 uppercase tracking-wide">{m.label}</p>
                   </div>
                 ))}
@@ -122,7 +122,7 @@ export default function RmsPage() {
                   <Phone className="w-3 h-3" />
                   <span>{rm.calls_this_week || 0} calls this week</span>
                 </div>
-                <span className={`font-semibold ${(rm.task_completion_rate || 0) >= 80 ? 'text-emerald-600' : (rm.task_completion_rate || 0) >= 50 ? 'text-amber-600' : 'text-red-500'}`}>
+                <span className={`font-semibold ${(rm.task_completion_rate || 0) >= 80 ? 'text-sage-brand' : (rm.task_completion_rate || 0) >= 50 ? 'text-copper-dark' : 'text-crimson'}`}>
                   {rm.task_completion_rate || 0}% tasks done
                 </span>
               </div>

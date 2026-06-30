@@ -9,10 +9,10 @@ interface SurvivalPanelProps {
 }
 
 function urgencyColor(h: UrgencyHorizon) {
-    if (h === "7d")  return { bar: "#DC2626", text: "text-red-600",  bg: "bg-red-50",  border: "border-red-200",  label: "7-Day Alert",   dot: "bg-red-500"  };
-    if (h === "30d") return { bar: "#D97706", text: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200", label: "30-Day Risk",   dot: "bg-amber-500" };
-    if (h === "90d") return { bar: "#CA8A04", text: "text-yellow-700", bg: "bg-yellow-50", border: "border-yellow-200", label: "90-Day Watch",  dot: "bg-yellow-500" };
-    return            { bar: "#16A34A", text: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200", label: "Low Risk",      dot: "bg-emerald-500" };
+    if (h === "7d")  return { bar: "var(--crimson)", text: "text-crimson",  bg: "bg-crimson-soft",  border: "border-soft",  label: "7-Day Alert",   dot: "bg-crimson"  };
+    if (h === "30d") return { bar: "var(--copper-dark)", text: "text-copper-dark", bg: "bg-copper-soft", border: "border-soft", label: "30-Day Risk",   dot: "bg-copper" };
+    if (h === "90d") return { bar: "#CA8A04", text: "text-copper-dark", bg: "bg-copper-pale", border: "border-soft", label: "90-Day Watch",  dot: "bg-yellow-500" };
+    return            { bar: "var(--sage-brand)", text: "text-sage-brand", bg: "bg-sage-soft", border: "border-soft", label: "Low Risk",      dot: "bg-sage-brand" };
 }
 
 function SurvivalBar({ label, value, color, horizon }: { label: string; value: number; color: string; horizon: UrgencyHorizon }) {
@@ -72,8 +72,8 @@ export function SurvivalPanel({ score, loading }: SurvivalPanelProps) {
     }
 
     const h = score.urgency_horizon;
-    const c = urgencyColor(h);
-    const disagreeHigh = score.ensemble_disagreement >= 0.15;
+    const c = h ? urgencyColor(h) : { bar: '#8B8481', text: 'text-[#8B8481]', bg: 'bg-[#F5F4F2]', border: 'border-[#E5E0DF]', label: '—', dot: 'bg-[#8B8481]' };
+    const disagreeHigh = Number(score.ensemble_disagreement || 0) >= 0.15;
 
     return (
         <div className={`rounded-xl border ${c.border} bg-white overflow-hidden`}>
@@ -89,7 +89,7 @@ export function SurvivalPanel({ score, loading }: SurvivalPanelProps) {
                             {c.label}
                         </span>
                     ) : (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wider flex items-center gap-1">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sage-soft text-sage-brand border border-soft uppercase tracking-wider flex items-center gap-1">
                             <CheckCircle className="w-2.5 h-2.5" /> Stable
                         </span>
                     )}
@@ -100,66 +100,66 @@ export function SurvivalPanel({ score, loading }: SurvivalPanelProps) {
                 {/* Survival bars */}
                 <div className="space-y-3">
                     <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Departure Probability · Time Horizon</p>
-                    <SurvivalBar label="Next 7 days" value={score.survival_7d}
-                        color={score.survival_7d >= 0.40 ? "#DC2626" : "#94A3B8"}
-                        horizon={score.survival_7d >= 0.40 ? "7d" : null} />
-                    <SurvivalBar label="Next 30 days" value={score.survival_30d}
-                        color={score.survival_30d >= 0.45 ? "#D97706" : "#94A3B8"}
-                        horizon={score.survival_30d >= 0.45 ? "30d" : null} />
-                    <SurvivalBar label="Next 90 days" value={score.survival_90d}
-                        color={score.survival_90d >= 0.50 ? "#CA8A04" : "#94A3B8"}
-                        horizon={score.survival_90d >= 0.50 ? "90d" : null} />
+                    <SurvivalBar label="Next 7 days" value={Number(score.survival_7d)}
+                        color={Number(score.survival_7d) >= 0.40 ? "var(--crimson)" : "var(--gray-400)"}
+                        horizon={Number(score.survival_7d) >= 0.40 ? "7d" : null} />
+                    <SurvivalBar label="Next 30 days" value={Number(score.survival_30d)}
+                        color={Number(score.survival_30d) >= 0.45 ? "var(--copper-dark)" : "var(--gray-400)"}
+                        horizon={Number(score.survival_30d) >= 0.45 ? "30d" : null} />
+                    <SurvivalBar label="Next 90 days" value={Number(score.survival_90d)}
+                        color={Number(score.survival_90d) >= 0.50 ? "#CA8A04" : "var(--gray-400)"}
+                        horizon={Number(score.survival_90d) >= 0.50 ? "90d" : null} />
                 </div>
 
                 <div className="border-t border-slate-100 pt-4 space-y-3">
                     <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Precision Risk Engine · Attribution</p>
-                    <ModelBar label="Txn Analytics" value={score.tare_score}    color="#6366F1" />
-                    <ModelBar label="Behavioural"   value={score.habitat_score} color="#8B5CF6" />
-                    <ModelBar label="Network Intel"  value={score.graph_score} color="#EC4899" />
+                    <ModelBar label="Txn Analytics" value={Number(score.tare_score)}    color="var(--teal)" />
+                    <ModelBar label="Behavioural"   value={Number(score.habitat_score)} color="var(--teal)" />
+                    <ModelBar label="Network Intel"  value={Number(score.graph_score)} color="#EC4899" />
                 </div>
 
                 {/* Graph score + CI row */}
                 <div className="grid grid-cols-2 gap-3">
                     <div className="bg-slate-50 rounded-lg p-3 border border-slate-100">
                         <div className="flex items-center gap-1.5 mb-1">
-                            <Network className="w-3 h-3 text-pink-500" />
+                            <Network className="w-3 h-3 text-crimson" />
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Network Risk Score</span>
                         </div>
-                        <span className="text-xl font-bold text-slate-800">{Math.round(score.graph_score * 100)}%</span>
+                        <span className="text-xl font-bold text-slate-800">{Math.round(Number(score.graph_score) * 100)}%</span>
                         <p className="text-[10px] text-slate-400 mt-0.5">Peer network propagation</p>
                     </div>
                     <div className="bg-slate-50 rounded-lg p-3 border border-slate-100">
                         <div className="flex items-center gap-1.5 mb-1">
                             {disagreeHigh
-                                ? <AlertCircle className="w-3 h-3 text-amber-500" />
-                                : <CheckCircle className="w-3 h-3 text-emerald-500" />}
+                                ? <AlertCircle className="w-3 h-3 text-copper" />
+                                : <CheckCircle className="w-3 h-3 text-sage-brand" />}
                             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Model Agree</span>
                         </div>
-                        <span className={`text-xl font-bold ${disagreeHigh ? "text-amber-600" : "text-emerald-700"}`}>
+                        <span className={`text-xl font-bold ${disagreeHigh ? "text-copper-dark" : "text-sage-brand"}`}>
                             {disagreeHigh ? "LOW" : "HIGH"}
                         </span>
-                        <p className="text-[10px] text-slate-400 mt-0.5">Spread: ±{Math.round(score.ensemble_disagreement * 100)}%</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">Spread: ±{Math.round(Number(score.ensemble_disagreement) * 100)}%</p>
                     </div>
                 </div>
 
                 {/* Conformal CI */}
-                <div className="bg-indigo-50 rounded-lg p-3 border border-indigo-100">
+                <div className="bg-teal-soft rounded-lg p-3 border border-indigo-100">
                     <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1.5">Statistical Confidence Interval · 90%</p>
                     <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-indigo-700">{Math.round(score.conformal_lower * 100)}%</span>
-                        <div className="flex-1 h-2 bg-indigo-100 rounded-full relative overflow-hidden">
+                        <span className="text-xs font-semibold text-teal-dark">{Math.round(Number(score.conformal_lower) * 100)}%</span>
+                        <div className="flex-1 h-2 bg-teal-soft rounded-full relative overflow-hidden">
                             <div
                                 className="absolute h-full bg-indigo-400 rounded-full opacity-40"
-                                style={{ left: `${score.conformal_lower * 100}%`, right: `${(1 - score.conformal_upper) * 100}%` }}
+                                style={{ left: `${Number(score.conformal_lower) * 100}%`, right: `${(1 - Number(score.conformal_upper)) * 100}%` }}
                             />
                             <div
-                                className="absolute h-full w-0.5 bg-indigo-600"
-                                style={{ left: `${score.final_score * 100}%` }}
+                                className="absolute h-full w-0.5 bg-teal-dark"
+                                style={{ left: `${Number(score.final_score) * 100}%` }}
                             />
                         </div>
-                        <span className="text-xs font-semibold text-indigo-700">{Math.round(score.conformal_upper * 100)}%</span>
+                        <span className="text-xs font-semibold text-teal-dark">{Math.round(Number(score.conformal_upper) * 100)}%</span>
                     </div>
-                    <p className="text-[10px] text-indigo-400 mt-1">Point estimate: <strong className="text-indigo-600">{Math.round(score.final_score * 100)}%</strong></p>
+                    <p className="text-[10px] text-indigo-400 mt-1">Point estimate: <strong className="text-teal-dark">{Math.round(Number(score.final_score) * 100)}%</strong></p>
                 </div>
             </div>
         </div>

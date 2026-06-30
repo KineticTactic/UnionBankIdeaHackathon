@@ -44,8 +44,8 @@ export function ConsentStatusBadge({ customerId }: { customerId: string }) {
         onClick={() => setExpanded(e => !e)}
         className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[11px] font-semibold transition-colors ${
           allOk
-            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-            : 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
+            ? 'bg-sage-soft text-sage-brand border-soft hover:bg-sage-soft'
+            : 'bg-crimson-soft text-crimson border-soft hover:bg-crimson-soft'
         }`}>
         {allOk ? <ShieldCheck className="w-3.5 h-3.5" /> : <ShieldX className="w-3.5 h-3.5" />}
         Consent {allOk ? 'Valid' : 'Issues'}
@@ -71,8 +71,8 @@ export function ConsentStatusBadge({ customerId }: { customerId: string }) {
                 return (
                   <div key={ch} className={`text-center text-[10px] font-semibold px-2 py-1 rounded-lg border ${
                     status?.allowed
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      : 'bg-red-50 text-red-600 border-red-200'
+                      ? 'bg-sage-soft text-sage-brand border-soft'
+                      : 'bg-crimson-soft text-crimson border-soft'
                   }`}>
                     {ch}
                   </div>
@@ -82,7 +82,7 @@ export function ConsentStatusBadge({ customerId }: { customerId: string }) {
           </div>
 
           {(consent.optOutChannels?.length ?? 0) > 0 && (
-            <p className="text-[10px] text-red-600">
+            <p className="text-[10px] text-crimson">
               Opted out: {consent.optOutChannels!.join(', ')}
             </p>
           )}
@@ -95,7 +95,7 @@ export function ConsentStatusBadge({ customerId }: { customerId: string }) {
 function ConsentRow({ label, ok, detail }: { label: string; ok: boolean; detail: string }) {
   return (
     <div className="flex items-center gap-2">
-      <span className={`w-2 h-2 rounded-full shrink-0 ${ok ? 'bg-emerald-500' : 'bg-red-400'}`} />
+      <span className={`w-2 h-2 rounded-full shrink-0 ${ok ? 'bg-sage-brand' : 'bg-red-400'}`} />
       <span className="text-[12px] font-semibold text-slate-700 w-24 shrink-0">{label}</span>
       <span className="text-[11px] text-slate-500">{detail}</span>
     </div>

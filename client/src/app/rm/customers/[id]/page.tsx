@@ -11,7 +11,7 @@ import {
   ArrowLeft, Send, ClipboardList, Phone, Brain,
   Activity, BarChart3, FileText, Shield, X, Loader2,
   CheckCircle, AlertTriangle, TrendingUp, Calendar,
-  MapPin, Briefcase, CreditCard, Smartphone,
+  MapPin, Briefcase, CreditCard, Smartphone, MessageCircle,
 } from 'lucide-react';
 
 interface Snapshot {
@@ -85,12 +85,12 @@ function OverviewTab({ snap }: { snap: Snapshot }) {
   return (
     <div className="space-y-5">
       {c.life_event && (
-        <div className="bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 flex items-start gap-3">
-          <Calendar className="w-4 h-4 text-purple-500 mt-0.5 shrink-0" />
+        <div className="bg-teal-soft border border-soft rounded-xl px-4 py-3 flex items-start gap-3">
+          <Calendar className="w-4 h-4 text-teal mt-0.5 shrink-0" />
           <div>
-            <p className="text-[11px] font-bold text-purple-600 uppercase tracking-wide">Life Event Detected</p>
-            <p className="text-[13px] text-purple-800 font-medium mt-0.5">{c.life_event.replace(/_/g,' ')}</p>
-            {c.life_event_desc && <p className="text-[12px] text-purple-600 mt-0.5">{c.life_event_desc}</p>}
+            <p className="text-[11px] font-bold text-teal-dark uppercase tracking-wide">Life Event Detected</p>
+            <p className="text-[13px] text-teal-dark font-medium mt-0.5">{c.life_event.replace(/_/g,' ')}</p>
+            {c.life_event_desc && <p className="text-[12px] text-teal-dark mt-0.5">{c.life_event_desc}</p>}
           </div>
         </div>
       )}
@@ -120,7 +120,7 @@ function SignalsTab({ snap }: { snap: Snapshot }) {
   const signals: any[] = snap.signals || [];
   if (!signals.length) return (
     <div className="flex flex-col items-center justify-center py-16 text-slate-400">
-      <CheckCircle className="w-8 h-8 mb-2 text-emerald-400" />
+      <CheckCircle className="w-8 h-8 mb-2 text-sage-brand" />
       <p className="text-[13px] font-medium">No active signals — profile is stable</p>
     </div>
   );
@@ -131,7 +131,7 @@ function SignalsTab({ snap }: { snap: Snapshot }) {
         <div key={i} className="bg-white border border-slate-200 rounded-xl p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[13px] font-semibold text-slate-800 capitalize">{s.signal_type.replace(/_/g,' ')}</span>
-            <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${s.confidence > 0.8 ? 'bg-red-50 text-red-600' : s.confidence > 0.6 ? 'bg-orange-50 text-orange-600' : 'bg-amber-50 text-amber-600'}`}>
+            <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${s.confidence > 0.8 ? 'bg-crimson-soft text-crimson' : s.confidence > 0.6 ? 'bg-copper-soft text-copper-dark' : 'bg-copper-soft text-copper-dark'}`}>
               {(s.confidence*100).toFixed(0)}% confidence
             </span>
           </div>
@@ -141,7 +141,7 @@ function SignalsTab({ snap }: { snap: Snapshot }) {
             {s.cusum_value && <span>CUSUM: <span className="text-slate-600 font-medium">{s.cusum_value?.toFixed(2)}</span></span>}
           </div>
           <div className="w-full bg-slate-100 rounded-full h-1.5">
-            <div className="h-1.5 rounded-full bg-[#0f2d5c]" style={{ width:`${Math.min(s.confidence*100,100)}%` }} />
+            <div className="h-1.5 rounded-full bg-[var(--crimson)]" style={{ width:`${Math.min(s.confidence*100,100)}%` }} />
           </div>
         </div>
       ))}
@@ -169,8 +169,8 @@ function PlanTab({ snap }: { snap: Snapshot }) {
         ))}
       </div>
       {p.rationale && (
-        <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-4">
-          <p className="text-[10px] font-semibold text-blue-500 uppercase tracking-wide mb-1.5">COMPASS Rationale</p>
+        <div className="bg-teal-soft border border-blue-100 rounded-xl px-5 py-4">
+          <p className="text-[10px] font-semibold text-teal uppercase tracking-wide mb-1.5">COMPASS Rationale</p>
           <p className="text-[13px] text-blue-900 leading-relaxed">{p.rationale}</p>
         </div>
       )}
@@ -182,9 +182,9 @@ function PlanTab({ snap }: { snap: Snapshot }) {
         </div>
       )}
       {p.suppressed && (
-        <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200">
-          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
-          <p className="text-[12px] text-amber-800 font-medium">Outreach suppressed (contact fatigue / consent rules)</p>
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-copper-soft border border-soft">
+          <AlertTriangle className="w-4 h-4 text-copper-dark shrink-0" />
+          <p className="text-[12px] text-copper-dark font-medium">Outreach suppressed (contact fatigue / consent rules)</p>
         </div>
       )}
     </div>
@@ -210,19 +210,19 @@ function OutreachTab({ snap, customerId }: { snap: Snapshot; customerId: string 
         <p className="text-[12px] text-slate-400">HERALD-generated content (NVIDIA DeepSeek V4 Pro)</p>
         <div className="flex gap-2">
           <button onClick={generate} disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0f2d5c] text-white text-[12px] font-semibold hover:bg-[#1a3f7a] disabled:opacity-50 transition-colors">
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--crimson)] text-white text-[12px] font-semibold hover:bg-[var(--crimson-dark)] disabled:opacity-50 transition-colors">
             {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Brain className="w-3.5 h-3.5" />}
             {loading ? 'Generating…' : 'Generate'}
           </button>
           {content && (
             <Link href={`/rm/compose/${customerId}`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#0f2d5c] text-[#0f2d5c] text-[12px] font-semibold hover:bg-[#0f2d5c]/5 transition-colors">
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--crimson)] text-[var(--crimson)] text-[12px] font-semibold hover:bg-[var(--crimson)]/5 transition-colors">
               <Send className="w-3.5 h-3.5" /> Open Composer
             </Link>
           )}
         </div>
       </div>
-      {error && <div className="bg-red-50 border border-red-100 rounded-xl px-4 py-3 text-[12px] text-red-600">{error}</div>}
+      {error && <div className="bg-crimson-soft border border-red-100 rounded-xl px-4 py-3 text-[12px] text-crimson">{error}</div>}
       {content?.email ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="bg-white border border-slate-200 rounded-xl p-4 lg:col-span-2">
@@ -248,6 +248,219 @@ function OutreachTab({ snap, customerId }: { snap: Snapshot; customerId: string 
           <p className="text-[13px]">Click Generate to create personalised outreach</p>
         </div>
       ) : null}
+
+      <SendEmailPanel
+        customerId={customerId}
+        customerEmail={snap.customer?.email || ''}
+        customerName={snap.customer?.full_name || ''}
+        defaultSubject={content?.email?.subject || ''}
+        defaultBody={content?.email?.body || ''}
+      />
+
+      <SendWhatsappPanel
+        customerId={customerId}
+        customerPhone={snap.customer?.phone || ''}
+        customerName={snap.customer?.full_name || ''}
+        defaultBody={content?.sms?.body || content?.push?.body || ''}
+      />
+    </div>
+  );
+}
+
+// ── Send Email Panel (Resend) ─────────────────────────────────────────────────
+function SendEmailPanel({
+  customerId, customerEmail, customerName, defaultSubject, defaultBody,
+}: {
+  customerId: string;
+  customerEmail: string;
+  customerName: string;
+  defaultSubject: string;
+  defaultBody: string;
+}) {
+  const [subject,   setSubject]   = useState(defaultSubject);
+  const [body,      setBody]      = useState(defaultBody);
+  const [sending,   setSending]   = useState(false);
+  const [sendError, setSendError] = useState('');
+  const [result,    setResult]    = useState<any>(null);
+
+  useEffect(() => {
+    setSubject(defaultSubject);
+    setBody(defaultBody);
+  }, [defaultSubject, defaultBody]);
+
+  const canSend = subject.trim().length > 0 && body.trim().length > 0 && !sending;
+
+  const send = async () => {
+    setSending(true); setSendError(''); setResult(null);
+    try {
+      const r = await api.sendOutreachEmail({
+        customer_id: customerId,
+        subject:     subject,
+        body:        body,
+      });
+      setResult(r);
+    } catch (e: any) {
+      setSendError(e.message);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Send Email · Resend</p>
+          <p className="text-[12px] text-slate-600 mt-0.5">
+            Direct send via Resend API.  Routed through the human-approval gate and audit log.
+          </p>
+        </div>
+        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sage-soft text-sage-brand uppercase tracking-wide">
+          EMAIL · Resend
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Customer email (display)</label>
+          <input value={customerEmail} readOnly
+            className="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 bg-slate-50 text-slate-500" />
+        </div>
+        <div>
+          <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Recipient (Resend sandbox)</label>
+          <input value="rudrajeetpal64@gmail.com" readOnly
+            className="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 bg-slate-50 text-slate-500 font-mono" />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Subject</label>
+        <input value={subject} onChange={e => setSubject(e.target.value)} placeholder={defaultSubject ? '' : 'Click Generate above to populate the subject…'}
+          className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20" />
+      </div>
+      <div>
+        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Body</label>
+        <textarea value={body} onChange={e => setBody(e.target.value)} placeholder={defaultBody ? '' : 'Click Generate above to populate the body…'}
+          rows={6} className="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20 resize-none" />
+      </div>
+
+      {sendError && (
+        <div className="bg-crimson-soft border border-red-100 rounded-lg px-3 py-2 text-[12px] text-crimson">{sendError}</div>
+      )}
+
+      {result && (
+        <div className="bg-sage-soft border border-emerald-100 rounded-lg px-3 py-2.5 text-[12px] text-emerald-800 space-y-1">
+          <p className="font-semibold flex items-center gap-1.5">
+            <CheckCircle className="w-3.5 h-3.5" /> Email dispatched
+          </p>
+          <p>Message ID: <span className="font-mono">{result.dispatch?.messageId}</span></p>
+          <p>To: <span className="font-mono">{result.dispatchedTo}</span>{result.sandboxOverride && <span className="ml-2 text-[10px] uppercase tracking-wide text-copper-dark font-semibold">(sandbox override)</span>}</p>
+          <p>Approval ID: <span className="font-mono">{result.approvalId}</span></p>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <p className="text-[10px] text-slate-400">
+          Sending to <span className="font-mono font-semibold">rudrajeetpal64@gmail.com</span> for the Resend sandbox demo.
+        </p>
+        <button onClick={send} disabled={!canSend}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-sage-brand text-white text-[12px] font-semibold hover:bg-sage-brand disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          {sending ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending…</> : <><Send className="w-3.5 h-3.5" /> Send via Resend</>}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Send WhatsApp Panel (Twilio) ──────────────────────────────────────────────
+function SendWhatsappPanel({
+  customerId, customerPhone, customerName, defaultBody,
+}: {
+  customerId: string;
+  customerPhone: string;
+  customerName: string;
+  defaultBody: string;
+}) {
+  const [body,    setBody]    = useState(defaultBody);
+  const [sending, setSending] = useState(false);
+  const [err,     setErr]     = useState('');
+  const [result,  setResult]  = useState<any>(null);
+
+  useEffect(() => { setBody(defaultBody); }, [defaultBody]);
+
+  const canSend = body.trim().length > 0 && !sending;
+
+  const send = async () => {
+    setSending(true); setErr(''); setResult(null);
+    try {
+      const r = await api.sendOutreachWhatsapp({ customer_id: customerId, body });
+      setResult(r);
+    } catch (e: any) {
+      setErr(e.message);
+    } finally { setSending(false); }
+  };
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2">
+          <MessageCircle className="w-4 h-4 text-sage-brand" />
+          <div>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Send WhatsApp · Twilio</p>
+            <p className="text-[12px] text-slate-600 mt-0.5">
+              Direct send via the Twilio WhatsApp API.  Routed through the human-approval gate and audit log.
+            </p>
+          </div>
+        </div>
+        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-sage-soft text-sage-brand uppercase tracking-wide">
+          WHATSAPP · Twilio
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Customer phone (display)</label>
+          <input value={customerPhone} readOnly
+            className="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 bg-slate-50 text-slate-500 font-mono" />
+        </div>
+        <div>
+          <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Recipient (Twilio sandbox)</label>
+          <input value="whatsapp:+919874618487" readOnly
+            className="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 bg-slate-50 text-slate-500 font-mono" />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Message</label>
+        <textarea value={body} onChange={e => setBody(e.target.value)} placeholder={defaultBody ? '' : 'Click Generate above to populate the message…'}
+          rows={4} className="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20 resize-none" />
+        <p className="text-[10px] text-slate-400 mt-1">{body.length} chars</p>
+      </div>
+
+      {err && (
+        <div className="bg-crimson-soft border border-red-100 rounded-lg px-3 py-2 text-[12px] text-crimson">{err}</div>
+      )}
+
+      {result && (
+        <div className="bg-sage-soft border border-emerald-100 rounded-lg px-3 py-2.5 text-[12px] text-emerald-800 space-y-1">
+          <p className="font-semibold flex items-center gap-1.5">
+            <CheckCircle className="w-3.5 h-3.5" /> WhatsApp dispatched
+          </p>
+          <p>Message SID: <span className="font-mono">{result.dispatch?.messageSid}</span></p>
+          <p>To: <span className="font-mono">{result.dispatchedTo}</span>{result.sandboxOverride && <span className="ml-2 text-[10px] uppercase tracking-wide text-copper-dark font-semibold">(sandbox override)</span>}</p>
+          <p>Approval ID: <span className="font-mono">{result.approvalId}</span></p>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <p className="text-[10px] text-slate-400">
+          Sending to <span className="font-mono font-semibold">whatsapp:+919874618487</span> for the Twilio sandbox demo.
+        </p>
+        <button onClick={send} disabled={!canSend}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-sage-brand text-white text-[12px] font-semibold hover:bg-sage-brand disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          {sending ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending…</> : <><MessageCircle className="w-3.5 h-3.5" /> Send via WhatsApp</>}
+        </button>
+      </div>
     </div>
   );
 }
@@ -298,7 +511,7 @@ function CallModal({ customerId, customerName, onClose, onCommit }: {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            <Phone className="w-4 h-4 text-[#0f2d5c]" />
+            <Phone className="w-4 h-4 text-[var(--crimson)]" />
             <h2 className="text-[15px] font-bold text-slate-900">Call Capture — {customerName}</h2>
           </div>
           <button onClick={onClose}><X className="w-4 h-4 text-slate-400" /></button>
@@ -306,17 +519,17 @@ function CallModal({ customerId, customerName, onClose, onCommit }: {
         <div className="px-6 py-3 border-b border-slate-100 flex items-center gap-1">
           {STEPS.map((s, i) => (
             <div key={s} className="flex items-center gap-1">
-              <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold ${['script','transcript','review','done'].indexOf(step) >= i ? 'bg-[#0f2d5c] text-white' : 'bg-slate-100 text-slate-400'}`}>{i+1}</div>
+              <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold ${['script','transcript','review','done'].indexOf(step) >= i ? 'bg-[var(--crimson)] text-white' : 'bg-slate-100 text-slate-400'}`}>{i+1}</div>
               <span className="text-[10px] text-slate-400 hidden sm:inline">{s}</span>
               {i < STEPS.length-1 && <div className="w-6 h-px bg-slate-200 mx-1" />}
             </div>
           ))}
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-          {error && <div className="bg-red-50 border border-red-100 rounded-lg px-3 py-2 text-[12px] text-red-600">{error}</div>}
+          {error && <div className="bg-crimson-soft border border-red-100 rounded-lg px-3 py-2 text-[12px] text-crimson">{error}</div>}
           {step === 'script' && (
             <div className="space-y-3">
-              <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-[12px] text-blue-700">
+              <div className="bg-teal-soft border border-blue-100 rounded-lg p-3 text-[12px] text-teal-dark">
                 HERALD pre-call brief — review before dialling.
               </div>
               {loading && <div className="flex items-center gap-2 text-slate-400 text-[13px]"><Loader2 className="w-4 h-4 animate-spin" /> Loading script…</div>}
@@ -324,7 +537,7 @@ function CallModal({ customerId, customerName, onClose, onCommit }: {
                 <div className="space-y-3">
                   {script.suggested_opening && (
                     <div className="bg-white border border-slate-200 rounded-lg p-3">
-                      <p className="text-[10px] text-[#0f2d5c] font-bold uppercase tracking-wide mb-1">Opening Line</p>
+                      <p className="text-[10px] text-[var(--crimson)] font-bold uppercase tracking-wide mb-1">Opening Line</p>
                       <p className="text-[13px] text-slate-700 italic">"{script.suggested_opening}"</p>
                     </div>
                   )}
@@ -334,7 +547,7 @@ function CallModal({ customerId, customerName, onClose, onCommit }: {
                       <ul className="space-y-1.5">
                         {script.talking_points.map((p: string, i: number) => (
                           <li key={i} className="flex items-start gap-2 text-[12px] text-slate-700">
-                            <span className="w-4 h-4 rounded-full bg-[#0f2d5c] text-white flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5">{i+1}</span>
+                            <span className="w-4 h-4 rounded-full bg-[var(--crimson)] text-white flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5">{i+1}</span>
                             {p}
                           </li>
                         ))}
@@ -345,16 +558,16 @@ function CallModal({ customerId, customerName, onClose, onCommit }: {
                     <div>
                       <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide mb-2">Objections → Rebuttals</p>
                       {script.likely_objections.map((obj: string, i: number) => (
-                        <div key={i} className="bg-orange-50 border border-orange-100 rounded-lg p-3 mb-2">
-                          <p className="text-[11px] text-orange-700 font-medium">⚠ {obj}</p>
+                        <div key={i} className="bg-copper-soft border border-orange-100 rounded-lg p-3 mb-2">
+                          <p className="text-[11px] text-copper-dark font-medium">⚠ {obj}</p>
                           {script.rebuttals?.[i] && <p className="text-[11px] text-slate-600 mt-1">→ {script.rebuttals[i]}</p>}
                         </div>
                       ))}
                     </div>
                   )}
                   {script.compliance_note && (
-                    <div className="bg-amber-50 border border-amber-100 rounded-lg p-3">
-                      <p className="text-[11px] text-amber-700 font-semibold">⚑ {script.compliance_note}</p>
+                    <div className="bg-copper-soft border border-amber-100 rounded-lg p-3">
+                      <p className="text-[11px] text-copper-dark font-semibold">⚑ {script.compliance_note}</p>
                     </div>
                   )}
                 </div>
@@ -363,18 +576,18 @@ function CallModal({ customerId, customerName, onClose, onCommit }: {
           )}
           {step === 'transcript' && (
             <div className="space-y-3">
-              <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 text-[12px] text-amber-700">
+              <div className="bg-copper-soft border border-amber-100 rounded-lg p-3 text-[12px] text-copper-dark">
                 Call started (ID: {callId}). Paste the transcript after the call.
               </div>
               <textarea value={transcript} onChange={e => setTranscript(e.target.value)}
                 placeholder={`Paste call transcript…\n\nExample:\nRM: Hello, Aditya here from Union Bank…\nCustomer: Yes, I was expecting your call…`}
-                className="w-full h-48 px-3 py-2.5 text-[12px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20 resize-none" />
+                className="w-full h-48 px-3 py-2.5 text-[12px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20 resize-none" />
               <p className="text-[10px] text-slate-400">{transcript.length} characters</p>
             </div>
           )}
           {step === 'review' && analysis && (
             <div className="space-y-3">
-              <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-3 text-[12px] text-emerald-700">
+              <div className="bg-sage-soft border border-emerald-100 rounded-lg p-3 text-[12px] text-sage-brand">
                 AI analysis complete — review before committing.
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -399,16 +612,16 @@ function CallModal({ customerId, customerName, onClose, onCommit }: {
                 </div>
               )}
               {analysis.compliance_flags?.length > 0 && (
-                <div className="bg-red-50 border border-red-100 rounded-lg p-3">
-                  <p className="text-[11px] font-semibold text-red-600 mb-1">⚑ Compliance Flags</p>
-                  {analysis.compliance_flags.map((f: string, i: number) => <p key={i} className="text-[11px] text-red-700">• {f}</p>)}
+                <div className="bg-crimson-soft border border-red-100 rounded-lg p-3">
+                  <p className="text-[11px] font-semibold text-crimson mb-1">⚑ Compliance Flags</p>
+                  {analysis.compliance_flags.map((f: string, i: number) => <p key={i} className="text-[11px] text-crimson">• {f}</p>)}
                 </div>
               )}
             </div>
           )}
           {step === 'done' && (
             <div className="flex flex-col items-center justify-center py-12">
-              <CheckCircle className="w-12 h-12 text-emerald-500 mb-3" />
+              <CheckCircle className="w-12 h-12 text-sage-brand mb-3" />
               <p className="text-[15px] font-bold text-slate-900">Call committed!</p>
               <p className="text-[12px] text-slate-400 mt-1">Outcome recorded · Tasks updated</p>
             </div>
@@ -419,19 +632,19 @@ function CallModal({ customerId, customerName, onClose, onCommit }: {
           <div className="flex gap-2">
             {step === 'script' && (
               <button onClick={startCall} disabled={loading}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#0f2d5c] text-white text-[12px] font-semibold hover:bg-[#1a3f7a] disabled:opacity-50">
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--crimson)] text-white text-[12px] font-semibold hover:bg-[var(--crimson-dark)] disabled:opacity-50">
                 {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Phone className="w-3.5 h-3.5" />} Start Call
               </button>
             )}
             {step === 'transcript' && (
               <button onClick={analyze} disabled={loading}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#0f2d5c] text-white text-[12px] font-semibold hover:bg-[#1a3f7a] disabled:opacity-50">
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--crimson)] text-white text-[12px] font-semibold hover:bg-[var(--crimson-dark)] disabled:opacity-50">
                 {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Brain className="w-3.5 h-3.5" />} Analyse
               </button>
             )}
             {step === 'review' && (
               <button onClick={commit} disabled={loading}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 text-white text-[12px] font-semibold hover:bg-emerald-700 disabled:opacity-50">
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-sage-brand text-white text-[12px] font-semibold hover:bg-sage-brand disabled:opacity-50">
                 {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />} Confirm & Commit
               </button>
             )}
@@ -469,13 +682,13 @@ function OutcomeModal({ customerId, customerName, onClose, onSaved }: {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            <ClipboardList className="w-4 h-4 text-[#0f2d5c]" />
+            <ClipboardList className="w-4 h-4 text-[var(--crimson)]" />
             <h2 className="text-[14px] font-bold text-slate-900">Log Outcome — {customerName}</h2>
           </div>
           <button onClick={onClose}><X className="w-4 h-4 text-slate-400" /></button>
         </div>
         <div className="px-5 py-4 space-y-3 max-h-[70vh] overflow-y-auto">
-          {error && <div className="bg-red-50 border border-red-100 rounded-lg px-3 py-2 text-[12px] text-red-600">{error}</div>}
+          {error && <div className="bg-crimson-soft border border-red-100 rounded-lg px-3 py-2 text-[12px] text-crimson">{error}</div>}
           {([
             ['action_taken','Action Taken','select',['call','email_reply','sms','branch_visit','no_contact']],
             ['outcome','Outcome','select',OUTCOME_OPTIONS],
@@ -489,19 +702,19 @@ function OutcomeModal({ customerId, customerName, onClose, onSaved }: {
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">{label}</label>
               {type === 'select' ? (
                 <select value={(form as any)[k]} onChange={e => setForm(f => ({...f,[k]:e.target.value}))}
-                  className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20">
+                  className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20">
                   {opts.map(o => <option key={o} value={o}>{o===''?'—':LANG_LABELS[o]||o.replace(/_/g,' ')}</option>)}
                 </select>
               ) : (
                 <input type={type} value={(form as any)[k]} onChange={e => setForm(f => ({...f,[k]:e.target.value}))}
-                  className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20" />
+                  className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20" />
               )}
             </div>
           ))}
           <div>
             <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Notes</label>
             <textarea value={form.rm_notes} onChange={e => setForm(f => ({...f,rm_notes:e.target.value}))} rows={3}
-              className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20 resize-none" />
+              className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20 resize-none" />
           </div>
           <label className="flex items-center gap-2 text-[12px] text-slate-600 cursor-pointer">
             <input type="checkbox" checked={form.contacted} onChange={e => setForm(f => ({...f,contacted:e.target.checked}))} className="rounded" />
@@ -511,7 +724,7 @@ function OutcomeModal({ customerId, customerName, onClose, onSaved }: {
         <div className="flex justify-end gap-2 px-5 py-4 border-t border-slate-100">
           <button onClick={onClose} className="px-4 py-2 rounded-lg border border-slate-200 text-[12px] text-slate-600 hover:bg-slate-50">Cancel</button>
           <button onClick={save} disabled={loading}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#0f2d5c] text-white text-[12px] font-semibold hover:bg-[#1a3f7a] disabled:opacity-50">
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--crimson)] text-white text-[12px] font-semibold hover:bg-[var(--crimson-dark)] disabled:opacity-50">
             {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />} Save
           </button>
         </div>
@@ -537,7 +750,7 @@ function CallsTab({ customerId }: { customerId: string }) {
             <span className="text-[13px] font-semibold text-slate-800 capitalize">{c.outcome?.replace(/_/g,' ')}</span>
             <div className="flex items-center gap-2">
               {c.duration_sec && <span className="text-[10px] text-slate-400">{Math.floor(c.duration_sec/60)}m {c.duration_sec%60}s</span>}
-              <span className={`text-[10px] px-2 py-0.5 rounded font-medium ${c.sentiment==='positive'?'bg-emerald-50 text-emerald-600':c.sentiment==='negative'?'bg-red-50 text-red-600':'bg-slate-50 text-slate-500'}`}>{c.sentiment}</span>
+              <span className={`text-[10px] px-2 py-0.5 rounded font-medium ${c.sentiment==='positive'?'bg-sage-soft text-sage-brand':c.sentiment==='negative'?'bg-crimson-soft text-crimson':'bg-slate-50 text-slate-500'}`}>{c.sentiment}</span>
             </div>
           </div>
           {c.summary && <p className="text-[12px] text-slate-500 mb-1.5 leading-snug">{c.summary}</p>}
@@ -583,7 +796,7 @@ function ExplainTab({ customerId }: { customerId: string }) {
   const features = expl.explanation?.features || expl.features || [];
   return (
     <div className="space-y-4">
-      <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-[11px] text-blue-700">
+      <div className="bg-teal-soft border border-blue-100 rounded-xl px-4 py-3 text-[11px] text-teal-dark">
         RBI AI Governance 2024 — SHAP-style feature attribution for model explainability.
       </div>
       <div className="space-y-2.5">
@@ -594,7 +807,7 @@ function ExplainTab({ customerId }: { customerId: string }) {
               <div className={`h-2 rounded-full ${f.impact>0?'bg-red-400':'bg-emerald-400'}`}
                 style={{width:`${Math.min(Math.abs(f.importance||f.shap_value||0)*200,100)}%`}} />
             </div>
-            <span className={`text-[10px] font-semibold w-14 text-right ${f.impact>0?'text-red-500':'text-emerald-500'}`}>
+            <span className={`text-[10px] font-semibold w-14 text-right ${f.impact>0?'text-crimson':'text-sage-brand'}`}>
               {((f.importance||f.shap_value||0)*100).toFixed(1)}%
             </span>
           </div>
@@ -619,7 +832,7 @@ function RightsTab({ customerId }: { customerId: string }) {
       ].map(([k,v,ok]) => (
         <div key={k as string} className="flex items-center justify-between bg-slate-50 rounded-xl px-4 py-3">
           <span className="text-[12px] text-slate-600 font-medium">{k as string}</span>
-          <span className={`text-[11px] font-semibold px-2 py-0.5 rounded ${ok?'bg-emerald-50 text-emerald-600':'bg-red-50 text-red-600'}`}>{v as string}</span>
+          <span className={`text-[11px] font-semibold px-2 py-0.5 rounded ${ok?'bg-sage-soft text-sage-brand':'bg-crimson-soft text-crimson'}`}>{v as string}</span>
         </div>
       ))}
     </div>
@@ -643,8 +856,8 @@ function Sidebar({ snap, onCall, onOutcome }: {
   ];
 
   const TIER_COLOR: Record<string, string> = {
-    PRIORITY: 'text-red-600', ESCALATE: 'text-orange-600',
-    STANDARD: 'text-amber-600', MONITOR: 'text-blue-600', NONE: 'text-emerald-600',
+    PRIORITY: 'text-crimson', ESCALATE: 'text-copper-dark',
+    STANDARD: 'text-copper-dark', MONITOR: 'text-teal-dark', NONE: 'text-sage-brand',
   };
   const tier = s?.risk_tier || c.risk_tier;
 
@@ -674,7 +887,7 @@ function Sidebar({ snap, onCall, onOutcome }: {
             <div key={m.name} className="flex items-center gap-2">
               <span className="text-[10px] text-slate-400 w-16">{m.name}</span>
               <div className="flex-1 bg-slate-100 rounded-full h-1.5">
-                <div className="h-1.5 rounded-full bg-[#0f2d5c]/60" style={{ width: `${(m.score||0)*100}%` }} />
+                <div className="h-1.5 rounded-full bg-[var(--crimson)]/60" style={{ width: `${(m.score||0)*100}%` }} />
               </div>
               <span className="text-[10px] font-semibold text-slate-600 w-10 text-right">{((m.score||0)*100).toFixed(1)}%</span>
             </div>
@@ -695,7 +908,7 @@ function Sidebar({ snap, onCall, onOutcome }: {
           {[['7 days', s.p7], ['30 days', s.p30], ['90 days', s.p90]].map(([label, val]) => (
             <div key={label as string} className="flex items-center justify-between mb-2 last:mb-0">
               <span className="text-[11px] text-slate-500">Within {label as string}</span>
-              <span className={`text-[13px] font-black tabular-nums ${(val as number) > 0.5 ? 'text-red-600' : (val as number) > 0.25 ? 'text-orange-500' : 'text-emerald-600'}`}>
+              <span className={`text-[13px] font-black tabular-nums ${(val as number) > 0.5 ? 'text-crimson' : (val as number) > 0.25 ? 'text-copper' : 'text-sage-brand'}`}>
                 {((val as number) * 100).toFixed(0)}%
               </span>
             </div>
@@ -707,7 +920,7 @@ function Sidebar({ snap, onCall, onOutcome }: {
       {signals.length > 0 && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
           <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-3">
-            Active Signals <span className="ml-1 bg-red-100 text-red-600 text-[9px] font-bold px-1.5 py-0.5 rounded-full">{signals.length}</span>
+            Active Signals <span className="ml-1 bg-crimson-soft text-crimson text-[9px] font-bold px-1.5 py-0.5 rounded-full">{signals.length}</span>
           </p>
           <div className="space-y-2">
             {signals.slice(0, 4).map((s: any, i: number) => (
@@ -723,8 +936,8 @@ function Sidebar({ snap, onCall, onOutcome }: {
 
       {/* Action plan summary */}
       {p?.offer_display && (
-        <div className="bg-[#0f2d5c]/5 rounded-xl border border-[#0f2d5c]/10 p-4">
-          <p className="text-[10px] font-semibold text-[#0f2d5c] uppercase tracking-wide mb-2">Recommended Action</p>
+        <div className="bg-[var(--crimson)]/5 rounded-xl border border-[var(--crimson)]/10 p-4">
+          <p className="text-[10px] font-semibold text-[var(--crimson)] uppercase tracking-wide mb-2">Recommended Action</p>
           <p className="text-[13px] font-bold text-slate-800">{p.offer_display}</p>
           <p className="text-[11px] text-slate-500 mt-0.5 capitalize">{p.channel} · {p.urgency}</p>
           {p.rationale && <p className="text-[10px] text-slate-400 mt-2 leading-snug line-clamp-3">{p.rationale}</p>}
@@ -735,16 +948,16 @@ function Sidebar({ snap, onCall, onOutcome }: {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-2">
         <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Quick Actions</p>
         <button onClick={onCall}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 hover:border-[#0f2d5c]/30 transition-colors">
-          <Phone className="w-3.5 h-3.5 text-[#0f2d5c]" /> Start Call
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 hover:border-[var(--crimson)]/30 transition-colors">
+          <Phone className="w-3.5 h-3.5 text-[var(--crimson)]" /> Start Call
         </button>
         <button onClick={onOutcome}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 hover:border-[#0f2d5c]/30 transition-colors">
-          <ClipboardList className="w-3.5 h-3.5 text-[#0f2d5c]" /> Log Outcome
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 hover:border-[var(--crimson)]/30 transition-colors">
+          <ClipboardList className="w-3.5 h-3.5 text-[var(--crimson)]" /> Log Outcome
         </button>
         <Link href={`/rm/compose/${snap.customer.customer_id}`}
-          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 hover:border-[#0f2d5c]/30 transition-colors">
-          <Send className="w-3.5 h-3.5 text-[#0f2d5c]" /> Compose Outreach
+          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 hover:border-[var(--crimson)]/30 transition-colors">
+          <Send className="w-3.5 h-3.5 text-[var(--crimson)]" /> Compose Outreach
         </Link>
       </div>
     </div>
@@ -785,7 +998,7 @@ export default function RmCustomer360Page() {
   return (
     <div className="p-6 flex flex-col gap-5 min-h-full">
       {/* Back */}
-      <Link href="/rm/book" className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-[#0f2d5c] transition-colors w-fit">
+      <Link href="/rm/book" className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-[var(--crimson)] transition-colors w-fit">
         <ArrowLeft className="w-3.5 h-3.5" /> Back to My Book
       </Link>
 
@@ -812,7 +1025,7 @@ export default function RmCustomer360Page() {
             {/* Header card */}
             <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-full bg-[#0f2d5c]/10 flex items-center justify-center text-[15px] font-black text-[#0f2d5c] shrink-0">
+                <div className="w-14 h-14 rounded-full bg-[var(--crimson)]/10 flex items-center justify-center text-[15px] font-black text-[var(--crimson)] shrink-0">
                   {c!.full_name.split(' ').map((n: string) => n[0]).join('').slice(0,2)}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -836,12 +1049,12 @@ export default function RmCustomer360Page() {
                   {/* Action buttons */}
                   <div className="flex items-center gap-2 mt-4 flex-wrap">
                     <button onClick={runAnalysis} disabled={analysisLoading}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0f2d5c] text-white text-[12px] font-semibold hover:bg-[#1a3f7a] disabled:opacity-50 transition-colors">
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--crimson)] text-white text-[12px] font-semibold hover:bg-[var(--crimson-dark)] disabled:opacity-50 transition-colors">
                       {analysisLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Brain className="w-3.5 h-3.5" />}
                       {analysisLoading ? 'Analysing…' : analysis ? 'Regenerate' : 'Run AI Analysis'}
                     </button>
                     <Link href={`/rm/compose/${id}`}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#0f2d5c] text-[#0f2d5c] text-[12px] font-semibold hover:bg-[#0f2d5c]/5 transition-colors">
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--crimson)] text-[var(--crimson)] text-[12px] font-semibold hover:bg-[var(--crimson)]/5 transition-colors">
                       <Send className="w-3.5 h-3.5" /> Compose Outreach
                     </Link>
                     <button onClick={() => setShowCall(true)}
@@ -858,9 +1071,9 @@ export default function RmCustomer360Page() {
                   {analysis && (
                     <div className="mt-4 bg-slate-50 rounded-xl border border-slate-200 px-4 py-3">
                       <div className="flex items-center gap-2 mb-1.5">
-                        <TrendingUp className="w-3.5 h-3.5 text-[#0f2d5c]" />
-                        <p className="text-[10px] font-bold text-[#0f2d5c] uppercase tracking-wide">AI Risk Analysis</p>
-                        <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 uppercase tracking-wide">NVIDIA DeepSeek V4 Pro</span>
+                        <TrendingUp className="w-3.5 h-3.5 text-[var(--crimson)]" />
+                        <p className="text-[10px] font-bold text-[var(--crimson)] uppercase tracking-wide">AI Risk Analysis</p>
+                        <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-teal-soft text-teal-dark uppercase tracking-wide">NVIDIA DeepSeek V4 Pro</span>
                       </div>
                       <p className="text-[12px] text-slate-700 leading-relaxed">{analysis}</p>
                     </div>
@@ -877,7 +1090,7 @@ export default function RmCustomer360Page() {
                   return (
                     <button key={t.id} onClick={() => setActiveTab(t.id)}
                       className={`flex items-center gap-1.5 px-3 py-3.5 text-[12px] font-medium whitespace-nowrap transition-colors border-b-2 -mb-px ${
-                        activeTab === t.id ? 'border-[#0f2d5c] text-[#0f2d5c]' : 'border-transparent text-slate-400 hover:text-slate-600'
+                        activeTab === t.id ? 'border-[var(--crimson)] text-[var(--crimson)]' : 'border-transparent text-slate-400 hover:text-slate-600'
                       }`}>
                       <Icon className="w-3.5 h-3.5" />
                       {t.label}

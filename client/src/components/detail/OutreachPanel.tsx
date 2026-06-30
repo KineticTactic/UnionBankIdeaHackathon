@@ -31,12 +31,12 @@ export function OutreachPanel({ customerId, analysisResult }: OutreachPanelProps
     };
 
     return (
-        <Card className="shadow-sm border-purple-200 mt-6 overflow-hidden">
+        <Card className="shadow-sm border-soft mt-6 overflow-hidden">
             <div className="h-1 w-full bg-gradient-to-r from-purple-400 to-indigo-500" />
             <CardHeader className="pb-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <CardTitle className="text-base font-semibold text-slate-900 flex items-center">
-                        <Sparkles className="w-5 h-5 mr-2 text-purple-600" />
+                        <Sparkles className="w-5 h-5 mr-2 text-teal-dark" />
                         Outreach Intelligence · Personalised Engagement
                     </CardTitle>
 
@@ -67,7 +67,7 @@ export function OutreachPanel({ customerId, analysisResult }: OutreachPanelProps
                 {!content && !isStreaming && !error ? (
                     <div className="flex flex-col items-center justify-center py-10 border border-dashed border-purple-100 rounded-lg bg-gradient-to-b from-purple-50/40 to-indigo-50/30">
                         <div className="flex items-center gap-1.5 mb-3">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-purple-400 px-2 py-0.5 bg-purple-100 rounded-full">Powered by NVIDIA · DeepSeek V4 Pro</span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-purple-400 px-2 py-0.5 bg-teal-soft rounded-full">Powered by NVIDIA · DeepSeek V4 Pro</span>
                         </div>
                         <Button
                             onClick={handleGenerate}
@@ -93,7 +93,7 @@ export function OutreachPanel({ customerId, analysisResult }: OutreachPanelProps
                             {isComplete && (
                                 <div className="absolute top-4 right-4 flex gap-2">
                                     <Button variant="outline" size="icon" className="h-8 w-8 text-slate-500 bg-white" onClick={handleCopy}>
-                                        {copied ? <CheckCircle2 className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                                        {copied ? <CheckCircle2 className="w-4 h-4 text-sage-brand" /> : <Copy className="w-4 h-4" />}
                                     </Button>
                                 </div>
                             )}
@@ -102,18 +102,18 @@ export function OutreachPanel({ customerId, analysisResult }: OutreachPanelProps
                         <div className="flex justify-between items-center">
                             <div>
                                 {isStreaming && (
-                                    <span className="text-xs font-semibold text-purple-600 flex items-center">
-                                        <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse mr-2" />
+                                    <span className="text-xs font-semibold text-teal-dark flex items-center">
+                                        <span className="w-2 h-2 rounded-full bg-teal animate-pulse mr-2" />
                                         Generating...
                                     </span>
                                 )}
                                 {error && (
-                                    <span className="text-xs font-semibold text-red-500">Error generating outreach.</span>
+                                    <span className="text-xs font-semibold text-crimson">Error generating outreach.</span>
                                 )}
                             </div>
 
                             {isComplete && (
-                                <Button variant="ghost" size="sm" onClick={handleGenerate} className="text-purple-700 hover:bg-purple-50 font-semibold">
+                                <Button variant="ghost" size="sm" onClick={handleGenerate} className="text-teal-dark hover:bg-teal-soft font-semibold">
                                     <Sparkles className="w-4 h-4 mr-2" />
                                     Refresh Outreach
                                 </Button>

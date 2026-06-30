@@ -1,11 +1,11 @@
 import { RiskTier } from '@/types';
 
 const TIER_CONFIG: Record<RiskTier, { label: string; bg: string; text: string; dot: string }> = {
-  PRIORITY: { label: 'Priority',  bg: 'bg-red-50',    text: 'text-red-700',    dot: 'bg-red-500'    },
-  ESCALATE: { label: 'Escalate',  bg: 'bg-orange-50', text: 'text-orange-700', dot: 'bg-orange-500' },
-  STANDARD: { label: 'Standard',  bg: 'bg-amber-50',  text: 'text-amber-700',  dot: 'bg-amber-500'  },
-  MONITOR:  { label: 'Monitor',   bg: 'bg-blue-50',   text: 'text-blue-700',   dot: 'bg-blue-500'   },
-  NONE:     { label: 'Safe',      bg: 'bg-green-50',  text: 'text-green-700',  dot: 'bg-green-500'  },
+  ESCALATE: { label: 'ESCALATE',  bg: 'badge-escalate', text: 'text-white',        dot: 'bg-white'    },
+  PRIORITY: { label: 'PRIORITY',  bg: 'badge-priority', text: 'text-white',        dot: 'bg-white'    },
+  STANDARD: { label: 'WATCH',     bg: 'badge-watch',    text: 'text-[#2A161B]',    dot: 'bg-[#2A161B]' },
+  MONITOR:  { label: 'WATCH',     bg: 'badge-watch',    text: 'text-[#2A161B]',    dot: 'bg-[#2A161B]' },
+  NONE:     { label: 'STABLE',    bg: 'badge-stable',   text: 'text-[#2A161B]',    dot: 'bg-[#8B8481]' },
 };
 
 interface Props {
@@ -17,10 +17,10 @@ interface Props {
 export default function RiskBadge({ tier, size = 'sm', dot = true }: Props) {
   const cfg = TIER_CONFIG[tier] || TIER_CONFIG.NONE;
   return (
-    <span className={`inline-flex items-center gap-1.5 font-semibold rounded-full ${cfg.bg} ${cfg.text} ${
-      size === 'sm' ? 'text-[10px] px-2 py-0.5' : 'text-xs px-2.5 py-1'
+    <span className={`inline-flex items-center gap-1.5 font-bold rounded-sm uppercase tracking-wider ${cfg.bg} ${cfg.text} ${
+      size === 'sm' ? 'text-[9px] px-1.5 py-0.5' : 'text-[10px] px-2 py-0.5'
     }`}>
-      {dot && <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot} shrink-0`} />}
+      {dot && <span className={`w-1 h-1 rounded-full ${cfg.dot} shrink-0`} />}
       {cfg.label}
     </span>
   );
@@ -28,22 +28,22 @@ export default function RiskBadge({ tier, size = 'sm', dot = true }: Props) {
 
 export function tierColor(tier: RiskTier): string {
   const map: Record<RiskTier, string> = {
-    PRIORITY: '#dc2626',
-    ESCALATE: '#ea580c',
-    STANDARD: '#ca8a04',
-    MONITOR:  '#2563eb',
-    NONE:     '#16a34a',
+    ESCALATE: '#6B132B',
+    PRIORITY: '#B46B3E',
+    STANDARD: '#F4D9C0',
+    MONITOR:  '#F4D9C0',
+    NONE:     '#8B8481',
   };
-  return map[tier] || '#64748b';
+  return map[tier] || '#8B8481';
 }
 
 export function tierBgColor(tier: RiskTier): string {
   const map: Record<RiskTier, string> = {
-    PRIORITY: '#fee2e2',
-    ESCALATE: '#ffedd5',
-    STANDARD: '#fef9c3',
-    MONITOR:  '#dbeafe',
-    NONE:     '#dcfce7',
+    ESCALATE: '#F5E6E9',
+    PRIORITY: '#FAF0E6',
+    STANDARD: '#FAF0E6',
+    MONITOR:  '#FAF0E6',
+    NONE:     '#F5F4F2',
   };
-  return map[tier] || '#f1f5f9';
+  return map[tier] || '#F5F4F2';
 }

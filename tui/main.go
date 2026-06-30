@@ -70,6 +70,13 @@ func main() {
 			NoAutoStart: s.NoAutoStart,
 		})
 	}
+	for _, d := range config.Root.DockerServices {
+		mgr.RegisterDocker(services.DockerState{
+			Name:        d.Name,
+			Container:   d.Container,
+			Description: d.Description,
+		})
+	}
 
 	// Import recent docker logs into the broker (if docker is available).
 	if services.DockerAvailable() {

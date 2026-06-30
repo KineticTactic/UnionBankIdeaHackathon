@@ -12,21 +12,21 @@ import {
 
 const METHOD_COLOR: Record<string, string> = {
   'Beta-CUSUM':  '#0891b2',
-  'CUSUM':       '#0f2d5c',
-  'Adaptive SR': '#7c3aed',
-  'CFSI':        '#dc2626',
-  'TEMPO':       '#059669',
+  'CUSUM':       'var(--crimson)',
+  'Adaptive SR': 'var(--teal-dark)',
+  'CFSI':        'var(--crimson)',
+  'TEMPO':       'var(--sage-brand)',
 };
 
 const SENSITIVITY_BADGE: Record<string, string> = {
-  High:         'bg-red-100 text-red-700',
-  Medium:       'bg-amber-100 text-amber-700',
-  Low:          'bg-blue-100 text-blue-700',
-  'Low drift':  'bg-blue-100 text-blue-700',
-  Proportional: 'bg-purple-100 text-purple-700',
-  'High stress':'bg-red-100 text-red-700',
-  'Sudden spikes':'bg-orange-100 text-orange-700',
-  Baseline:     'bg-emerald-100 text-emerald-700',
+  High:         'bg-crimson-soft text-crimson',
+  Medium:       'bg-copper-soft text-copper-dark',
+  Low:          'bg-teal-soft text-teal-dark',
+  'Low drift':  'bg-teal-soft text-teal-dark',
+  Proportional: 'bg-teal-soft text-teal-dark',
+  'High stress':'bg-crimson-soft text-crimson',
+  'Sudden spikes':'bg-copper-soft text-copper-dark',
+  Baseline:     'bg-sage-soft text-sage-brand',
 };
 
 export default function ArgusPage() {
@@ -75,10 +75,10 @@ export default function ArgusPage() {
           {/* KPI row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: Radio,        label: 'Signal Agents',        value: '9',                              color: '#0f2d5c' },
+              { icon: Radio,        label: 'Signal Agents',        value: '9',                              color: 'var(--crimson)' },
               { icon: Zap,          label: 'Fires Last 30d',       value: summary.total_signal_fires_30d,   color: '#0891b2' },
-              { icon: Target,       label: 'Alarm Rate',           value: `${(+summary.alarm_rate * 100).toFixed(1)}%`, color: summary.alarm_rate > 0.3 ? '#dc2626' : '#059669' },
-              { icon: BarChart2,    label: 'Avg Signals/Customer', value: summary.avg_signals_per_customer, color: '#7c3aed' },
+              { icon: Target,       label: 'Alarm Rate',           value: `${(+summary.alarm_rate * 100).toFixed(1)}%`, color: summary.alarm_rate > 0.3 ? 'var(--crimson)' : 'var(--sage-brand)' },
+              { icon: BarChart2,    label: 'Avg Signals/Customer', value: summary.avg_signals_per_customer, color: 'var(--teal-dark)' },
             ].map(({ icon: Icon, label, value, color }) => (
               <div key={label} className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
@@ -152,13 +152,13 @@ export default function ArgusPage() {
               <p className="text-[11px] text-slate-400 mb-4">Number of anomaly detections per signal agent</p>
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={chartData} margin={{ top: 0, right: 8, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="abbr" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--secondary)" />
+                  <XAxis dataKey="abbr" tick={{ fontSize: 10, fill: 'var(--gray-400)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: 'var(--gray-400)' }} axisLine={false} tickLine={false} />
                   <Tooltip
-                    formatter={(v: number) => [v, 'Fires']}
+                    formatter={(v) => [v, 'Fires']}
                     labelFormatter={(l) => chartData.find(d => d.abbr === l)?.name || l}
-                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e2e8f0' }}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--border-color)' }}
                   />
                   <Bar dataKey="fires" radius={[4, 4, 0, 0]} maxBarSize={36}>
                     {chartData.map((d: any) => <Cell key={d.id} fill={d.color} />)}
@@ -175,13 +175,13 @@ export default function ArgusPage() {
                 <BarChart
                   data={[...agents].sort((a, b) => b.accuracy - a.accuracy)}
                   margin={{ top: 0, right: 8, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="abbr" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                  <YAxis domain={[0.7, 1]} tickFormatter={v => `${(v * 100).toFixed(0)}%`} tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--secondary)" />
+                  <XAxis dataKey="abbr" tick={{ fontSize: 10, fill: 'var(--gray-400)' }} axisLine={false} tickLine={false} />
+                  <YAxis domain={[0.7, 1]} tickFormatter={v => `${(Number(v) * 100).toFixed(0)}%`} tick={{ fontSize: 10, fill: 'var(--gray-400)' }} axisLine={false} tickLine={false} />
                   <Tooltip
-                    formatter={(v: number) => [`${(v * 100).toFixed(1)}%`, 'Accuracy']}
+                    formatter={(v) => [`${(Number(v) * 100).toFixed(1)}%`, 'Accuracy']}
                     labelFormatter={(l) => agents.find((d: any) => d.abbr === l)?.name || l}
-                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #e2e8f0' }}
+                    contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid var(--border-color)' }}
                   />
                   <Bar dataKey="accuracy" radius={[4, 4, 0, 0]} maxBarSize={36}>
                     {[...agents].sort((a, b) => b.accuracy - a.accuracy).map((d: any) => (
@@ -239,11 +239,11 @@ export default function ArgusPage() {
             </p>
             <div className="flex gap-1 h-8 rounded-lg overflow-hidden">
               {[
-                { tier: 'PRIORITY', color: '#ef4444' },
-                { tier: 'ESCALATE', color: '#f97316' },
-                { tier: 'STANDARD', color: '#f59e0b' },
-                { tier: 'MONITOR',  color: '#3b82f6' },
-                { tier: 'NONE',     color: '#10b981' },
+                { tier: 'PRIORITY', color: 'var(--crimson)' },
+                { tier: 'ESCALATE', color: 'var(--copper)' },
+                { tier: 'STANDARD', color: 'var(--copper)' },
+                { tier: 'MONITOR',  color: 'var(--teal)' },
+                { tier: 'NONE',     color: 'var(--sage-brand)' },
               ].map(({ tier, color }) => {
                 const count = summary.tier_distribution?.[tier] || 0;
                 const pct   = summary.total_customers ? (count / summary.total_customers) * 100 : 0;
@@ -257,11 +257,11 @@ export default function ArgusPage() {
             </div>
             <div className="flex gap-4 mt-3 flex-wrap">
               {[
-                { tier: 'PRIORITY', color: '#ef4444' },
-                { tier: 'ESCALATE', color: '#f97316' },
-                { tier: 'STANDARD', color: '#f59e0b' },
-                { tier: 'MONITOR',  color: '#3b82f6' },
-                { tier: 'NONE',     color: '#10b981' },
+                { tier: 'PRIORITY', color: 'var(--crimson)' },
+                { tier: 'ESCALATE', color: 'var(--copper)' },
+                { tier: 'STANDARD', color: 'var(--copper)' },
+                { tier: 'MONITOR',  color: 'var(--teal)' },
+                { tier: 'NONE',     color: 'var(--sage-brand)' },
               ].map(({ tier, color }) => (
                 <div key={tier} className="flex items-center gap-1.5 text-[11px]">
                   <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ backgroundColor: color }} />

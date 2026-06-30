@@ -6,15 +6,15 @@ import { api } from '@/lib/api';
 import { Users, AlertTriangle, TrendingUp, Activity, RefreshCw, ArrowUpRight, Radio, BarChart3, Zap } from 'lucide-react';
 
 const TIER_BADGE: Record<string, string> = {
-  PRIORITY: 'bg-red-100 text-red-700 border border-red-200',
-  ESCALATE: 'bg-orange-100 text-orange-700 border border-orange-200',
-  STANDARD: 'bg-amber-100 text-amber-700 border border-amber-200',
-  MONITOR:  'bg-blue-100 text-blue-700 border border-blue-200',
-  NONE:     'bg-emerald-100 text-emerald-700 border border-emerald-200',
+  PRIORITY: 'bg-crimson-soft text-crimson border border-soft',
+  ESCALATE: 'bg-copper-soft text-copper-dark border border-soft',
+  STANDARD: 'bg-copper-soft text-copper-dark border border-soft',
+  MONITOR:  'bg-teal-soft text-teal-dark border border-soft',
+  NONE:     'bg-sage-soft text-sage-brand border border-soft',
 };
 const TIER_BAR: Record<string, string> = {
-  PRIORITY: 'bg-red-500', ESCALATE: 'bg-orange-500', STANDARD: 'bg-amber-500',
-  MONITOR: 'bg-blue-500', NONE: 'bg-emerald-500',
+  PRIORITY: 'bg-crimson', ESCALATE: 'bg-copper', STANDARD: 'bg-copper',
+  MONITOR: 'bg-teal', NONE: 'bg-sage-brand',
 };
 
 const LIVE_EVENTS = [
@@ -91,7 +91,7 @@ export default function AdminCommandCenter() {
       </div>
 
       {/* Live Kafka ticker */}
-      <div className="bg-[#0f2d5c] rounded-xl p-3 flex items-center gap-3 overflow-hidden">
+      <div className="bg-[var(--crimson)] rounded-xl p-3 flex items-center gap-3 overflow-hidden">
         <div className="flex items-center gap-2 shrink-0">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -105,7 +105,7 @@ export default function AdminCommandCenter() {
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Customers" value={loading ? '—' : st.total_customers || 0} icon={Users}         accent="border-l-[#0f2d5c]" />
+        <StatCard label="Total Customers" value={loading ? '—' : st.total_customers || 0} icon={Users}         accent="border-l-[var(--crimson)]" />
         <StatCard label="At Risk"         value={loading ? '—' : st.at_risk_count || 0}   icon={AlertTriangle} accent="border-l-red-500"     sub="PRIORITY + ESCALATE" />
         <StatCard label="Saves (30d)"     value={loading ? '—' : st.saves_this_month || 0} icon={TrendingUp}   accent="border-l-emerald-500" />
         <StatCard label="Avg Churn Score" value={loading ? '—' : `${Math.round((st.avg_churn_score||0)*100)}%`} icon={Activity} accent="border-l-amber-500" />
@@ -150,7 +150,7 @@ export default function AdminCommandCenter() {
                 <span className="text-[12px] text-slate-600 truncate">{m.label}</span>
                 <div className="flex items-center gap-2 shrink-0">
                   <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-[#0f2d5c] rounded-full" style={{ width: `${m.auc * 100}%` }} />
+                    <div className="h-full bg-[var(--crimson)] rounded-full" style={{ width: `${m.auc * 100}%` }} />
                   </div>
                   <span className="text-[11px] font-bold text-slate-700 tabular-nums w-10 text-right">{m.auc.toFixed(3)}</span>
                 </div>
@@ -170,7 +170,7 @@ export default function AdminCommandCenter() {
                 <span className={`w-2 h-2 rounded-full shrink-0 ${l.status === 'live' ? 'bg-emerald-400' : 'bg-red-400'}`} />
                 <span className="text-[12px] text-slate-700 flex-1">{l.name}</span>
                 <span className="text-[11px] text-slate-400 tabular-nums">{l.latency_ms}ms</span>
-                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${l.status === 'live' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${l.status === 'live' ? 'bg-sage-soft text-sage-brand' : 'bg-crimson-soft text-crimson'}`}>
                   {l.status?.toUpperCase()}
                 </span>
               </div>
@@ -184,7 +184,7 @@ export default function AdminCommandCenter() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-slate-700">RM Leaderboard</h2>
-            <Link href="/admin/rms" className="text-xs text-[#0f2d5c] hover:underline flex items-center gap-1">
+            <Link href="/admin/rms" className="text-xs text-[var(--crimson)] hover:underline flex items-center gap-1">
               Manage RMs <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>
@@ -195,7 +195,7 @@ export default function AdminCommandCenter() {
               {leaderboard.slice(0, 6).map((rm: any, i: number) => (
                 <div key={rm.username} className="flex items-center gap-3 py-2.5">
                   <span className="w-5 text-[11px] font-bold text-slate-300 text-right shrink-0">{i+1}</span>
-                  <div className="w-7 h-7 rounded-full bg-[#0f2d5c] flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-[var(--crimson)] flex items-center justify-center text-[10px] font-bold text-white shrink-0">
                     {rm.rm_name?.split(' ').map((n: string) => n[0]).join('').slice(0,2)}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -203,11 +203,11 @@ export default function AdminCommandCenter() {
                     <p className="text-[10px] text-slate-400">{rm.book_size} customers</p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-sm font-bold text-emerald-600">{rm.saves}</p>
+                    <p className="text-sm font-bold text-sage-brand">{rm.saves}</p>
                     <p className="text-[9px] text-slate-400">saves</p>
                   </div>
                   <div className="text-right shrink-0 w-10">
-                    <p className="text-sm font-bold text-red-500">{rm.at_risk_count}</p>
+                    <p className="text-sm font-bold text-crimson">{rm.at_risk_count}</p>
                     <p className="text-[9px] text-slate-400">at-risk</p>
                   </div>
                 </div>

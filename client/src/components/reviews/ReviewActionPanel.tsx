@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import type { ReviewActionType, ReviewStatus } from "@/types";
 
 const ACTIONS: { action: ReviewActionType; label: string; color: string; description: string }[] = [
-    { action: "start_review", label: "Start Review", color: "bg-blue-600 hover:bg-blue-700 text-white", description: "Begin reviewing this case" },
-    { action: "approve", label: "Approve", color: "bg-emerald-600 hover:bg-emerald-700 text-white", description: "Approve and close this case" },
-    { action: "reject", label: "Reject", color: "bg-red-600 hover:bg-red-700 text-white", description: "Reject and close this case" },
+    { action: "start_review", label: "Start Review", color: "bg-teal-dark hover:bg-teal-dark text-white", description: "Begin reviewing this case" },
+    { action: "approve", label: "Approve", color: "bg-sage-brand hover:bg-sage-brand text-white", description: "Approve and close this case" },
+    { action: "reject", label: "Reject", color: "bg-crimson hover:bg-crimson-dark text-white", description: "Reject and close this case" },
     { action: "escalate", label: "Escalate", color: "bg-violet-600 hover:bg-violet-700 text-white", description: "Escalate to senior officer" },
     { action: "comment", label: "Add Note", color: "bg-slate-600 hover:bg-slate-700 text-white", description: "Add a comment without changing status" },
 ];
@@ -46,7 +46,7 @@ export function ReviewActionPanel({
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Add your notes, reasoning, or instructions..."
                     rows={3}
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
                 />
             </div>
 

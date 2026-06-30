@@ -6,14 +6,14 @@ interface SignalBreakdownChartProps {
     data: { signal_type: string; count: number }[];
 }
 
-const COLORS = ['#2563EB', '#7C3AED', '#DB2777', '#DC2626', '#EA580C', '#CA8A04', '#16A34A', '#0891B2'];
+const COLORS = ['var(--teal)', 'var(--teal-dark)', '#DB2777', 'var(--crimson)', 'var(--copper)', '#CA8A04', 'var(--sage-brand)', '#0891B2'];
 
 function CustomTooltip({ active, payload }: any) {
     if (!active || !payload?.length) return null;
     return (
         <div className="bg-white border border-slate-200 rounded-lg shadow-sm px-3 py-2">
             <p className="text-xs font-bold text-slate-700">{payload[0]?.payload?.signal_type}</p>
-            <p className="text-sm font-bold text-blue-700">{payload[0]?.value} customers</p>
+            <p className="text-sm font-bold text-teal-dark">{payload[0]?.value} customers</p>
         </div>
     );
 }
@@ -36,11 +36,11 @@ export function SignalBreakdownChart({ data = [] }: SignalBreakdownChartProps) {
                             dataKey="signal_type"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 11, fill: '#64748B' }}
+                            tick={{ fontSize: 11, fill: 'var(--gray-500)' }}
                             width={130}
                             tickFormatter={(v: string) => v.split('_').map((w: string) => w[0].toUpperCase() + w.slice(1)).join(' ')}
                         />
-                        <Tooltip content={<CustomTooltip />} cursor={{ fill: '#F8FAFC' }} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--background)' }} />
                         <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={18}>
                             {sorted.map((_, i) => (
                                 <Cell key={i} fill={COLORS[i % COLORS.length]} />

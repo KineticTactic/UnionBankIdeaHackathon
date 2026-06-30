@@ -4,17 +4,17 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 
 const TOKEN_COLORS: Record<string, string> = {
-  CARD_SWIPE: '#3b82f6',
+  CARD_SWIPE: 'var(--teal)',
   CARD_TAP: '#60a5fa',
-  ONLINE_PURCHASE: '#10b981',
+  ONLINE_PURCHASE: 'var(--sage-brand)',
   ONLINE_TRANSFER: '#34d399',
-  BILL_PAYMENT: '#f59e0b',
-  SUPPORT_CONTACT: '#f97316',
-  COMPLAINT_RAISED: '#ef4444',
-  INACTIVITY_7D: '#94a3b8',
-  INACTIVITY_14D: '#64748b',
-  INACTIVITY_30D: '#475569',
-  PAD: '#e2e8f0',
+  BILL_PAYMENT: 'var(--copper)',
+  SUPPORT_CONTACT: 'var(--copper)',
+  COMPLAINT_RAISED: 'var(--crimson)',
+  INACTIVITY_7D: 'var(--gray-400)',
+  INACTIVITY_14D: 'var(--gray-500)',
+  INACTIVITY_30D: 'var(--gray-600)',
+  PAD: 'var(--border-color)',
 };
 
 const TOKEN_LABELS_SHORT: Record<string, string> = {
@@ -43,7 +43,7 @@ export function TokenTimeline({ customerId }: { customerId: string }) {
   useEffect(() => {
     if (!customerId) return;
     setLoading(true);
-    api.getChronosTokenSequence(customerId)
+    api.getV2Score(customerId)
       .then((res) => setData(res))
       .catch((err) => setError(err.message || 'Failed to load token sequence'))
       .finally(() => setLoading(false));
@@ -82,7 +82,7 @@ export function TokenTimeline({ customerId }: { customerId: string }) {
           <div
             key={i}
             className="flex-1 first:rounded-l-full last:rounded-r-full"
-            style={{ backgroundColor: TOKEN_COLORS[label] || '#e2e8f0' }}
+            style={{ backgroundColor: TOKEN_COLORS[label] || 'var(--border-color)' }}
             title={`#${i}: ${label}`}
           />
         ))}
@@ -93,7 +93,7 @@ export function TokenTimeline({ customerId }: { customerId: string }) {
           <div key={label} className="flex items-center gap-2 text-xs">
             <span
               className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-              style={{ backgroundColor: TOKEN_COLORS[label] || '#e2e8f0' }}
+              style={{ backgroundColor: TOKEN_COLORS[label] || 'var(--border-color)' }}
             />
             <span className="text-slate-600">{TOKEN_LABELS_SHORT[label] || label}</span>
             <span className="font-medium text-slate-800 ml-auto">{count}</span>

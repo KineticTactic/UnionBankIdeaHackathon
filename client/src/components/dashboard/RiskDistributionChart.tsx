@@ -3,11 +3,11 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 const COLORS: Record<string, string> = {
-    critical: "#EF4444",
-    high:     "#F97316",
+    critical: "var(--crimson)",
+    high:     "var(--copper)",
     medium:   "#EAB308",
-    watch:    "#3B82F6",
-    low:      "#22C55E",
+    watch:    "var(--teal)",
+    low:      "var(--sage-brand)",
 };
 
 const TIER_LABEL: Record<string, string> = {
@@ -37,12 +37,12 @@ export function RiskDistributionChart({ data = [] }: RiskDistributionChartProps)
                                 startAngle={90} endAngle={-270}
                             >
                                 {data.map((entry, i) => (
-                                    <Cell key={i} fill={COLORS[entry.tier] || "#94a3b8"} strokeWidth={0} />
+                                    <Cell key={i} fill={COLORS[entry.tier] || "var(--gray-400)"} strokeWidth={0} />
                                 ))}
                             </Pie>
                             <Tooltip
                                 formatter={(v, n) => [`${v} customers`, TIER_LABEL[String(n)] || n]}
-                                contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: 12, padding: '6px 10px' }}
+                                contentStyle={{ borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: 12, padding: '6px 10px' }}
                             />
                         </PieChart>
                     </ResponsiveContainer>
@@ -55,11 +55,11 @@ export function RiskDistributionChart({ data = [] }: RiskDistributionChartProps)
                 <div className="flex flex-col gap-2 flex-1">
                     {data.filter(d => d.count > 0).map(d => (
                         <div key={d.tier} className="flex items-center gap-2.5">
-                            <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: COLORS[d.tier] || '#94a3b8' }} />
+                            <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: COLORS[d.tier] || 'var(--gray-400)' }} />
                             <span className="text-xs text-slate-600 flex-1 capitalize">{TIER_LABEL[d.tier] || d.tier}</span>
                             <span className="text-xs font-bold text-slate-800 tabular-nums w-5 text-right">{d.count}</span>
                             <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                                <div className="h-full rounded-full" style={{ width: `${d.percentage}%`, backgroundColor: COLORS[d.tier] || '#94a3b8' }} />
+                                <div className="h-full rounded-full" style={{ width: `${d.percentage}%`, backgroundColor: COLORS[d.tier] || 'var(--gray-400)' }} />
                             </div>
                             <span className="text-[10px] text-slate-400 tabular-nums w-8 text-right">{d.percentage}%</span>
                         </div>

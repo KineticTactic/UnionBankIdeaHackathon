@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-poppins), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-poppins), system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -47,66 +47,275 @@
 }
 
 :root {
-  --navy: #0f2d5c;
-  --navy-light: #1a3f7a;
-  --navy-muted: #e8edf5;
+  /* ============================================================
+     PCOP BRAND SYSTEM — 2D FLAT, ZERO SHADOWS, MINIMALIST
+     ============================================================ */
+
+  /* Core palette */
+  --crimson:          #6B132B;
+  --crimson-dark:     #4A0C1E;
+  --crimson-soft:     #F5E6E9;
+  --copper:           #B46B3E;
+  --copper-dark:      #8E5026;
+  --copper-soft:      #FAF0E6;
+  --copper-pale:      #F4D9C0;
+  --charcoal:         #2A161B;
+  --cream:            #F9F9F7;
+  --white:            #FFFFFF;
+  --border-color:     #E5E0DF;
+  --gray-50:          #FAFAF9;
+  --gray-100:         #F5F4F2;
+  --gray-200:         #E5E0DF;
+  --gray-300:         #C9C3C0;
+  --gray-400:         #8B8481;
+  --gray-500:         #6B6562;
+  --gray-600:         #4A4644;
+  --gray-700:         #2A161B;
 
   /* Risk tier colours */
-  --tier-priority:  #dc2626;
-  --tier-escalate:  #ea580c;
-  --tier-standard:  #ca8a04;
-  --tier-monitor:   #2563eb;
-  --tier-none:      #16a34a;
+  --tier-escalate:    var(--crimson);
+  --tier-priority:    var(--copper);
+  --tier-watch:       var(--copper-pale);
+  --tier-stable:      var(--gray-200);
 
-  --background:           #f8fafc;
-  --foreground:           #0f172a;
-  --card:                 #ffffff;
-  --card-foreground:      #0f172a;
-  --popover:              #ffffff;
-  --popover-foreground:   #0f172a;
-  --primary:              #0f2d5c;
-  --primary-foreground:   #ffffff;
-  --secondary:            #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted:                #f1f5f9;
-  --muted-foreground:     #64748b;
-  --accent:               #e8edf5;
-  --accent-foreground:    #0f2d5c;
-  --destructive:          #dc2626;
-  --border:               #e2e8f0;
-  --input:                #e2e8f0;
-  --ring:                 #0f2d5c;
-  --radius:               0.5rem;
+  /* shadcn mapping */
+  --background:           #F9F9F7;
+  --foreground:           #2A161B;
+  --card:                 #FFFFFF;
+  --card-foreground:      #2A161B;
+  --popover:              #FFFFFF;
+  --popover-foreground:   #2A161B;
+  --primary:              #6B132B;
+  --primary-foreground:   #FFFFFF;
+  --secondary:            #F5F4F2;
+  --secondary-foreground: #2A161B;
+  --muted:                #F5F4F2;
+  --muted-foreground:     #6B6562;
+  --accent:               #FAF0E6;
+  --accent-foreground:    #B46B3E;
+  --destructive:          #6B132B;
+  --border:               #E5E0DF;
+  --input:                #E5E0DF;
+  --ring:                 #6B132B;
+  --radius:               0.375rem;
 
   /* Charts */
-  --chart-1: #0f2d5c;
-  --chart-2: #2563eb;
-  --chart-3: #ca8a04;
-  --chart-4: #dc2626;
-  --chart-5: #16a34a;
+  --chart-1: #6B132B;
+  --chart-2: #B46B3E;
+  --chart-3: #8B8481;
+  --chart-4: #C9C3C0;
+  --chart-5: #4A4644;
 
-  /* Sidebar — deep navy */
-  --sidebar:                    #0f2d5c;
-  --sidebar-foreground:         #e2e8f0;
-  --sidebar-primary:            #ffffff;
-  --sidebar-primary-foreground: #0f2d5c;
-  --sidebar-accent:             rgba(255,255,255,0.08);
-  --sidebar-accent-foreground:  #ffffff;
-  --sidebar-border:             rgba(255,255,255,0.1);
-  --sidebar-ring:               rgba(255,255,255,0.2);
+  /* Sidebar — pure white surface */
+  --sidebar:                    #FFFFFF;
+  --sidebar-foreground:         #2A161B;
+  --sidebar-primary:            #6B132B;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:             #F5F4F2;
+  --sidebar-accent-foreground:  #6B132B;
+  --sidebar-border:             #E5E0DF;
+  --sidebar-ring:               #B46B3E;
 }
 
 @layer base {
   * { @apply border-border outline-ring/50; }
-  body { @apply bg-[#f8fafc] text-slate-900; }
+  body { @apply bg-[#F9F9F7] text-[#2A161B] font-sans; }
   html { @apply font-sans; }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+/* ============================================================
+   TYPOGRAPHY — Poppins
+   ============================================================ */
 
-/* Smooth transitions */
-a, button { transition: all 150ms ease; }
+.font-heading { font-family: var(--font-poppins), system-ui, sans-serif; letter-spacing: -0.01em; }
+.font-data    { font-family: var(--font-poppins), system-ui, sans-serif; }
+.font-sans    { font-family: var(--font-poppins), system-ui, sans-serif; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+/* ============================================================
+   FLAT 2D — REMOVE ALL SHADOWS
+   ============================================================ */
+
+* { box-shadow: none !important; }
+.flat { box-shadow: none !important; }
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #C9C3C0; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #8B8481; }
+
+/* ============================================================
+   TRANSITIONS
+   ============================================================ */
+
+a, button { transition: all 120ms ease; }
+
+/* ============================================================
+   PCOP UTILITIES
+   ============================================================ */
+
+/* Brand color utilities */
+.bg-crimson       { background-color: var(--crimson); }
+.bg-crimson-soft  { background-color: var(--crimson-soft); }
+.bg-copper        { background-color: var(--copper); }
+.bg-copper-soft   { background-color: var(--copper-soft); }
+.bg-copper-pale   { background-color: var(--copper-pale); }
+.bg-cream         { background-color: var(--cream); }
+
+.text-crimson     { color: var(--crimson); }
+.text-copper      { color: var(--copper); }
+.text-charcoal    { color: var(--charcoal); }
+.text-gray-500    { color: var(--gray-500); }
+.text-gray-400    { color: var(--gray-400); }
+
+.border-crimson   { border-color: var(--crimson); }
+.border-copper    { border-color: var(--copper); }
+.border-soft      { border-color: var(--border-color); }
+
+/* Risk tier badges */
+.badge-escalate { background: var(--crimson); color: #FFFFFF; }
+.badge-priority { background: var(--copper);  color: #FFFFFF; }
+.badge-watch    { background: var(--copper-pale); color: var(--charcoal); }
+.badge-stable   { background: transparent; color: var(--charcoal); border: 1px solid var(--gray-300); }
+
+/* Live pulse — flat 2D (no glow) */
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+.animate-live-pulse { animation: live-pulse 1.5s ease-in-out infinite; }
+
+/* Kafka flow animation — flat 2D */
+@keyframes flow {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.animate-flow { animation: flow 2s linear infinite; }
+
+/* ============================================================
+   ANIMATED BACKGROUND — landing page
+   ============================================================ */
+
+@keyframes mesh-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  25%  { transform: translate3d(80px, -50px, 0) scale(1.15) rotate(15deg); }
+  50%  { transform: translate3d(-60px, 60px, 0) scale(0.9) rotate(-10deg); }
+  75%  { transform: translate3d(50px, 30px, 0) scale(1.05) rotate(8deg); }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+}
+.animate-mesh-a { animation: mesh-drift 12s ease-in-out infinite; will-change: transform; }
+.animate-mesh-b { animation: mesh-drift 16s ease-in-out infinite reverse; will-change: transform; }
+
+@keyframes line-flow {
+  0%   { transform: translateX(-30%); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateX(130%); opacity: 0; }
+}
+.animate-line { animation: line-flow 5s linear infinite; will-change: transform, opacity; }
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 0.9; }
+}
+.animate-pulse-soft { animation: pulse-soft 4s ease-in-out infinite; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.6s ease-out backwards; }
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.animate-slide-left { animation: slide-in-left 0.6s ease-out backwards; }
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.animate-slide-right { animation: slide-in-right 0.6s ease-out backwards; }
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.animate-scale-in { animation: scale-in 0.5s ease-out backwards; }
+
+@keyframes shimmer-bg {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-shimmer-bg {
+  background-size: 200% 200%;
+  animation: shimmer-bg 6s ease-in-out infinite;
+}
+
+@keyframes count-up {
+  from { transform: translateY(8px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.animate-count-up { animation: count-up 0.5s ease-out backwards; }
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }
+.delay-800 { animation-delay: 0.8s; }
+
+.hover-lift {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.hover-lift:hover {
+  transform: translateY(-3px);
+}
+
+.hover-glow {
+  transition: all 200ms ease;
+}
+.hover-glow:hover {
+  transform: translateY(-2px);
+  border-color: var(--crimson);
+}
+
+.bg-mesh-gradient {
+  background:
+    radial-gradient(ellipse 800px 600px at 15% 25%, rgba(180,107,62,0.55) 0%, transparent 55%),
+    radial-gradient(ellipse 700px 600px at 85% 75%, rgba(107,19,43,0.45) 0%, transparent 55%),
+    radial-gradient(ellipse 600px 500px at 50% 50%, rgba(180,107,62,0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 500px 400px at 80% 15%, rgba(107,19,43,0.3) 0%, transparent 55%);
+}
+
+.bg-dot-grid {
+  background-image: radial-gradient(circle, rgba(42,22,27,0.18) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #6B132B 0%, #B46B3E 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-gradient-brand {
+  background: linear-gradient(135deg, #6B132B 0%, #B46B3E 100%);
+}
+
+/* Number/data styling */
+.tabular-nums { font-variant-numeric: tabular-nums; }

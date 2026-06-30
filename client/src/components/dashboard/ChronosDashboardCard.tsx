@@ -3,8 +3,35 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChronosStats, ModelHealth } from "@/types";
 import { BrainCircuit, CheckCircle2, AlertTriangle, XCircle, Activity, Sigma, Cpu, BarChart3, Layers, Shield } from "lucide-react";
+
+interface ChronosStats {
+    components: Array<{ name: string; status: string; latency_ms: number; last_run: string }>;
+    total_runs: number;
+    avg_latency_ms: number;
+    health_score: number;
+    last_scored_at?: string;
+    total_customers_scored?: number;
+    active_alerts?: number;
+    drift_detected?: number;
+    avg_churn_score?: number;
+    model_versions?: string[];
+    tier_distribution?: Record<string, number>;
+    precision?: number;
+    recall?: number;
+    f1?: number;
+    drift?: number;
+}
+
+interface ModelHealth {
+    auc: number;
+    precision: number;
+    recall: number;
+    f1: number;
+    drift: number;
+    aegis_drift_status?: string;
+    components?: Array<{ name: string; status: string; latency_ms: number; last_updated?: string }>;
+}
 
 interface ChronosDashboardCardProps {
     stats: ChronosStats | null;
@@ -30,9 +57,9 @@ const COMPONENT_LABELS: Record<string, string> = {
 
 function StatusIcon({ status }: { status: string }) {
     switch (status) {
-        case "healthy": return <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />;
-        case "degraded": return <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />;
-        case "error": return <XCircle className="w-3.5 h-3.5 text-red-500" />;
+        case "healthy": return <CheckCircle2 className="w-3.5 h-3.5 text-sage-brand" />;
+        case "degraded": return <AlertTriangle className="w-3.5 h-3.5 text-copper" />;
+        case "error": return <XCircle className="w-3.5 h-3.5 text-crimson" />;
         default: return <Activity className="w-3.5 h-3.5 text-slate-400" />;
     }
 }
@@ -45,10 +72,10 @@ function formatDate(dateStr: string | null) {
 export function ChronosDashboardCard({ stats, modelHealth, isLoading }: ChronosDashboardCardProps) {
     if (isLoading) {
         return (
-            <Card className="shadow-sm border-indigo-200/60 bg-white overflow-hidden">
+            <Card className="shadow-sm border-soft/60 bg-white overflow-hidden">
                 <CardHeader className="border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 pb-4">
                     <CardTitle className="text-base font-semibold text-slate-900 flex items-center gap-2">
-                        <BrainCircuit className="w-5 h-5 text-indigo-600" />
+                        <BrainCircuit className="w-5 h-5 text-teal-dark" />
                         Precision Risk Engine · Scoring Suite
                     </CardTitle>
                 </CardHeader>
@@ -61,18 +88,18 @@ export function ChronosDashboardCard({ stats, modelHealth, isLoading }: ChronosD
     }
 
     const tierColors: Record<string, string> = {
-        critical: "bg-red-100 text-red-700 border-red-200",
-        high: "bg-orange-100 text-orange-700 border-orange-200",
-        medium: "bg-yellow-100 text-yellow-700 border-yellow-200",
-        low: "bg-green-100 text-green-700 border-green-200",
+        critical: "bg-crimson-soft text-crimson border-soft",
+        high: "bg-copper-soft text-copper-dark border-soft",
+        medium: "bg-copper-pale text-copper-dark border-soft",
+        low: "bg-sage-soft text-sage-brand border-soft",
     };
 
     return (
-        <Card className="shadow-sm border-indigo-200/60 bg-white overflow-hidden">
+        <Card className="shadow-sm border-soft/60 bg-white overflow-hidden">
             <CardHeader className="border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 pb-4">
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-base font-semibold text-slate-900 flex items-center gap-2">
-                        <BrainCircuit className="w-5 h-5 text-indigo-600" />
+                        <BrainCircuit className="w-5 h-5 text-teal-dark" />
                         Precision Risk Engine · Scoring Suite
                     </CardTitle>
                     {stats?.last_scored_at && (
@@ -85,18 +112,18 @@ export function ChronosDashboardCard({ stats, modelHealth, isLoading }: ChronosD
             <CardContent className="p-5 space-y-5">
                 {/* Stats row */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div className="bg-indigo-50/60 rounded-lg p-3 border border-indigo-100/50">
-                        <div className="text-[10px] font-semibold text-indigo-500 uppercase tracking-wider mb-1">Scored</div>
+                    <div className="bg-teal-soft/60 rounded-lg p-3 border border-indigo-100/50">
+                        <div className="text-[10px] font-semibold text-teal uppercase tracking-wider mb-1">Scored</div>
                         <div className="text-xl font-bold text-slate-900">{stats?.total_customers_scored ?? 0}</div>
                         <div className="text-[10px] text-slate-400 mt-0.5">customers</div>
                     </div>
-                    <div className="bg-indigo-50/60 rounded-lg p-3 border border-indigo-100/50">
-                        <div className="text-[10px] font-semibold text-indigo-500 uppercase tracking-wider mb-1">Avg Score</div>
-                        <div className="text-xl font-bold text-slate-900">{stats ? `${Math.round(stats.avg_churn_score * 100)}%` : "—"}</div>
+                    <div className="bg-teal-soft/60 rounded-lg p-3 border border-indigo-100/50">
+                        <div className="text-[10px] font-semibold text-teal uppercase tracking-wider mb-1">Avg Score</div>
+                        <div className="text-xl font-bold text-slate-900">{stats && stats.avg_churn_score !== undefined ? `${Math.round(stats.avg_churn_score * 100)}%` : "—"}</div>
                         <div className="text-[10px] text-slate-400 mt-0.5">portfolio-wide</div>
                     </div>
-                    <div className="bg-indigo-50/60 rounded-lg p-3 border border-indigo-100/50">
-                        <div className="text-[10px] font-semibold text-indigo-500 uppercase tracking-wider mb-1">Model</div>
+                    <div className="bg-teal-soft/60 rounded-lg p-3 border border-indigo-100/50">
+                        <div className="text-[10px] font-semibold text-teal uppercase tracking-wider mb-1">Model</div>
                         <div className="text-xl font-bold text-slate-900 truncate text-sm font-mono">
                             {stats?.model_versions?.[0]?.split("-")?.[0] ?? "—"}
                         </div>
@@ -104,10 +131,10 @@ export function ChronosDashboardCard({ stats, modelHealth, isLoading }: ChronosD
                             {stats?.model_versions?.length ?? 0} version{(stats?.model_versions?.length ?? 0) !== 1 ? "s" : ""}
                         </div>
                     </div>
-                    <div className="bg-indigo-50/60 rounded-lg p-3 border border-indigo-100/50">
-                        <div className="text-[10px] font-semibold text-indigo-500 uppercase tracking-wider mb-1">Drift</div>
+                    <div className="bg-teal-soft/60 rounded-lg p-3 border border-indigo-100/50">
+                        <div className="text-[10px] font-semibold text-teal uppercase tracking-wider mb-1">Drift</div>
                         <div className="flex items-center gap-1.5 mt-0.5">
-                            <div className={`w-2 h-2 rounded-full ${modelHealth?.aegis_drift_status === "normal" ? "bg-green-500" : "bg-amber-500"}`} />
+                            <div className={`w-2 h-2 rounded-full ${modelHealth?.aegis_drift_status === "normal" ? "bg-sage-brand" : "bg-copper"}`} />
                             <span className="text-sm font-semibold text-slate-900 capitalize">{modelHealth?.aegis_drift_status ?? "unknown"}</span>
                         </div>
                         <div className="text-[10px] text-slate-400 mt-0.5">AEGIS drift</div>
@@ -115,16 +142,18 @@ export function ChronosDashboardCard({ stats, modelHealth, isLoading }: ChronosD
                 </div>
 
                 {/* Score distribution */}
-                {stats?.tier_distribution && (
+                {stats?.tier_distribution && (() => {
+                    const tierDist = stats.tier_distribution || {};
+                    return (
                     <div>
-                        <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Retention Risk Score Distribution</div>
+                        <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Score Distribution</div>
                         <div className="flex gap-1.5 h-6">
                             {["critical", "high", "medium", "low"].map((tier) => {
-                                const count = stats.tier_distribution[tier] || 0;
-                                const total = Object.values(stats.tier_distribution).reduce((a: number, b: number) => a + b, 0);
+                                const count = tierDist[tier] || 0;
+                                const total = Object.values(tierDist).reduce((a: number, b: any) => a + (b as number), 0);
                                 const pct = total > 0 ? (count / total) * 100 : 0;
                                 const colors: Record<string, string> = {
-                                    critical: "bg-red-500", high: "bg-orange-500", medium: "bg-yellow-500", low: "bg-green-500",
+                                    critical: "bg-crimson", high: "bg-copper", medium: "bg-yellow-500", low: "bg-sage-brand",
                                 };
                                 return (
                                     <div key={tier} className="relative flex-1 flex flex-col items-center">
@@ -138,7 +167,8 @@ export function ChronosDashboardCard({ stats, modelHealth, isLoading }: ChronosD
                             })}
                         </div>
                     </div>
-                )}
+                    );
+                })()}
 
                 {/* Model health grid */}
                 {modelHealth?.components && (

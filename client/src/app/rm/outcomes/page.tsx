@@ -8,17 +8,17 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ClipboardList, Plus, CheckCircle, XCircle, Minus, X, Loader2 } from 'lucide-react';
 
 const OUTCOME_COLORS: Record<string, string> = {
-  converted:'bg-emerald-100 text-emerald-700', retained:'bg-green-100 text-green-700',
-  neutral:'bg-slate-100 text-slate-500', declined:'bg-orange-100 text-orange-600',
-  unreachable:'bg-slate-100 text-slate-400', churned:'bg-red-100 text-red-600',
+  converted:'bg-sage-soft text-sage-brand', retained:'bg-sage-soft text-sage-brand',
+  neutral:'bg-slate-100 text-slate-500', declined:'bg-copper-soft text-copper-dark',
+  unreachable:'bg-slate-100 text-slate-400', churned:'bg-crimson-soft text-crimson',
 };
 
 const OUTCOME_ICON: Record<string, React.ReactNode> = {
-  converted: <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />,
-  retained:  <CheckCircle className="w-3.5 h-3.5 text-green-500" />,
+  converted: <CheckCircle className="w-3.5 h-3.5 text-sage-brand" />,
+  retained:  <CheckCircle className="w-3.5 h-3.5 text-sage-brand" />,
   neutral:   <Minus className="w-3.5 h-3.5 text-slate-400" />,
   declined:  <XCircle className="w-3.5 h-3.5 text-orange-400" />,
-  churned:   <XCircle className="w-3.5 h-3.5 text-red-500" />,
+  churned:   <XCircle className="w-3.5 h-3.5 text-crimson" />,
 };
 
 const LANG_LABELS: Record<string,string> = { en:'English',hi:'Hindi',ta:'Tamil',bn:'Bengali',te:'Telugu',mr:'Marathi',ml:'Malayalam',kn:'Kannada',gu:'Gujarati',pa:'Punjabi' };
@@ -44,15 +44,15 @@ function LogModal({ customers, onClose, onSaved }: { customers: any[]; onClose:(
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={e=>e.target===e.currentTarget&&onClose()}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-          <div className="flex items-center gap-2"><ClipboardList className="w-4 h-4 text-[#0f2d5c]" /><h2 className="text-[14px] font-bold text-slate-900">Log Outcome</h2></div>
+          <div className="flex items-center gap-2"><ClipboardList className="w-4 h-4 text-[var(--crimson)]" /><h2 className="text-[14px] font-bold text-slate-900">Log Outcome</h2></div>
           <button onClick={onClose}><X className="w-4 h-4 text-slate-400" /></button>
         </div>
         <div className="px-5 py-4 space-y-3">
-          {error && <div className="bg-red-50 border border-red-100 rounded-lg px-3 py-2 text-[12px] text-red-600">{error}</div>}
+          {error && <div className="bg-crimson-soft border border-red-100 rounded-lg px-3 py-2 text-[12px] text-crimson">{error}</div>}
           <div>
             <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Customer</label>
             <select value={form.customer_id} onChange={e=>setForm(f=>({...f,customer_id:e.target.value}))}
-              className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20">
+              className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20">
               <option value="">Select…</option>
               {customers.map(c => <option key={c.customer_id} value={c.customer_id}>{c.full_name} ({c.customer_id})</option>)}
             </select>
@@ -70,19 +70,19 @@ function LogModal({ customers, onClose, onSaved }: { customers: any[]; onClose:(
               <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">{label}</label>
               {type === 'select' ? (
                 <select value={(form as any)[k]} onChange={e=>setForm(f=>({...f,[k]:e.target.value}))}
-                  className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20">
+                  className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20">
                   {opts.map(o => <option key={o} value={o}>{o === '' ? '—' : LANG_LABELS[o] || o.replace(/_/g,' ')}</option>)}
                 </select>
               ) : (
                 <input type={type} value={(form as any)[k]} onChange={e=>setForm(f=>({...f,[k]:e.target.value}))}
-                  className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20" />
+                  className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20" />
               )}
             </div>
           ))}
           <div>
             <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Notes</label>
             <textarea value={form.rm_notes} onChange={e=>setForm(f=>({...f,rm_notes:e.target.value}))} rows={3}
-              className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20 resize-none" />
+              className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20 resize-none" />
           </div>
           <label className="flex items-center gap-2 text-[12px] text-slate-600 cursor-pointer">
             <input type="checkbox" checked={form.contacted} onChange={e=>setForm(f=>({...f,contacted:e.target.checked}))} className="rounded" />
@@ -92,7 +92,7 @@ function LogModal({ customers, onClose, onSaved }: { customers: any[]; onClose:(
         <div className="flex justify-end gap-2 px-5 py-4 border-t border-slate-100">
           <button onClick={onClose} className="px-4 py-2 rounded-lg border border-slate-200 text-[12px] text-slate-600 hover:bg-slate-50 transition-colors">Cancel</button>
           <button onClick={save} disabled={loading}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#0f2d5c] text-white text-[12px] font-semibold hover:bg-[#1a3f7a] disabled:opacity-50 transition-colors">
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--crimson)] text-white text-[12px] font-semibold hover:bg-[var(--crimson-dark)] disabled:opacity-50 transition-colors">
             {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />} Save
           </button>
         </div>
@@ -125,11 +125,11 @@ export default function OutcomesPage() {
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <ClipboardList className="w-5 h-5 text-[#0f2d5c]" />
+          <ClipboardList className="w-5 h-5 text-[var(--crimson)]" />
           <h1 className="text-[22px] font-black text-slate-900">Outcome Log</h1>
         </div>
         <button onClick={() => setShowModal(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#0f2d5c] text-white text-[12px] font-semibold hover:bg-[#1a3f7a] transition-colors">
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--crimson)] text-white text-[12px] font-semibold hover:bg-[var(--crimson-dark)] transition-colors">
           <Plus className="w-3.5 h-3.5" /> Log Outcome
         </button>
       </div>
@@ -149,7 +149,7 @@ export default function OutcomesPage() {
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
                   {OUTCOME_ICON[o.outcome] || <Minus className="w-3.5 h-3.5 text-slate-400" />}
-                  <Link href={`/rm/customers/${o.customer_id}`} className="text-[13px] font-semibold text-[#0f2d5c] hover:underline">
+                  <Link href={`/rm/customers/${o.customer_id}`} className="text-[13px] font-semibold text-[var(--crimson)] hover:underline">
                     {custName(o.customer_id)}
                   </Link>
                   <span className={`text-[10px] font-semibold px-2 py-0.5 rounded capitalize ${OUTCOME_COLORS[o.outcome]||'bg-slate-50 text-slate-500'}`}>{o.outcome?.replace(/_/g,' ')}</span>

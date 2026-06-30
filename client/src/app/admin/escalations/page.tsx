@@ -11,15 +11,15 @@ function fmtDate(d?: string) {
 }
 
 const TIER_BADGE: Record<string, string> = {
-  PRIORITY: 'bg-red-100 text-red-700 border border-red-200',
-  ESCALATE: 'bg-orange-100 text-orange-700 border border-orange-200',
-  STANDARD: 'bg-amber-100 text-amber-700 border border-amber-200',
-  MONITOR:  'bg-blue-100 text-blue-700 border border-blue-200',
+  PRIORITY: 'bg-crimson-soft text-crimson border border-soft',
+  ESCALATE: 'bg-copper-soft text-copper-dark border border-soft',
+  STANDARD: 'bg-copper-soft text-copper-dark border border-soft',
+  MONITOR:  'bg-teal-soft text-teal-dark border border-soft',
 };
 const STATUS_BADGE: Record<string, string> = {
-  open:     'bg-red-100 text-red-700 border border-red-200',
-  pending:  'bg-amber-100 text-amber-700 border border-amber-200',
-  resolved: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+  open:     'bg-crimson-soft text-crimson border border-soft',
+  pending:  'bg-copper-soft text-copper-dark border border-soft',
+  resolved: 'bg-sage-soft text-sage-brand border border-soft',
 };
 
 export default function EscalationsPage() {
@@ -72,13 +72,13 @@ export default function EscalationsPage() {
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 border-l-red-500">
           <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Open</p>
-          <p className="text-2xl font-bold text-red-600 tabular-nums">{open}</p>
+          <p className="text-2xl font-bold text-crimson tabular-nums">{open}</p>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 border-l-emerald-500">
           <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Resolved</p>
-          <p className="text-2xl font-bold text-emerald-600 tabular-nums">{resolved}</p>
+          <p className="text-2xl font-bold text-sage-brand tabular-nums">{resolved}</p>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 border-l-[#0f2d5c]">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 border-l-[var(--crimson)]">
           <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Total</p>
           <p className="text-2xl font-bold text-slate-900 tabular-nums">{items.length}</p>
         </div>
@@ -90,7 +90,7 @@ export default function EscalationsPage() {
         {['all', 'open', 'pending', 'resolved'].map(f => (
           <button key={f} onClick={() => setFilter(f)}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
-              filter === f ? 'bg-[#0f2d5c] text-white' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
+              filter === f ? 'bg-[var(--crimson)] text-white' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
             }`}>{f}</button>
         ))}
       </div>
@@ -99,17 +99,17 @@ export default function EscalationsPage() {
         <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-24 bg-white rounded-xl border border-slate-200 animate-pulse" />)}</div>
       ) : filtered.length === 0 ? (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-12 text-center">
-          <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
+          <CheckCircle2 className="w-10 h-10 text-sage-brand mx-auto mb-3" />
           <p className="text-slate-500 font-medium">No escalations</p>
         </div>
       ) : (
         <div className="space-y-3">
           {filtered.map((item: any) => (
             <div key={item.id} className={`bg-white rounded-xl border shadow-sm p-5 ${
-              (item.status === 'open' || item.status === 'pending') ? 'border-red-200' : 'border-slate-200'
+              (item.status === 'open' || item.status === 'pending') ? 'border-soft' : 'border-slate-200'
             }`}>
               <div className="flex items-start gap-4">
-                <AlertTriangle className={`w-5 h-5 mt-0.5 shrink-0 ${item.status === 'resolved' ? 'text-slate-300' : 'text-red-500'}`} />
+                <AlertTriangle className={`w-5 h-5 mt-0.5 shrink-0 ${item.status === 'resolved' ? 'text-slate-300' : 'text-crimson'}`} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-1">
                     <p className="font-bold text-slate-900">{item.customer_name || item.customer_id}</p>
@@ -125,7 +125,7 @@ export default function EscalationsPage() {
                 </div>
                 {(item.status === 'open' || item.status === 'pending') && (
                   <button onClick={() => { setResolveId(item.id); setOutcome('resolved'); setNotes(''); }}
-                    className="px-3 py-1.5 rounded-lg bg-[#0f2d5c] text-white text-xs font-semibold hover:bg-[#0f2d5c]/90 transition-all shrink-0">
+                    className="px-3 py-1.5 rounded-lg bg-[var(--crimson)] text-white text-xs font-semibold hover:bg-[var(--crimson)]/90 transition-all shrink-0">
                     Resolve
                   </button>
                 )}
@@ -142,18 +142,18 @@ export default function EscalationsPage() {
             <h3 className="text-base font-bold text-slate-900 mb-4">Resolve Escalation</h3>
             <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Outcome</label>
             <select value={outcome} onChange={e => setOutcome(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 text-sm text-slate-800 p-2.5 focus:outline-none focus:border-[#0f2d5c]/40 mb-3">
+              className="w-full rounded-xl border border-slate-200 text-sm text-slate-800 p-2.5 focus:outline-none focus:border-[var(--crimson)]/40 mb-3">
               <option value="resolved">Resolved</option>
               <option value="escalated">Escalated further</option>
               <option value="dismissed">Dismissed</option>
             </select>
             <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Notes</label>
-            <textarea className="w-full rounded-xl border border-slate-200 text-sm text-slate-800 p-3 resize-none focus:outline-none focus:border-[#0f2d5c]/40"
+            <textarea className="w-full rounded-xl border border-slate-200 text-sm text-slate-800 p-3 resize-none focus:outline-none focus:border-[var(--crimson)]/40"
               rows={3} placeholder="Resolution notes…" value={notes} onChange={e => setNotes(e.target.value)} />
             <div className="flex gap-2 justify-end mt-4">
               <button onClick={() => setResolveId(null)} className="px-4 py-2 rounded-lg text-sm text-slate-500 hover:text-slate-700 transition-colors">Cancel</button>
               <button onClick={doResolve} disabled={acting}
-                className="px-4 py-2 rounded-lg bg-[#0f2d5c] text-white text-sm font-semibold hover:bg-[#0f2d5c]/90 disabled:opacity-50 transition-all">
+                className="px-4 py-2 rounded-lg bg-[var(--crimson)] text-white text-sm font-semibold hover:bg-[var(--crimson)]/90 disabled:opacity-50 transition-all">
                 {acting ? 'Saving…' : 'Save Resolution'}
               </button>
             </div>

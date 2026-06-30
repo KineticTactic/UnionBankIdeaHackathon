@@ -26,9 +26,9 @@ function exportReportPdf(report: any) {
 
   const kpiRow = (items: { label: string; value: any }[]) =>
     `<div style="display:grid;grid-template-columns:repeat(${items.length},1fr);gap:12px;margin-bottom:20px">
-      ${items.map(m => `<div style="border:1px solid #e2e8f0;border-radius:8px;padding:12px;border-left:4px solid #0f2d5c">
-        <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">${m.label}</div>
-        <div style="font-size:22px;font-weight:700;color:#1e293b">${m.value ?? '—'}</div>
+      ${items.map(m => `<div style="border:1px solid var(--border-color);border-radius:8px;padding:12px;border-left:4px solid var(--crimson)">
+        <div style="font-size:10px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">${m.label}</div>
+        <div style="font-size:22px;font-weight:700;color:var(--gray-700)">${m.value ?? '—'}</div>
       </div>`).join('')}
     </div>`;
 
@@ -36,21 +36,21 @@ function exportReportPdf(report: any) {
   <title>PCOP Report — ${label}</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:#1e293b;padding:40px;background:#fff}
-    h1{font-size:22px;font-weight:700;color:#0f2d5c;margin-bottom:4px}
-    h2{font-size:13px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.06em;margin:24px 0 10px}
-    .meta{font-size:11px;color:#94a3b8;margin-bottom:24px}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:var(--gray-700);padding:40px;background:#fff}
+    h1{font-size:22px;font-weight:700;color:var(--crimson);margin-bottom:4px}
+    h2{font-size:13px;font-weight:700;color:var(--gray-600);text-transform:uppercase;letter-spacing:.06em;margin:24px 0 10px}
+    .meta{font-size:11px;color:var(--gray-400);margin-bottom:24px}
     table{width:100%;border-collapse:collapse;font-size:12px}
-    th{background:#f8fafc;padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#64748b;border-bottom:1px solid #e2e8f0}
-    td{padding:8px 12px;border-bottom:1px solid #f1f5f9}
+    th{background:var(--background);padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-500);border-bottom:1px solid var(--border-color)}
+    td{padding:8px 12px;border-bottom:1px solid var(--secondary)}
     .llm{background:#faf5ff;border:1px solid #e9d5ff;border-radius:8px;padding:16px;margin-top:4px}
     .llm-title{font-size:10px;font-weight:700;color:#7e22ce;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
     .llm-body{font-size:12px;color:#374151;line-height:1.7;white-space:pre-wrap}
-    .hash-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-top:4px}
+    .hash-box{background:var(--background);border:1px solid var(--border-color);border-radius:8px;padding:12px;margin-top:4px}
     .hash-row{display:flex;gap:16px;font-size:11px;margin-bottom:4px}
-    .hash-key{color:#64748b;width:80px;flex-shrink:0}
-    .hash-val{font-family:monospace;color:#94a3b8}
-    .footer{margin-top:32px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:10px;color:#94a3b8;display:flex;justify-content:space-between}
+    .hash-key{color:var(--gray-500);width:80px;flex-shrink:0}
+    .hash-val{font-family:monospace;color:var(--gray-400)}
+    .footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border-color);font-size:10px;color:var(--gray-400);display:flex;justify-content:space-between}
     @media print{body{padding:20px}}
   </style></head><body>
   <h1>PCOP Audit Report — ${label}</h1>
@@ -103,8 +103,8 @@ function ReportViewer({ report }: { report: any }) {
     <div className="space-y-5">
       {/* header */}
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-xl bg-[#0f2d5c]/10 flex items-center justify-center shrink-0">
-          <FileText className="w-5 h-5 text-[#0f2d5c]" />
+        <div className="w-10 h-10 rounded-xl bg-[var(--crimson)]/10 flex items-center justify-center shrink-0">
+          <FileText className="w-5 h-5 text-[var(--crimson)]" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-slate-900 text-base">
@@ -120,7 +120,7 @@ function ReportViewer({ report }: { report: any }) {
           )}
         </div>
         <button onClick={() => exportReportPdf(report)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-[#0f2d5c] hover:border-[#0f2d5c]/30 text-xs font-semibold shadow-sm transition-all shrink-0">
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-[var(--crimson)] hover:border-[var(--crimson)]/30 text-xs font-semibold shadow-sm transition-all shrink-0">
           <Download className="w-3.5 h-3.5" /> Export PDF
         </button>
       </div>
@@ -131,7 +131,7 @@ function ReportViewer({ report }: { report: any }) {
           <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-2">Churn Intervention</p>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {[
-              { label: 'Total Customers', value: ci.total_customers,  accent: 'border-l-[#0f2d5c]' },
+              { label: 'Total Customers', value: ci.total_customers,  accent: 'border-l-[var(--crimson)]' },
               { label: 'At-Risk',         value: ci.at_risk,          accent: 'border-l-red-500' },
               { label: 'Interventions',   value: ci.interventions,    accent: 'border-l-amber-500' },
               { label: 'Saves',           value: ci.saves,            accent: 'border-l-emerald-500' },
@@ -150,7 +150,7 @@ function ReportViewer({ report }: { report: any }) {
                 <span>Save rate</span><span className="font-bold">{ci.save_rate}</span>
               </div>
               <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-500 rounded-full"
+                <div className="h-full bg-sage-brand rounded-full"
                   style={{ width: `${parseFloat(ci.save_rate) || 0}%` }} />
               </div>
             </div>
@@ -164,7 +164,7 @@ function ReportViewer({ report }: { report: any }) {
           <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-2">Compliance Audit</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {[
-              { label: 'Calls Recorded',    value: ca.calls_recorded,   accent: 'border-l-[#0f2d5c]' },
+              { label: 'Calls Recorded',    value: ca.calls_recorded,   accent: 'border-l-[var(--crimson)]' },
               { label: 'Compliance Flags',  value: ca.compliance_flags,  accent: ca.compliance_flags > 0 ? 'border-l-red-500' : 'border-l-emerald-500' },
               { label: 'Consent Coverage',  value: `${ca.consent_coverage}/${ca.total_customers}`, accent: 'border-l-sky-500' },
               { label: 'Tasks Completed',   value: ca.tasks_completed,   accent: 'border-l-emerald-500' },
@@ -209,7 +209,7 @@ function ReportViewer({ report }: { report: any }) {
                       <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                            <div className="h-full bg-[#0f2d5c] rounded-full" style={{ width: `${eff}%` }} />
+                            <div className="h-full bg-[var(--crimson)] rounded-full" style={{ width: `${eff}%` }} />
                           </div>
                           <span className="text-[11px] font-bold text-slate-700 tabular-nums w-8 text-right">{eff}%</span>
                         </div>
@@ -225,10 +225,10 @@ function ReportViewer({ report }: { report: any }) {
 
       {/* LLM narrative */}
       {report.llm_summary && (
-        <div className="bg-purple-50 border border-purple-200 rounded-xl p-5">
+        <div className="bg-teal-soft border border-soft rounded-xl p-5">
           <div className="flex items-center gap-2 mb-3">
-            <Cpu className="w-4 h-4 text-purple-600" />
-            <p className="text-[11px] font-bold text-purple-700 uppercase tracking-widest">LLM Executive Summary</p>
+            <Cpu className="w-4 h-4 text-teal-dark" />
+            <p className="text-[11px] font-bold text-teal-dark uppercase tracking-widest">LLM Executive Summary</p>
           </div>
           <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{report.llm_summary}</p>
         </div>
@@ -317,7 +317,7 @@ export default function AuditPage() {
 
         {/* ── left: generate form ── */}
         <div className="space-y-4">
-          <div className="bg-white rounded-xl border border-[#0f2d5c]/20 shadow-sm p-5 space-y-4">
+          <div className="bg-white rounded-xl border border-[var(--crimson)]/20 shadow-sm p-5 space-y-4">
             <h2 className="text-sm font-bold text-slate-800">Generate New Report</h2>
 
             {/* report type cards */}
@@ -329,14 +329,14 @@ export default function AuditPage() {
                 return (
                   <button key={t.id} onClick={() => setForm(f => ({ ...f, report_type: t.id }))}
                     className={`w-full flex items-start gap-3 p-3 rounded-xl border text-left transition-all ${
-                      sel ? 'border-[#0f2d5c] bg-[#0f2d5c]/5' : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                      sel ? 'border-[var(--crimson)] bg-[var(--crimson)]/5' : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                     }`}>
-                    <Icon className={`w-4 h-4 mt-0.5 shrink-0 ${sel ? 'text-[#0f2d5c]' : 'text-slate-400'}`} />
+                    <Icon className={`w-4 h-4 mt-0.5 shrink-0 ${sel ? 'text-[var(--crimson)]' : 'text-slate-400'}`} />
                     <div>
-                      <p className={`text-sm font-semibold leading-tight ${sel ? 'text-[#0f2d5c]' : 'text-slate-700'}`}>{t.label}</p>
+                      <p className={`text-sm font-semibold leading-tight ${sel ? 'text-[var(--crimson)]' : 'text-slate-700'}`}>{t.label}</p>
                       <p className="text-[11px] text-slate-400 mt-0.5">{t.desc}</p>
                     </div>
-                    {sel && <CheckCircle2 className="w-4 h-4 text-[#0f2d5c] ml-auto shrink-0 mt-0.5" />}
+                    {sel && <CheckCircle2 className="w-4 h-4 text-[var(--crimson)] ml-auto shrink-0 mt-0.5" />}
                   </button>
                 );
               })}
@@ -350,13 +350,13 @@ export default function AuditPage() {
                   <label className="text-[10px] text-slate-400 mb-1 block">From</label>
                   <input type="date" value={form.date_from}
                     onChange={e => setForm(f => ({ ...f, date_from: e.target.value }))}
-                    className="w-full rounded-xl border border-slate-200 text-xs text-slate-800 p-2.5 focus:outline-none focus:border-[#0f2d5c]/40" />
+                    className="w-full rounded-xl border border-slate-200 text-xs text-slate-800 p-2.5 focus:outline-none focus:border-[var(--crimson)]/40" />
                 </div>
                 <div>
                   <label className="text-[10px] text-slate-400 mb-1 block">To</label>
                   <input type="date" value={form.date_to}
                     onChange={e => setForm(f => ({ ...f, date_to: e.target.value }))}
-                    className="w-full rounded-xl border border-slate-200 text-xs text-slate-800 p-2.5 focus:outline-none focus:border-[#0f2d5c]/40" />
+                    className="w-full rounded-xl border border-slate-200 text-xs text-slate-800 p-2.5 focus:outline-none focus:border-[var(--crimson)]/40" />
                 </div>
               </div>
             </div>
@@ -365,7 +365,7 @@ export default function AuditPage() {
             <label className="flex items-start gap-3 cursor-pointer p-3 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all">
               <input type="checkbox" checked={form.include_llm_summary}
                 onChange={e => setForm(f => ({ ...f, include_llm_summary: e.target.checked }))}
-                className="mt-0.5 rounded accent-[#0f2d5c]" />
+                className="mt-0.5 rounded accent-[var(--crimson)]" />
               <div>
                 <p className="text-sm font-semibold text-slate-700">Include LLM Executive Summary</p>
                 <p className="text-[11px] text-slate-400 mt-0.5">HERALD narrates pre-computed facts — no raw PII, no hallucinated numbers</p>
@@ -373,11 +373,11 @@ export default function AuditPage() {
             </label>
 
             {genError && (
-              <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl p-3">{genError}</p>
+              <p className="text-sm text-crimson bg-crimson-soft border border-soft rounded-xl p-3">{genError}</p>
             )}
 
             <button onClick={generate} disabled={generating}
-              className="w-full py-3 rounded-xl bg-[#0f2d5c] text-white text-sm font-bold hover:bg-[#0f2d5c]/90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
+              className="w-full py-3 rounded-xl bg-[var(--crimson)] text-white text-sm font-bold hover:bg-[var(--crimson)]/90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
               {generating
                 ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />{form.include_llm_summary ? 'AI writing summary… (~30s)' : 'Generating…'}</>
                 : <><FileText className="w-4 h-4" />Generate Report</>}
@@ -406,15 +406,15 @@ export default function AuditPage() {
                     <button key={r.id}
                       onClick={() => openHistory(r)}
                       className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
-                        isActive ? 'bg-[#0f2d5c]/5 border-l-2 border-l-[#0f2d5c]' : 'hover:bg-slate-50 border-l-2 border-l-transparent'
+                        isActive ? 'bg-[var(--crimson)]/5 border-l-2 border-l-[var(--crimson)]' : 'hover:bg-slate-50 border-l-2 border-l-transparent'
                       }`}>
-                      <FileText className={`w-4 h-4 shrink-0 ${isActive ? 'text-[#0f2d5c]' : 'text-slate-300'}`} />
+                      <FileText className={`w-4 h-4 shrink-0 ${isActive ? 'text-[var(--crimson)]' : 'text-slate-300'}`} />
                       <div className="flex-1 min-w-0">
-                        <p className={`text-sm font-semibold truncate ${isActive ? 'text-[#0f2d5c]' : 'text-slate-700'}`}>{label}</p>
+                        <p className={`text-sm font-semibold truncate ${isActive ? 'text-[var(--crimson)]' : 'text-slate-700'}`}>{label}</p>
                         <p className="text-[10px] text-slate-400 truncate">{fmtDate(r.generated_at)}</p>
                       </div>
                       {r.llm_summary && (
-                        <span className="text-[9px] font-bold bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded shrink-0">LLM</span>
+                        <span className="text-[9px] font-bold bg-teal-soft text-teal-dark px-1.5 py-0.5 rounded shrink-0">LLM</span>
                       )}
                     </button>
                   );

@@ -418,5 +418,35 @@
     },
     "optOutChannels": [],
     "lastUpdated": "2026-06-27T19:50:48.745Z"
+  },
+  {
+    "customer_id": "CUST-001",
+    "dpdpa_consent": {
+      "granted": true,
+      "granted_at": "2026-06-30T09:06:02.294Z",
+      "purposes": [
+        "retention_outreach"
+      ]
+    },
+    "trai_consent": {
+      "granted": true,
+      "granted_at": "2026-06-30T09:06:02.295Z",
+      "channels": [
+        "EMAIL",
+        "SMS",
+        "PUSH"
+      ]
+    },
+    "opted_out": false
+  },
+  {
+    "customerId": "CUST-001",
+    "dpdpaConsent": {},
+    "traiConsent": {},
+    "optOutChannels": [
+      "EMAIL",
+      "SMS"
+    ],
+    "lastUpdated": "2026-06-30T10:52:54.614Z"
   }
 ]

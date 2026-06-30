@@ -38,7 +38,7 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
         setResult(null);
         setError(null);
 
-        const apiCall = api.analyzeChronosScore(customerId);
+        const apiCall = api.analyzeCustomer(customerId);
 
         let currentProgress = 0;
         for (let i = 0; i < STAGES.length; i++) {
@@ -61,12 +61,7 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                 risk_tier: res.risk_tier,
                 active_signals: [],
                 life_events: [],
-                recommended_action: res.reason_codes_v2?.[0] ? {
-                    channel: "email",
-                    offer_code: res.reason_codes_v2[0].category.replace(/_/g, " ").toUpperCase(),
-                    timing: "next_24_hours",
-                    rationale: res.reason_codes_v2[0].description,
-                } : null,
+                recommended_action: res.reason_codes_v2?.[0] ? `${res.reason_codes_v2[0].category.replace(/_/g, " ").toUpperCase()} — ${res.reason_codes_v2[0].description}` : "No action recommended",
                 reason_codes: (res.reason_codes_v2 || []).map((rc: { category: string; description: string }) =>
                     `${rc.category.replace(/_/g, " ")} — ${rc.description}`),
                 analysis_duration_ms: 3600,
@@ -105,8 +100,8 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
             <Card className="shadow-sm border-indigo-100 bg-gradient-to-br from-indigo-50/40 to-purple-50/40">
                 <CardContent className="flex flex-col md:flex-row items-center justify-between p-6 gap-6">
                     <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
-                            <BrainCircuit className="w-5 h-5 text-indigo-600" />
+                        <div className="w-10 h-10 rounded-full bg-teal-soft flex items-center justify-center shrink-0">
+                            <BrainCircuit className="w-5 h-5 text-teal-dark" />
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold text-slate-900 mb-1">CHRONOS Neural Risk Analysis</h3>
@@ -115,7 +110,7 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                             </p>
                         </div>
                     </div>
-                    <Button onClick={runAnalysis} className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shrink-0 h-10 px-6">
+                    <Button onClick={runAnalysis} className="bg-teal-dark hover:bg-teal-dark text-white shadow-sm shrink-0 h-10 px-6">
                         <Play className="w-4 h-4 mr-2" />
                         Run Analysis
                     </Button>
@@ -130,7 +125,7 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                 <CardContent className="p-8">
                     <div className="flex flex-col items-center max-w-xl mx-auto py-4">
                         <div className="w-full flex justify-between items-end mb-4">
-                            <span className="text-sm font-semibold text-indigo-600 flex items-center">
+                            <span className="text-sm font-semibold text-teal-dark flex items-center">
                                 <SpinnerIcon className="w-4 h-4 mr-2 animate-spin" />
                                 {STAGES[stage]?.label || "Finalizing..."}
                             </span>
@@ -148,9 +143,9 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                                 return (
                                     <div key={idx} className={`flex items-center text-sm transition-all duration-300 ${isPast ? 'text-slate-400' : isCurrent ? 'text-slate-900 font-medium scale-[1.02] transform origin-left' : 'text-slate-300'}`}>
                                         {isPast ? (
-                                            <CheckCircle2 className="w-4 h-4 mr-3 text-green-500" />
+                                            <CheckCircle2 className="w-4 h-4 mr-3 text-sage-brand" />
                                         ) : isCurrent ? (
-                                            <Icon className="w-4 h-4 mr-3 text-indigo-500" />
+                                            <Icon className="w-4 h-4 mr-3 text-teal" />
                                         ) : (
                                             <CircleDashed className="w-4 h-4 mr-3" />
                                         )}
@@ -167,11 +162,11 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
 
     if (error) {
         return (
-            <Card className="shadow-sm border-amber-200 bg-white">
+            <Card className="shadow-sm border-soft bg-white">
                 <CardContent className="p-6">
                     <div className="flex flex-col items-center text-center max-w-md mx-auto gap-3">
-                        <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                            <AlertCircle className="w-5 h-5 text-amber-600" />
+                        <div className="w-10 h-10 rounded-full bg-copper-soft flex items-center justify-center">
+                            <AlertCircle className="w-5 h-5 text-copper-dark" />
                         </div>
                         <div>
                             <h3 className="text-base font-semibold text-slate-900 mb-1">Analysis Unavailable</h3>
@@ -187,24 +182,24 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
     }
 
     if (result) {
-        const totalMs = result.tare_duration_ms + result.habitat_duration_ms + result.fusion_duration_ms + result.prism_duration_ms;
+        const totalMs = Number(result.tare_duration_ms || 0) + Number(result.habitat_duration_ms || 0) + Number(result.fusion_duration_ms || 0) + Number(Number(result.prism_duration_ms) || 0);
         return (
             <>
-                <Card className="shadow-sm border-indigo-200 bg-white">
+                <Card className="shadow-sm border-soft bg-white">
                     <CardHeader className="border-b border-indigo-100 bg-gradient-to-r from-indigo-50/60 to-purple-50/60 pb-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                                    <BrainCircuit className="w-5 h-5 text-indigo-600" />
+                                <div className="w-8 h-8 rounded-full bg-teal-soft flex items-center justify-center">
+                                    <BrainCircuit className="w-5 h-5 text-teal-dark" />
                                 </div>
                                 <div>
                                     <CardTitle className="text-base font-semibold text-slate-900">CHRONOS Analysis Complete</CardTitle>
                                     <div className="text-xs text-slate-400 mt-0.5">
-                                        <span className="font-mono">{result.model_version}</span>
+                                        <span className="font-mono">{String(result.model_version)}</span>
                                         <span className="mx-1.5">•</span>
                                         {Math.round(totalMs)}ms
                                         <span className="mx-1.5">•</span>
-                                        {result.token_count} tokens
+                                        {Number(result.token_count)} tokens
                                     </div>
                                 </div>
                             </div>
@@ -218,15 +213,15 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="md:col-span-1 border-r border-indigo-100 pr-4 flex flex-col items-center justify-center text-center">
                                 <span className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-3">CHRONOS Churn Score</span>
-                                <span className="text-5xl font-extrabold text-slate-900 tracking-tighter mb-4">{Math.round(result.churn_score * 100)}%</span>
-                                <RiskBadge tier={result.risk_tier} className="px-4 py-1.5 text-xs shadow-sm" />
+                                <span className="text-5xl font-extrabold text-slate-900 tracking-tighter mb-4">{Math.round(Number(result.churn_score) * 100)}%</span>
+                                <RiskBadge tier={result.risk_tier as any} className="px-4 py-1.5 text-xs" />
                                 <div className="flex gap-4 mt-3 text-xs text-slate-500">
-                                    <span>TARE: {result.tare_score != null ? (result.tare_score * 100).toFixed(1) + '%' : '—'}</span>
-                                    <span>HABITAT: {result.habitat_score != null ? (result.habitat_score * 100).toFixed(1) + '%' : '—'}</span>
+                                    <span>TARE: {Number(result.tare_score) != null ? (Number(result.tare_score) * 100).toFixed(1) + '%' : '—'}</span>
+                                    <span>HABITAT: {Number(result.habitat_score) != null ? (Number(result.habitat_score) * 100).toFixed(1) + '%' : '—'}</span>
                                 </div>
-                                {result.scored_at && (
+                                {String(result.scored_at) && (
                                     <span className="text-[10px] text-slate-400 mt-3 font-mono">
-                                        {new Date(result.scored_at).toLocaleString()}
+                                        {new Date(String(result.scored_at)).toLocaleString()}
                                     </span>
                                 )}
                             </div>
@@ -234,12 +229,12 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                             <div className="md:col-span-2 flex flex-col justify-center gap-6 pl-4">
                                 <div>
                                     <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
-                                        <ListChecks className="w-4 h-4 mr-2 text-indigo-500" />
+                                        <ListChecks className="w-4 h-4 mr-2 text-teal" />
                                         PRISM Risk Factors
                                     </h4>
-                                    {result.reason_codes.length > 0 ? (
+                                    {(result.reason_codes as string[]).length > 0 ? (
                                         <ol className="list-decimal pl-5 space-y-2">
-                                            {result.reason_codes.map((rc, i) => (
+                                            {(result.reason_codes as string[]).map((rc, i) => (
                                                 <li key={i} className="text-sm leading-snug text-slate-700">{rc}</li>
                                             ))}
                                         </ol>
@@ -250,16 +245,8 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
 
                                 {result.recommended_action && (
                                     <div className="bg-gradient-to-br from-indigo-50/80 to-purple-50/80 rounded-lg p-4 border border-indigo-100">
-                                        <h4 className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">Recommended Action</h4>
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <Badge className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 border-none uppercase text-[10px] tracking-wider font-bold">
-                                                {result.recommended_action.channel?.replace(/_/g, " ")}
-                                            </Badge>
-                                            <span className="text-sm font-semibold text-slate-900">{result.recommended_action.offer_code}</span>
-                                            <span className="text-xs text-slate-400 mx-1">•</span>
-                                            <span className="text-xs text-slate-500">{result.recommended_action.timing?.replace(/_/g, " ")}</span>
-                                        </div>
-                                        <p className="text-sm text-slate-600">{result.recommended_action.rationale}</p>
+                                        <h4 className="text-xs font-semibold text-teal-dark uppercase tracking-wider mb-2">Recommended Action</h4>
+                                        <p className="text-sm text-slate-700">{String(result.recommended_action)}</p>
                                     </div>
                                 )}
                             </div>
@@ -274,7 +261,7 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                         className="w-full flex items-center justify-between px-6 py-4 text-sm font-semibold text-slate-800 hover:bg-slate-50 transition-colors"
                     >
                         <span className="flex items-center gap-2">
-                            <Layers className="w-4 h-4 text-indigo-500" />
+                            <Layers className="w-4 h-4 text-teal" />
                             Pipeline Details
                         </span>
                         {showPipeline ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
@@ -290,16 +277,16 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                                 </h5>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                     {[
-                                        { label: 'TARE', ms: result.tare_duration_ms, color: 'bg-indigo-500' },
-                                        { label: 'HABITAT', ms: result.habitat_duration_ms, color: 'bg-emerald-500' },
-                                        { label: 'FusionX', ms: result.fusion_duration_ms, color: 'bg-amber-500' },
-                                        { label: 'PRISM', ms: result.prism_duration_ms, color: 'bg-purple-500' },
+                                        { label: 'TARE', ms: result.tare_duration_ms, color: 'bg-teal' },
+                                        { label: 'HABITAT', ms: result.habitat_duration_ms, color: 'bg-sage-brand' },
+                                        { label: 'FusionX', ms: result.fusion_duration_ms, color: 'bg-copper' },
+                                        { label: 'PRISM', ms: Number(result.prism_duration_ms), color: 'bg-teal' },
                                     ].map(s => (
                                         <div key={s.label} className="bg-slate-50 rounded p-3">
                                             <div className="text-xs text-slate-400">{s.label}</div>
-                                            <div className="text-sm font-semibold text-slate-800">{s.ms.toFixed(1)}ms</div>
+                                            <div className="text-sm font-semibold text-slate-800">{Number(s.ms).toFixed(1)}ms</div>
                                             <div className="mt-1.5 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                                                <div className={`h-full rounded-full ${s.color}`} style={{ width: `${(s.ms / Math.max(totalMs, 1)) * 100}%` }} />
+                                                <div className={`h-full rounded-full ${String(s.color)}`} style={{ width: `${(Number(s.ms) / Math.max(totalMs, 1)) * 100}%` }} />
                                             </div>
                                         </div>
                                     ))}
@@ -312,26 +299,26 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                                     <Table2 className="w-3.5 h-3.5" /> Tabular Features
                                 </h5>
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                                    {Object.entries(result.tabular_features).slice(0, 14).map(([key, val]) => (
+                                    {Object.entries(result.tabular_features as Record<string, unknown>).slice(0, 14).map(([key, val]) => (
                                         <div key={key} className="bg-slate-50 rounded px-3 py-2 text-xs">
                                             <span className="text-slate-400 block truncate">{key.replace(/_/g, ' ')}</span>
-                                            <span className="font-mono font-semibold text-slate-800">{typeof val === 'number' ? val.toFixed(4) : val}</span>
+                                            <span className="font-mono font-semibold text-slate-800">{typeof val === 'number' ? val.toFixed(4) : String(val)}</span>
                                         </div>
                                     ))}
                                 </div>
                             </div>
 
                             {/* TARE Attention */}
-                            {result.attention_weights.length > 0 && (
+                            {(result.attention_weights as any[]).length > 0 && (
                                 <div>
                                     <h5 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                                         <Sigma className="w-3.5 h-3.5" /> TARE Top Attention Tokens
                                     </h5>
                                     <div className="space-y-1.5">
-                                        {result.attention_weights.map((a, i) => (
+                                        {(result.attention_weights as any[]).map((a, i) => (
                                             <div key={i} className="flex items-center gap-3">
                                                 <span className="text-xs font-mono text-slate-400 w-6 text-right">{a.position}</span>
-                                                <Badge className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 border-none text-[10px] font-mono w-28 justify-center shrink-0">
+                                                <Badge className="bg-teal-soft text-teal-dark hover:border-soft border-none text-[10px] font-mono w-28 justify-center shrink-0">
                                                     {a.token}
                                                 </Badge>
                                                 <div className="flex-1 h-4 bg-slate-100 rounded-full overflow-hidden">
@@ -348,13 +335,13 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                             )}
 
                             {/* HABITAT SHAP Values */}
-                            {result.shap_values.length > 0 && (
+                            {(result.shap_values as any[]).length > 0 && (
                                 <div>
                                     <h5 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                                         <BarChart3 className="w-3.5 h-3.5" /> HABITAT SHAP Contributions
                                     </h5>
                                     <div className="space-y-1.5">
-                                        {result.shap_values.slice(0, 8).map((sv, i) => {
+                                        {(result.shap_values as any[]).slice(0, 8).map((sv, i) => {
                                             const isPositive = sv.shap_value > 0;
                                             const barWidth = Math.min(Math.abs(sv.shap_value) * 500, 100);
                                             return (
@@ -368,7 +355,7 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                                                             />
                                                         </div>
                                                     </div>
-                                                    <span className={`font-mono w-20 text-right ${isPositive ? 'text-red-600' : 'text-emerald-600'}`}>
+                                                    <span className={`font-mono w-20 text-right ${isPositive ? 'text-crimson' : 'text-sage-brand'}`}>
                                                         {isPositive ? '+' : ''}{sv.shap_value.toFixed(5)}
                                                     </span>
                                                 </div>
@@ -387,20 +374,20 @@ export function AnalysisPanel({ customerId, onAnalysisComplete }: AnalysisPanelP
                                     <div className="flex gap-6 text-sm mb-3">
                                         <div>
                                             <span className="text-slate-400 text-xs">TARE weight</span>
-                                            <div className="font-semibold text-indigo-700">{(result.fusion_tare_weight * 100).toFixed(0)}%</div>
+                                            <div className="font-semibold text-teal-dark">{(Number(result.fusion_tare_weight) * 100).toFixed(0)}%</div>
                                         </div>
                                         <div>
                                             <span className="text-slate-400 text-xs">HABITAT weight</span>
-                                            <div className="font-semibold text-emerald-700">{(result.fusion_habitat_weight * 100).toFixed(0)}%</div>
+                                            <div className="font-semibold text-sage-brand">{(Number(result.fusion_habitat_weight) * 100).toFixed(0)}%</div>
                                         </div>
                                         <div>
                                             <span className="text-slate-400 text-xs">95% CI</span>
-                                            <div className="font-mono text-slate-700 text-xs">[{(result.fusion_ci_lower * 100).toFixed(1)}%, {(result.fusion_ci_upper * 100).toFixed(1)}%]</div>
+                                            <div className="font-mono text-slate-700 text-xs">[{(Number(result.fusion_ci_lower) * 100).toFixed(1)}%, {(Number(result.fusion_ci_upper) * 100).toFixed(1)}%]</div>
                                         </div>
                                     </div>
                                     <div className="h-3 bg-slate-200 rounded-full overflow-hidden flex">
-                                        <div className="bg-indigo-400 h-full" style={{ width: `${result.fusion_tare_weight * 100}%` }} />
-                                        <div className="bg-emerald-400 h-full" style={{ width: `${result.fusion_habitat_weight * 100}%` }} />
+                                        <div className="bg-indigo-400 h-full" style={{ width: `${Number(result.fusion_tare_weight) * 100}%` }} />
+                                        <div className="bg-emerald-400 h-full" style={{ width: `${Number(result.fusion_habitat_weight) * 100}%` }} />
                                     </div>
                                 </div>
                             </div>

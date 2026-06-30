@@ -24,7 +24,7 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
   if (isPublic) return <>{children}</>;
 
   return (
-    <div className="flex min-h-screen w-full bg-[#f8fafc]">
+    <div className="flex min-h-screen w-full bg-[#F9F9F7]">
       <Sidebar />
       <main className="flex-1 ml-[220px] min-h-screen overflow-x-hidden">
         {children}

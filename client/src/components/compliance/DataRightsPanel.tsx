@@ -71,7 +71,7 @@ export function DataRightsPanel({ customerId }: { customerId: string }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-1">
-        <ShieldCheck className="w-4 h-4 text-[#0f2d5c]" />
+        <ShieldCheck className="w-4 h-4 text-[var(--crimson)]" />
         <p className="text-[13px] font-bold text-slate-800">Data Subject Rights</p>
         <span className="text-[10px] text-slate-400">DPDPA 2023 · GDPR · TRAI TCCCPR 2025</span>
       </div>
@@ -79,8 +79,8 @@ export function DataRightsPanel({ customerId }: { customerId: string }) {
       {toast && (
         <div className={`px-4 py-2.5 rounded-lg text-[12px] font-medium border ${
           toast.type === 'ok'
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-            : 'bg-red-50 border-red-200 text-red-600'
+            ? 'bg-sage-soft border-soft text-sage-brand'
+            : 'bg-crimson-soft border-soft text-crimson'
         }`}>
           {toast.message}
         </div>
@@ -148,13 +148,13 @@ function ConsentToggle({ label, description, grantedState, loading, onGrant, onR
         <button
           onClick={onGrant}
           disabled={loading || grantedState === true}
-          className="text-[10px] font-semibold px-2 py-1 rounded-lg bg-emerald-100 text-emerald-700 hover:bg-emerald-200 disabled:opacity-40 transition-colors">
+          className="text-[10px] font-semibold px-2 py-1 rounded-lg bg-sage-soft text-sage-brand hover:border-soft disabled:opacity-40 transition-colors">
           Grant
         </button>
         <button
           onClick={onRevoke}
           disabled={loading || grantedState === false}
-          className="text-[10px] font-semibold px-2 py-1 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 disabled:opacity-40 transition-colors">
+          className="text-[10px] font-semibold px-2 py-1 rounded-lg bg-crimson-soft text-crimson hover:border-soft disabled:opacity-40 transition-colors">
           Revoke
         </button>
       </div>
@@ -171,8 +171,8 @@ function RightsButton({ icon, label, description, color, loading, onClick }: {
   onClick: () => void;
 }) {
   const styles = {
-    blue: 'border-blue-200 text-blue-700 bg-blue-50 hover:bg-blue-100',
-    red:  'border-red-200 text-red-600 bg-red-50 hover:bg-red-100',
+    blue: 'border-soft text-teal-dark bg-teal-soft hover:bg-teal-soft',
+    red:  'border-soft text-crimson bg-crimson-soft hover:bg-crimson-soft',
   }[color];
   return (
     <button

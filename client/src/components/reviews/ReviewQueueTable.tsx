@@ -7,17 +7,17 @@ import { Input } from "@/components/ui/input";
 import type { ReviewCase, ReviewStatus, ReviewType, ReviewPriority } from "@/types";
 
 const STATUS_STYLE: Record<ReviewStatus, string> = {
-    pending: "bg-amber-50 text-amber-700 border-amber-200",
-    in_review: "bg-blue-50 text-blue-700 border-blue-200",
-    approved: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    rejected: "bg-red-50 text-red-700 border-red-200",
-    escalated: "bg-violet-50 text-violet-700 border-violet-200",
+    pending: "bg-copper-soft text-copper-dark border-soft",
+    in_review: "bg-teal-soft text-teal-dark border-soft",
+    approved: "bg-sage-soft text-sage-brand border-soft",
+    rejected: "bg-crimson-soft text-crimson border-soft",
+    escalated: "bg-teal-soft text-teal-dark border-soft",
 };
 
 const PRIORITY_STYLE: Record<ReviewPriority, string> = {
-    critical: "bg-red-100 text-red-800",
-    high: "bg-orange-100 text-orange-800",
-    medium: "bg-blue-100 text-blue-800",
+    critical: "bg-crimson-soft text-red-800",
+    high: "bg-copper-soft text-orange-800",
+    medium: "bg-teal-soft text-teal-dark",
     low: "bg-slate-100 text-slate-800",
 };
 
@@ -79,7 +79,7 @@ export function ReviewQueueTable({
                         onClick={f.onClick}
                         className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${
                             activeStatus === f.value
-                                ? "bg-blue-600 text-white border-blue-600"
+                                ? "bg-teal-dark text-white border-blue-600"
                                 : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
                         }`}
                     >
@@ -159,7 +159,7 @@ export function ReviewQueueTable({
                                         {new Date(c.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                                     </td>
                                     <td className="px-4 py-3 text-xs text-slate-500">
-                                        {c.assignedTo || "—"}
+                                        {c.reviewer || "—"}
                                     </td>
                                     <td className="px-4 py-3 text-right">
                                         <Link href={`/reviews/${c.id}`}>

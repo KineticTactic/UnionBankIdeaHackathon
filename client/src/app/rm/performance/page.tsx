@@ -42,13 +42,13 @@ function MiniBar({ label, value, max, color }: { label: string; value: number; m
 }
 
 const OUTCOME_COLORS: Record<string, string> = {
-  converted: 'bg-emerald-500', retained: 'bg-green-400',
+  converted: 'bg-sage-brand', retained: 'bg-green-400',
   neutral: 'bg-slate-300', declined: 'bg-orange-400',
-  churned: 'bg-red-500', unreachable: 'bg-slate-200',
+  churned: 'bg-crimson', unreachable: 'bg-slate-200',
 };
 const CHANNEL_COLORS: Record<string, string> = {
-  phone: 'bg-blue-500', email: 'bg-purple-500', sms: 'bg-amber-500',
-  branch: 'bg-emerald-500', whatsapp: 'bg-green-500', app: 'bg-indigo-500',
+  phone: 'bg-teal', email: 'bg-teal', sms: 'bg-copper',
+  branch: 'bg-sage-brand', whatsapp: 'bg-sage-brand', app: 'bg-teal',
 };
 
 export default function PerformancePage() {
@@ -84,7 +84,7 @@ export default function PerformancePage() {
 
   if (error) return (
     <div className="p-6">
-      <div className="bg-red-50 border border-red-100 rounded-xl px-5 py-4 flex items-center gap-3 text-red-600 text-[13px]">
+      <div className="bg-crimson-soft border border-red-100 rounded-xl px-5 py-4 flex items-center gap-3 text-crimson text-[13px]">
         <AlertTriangle className="w-4 h-4 shrink-0" />{error}
       </div>
     </div>
@@ -104,13 +104,13 @@ export default function PerformancePage() {
   const recentCalls    = [...calls].sort((a, b) => new Date(b.started_at).getTime() - new Date(a.started_at).getTime()).slice(0, 5);
 
   const OUTCOME_BADGE: Record<string, string> = {
-    converted: 'bg-emerald-100 text-emerald-700', retained: 'bg-green-100 text-green-700',
-    neutral: 'bg-slate-100 text-slate-500', declined: 'bg-orange-100 text-orange-600',
-    churned: 'bg-red-100 text-red-600', unreachable: 'bg-slate-100 text-slate-400',
+    converted: 'bg-sage-soft text-sage-brand', retained: 'bg-sage-soft text-sage-brand',
+    neutral: 'bg-slate-100 text-slate-500', declined: 'bg-copper-soft text-copper-dark',
+    churned: 'bg-crimson-soft text-crimson', unreachable: 'bg-slate-100 text-slate-400',
   };
   const SENT_BADGE: Record<string, string> = {
-    positive: 'bg-emerald-100 text-emerald-700', neutral: 'bg-slate-100 text-slate-500',
-    negative: 'bg-red-100 text-red-600',
+    positive: 'bg-sage-soft text-sage-brand', neutral: 'bg-slate-100 text-slate-500',
+    negative: 'bg-crimson-soft text-crimson',
   };
 
   return (
@@ -118,25 +118,25 @@ export default function PerformancePage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-[#0f2d5c]" />
+          <TrendingUp className="w-5 h-5 text-[var(--crimson)]" />
           <h1 className="text-[22px] font-black text-slate-900">My Performance</h1>
           {book && <span className="text-[12px] text-slate-400 ml-2">Book: {book.book_size} customers · {book.at_risk_count} at risk</span>}
         </div>
-        <Link href="/rm/today" className="text-[12px] font-semibold text-[#0f2d5c] hover:underline flex items-center gap-1">
+        <Link href="/rm/today" className="text-[12px] font-semibold text-[var(--crimson)] hover:underline flex items-center gap-1">
           My Day <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
 
       {/* KPI Grid — 4 cols */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard icon={<Users className="w-5 h-5 text-[#0f2d5c]" />}      label="Total Interactions"  value={p.total_outcomes ?? 0}   sub="Outcomes logged"        color="bg-blue-50"    accent="border-[#0f2d5c]" />
-        <KpiCard icon={<CheckCircle className="w-5 h-5 text-emerald-600" />} label="Saves / Retained"  value={p.saves_retained ?? 0}  sub="Customers retained"     color="bg-emerald-50" accent="border-emerald-500" />
-        <KpiCard icon={<Target className="w-5 h-5 text-purple-600" />}      label="Conversion Rate"    value={convRate}               sub="Offer accepted / presented" color="bg-purple-50" accent="border-purple-500" />
-        <KpiCard icon={<Phone className="w-5 h-5 text-sky-600" />}          label="Calls Made"         value={p.calls_made ?? 0}      sub="Recorded & analyzed"    color="bg-sky-50"     accent="border-sky-500" />
-        <KpiCard icon={<MessageSquare className="w-5 h-5 text-amber-600" />} label="Avg. Call Sentiment" value={avgSent}              sub="−1 negative → +1 positive" color="bg-amber-50"  accent="border-amber-500" />
+        <KpiCard icon={<Users className="w-5 h-5 text-[var(--crimson)]" />}      label="Total Interactions"  value={p.total_outcomes ?? 0}   sub="Outcomes logged"        color="bg-teal-soft"    accent="border-[var(--crimson)]" />
+        <KpiCard icon={<CheckCircle className="w-5 h-5 text-sage-brand" />} label="Saves / Retained"  value={p.saves_retained ?? 0}  sub="Customers retained"     color="bg-sage-soft" accent="border-emerald-500" />
+        <KpiCard icon={<Target className="w-5 h-5 text-teal-dark" />}      label="Conversion Rate"    value={convRate}               sub="Offer accepted / presented" color="bg-teal-soft" accent="border-purple-500" />
+        <KpiCard icon={<Phone className="w-5 h-5 text-teal-dark" />}          label="Calls Made"         value={p.calls_made ?? 0}      sub="Recorded & analyzed"    color="bg-teal-soft"     accent="border-sky-500" />
+        <KpiCard icon={<MessageSquare className="w-5 h-5 text-copper-dark" />} label="Avg. Call Sentiment" value={avgSent}              sub="−1 negative → +1 positive" color="bg-copper-soft"  accent="border-amber-500" />
         <KpiCard icon={<CheckCircle className="w-5 h-5 text-teal-600" />}   label="Task Completion"    value={taskRate}               sub="Done / Assigned"        color="bg-teal-50"    accent="border-teal-500" />
-        <KpiCard icon={<ShieldAlert className="w-5 h-5 text-red-500" />}    label="Compliance Flags"   value={p.compliance_flags ?? 0} sub={p.compliance_flags > 0 ? 'Needs review' : 'All clear'} color={p.compliance_flags > 0 ? 'bg-red-50' : 'bg-emerald-50'} accent={p.compliance_flags > 0 ? 'border-red-500' : 'border-emerald-500'} />
-        <KpiCard icon={<TrendingUp className="w-5 h-5 text-indigo-600" />}  label="Avg. Portfolio Risk" value={book ? `${(book.avg_churn_score * 100).toFixed(0)}%` : '—'} sub="Mean churn probability" color="bg-indigo-50" accent="border-indigo-400" />
+        <KpiCard icon={<ShieldAlert className="w-5 h-5 text-crimson" />}    label="Compliance Flags"   value={p.compliance_flags ?? 0} sub={p.compliance_flags > 0 ? 'Needs review' : 'All clear'} color={p.compliance_flags > 0 ? 'bg-crimson-soft' : 'bg-sage-soft'} accent={p.compliance_flags > 0 ? 'border-red-500' : 'border-emerald-500'} />
+        <KpiCard icon={<TrendingUp className="w-5 h-5 text-teal-dark" />}  label="Avg. Portfolio Risk" value={book ? `${(book.avg_churn_score * 100).toFixed(0)}%` : '—'} sub="Mean churn probability" color="bg-teal-soft" accent="border-indigo-400" />
       </div>
 
       {/* 3-column lower section */}
@@ -161,7 +161,7 @@ export default function PerformancePage() {
             : <div className="space-y-1">{outcomeEntries.map(([oc, cnt]) => <MiniBar key={oc} label={oc} value={cnt} max={outcomeTotal} color={OUTCOME_COLORS[oc] || 'bg-slate-400'} />)}</div>}
           <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
             <span>Save rate</span>
-            <span className="font-bold text-emerald-600">{outcomeTotal > 0 ? `${((outcomeEntries.filter(([k]) => ['converted','retained'].includes(k)).reduce((s,[,v])=>s+v,0)/outcomeTotal)*100).toFixed(0)}%` : '—'}</span>
+            <span className="font-bold text-sage-brand">{outcomeTotal > 0 ? `${((outcomeEntries.filter(([k]) => ['converted','retained'].includes(k)).reduce((s,[,v])=>s+v,0)/outcomeTotal)*100).toFixed(0)}%` : '—'}</span>
           </div>
         </div>
 
@@ -176,8 +176,8 @@ export default function PerformancePage() {
               { label: 'Approval Gate', ok: true, note: 'RM approval required before send' },
             ].map(item => (
               <div key={item.label} className="flex items-start gap-2.5">
-                <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${item.ok ? 'bg-emerald-100' : 'bg-red-100'}`}>
-                  <div className={`w-2 h-2 rounded-full ${item.ok ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${item.ok ? 'bg-sage-soft' : 'bg-crimson-soft'}`}>
+                  <div className={`w-2 h-2 rounded-full ${item.ok ? 'bg-sage-brand' : 'bg-crimson'}`} />
                 </div>
                 <div>
                   <p className="text-[12px] font-semibold text-slate-700">{item.label}</p>
@@ -187,7 +187,7 @@ export default function PerformancePage() {
             ))}
           </div>
           {(p.compliance_flags ?? 0) > 0 && (
-            <Link href="/rm/calls" className="mt-4 flex items-center gap-1 text-[11px] font-semibold text-red-600 hover:underline">
+            <Link href="/rm/calls" className="mt-4 flex items-center gap-1 text-[11px] font-semibold text-crimson hover:underline">
               <AlertTriangle className="w-3 h-3" /> Review flagged calls <ArrowRight className="w-3 h-3" />
             </Link>
           )}
@@ -200,7 +200,7 @@ export default function PerformancePage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-[14px] font-bold text-slate-800">Recent Outcomes</h2>
-            <Link href="/rm/outcomes" className="text-[11px] text-[#0f2d5c] font-semibold hover:underline flex items-center gap-1">All <ArrowRight className="w-3 h-3" /></Link>
+            <Link href="/rm/outcomes" className="text-[11px] text-[var(--crimson)] font-semibold hover:underline flex items-center gap-1">All <ArrowRight className="w-3 h-3" /></Link>
           </div>
           {recentOutcomes.length === 0
             ? <p className="text-[12px] text-slate-400 py-6 text-center">No outcomes logged yet</p>
@@ -208,7 +208,7 @@ export default function PerformancePage() {
                 {recentOutcomes.map(o => (
                   <div key={o.id} className="flex items-center gap-3 py-2.5">
                     <div className="flex-1 min-w-0">
-                      <Link href={`/rm/customers/${o.customer_id}`} className="text-[12px] font-semibold text-[#0f2d5c] hover:underline truncate block">{o.customer_id}</Link>
+                      <Link href={`/rm/customers/${o.customer_id}`} className="text-[12px] font-semibold text-[var(--crimson)] hover:underline truncate block">{o.customer_id}</Link>
                       <p className="text-[10px] text-slate-400 capitalize">{o.action_taken?.replace(/_/g,' ')} · {o.channel}</p>
                     </div>
                     <span className={`text-[10px] font-semibold px-2 py-0.5 rounded capitalize ${OUTCOME_BADGE[o.outcome] || 'bg-slate-50 text-slate-500'}`}>{o.outcome}</span>
@@ -222,7 +222,7 @@ export default function PerformancePage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-[14px] font-bold text-slate-800">Recent Calls</h2>
-            <Link href="/rm/calls" className="text-[11px] text-[#0f2d5c] font-semibold hover:underline flex items-center gap-1">All <ArrowRight className="w-3 h-3" /></Link>
+            <Link href="/rm/calls" className="text-[11px] text-[var(--crimson)] font-semibold hover:underline flex items-center gap-1">All <ArrowRight className="w-3 h-3" /></Link>
           </div>
           {recentCalls.length === 0
             ? <p className="text-[12px] text-slate-400 py-6 text-center">No calls recorded yet</p>
@@ -230,7 +230,7 @@ export default function PerformancePage() {
                 {recentCalls.map(c => (
                   <div key={c.id} className="flex items-center gap-3 py-2.5">
                     <div className="flex-1 min-w-0">
-                      <Link href={`/rm/customers/${c.customer_id}`} className="text-[12px] font-semibold text-[#0f2d5c] hover:underline truncate block">{c.customer_name || c.customer_id}</Link>
+                      <Link href={`/rm/customers/${c.customer_id}`} className="text-[12px] font-semibold text-[var(--crimson)] hover:underline truncate block">{c.customer_name || c.customer_id}</Link>
                       <p className="text-[10px] text-slate-400">{c.duration_sec ? `${Math.floor(c.duration_sec / 60)}m ${c.duration_sec % 60}s` : '—'} · {c.detected_language?.toUpperCase() || 'EN'}</p>
                     </div>
                     {c.sentiment && <span className={`text-[10px] font-semibold px-2 py-0.5 rounded capitalize ${SENT_BADGE[c.sentiment] || 'bg-slate-50 text-slate-500'}`}>{c.sentiment}</span>}

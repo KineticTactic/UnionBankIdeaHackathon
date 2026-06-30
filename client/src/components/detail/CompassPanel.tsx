@@ -27,8 +27,8 @@ const TIMING_LABEL: Record<string, string> = {
     within_7d: "Within 7 days", standard: "Standard",
 };
 const PRIORITY_CONFIG: Record<number, { label: string; bg: string; text: string; border: string }> = {
-    1: { label: "PRIORITY 1", bg: "bg-red-50",    text: "text-red-700",    border: "border-red-200"    },
-    2: { label: "PRIORITY 2", bg: "bg-amber-50",  text: "text-amber-700",  border: "border-amber-200"  },
+    1: { label: "PRIORITY 1", bg: "bg-crimson-soft",    text: "text-crimson",    border: "border-soft"    },
+    2: { label: "PRIORITY 2", bg: "bg-copper-soft",  text: "text-copper-dark",  border: "border-soft"  },
     3: { label: "PRIORITY 3", bg: "bg-slate-50",  text: "text-slate-600",  border: "border-slate-200"  },
 };
 
@@ -54,14 +54,14 @@ export function CompassPanel({ plan, loading }: CompassPanelProps) {
         );
     }
 
-    const pCfg = PRIORITY_CONFIG[plan.priority] || PRIORITY_CONFIG[3];
+    const pCfg = (plan.priority !== undefined && PRIORITY_CONFIG[plan.priority]) || PRIORITY_CONFIG[3];
 
     return (
-        <div className="rounded-xl border border-violet-200 bg-white overflow-hidden">
+        <div className="rounded-xl border border-soft bg-white overflow-hidden">
             {/* Header */}
-            <div className="px-5 py-3 bg-violet-50 border-b border-violet-200 flex items-center justify-between">
+            <div className="px-5 py-3 bg-teal-soft border-b border-soft flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                    <Zap className="w-4 h-4 text-violet-600" />
+                    <Zap className="w-4 h-4 text-teal-dark" />
                     <span className="text-sm font-bold text-slate-800">Action Intelligence · Next Best Offer</span>
                 </div>
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${pCfg.bg} ${pCfg.text} border ${pCfg.border} uppercase tracking-wider`}>
@@ -72,8 +72,8 @@ export function CompassPanel({ plan, loading }: CompassPanelProps) {
             <div className="p-5 space-y-4">
                 {/* Channel + timing */}
                 <div className="flex gap-3">
-                    <div className="flex-1 bg-violet-50 rounded-lg p-3 border border-violet-100 flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 shrink-0">
+                    <div className="flex-1 bg-teal-soft rounded-lg p-3 border border-violet-100 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-teal-soft flex items-center justify-center text-teal-dark shrink-0">
                             {CHANNEL_ICON[plan.channel] || <Mail className="w-4 h-4" />}
                         </div>
                         <div>
@@ -87,21 +87,21 @@ export function CompassPanel({ plan, loading }: CompassPanelProps) {
                         </div>
                         <div>
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Timing</p>
-                            <p className="text-sm font-semibold text-slate-800">{TIMING_LABEL[plan.timing] || plan.timing}</p>
+                                <p className="text-sm font-semibold text-slate-800">{plan.timing ? (TIMING_LABEL[plan.timing] || plan.timing) : '—'}</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Offer */}
-                <div className="bg-emerald-50 rounded-lg p-3.5 border border-emerald-200 flex items-start gap-3">
-                    <Gift className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                <div className="bg-sage-soft rounded-lg p-3.5 border border-soft flex items-start gap-3">
+                    <Gift className="w-4 h-4 text-sage-brand mt-0.5 shrink-0" />
                     <div>
                         <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Offer</span>
-                            <code className="text-[10px] font-mono bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">{plan.offer_code}</code>
+                            <span className="text-[10px] font-bold text-sage-brand uppercase tracking-wider">Offer</span>
+                            <code className="text-[10px] font-mono bg-sage-soft text-sage-brand px-1.5 py-0.5 rounded">{plan.offer_code}</code>
                         </div>
                         <p className="text-sm font-semibold text-slate-800">{plan.offer_description}</p>
-                        <p className="text-sm text-emerald-700 font-bold mt-0.5">{plan.offer_value}</p>
+                        <p className="text-sm text-sage-brand font-bold mt-0.5">{plan.offer_value}</p>
                     </div>
                 </div>
 
@@ -112,7 +112,7 @@ export function CompassPanel({ plan, loading }: CompassPanelProps) {
                             {t}
                         </span>
                     ))}
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-700 uppercase tracking-wider">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-soft text-teal-dark uppercase tracking-wider">
                         {plan.content_strategy.replace(/_/g, " ")}
                     </span>
                 </div>

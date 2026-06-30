@@ -64,7 +64,7 @@ export default function NewCustomerPage() {
 
     const handleSubmit = async () => {
         if (!form.full_name.trim()) { setError('Full name is required'); return; }
-        if (!form.email.trim()) { setError('Email is required'); return; }
+        if (!form.email?.trim()) { setError('Email is required'); return; }
         setError(null);
         setStep('generating');
 
@@ -107,11 +107,11 @@ export default function NewCustomerPage() {
                                 {GENERATION_STEPS.map(s => (
                                     <div key={s.key} className="flex items-center gap-3 text-sm">
                                         {completedSteps.includes(s.key) ? (
-                                            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                                            <CheckCircle2 className="w-4 h-4 text-sage-brand shrink-0" />
                                         ) : (
                                             <Loader2 className="w-4 h-4 text-slate-400 animate-spin shrink-0" />
                                         )}
-                                        <span className={completedSteps.includes(s.key) ? 'text-emerald-700' : 'text-slate-500'}>
+                                        <span className={completedSteps.includes(s.key) ? 'text-sage-brand' : 'text-slate-500'}>
                                             {s.label}
                                         </span>
                                     </div>
@@ -131,7 +131,7 @@ export default function NewCustomerPage() {
                     <Card className="w-full max-w-md text-center">
                         <CardHeader>
                             <div className="flex justify-center mb-2">
-                                <CheckCircle2 className="w-12 h-12 text-emerald-500" />
+                                <CheckCircle2 className="w-12 h-12 text-sage-brand" />
                             </div>
                             <CardTitle>Customer created successfully!</CardTitle>
                             <CardDescription>
@@ -173,7 +173,7 @@ export default function NewCustomerPage() {
                 </div>
 
                 {error && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">
+                    <div className="bg-crimson-soft border border-soft rounded-lg p-3 text-sm text-crimson">
                         {error}
                     </div>
                 )}
@@ -318,7 +318,7 @@ export default function NewCustomerPage() {
                                 <label key={opt.key} className="flex items-center gap-2 cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                        className="rounded border-slate-300 text-teal-dark focus:ring-teal"
                                         checked={!!form[opt.key]}
                                         onChange={e => update(opt.key, e.target.checked)}
                                     />

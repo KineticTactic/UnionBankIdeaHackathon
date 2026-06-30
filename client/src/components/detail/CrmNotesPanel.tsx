@@ -46,17 +46,17 @@ export function CrmNotesPanel({ notes }: CrmNotesPanelProps) {
 
         const getNoteColor = (type?: string) => {
             switch (type) {
-                case 'complaint': return 'bg-red-100 text-red-700 hover:bg-red-200';
-                case 'enquiry': return 'bg-blue-100 text-blue-700 hover:bg-blue-200';
-                case 'feedback': return 'bg-green-100 text-green-700 hover:bg-green-200';
+                case 'complaint': return 'bg-crimson-soft text-crimson hover:border-soft';
+                case 'enquiry': return 'bg-teal-soft text-teal-dark hover:border-soft';
+                case 'feedback': return 'bg-sage-soft text-sage-brand hover:border-soft';
                 case 'visit_note': return 'bg-slate-100 text-slate-700 hover:bg-slate-200';
                 default: return 'bg-slate-100 text-slate-700';
             }
         };
 
         const getSentimentDot = (score: number) => {
-            if (score > 0.2) return 'bg-green-500';
-            if (score < -0.2) return 'bg-red-500';
+            if (score > 0.2) return 'bg-sage-brand';
+            if (score < -0.2) return 'bg-crimson';
             return 'bg-slate-400';
         };
 
@@ -96,7 +96,7 @@ export function CrmNotesPanel({ notes }: CrmNotesPanelProps) {
 
                                         <div className="flex items-center gap-2">
                                             {note.resolved !== undefined && (
-                                                <span className={`text-[10px] font-medium uppercase px-2 py-0.5 rounded ${note.resolved ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                                                <span className={`text-[10px] font-medium uppercase px-2 py-0.5 rounded ${note.resolved ? 'bg-sage-soft text-sage-brand' : 'bg-crimson-soft text-crimson'}`}>
                                                     {note.resolved ? 'Resolved' : 'Open'}
                                                 </span>
                                             )}
@@ -129,9 +129,9 @@ export function CrmNotesPanel({ notes }: CrmNotesPanelProps) {
                         <div className="text-2xl font-bold text-slate-900">{notes.total_complaints ?? 0}</div>
                         <div className="text-sm text-slate-500">Total Complaints</div>
                     </div>
-                    <div className="p-4 bg-red-50 rounded-lg">
-                        <div className="text-2xl font-bold text-red-600">{notes.unresolved_count ?? 0}</div>
-                        <div className="text-sm text-red-500">Unresolved</div>
+                    <div className="p-4 bg-crimson-soft rounded-lg">
+                        <div className="text-2xl font-bold text-crimson">{notes.unresolved_count ?? 0}</div>
+                        <div className="text-sm text-crimson">Unresolved</div>
                     </div>
                 </div>
             </CardContent>

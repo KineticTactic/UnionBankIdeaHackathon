@@ -3,12 +3,12 @@
 import type { ReviewActionEntry, ReviewActionType } from "@/types";
 
 const ACTION_STYLE: Record<ReviewActionType, { color: string; bg: string }> = {
-    approve: { color: "text-emerald-600", bg: "bg-emerald-100" },
-    reject: { color: "text-red-600", bg: "bg-red-100" },
-    escalate: { color: "text-violet-600", bg: "bg-violet-100" },
+    approve: { color: "text-sage-brand", bg: "bg-sage-soft" },
+    reject: { color: "text-crimson", bg: "bg-crimson-soft" },
+    escalate: { color: "text-teal-dark", bg: "bg-teal-soft" },
     comment: { color: "text-slate-600", bg: "bg-slate-100" },
-    assign: { color: "text-blue-600", bg: "bg-blue-100" },
-    start_review: { color: "text-blue-600", bg: "bg-blue-100" },
+    assign: { color: "text-teal-dark", bg: "bg-teal-soft" },
+    start_review: { color: "text-teal-dark", bg: "bg-teal-soft" },
 };
 
 const ACTION_LABEL: Record<ReviewActionType, string> = {

@@ -24,16 +24,16 @@ interface KafkaStatus {
 }
 
 const TOPIC_LABEL: Record<string, { short: string; color: string }> = {
-    'cbs.transactions':      { short: 'Transaction',    color: '#3b82f6' },
-    'cbs.account_updates':   { short: 'Account',        color: '#06b6d4' },
-    'crm.customer_events':   { short: 'CRM',            color: '#f59e0b' },
-    'risk.signal_detections':{ short: 'Risk Signal',    color: '#ef4444' },
-    'risk.score_updates':    { short: 'Score Refresh',  color: '#8b5cf6' },
-    'engagement.activity':   { short: 'Engagement',     color: '#22c55e' },
+    'cbs.transactions':      { short: 'Transaction',    color: '#B46B3E' },
+    'cbs.account_updates':   { short: 'Account',        color: '#8B8481' },
+    'crm.customer_events':   { short: 'CRM',            color: '#8E5026' },
+    'risk.signal_detections':{ short: 'Risk Signal',    color: '#6B132B' },
+    'risk.score_updates':    { short: 'Score Refresh',  color: '#8E5026' },
+    'engagement.activity':   { short: 'Engagement',     color: '#6B6562' },
 };
 
 function topicLabel(topic: string) {
-    return TOPIC_LABEL[topic] || { short: topic.split('.').pop() || topic, color: '#94a3b8' };
+    return TOPIC_LABEL[topic] || { short: topic.split('.').pop() || topic, color: '#8B8481' };
 }
 
 function timeAgo(iso: string) {
@@ -60,8 +60,6 @@ export function KafkaStreamCard() {
         const token = getToken();
         if (!token) return;
 
-        // Use relative URL — Next.js rewrites proxy /api/* to the backend, avoiding
-        // mixed-content blocks on HTTPS deployments.
         const streamUrl = `/api/kafka/stream`;
         let retryDelay = 3000;
         let retryTimer: ReturnType<typeof setTimeout> | null = null;
@@ -72,7 +70,7 @@ export function KafkaStreamCard() {
             esRef.current = es;
 
             es.onmessage = (e) => {
-                retryDelay = 3000; // reset backoff on successful message
+                retryDelay = 3000;
                 try {
                     const data = JSON.parse(e.data);
                     if (data.type === 'status' || data.type === 'heartbeat') {
@@ -88,13 +86,11 @@ export function KafkaStreamCard() {
             es.onerror = () => {
                 setConnected(false);
                 es.close();
-                // Exponential backoff — cap at 30s to avoid hammering the server
                 retryDelay = Math.min(retryDelay * 1.5, 30000);
                 retryTimer = setTimeout(connect, retryDelay);
             };
         }
 
-        // Fetch initial status snapshot (SSE doesn't support custom headers; use fetch for auth)
         fetch('/api/kafka/status', {
             headers: { Authorization: `Bearer ${token}` },
         }).then(r => r.json()).then(d => {
@@ -116,37 +112,37 @@ export function KafkaStreamCard() {
     const isKafka      = status?.mode === 'kafka';
 
     return (
-        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+        <div className="rounded-md border border-soft bg-white overflow-hidden">
             {/* Header */}
-            <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+            <div className="px-4 py-3 border-b border-soft flex items-center justify-between bg-[#F9F9F7]">
                 <div className="flex items-center gap-2">
-                    <Database className="w-4 h-4 text-indigo-500" />
-                    <span className="text-sm font-bold text-slate-700">Live Data Pipeline</span>
-                    <span className="text-[10px] text-slate-400">Core Banking Stream</span>
+                    <Database className="w-4 h-4 text-crimson" />
+                    <span className="text-sm font-bold text-[#2A161B] font-heading">Live Data Pipeline</span>
+                    <span className="text-[10px] text-[#8B8481]">Core Banking Stream</span>
                 </div>
                 <div className="flex items-center gap-2">
                     {isKafka ? (
-                        <span className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full">
+                        <span className="flex items-center gap-1.5 text-[10px] font-bold text-crimson bg-crimson-soft border border-crimson px-2 py-1 rounded-md">
                             <Wifi className="w-3 h-3" /> Kafka Connected
                         </span>
                     ) : isSimulation ? (
-                        <span className="flex items-center gap-1.5 text-[10px] font-bold text-violet-700 bg-violet-50 border border-violet-200 px-2 py-1 rounded-full">
+                        <span className="flex items-center gap-1.5 text-[10px] font-bold text-[#8E5026] bg-copper-soft border border-copper px-2 py-1 rounded-md">
                             <RefreshCw className="w-3 h-3 animate-spin" style={{ animationDuration: '3s' }} /> Stream Simulation
                         </span>
                     ) : (
-                        <span className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-1 rounded-full">
+                        <span className="flex items-center gap-1.5 text-[10px] font-bold text-[#6B6562] bg-[#F5F4F2] border border-soft px-2 py-1 rounded-md">
                             <WifiOff className="w-3 h-3" /> Connecting…
                         </span>
                     )}
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] divide-y lg:divide-y-0 lg:divide-x divide-slate-100">
+            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] divide-y lg:divide-y-0 lg:divide-x divide-[#E5E0DF]">
                 {/* Left: stats */}
                 <div className="p-4 min-w-44 flex flex-col gap-4">
                     <div>
-                        <div className="text-2xl font-black text-slate-900">{status?.messagesProcessed ?? 0}</div>
-                        <div className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Events Ingested</div>
+                        <div className="text-2xl font-black text-[#2A161B] font-heading">{status?.messagesProcessed ?? 0}</div>
+                        <div className="text-[10px] text-[#8B8481] uppercase tracking-widest font-semibold">Events Ingested</div>
                     </div>
                     <div className="space-y-2">
                         {[
@@ -156,20 +152,20 @@ export function KafkaStreamCard() {
                             { label: 'CRM Events',      value: status?.liveOverrides?.crm ?? 0 },
                         ].map(s => (
                             <div key={s.label} className="flex items-center justify-between">
-                                <span className="text-[10px] text-slate-400">{s.label}</span>
-                                <span className="text-xs font-bold text-slate-700">{s.value}</span>
+                                <span className="text-[10px] text-[#8B8481]">{s.label}</span>
+                                <span className="text-xs font-bold text-[#2A161B]">{s.value}</span>
                             </div>
                         ))}
                     </div>
-                    <div className="pt-2 border-t border-slate-100">
-                        <div className="text-[9px] text-slate-400 uppercase tracking-widest font-semibold mb-1">Topics</div>
+                    <div className="pt-2 border-t border-soft">
+                        <div className="text-[9px] text-[#8B8481] uppercase tracking-widest font-semibold mb-1">Topics</div>
                         <div className="space-y-1">
                             {(status?.topicsConsumed || []).map(t => {
                                 const { short, color } = topicLabel(t);
                                 return (
                                     <div key={t} className="flex items-center gap-1.5">
                                         <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: color }} />
-                                        <span className="text-[9px] text-slate-500">{short}</span>
+                                        <span className="text-[9px] text-[#6B6562]">{short}</span>
                                     </div>
                                 );
                             })}
@@ -179,32 +175,32 @@ export function KafkaStreamCard() {
 
                 {/* Right: event feed */}
                 <div className="flex flex-col">
-                    <div className="px-4 py-2 border-b border-slate-50 flex items-center gap-2">
-                        <Activity className="w-3.5 h-3.5 text-slate-400" />
-                        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Live Event Feed</span>
+                    <div className="px-4 py-2 border-b border-soft flex items-center gap-2">
+                        <Activity className="w-3.5 h-3.5 text-[#8B8481]" />
+                        <span className="text-[11px] font-semibold text-[#6B6562] uppercase tracking-widest">Live Event Feed</span>
                         {status?.lastEventAt && (
-                            <span className="ml-auto text-[9px] text-slate-400">Last: {timeAgo(status.lastEventAt)}</span>
+                            <span className="ml-auto text-[9px] text-[#8B8481]">Last: {timeAgo(status.lastEventAt)}</span>
                         )}
                     </div>
-                    <div className="flex-1 overflow-y-auto max-h-52 divide-y divide-slate-50">
+                    <div className="flex-1 overflow-y-auto max-h-52 divide-y divide-[#E5E0DF]">
                         {events.length === 0 && (
-                            <div className="flex items-center justify-center h-20 text-xs text-slate-300">
+                            <div className="flex items-center justify-center h-20 text-xs text-[#8B8481]">
                                 Awaiting first event…
                             </div>
                         )}
                         {events.map((evt, i) => {
                             const { short, color } = topicLabel(evt.topic);
                             return (
-                                <div key={evt.id ?? i} className="flex items-start gap-2 px-4 py-2 hover:bg-slate-50 transition-colors">
+                                <div key={evt.id ?? i} className="flex items-start gap-2 px-4 py-2 hover:bg-[#F9F9F7] transition-colors">
                                     <span className="mt-0.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: color }} />
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-1.5 flex-wrap">
                                             <span className="text-[9px] font-bold uppercase tracking-wide" style={{ color }}>{short}</span>
-                                            <span className="text-[10px] text-slate-500 font-medium truncate">{evt.customerId}</span>
+                                            <span className="text-[10px] text-[#6B6562] font-medium truncate">{evt.customerId}</span>
                                         </div>
-                                        <p className="text-[10px] text-slate-600 leading-snug mt-0.5 line-clamp-1">{evt.description}</p>
+                                        <p className="text-[10px] text-[#2A161B] leading-snug mt-0.5 line-clamp-1">{evt.description}</p>
                                     </div>
-                                    <span className="text-[9px] text-slate-300 shrink-0 mt-0.5">{timeAgo(evt.ts)}</span>
+                                    <span className="text-[9px] text-[#8B8481] shrink-0 mt-0.5">{timeAgo(evt.ts)}</span>
                                 </div>
                             );
                         })}
@@ -213,9 +209,9 @@ export function KafkaStreamCard() {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-slate-100 px-4 py-2 bg-slate-50 flex items-center gap-2">
-                <ArrowDownUp className="w-3 h-3 text-slate-400" />
-                <span className="text-[10px] text-slate-400">
+            <div className="border-t border-soft px-4 py-2 bg-[#F9F9F7] flex items-center gap-2">
+                <ArrowDownUp className="w-3 h-3 text-[#8B8481]" />
+                <span className="text-[10px] text-[#8B8481]">
                     {isKafka
                         ? `Connected to ${status?.brokers?.[0] || 'kafka'} · ${status?.topicsConsumed?.length || 0} topics`
                         : isSimulation

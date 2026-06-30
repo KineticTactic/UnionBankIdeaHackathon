@@ -49,7 +49,7 @@ export function CustomerSnapshot({ customerId }: { customerId: string }) {
             <div className="flex items-center justify-between">
                 <div>
                     <Link href={`/customers/${c.customer_id}`}
-                        className="flex items-center gap-1.5 text-sm font-semibold text-[#0f2d5c] hover:underline">
+                        className="flex items-center gap-1.5 text-sm font-semibold text-[var(--crimson)] hover:underline">
                         {c.full_name}
                         <ExternalLink className="w-3 h-3" />
                     </Link>
@@ -92,8 +92,8 @@ export function CustomerSnapshot({ customerId }: { customerId: string }) {
             </div>
 
             {c.life_event && (
-                <div className="px-2 py-1.5 rounded-lg bg-purple-50 border border-purple-200">
-                    <p className="text-[10px] font-semibold text-purple-700">
+                <div className="px-2 py-1.5 rounded-lg bg-teal-soft border border-soft">
+                    <p className="text-[10px] font-semibold text-teal-dark">
                         {c.life_event.replace(/_/g, ' ')}
                     </p>
                 </div>

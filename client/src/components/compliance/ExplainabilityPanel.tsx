@@ -27,11 +27,11 @@ interface Explanation {
 }
 
 const GROUP_COLORS: Record<string, string> = {
-  financial:   '#dc2626',
-  behavioural: '#ea580c',
-  digital:     '#7c3aed',
+  financial:   'var(--crimson)',
+  behavioural: 'var(--copper)',
+  digital:     'var(--teal-dark)',
   sentiment:   '#db2777',
-  profile:     '#0284c7',
+  profile:     'var(--teal-dark)',
 };
 
 export function ExplainabilityPanel({ customerId }: { customerId: string }) {
@@ -59,7 +59,7 @@ export function ExplainabilityPanel({ customerId }: { customerId: string }) {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-[13px] font-bold text-slate-800 flex items-center gap-1.5">
-            <BarChart2 className="w-4 h-4 text-[#0f2d5c]" />
+            <BarChart2 className="w-4 h-4 text-[var(--crimson)]" />
             Score Explainability
           </p>
           <p className="text-[11px] text-slate-400 mt-0.5">RBI AI Governance 2024 + GDPR Article 22 — meaningful explanation of automated decisions</p>
@@ -78,7 +78,7 @@ export function ExplainabilityPanel({ customerId }: { customerId: string }) {
       )}
 
       {error && (
-        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-[12px] text-red-600">{error}</div>
+        <div className="p-3 rounded-lg bg-crimson-soft border border-soft text-[12px] text-crimson">{error}</div>
       )}
 
       {explanation && !loading && (
@@ -96,7 +96,7 @@ export function ExplainabilityPanel({ customerId }: { customerId: string }) {
             <div className="space-y-2.5">
               {explanation.topDrivers.map(d => {
                 const width   = maxContrib > 0 ? (Math.abs(d.contribution) / maxContrib) * 100 : 0;
-                const barColor = GROUP_COLORS[d.group] || '#64748b';
+                const barColor = GROUP_COLORS[d.group] || 'var(--gray-500)';
                 return (
                   <div key={d.feature} className="space-y-0.5">
                     <div className="flex items-center justify-between">
@@ -107,8 +107,8 @@ export function ExplainabilityPanel({ customerId }: { customerId: string }) {
                         )}
                         <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
                           d.direction === 'increases_risk'
-                            ? 'bg-red-50 text-red-600'
-                            : 'bg-green-50 text-green-600'
+                            ? 'bg-crimson-soft text-crimson'
+                            : 'bg-sage-soft text-sage-brand'
                         }`}>
                           {d.direction === 'increases_risk' ? '↑ risk' : '↓ risk'}
                         </span>

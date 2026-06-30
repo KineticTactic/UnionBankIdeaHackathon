@@ -5,12 +5,12 @@ import { getToken } from '@/lib/api';
 import { KafkaEvent } from '@/types';
 
 const TOPIC_COLORS: Record<string, string> = {
-  'cbs.transactions':       'bg-blue-100 text-blue-700',
-  'cbs.account_updates':    'bg-slate-100 text-slate-600',
-  'crm.customer_events':    'bg-purple-100 text-purple-700',
-  'risk.signal_detections': 'bg-red-100 text-red-700',
-  'risk.score_updates':     'bg-orange-100 text-orange-700',
-  'engagement.activity':    'bg-green-100 text-green-700',
+  'cbs.transactions':       'bg-[#FAF0E6] text-[#8E5026]',
+  'cbs.account_updates':    'bg-[#F5F4F2] text-[#6B6562]',
+  'crm.customer_events':    'bg-[#FAF0E6] text-[#8E5026]',
+  'risk.signal_detections': 'bg-crimson-soft text-crimson',
+  'risk.score_updates':     'bg-copper-soft text-[#8E5026]',
+  'engagement.activity':    'bg-[#F5F4F2] text-[#6B6562]',
 };
 
 const topicLabel = (topic: string) =>
@@ -30,7 +30,9 @@ export default function KafkaFeed({ maxEvents = 20 }: Props) {
     const token = getToken();
     if (!token) return;
 
-    const source = new EventSource(`/api/kafka/stream?token=${token}`);
+    // Connect directly to backend to avoid Next.js SSE buffering
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const source = new EventSource(`${backendUrl}/api/kafka/stream?token=${encodeURIComponent(token)}`);
 
     source.onmessage = (e) => {
       try {
@@ -65,30 +67,27 @@ export default function KafkaFeed({ maxEvents = 20 }: Props) {
       {/* Status bar */}
       <div className="flex items-center justify-between mb-2 px-1">
         <div className="flex items-center gap-2">
-          <span className={`w-2 h-2 rounded-full ${
-            mode === 'simulation' ? 'bg-amber-400' :
-            mode === 'kafka'      ? 'bg-green-400' : 'bg-slate-300'
-          } animate-pulse`} />
-          <span className="text-[11px] text-slate-500 capitalize">{mode}</span>
+          <span className={`w-2 h-2 rounded-full bg-gradient-brand animate-live-pulse`} />
+          <span className="text-[11px] text-[#6B6562] capitalize">{mode}</span>
         </div>
-        <span className="text-[10px] text-slate-400 tabular-nums">{count} events</span>
+        <span className="text-[10px] text-[#8B8481] tabular-nums">{count} events</span>
       </div>
 
       {/* Events */}
       <div ref={feedRef} className="flex-1 overflow-y-auto space-y-1 min-h-0">
         {events.length === 0 && (
-          <div className="text-center text-slate-400 text-xs py-6">Waiting for events…</div>
+          <div className="text-center text-[#8B8481] text-xs py-6">Waiting for events…</div>
         )}
         {events.map((evt, i) => (
-          <div key={`${evt.id}-${i}`} className="flex items-start gap-2 py-1.5 px-2 rounded-md hover:bg-slate-50 transition-colors">
+          <div key={`${evt.id}-${i}`} className="flex items-start gap-2 py-1.5 px-2 rounded-md hover:bg-[#F9F9F7] transition-colors">
             <span className={`mt-0.5 px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase tracking-wide shrink-0 ${
-              TOPIC_COLORS[evt.topic] || 'bg-slate-100 text-slate-600'
+              TOPIC_COLORS[evt.topic] || 'bg-[#F5F4F2] text-[#6B6562]'
             }`}>
               {topicLabel(evt.topic)}
             </span>
             <div className="flex-1 min-w-0">
-              <p className="text-[11px] text-slate-700 leading-tight line-clamp-1">{evt.description}</p>
-              <p className="text-[9px] text-slate-400 mt-0.5">{evt.customerId} · {new Date(evt.ts).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</p>
+              <p className="text-[11px] text-[#2A161B] leading-tight line-clamp-1">{evt.description}</p>
+              <p className="text-[9px] text-[#8B8481] mt-0.5">{evt.customerId} · {new Date(evt.ts).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</p>
             </div>
           </div>
         ))}

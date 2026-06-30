@@ -5,31 +5,31 @@ interface StatCardProps {
     value: string | number;
     subtitle: string;
     icon: ReactNode;
-    accent?: "default" | "red" | "orange" | "blue" | "emerald";
+    accent?: "default" | "crimson" | "copper" | "neutral" | "brand";
     valueClassName?: string;
 }
 
-const ACCENT: Record<string, { border: string; icon: string; badge: string }> = {
-    default:  { border: "border-l-slate-300",  icon: "bg-slate-100 text-slate-500",    badge: "" },
-    red:      { border: "border-l-red-400",     icon: "bg-red-50 text-red-600",         badge: "text-red-600" },
-    orange:   { border: "border-l-orange-400",  icon: "bg-orange-50 text-orange-600",   badge: "text-orange-600" },
-    blue:     { border: "border-l-blue-500",    icon: "bg-blue-50 text-blue-600",       badge: "text-blue-600" },
-    emerald:  { border: "border-l-emerald-400", icon: "bg-emerald-50 text-emerald-600", badge: "text-emerald-600" },
+const ACCENT: Record<string, { border: string; icon: string; badge: string; value: string }> = {
+    default:  { border: "border-l-[#C9C3C0]",   icon: "bg-[#F5F4F2] text-[#6B6562]",       badge: "",                  value: "text-[#2A161B]" },
+    crimson:  { border: "border-l-crimson",     icon: "bg-crimson-soft text-crimson",      badge: "text-crimson",        value: "text-[#2A161B]" },
+    copper:   { border: "border-l-copper",      icon: "bg-copper-soft text-[#8E5026]",      badge: "text-copper",         value: "text-[#2A161B]" },
+    neutral:  { border: "border-l-[#8B8481]",   icon: "bg-[#F5F4F2] text-[#6B6562]",       badge: "text-[#6B6562]",      value: "text-[#2A161B]" },
+    brand:    { border: "border-l-crimson",     icon: "bg-gradient-brand text-white",      badge: "text-crimson",        value: "text-gradient" },
 };
 
 export function StatCard({ title, value, subtitle, icon, accent = "default", valueClassName = "" }: StatCardProps) {
     const a = ACCENT[accent];
     return (
-        <div className={`bg-white rounded-xl border border-slate-200 border-l-4 ${a.border} p-5 flex flex-col gap-3 shadow-sm`}>
+        <div className={`bg-white rounded-md border border-soft border-l-4 ${a.border} p-5 flex flex-col gap-3`}>
             <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{title}</span>
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${a.icon}`}>
+                <span className="text-xs font-semibold text-[#6B6562] uppercase tracking-wider font-heading">{title}</span>
+                <div className={`w-8 h-8 rounded-md flex items-center justify-center ${a.icon}`}>
                     {icon}
                 </div>
             </div>
             <div>
-                <div className={`text-3xl font-bold text-slate-900 leading-none ${valueClassName}`}>{value}</div>
-                <p className="text-xs text-slate-400 mt-1.5">{subtitle}</p>
+                <div className={`text-3xl font-bold leading-none ${a.value} ${valueClassName}`}>{value}</div>
+                <p className="text-xs text-[#8B8481] mt-1.5">{subtitle}</p>
             </div>
         </div>
     );

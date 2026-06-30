@@ -65,6 +65,9 @@ export interface Signal {
   alarm_threshold:  number;
   method:           string;
   days_active:      number;
+  evidence?:        string[];
+  description?:     string;
+  severity?:        string;
 }
 
 export interface Transaction {
@@ -91,22 +94,39 @@ export interface ActionPlan {
   urgency:          string;
   offer_code:       string;
   offer_display:    string;
+  offer_description?: string;
+  offer_value?:     string;
   content_strategy: string;
   rationale:        string;
   life_event:       string | null;
   suppressed:       boolean;
   tone_modifiers:   string[];
   priority_rank:    number;
+  priority?:        number;
+  timing?:          string;
 }
 
 export interface HeraldContent {
-  // Static snapshot fields (populated when reading from server/data).
   customer_id?: string;
   risk_tier?:   RiskTier;
-  // Live LLM output may include just {email, sms, push}; the static
-  // snapshot in server/data/*.json may add compliance_status,
-  // word_count, etc.  All fields are optional so the type accepts
-  // both shapes.
+  channel?:     string;
+  title?:       string;
+  body?:        string;
+  cta?:         string;
+  opening?:     string;
+  talking_points?: string[];
+  subject_line?: string;
+  preview_text?:  string;
+  compliance_status?: string;
+  tone_modifiers?: string[];
+  offer_code?:   string;
+  content_strategy?: string;
+  ab_variant?: {
+    subject_line?: string;
+    preview_text?: string;
+    body?: string;
+  };
+  generated_at?: string;
   email?: {
     subject?:            string;
     body:               string;
@@ -326,6 +346,24 @@ export interface KafkaStatus {
   messagesProcessed: number;
   lastEventAt:       string | null;
   recentEvents:      KafkaEvent[];
+}
+
+export type UrgencyHorizon = '7d' | '30d' | '90d' | '365d' | null;
+
+export interface V2Score {
+  urgency_horizon?: UrgencyHorizon;
+  survival_30d?:    number;
+  survival_90d?:    number;
+  [key: string]:    unknown;
+}
+
+export interface AnalysisResult {
+  summary?:           string;
+  risk_drivers?:      string[];
+  recommended_action?: string;
+  confidence?:        number;
+  generated_at?:      string;
+  [key: string]:     unknown;
 }
 
 export interface CreateCustomerInput {

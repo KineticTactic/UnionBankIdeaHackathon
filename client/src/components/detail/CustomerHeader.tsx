@@ -28,8 +28,8 @@ export function CustomerHeader({ customer }: { customer: Customer }) {
 
                     <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600">
                         <span className="flex items-center"><MapPin className="w-4 h-4 mr-1" />{customer.city}</span>
-                        <span className="flex items-center"><Building2 className="w-4 h-4 mr-1" />{customer.employer_name || 'Unknown'}</span>
-                        <span className="flex items-center"><Briefcase className="w-4 h-4 mr-1" />{customer.tenure_years} Years Tenure</span>
+                        <span className="flex items-center"><Building2 className="w-4 h-4 mr-1" />{customer.employer || 'Unknown'}</span>
+                        <span className="flex items-center"><Briefcase className="w-4 h-4 mr-1" />{Math.floor((customer.tenure_months || 0) / 12)} Years Tenure</span>
                         <Badge variant="secondary" className="font-normal text-xs">{customer.segment}</Badge>
                     </div>
                 </div>

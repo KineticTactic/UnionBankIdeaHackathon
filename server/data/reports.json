@@ -845,5 +845,385 @@
       "calls": "d4735e3a265e16ee"
     },
     "generator": "templated+llm-narrative"
+  },
+  {
+    "id": "RPT-1782814264851-WT1G",
+    "report_type": "churn_intervention",
+    "date_from": "",
+    "date_to": "",
+    "generated_at": "2026-06-30T10:11:04.851Z",
+    "generated_by": "admin",
+    "data": {
+      "period": {
+        "from": "all",
+        "to": "now"
+      },
+      "generated_at": "2026-06-30T10:11:02.751Z",
+      "churn_intervention": {
+        "total_customers": 50,
+        "at_risk": 18,
+        "interventions": 3,
+        "saves": 2,
+        "save_rate": "66.7%"
+      },
+      "compliance_audit": {
+        "total_customers": 50,
+        "calls_recorded": 2,
+        "compliance_flags": 0,
+        "consent_coverage": 2,
+        "tasks_completed": 1,
+        "tasks_outstanding": 3
+      },
+      "rm_activity": [
+        {
+          "rm_name": "Aditya Sharma",
+          "username": "rm_user",
+          "calls": 2,
+          "outcomes": 3,
+          "tasks": 4
+        },
+        {
+          "rm_name": "Deepa Krishnan",
+          "username": "rm_deepa",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Sunita Nair",
+          "username": "rm_sunita",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Vikram Joshi",
+          "username": "rm_vikram",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Rohit Kapoor",
+          "username": "rm_rohit",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Ritu Malhotra",
+          "username": "rm_ritu",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Anand Pillai",
+          "username": "rm_anand",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Priya Menon",
+          "username": "rm_priya",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        }
+      ]
+    },
+    "llm_summary": "**Executive Summary: Churn Intervention Compliance Report**\n\nOver the all-time reporting period, the bank initiated churn intervention efforts targeting a total customer base of 50. Of these, 18 customers were identified as at-risk, necessitating proactive measures to mitigate potential attrition. A total of 3 interventions were executed, resulting in 2 successful saves, yielding a save rate of 66.7%. This outcome indicates a moderate level of effectiveness in retaining at-risk customers, though further optimization may be required to enhance intervention impact.\n\nCompliance adherence remained robust throughout the intervention process. No compliance flags were recorded during customer calls related to these interventions, demonstrating adherence to communication protocols. Additionally, consent coverage was obtained for 2 of the 50 total customers, aligning with regulatory expectations for transparency and customer consent in intervention strategies.\n\nOperational execution of the churn intervention program achieved partial completion. Specifically, 1 of the 4 planned tasks was finalized, while 3 tasks remain outstanding. Addressing these pending tasks will be critical to ensuring full compliance with intervention protocols and maximizing future retention efforts. The bank remains committed to refining its churn intervention framework in alignment with regulatory standards.",
+    "source_hashes": {
+      "customers": "d0bc30f5722e7c95",
+      "outcomes": "4e07408562bedb8b",
+      "calls": "d4735e3a265e16ee"
+    },
+    "generator": "templated+llm-narrative"
+  },
+  {
+    "id": "RPT-1782825537546-NG50",
+    "report_type": "rm_activity",
+    "date_from": "",
+    "date_to": "",
+    "generated_at": "2026-06-30T13:18:57.546Z",
+    "generated_by": "admin",
+    "data": {
+      "period": {
+        "from": "all",
+        "to": "now"
+      },
+      "generated_at": "2026-06-30T13:18:54.460Z",
+      "churn_intervention": {
+        "total_customers": 50,
+        "at_risk": 18,
+        "interventions": 3,
+        "saves": 2,
+        "save_rate": "66.7%"
+      },
+      "compliance_audit": {
+        "total_customers": 50,
+        "calls_recorded": 2,
+        "compliance_flags": 0,
+        "consent_coverage": 2,
+        "tasks_completed": 1,
+        "tasks_outstanding": 3
+      },
+      "rm_activity": [
+        {
+          "rm_name": "Aditya Sharma",
+          "username": "rm_user",
+          "calls": 2,
+          "outcomes": 3,
+          "tasks": 4
+        },
+        {
+          "rm_name": "Deepa Krishnan",
+          "username": "rm_deepa",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Sunita Nair",
+          "username": "rm_sunita",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Vikram Joshi",
+          "username": "rm_vikram",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Rohit Kapoor",
+          "username": "rm_rohit",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Ritu Malhotra",
+          "username": "rm_ritu",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Anand Pillai",
+          "username": "rm_anand",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Priya Menon",
+          "username": "rm_priya",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        }
+      ]
+    },
+    "llm_summary": "**Executive Summary: Regulatory Monitoring Activity (RM_Activity)**\n\nOver the observed period, the institution has engaged with a total customer base of 50, with 18 identified as at-risk. This represents a significant portion (36%) of the customer portfolio requiring heightened compliance oversight. During this time, a total of 3 interventions were conducted to address identified risks. Notably, 2 of these interventions resulted in successful customer retention, yielding a save rate of 66.7%. This metric indicates a moderately effective intervention strategy, though further refinement may be necessary to address the remaining 6 at-risk cases without completed resolutions.\n\nCompliance monitoring has maintained a clean record, with zero compliance flags raised through customer interactions. However, consent management requires attention, as only 2 out of 50 consent records (4%) were fully covered. This suggests potential gaps in documentation or tracking processes that may pose regulatory risks if not addressed. Additionally, task management reveals inefficiencies, with only 1 of 4 assigned tasks (25%) completed, leaving 3 tasks outstanding. This may indicate operational bottlenecks in compliance workflows.\n\nOverall, while the institution demonstrates moderate success in customer retention (66.7% save rate) and a clean compliance record (0 flags), critical areas such as consent coverage (4%) and task completion (25%) require immediate remediation to align with regulatory expectations. Strengthening these processes will be essential to mitigate future compliance risks and ensure robust oversight of at-risk customers.",
+    "source_hashes": {
+      "customers": "d0bc30f5722e7c95",
+      "outcomes": "4e07408562bedb8b",
+      "calls": "d4735e3a265e16ee"
+    },
+    "generator": "templated+llm-narrative"
+  },
+  {
+    "id": "RPT-1782828063232-V4HP",
+    "report_type": "rm_activity",
+    "date_from": "",
+    "date_to": "",
+    "generated_at": "2026-06-30T14:01:03.232Z",
+    "generated_by": "admin",
+    "data": {
+      "period": {
+        "from": "all",
+        "to": "now"
+      },
+      "generated_at": "2026-06-30T14:00:57.324Z",
+      "churn_intervention": {
+        "total_customers": 50,
+        "at_risk": 18,
+        "interventions": 3,
+        "saves": 2,
+        "save_rate": "66.7%"
+      },
+      "compliance_audit": {
+        "total_customers": 50,
+        "calls_recorded": 2,
+        "compliance_flags": 0,
+        "consent_coverage": 2,
+        "tasks_completed": 1,
+        "tasks_outstanding": 3
+      },
+      "rm_activity": [
+        {
+          "rm_name": "Aditya Sharma",
+          "username": "rm_user",
+          "calls": 2,
+          "outcomes": 3,
+          "tasks": 4
+        },
+        {
+          "rm_name": "Deepa Krishnan",
+          "username": "rm_deepa",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Sunita Nair",
+          "username": "rm_sunita",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Vikram Joshi",
+          "username": "rm_vikram",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Rohit Kapoor",
+          "username": "rm_rohit",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Ritu Malhotra",
+          "username": "rm_ritu",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Anand Pillai",
+          "username": "rm_anand",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Priya Menon",
+          "username": "rm_priya",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        }
+      ]
+    },
+    "llm_summary": "**Executive Summary – RM Activity Compliance Review**\n\nOver the review period, the risk management (RM) function engaged with a total of 50 customers, identifying 18 as at-risk based on established criteria. The team initiated 3 formal interventions, successfully converting 2 customers back to compliant status, resulting in a documented save rate of 66.7%. No compliance flags were generated through customer interactions during this period, and consent coverage was obtained for 2 of the 50 accounts reviewed, aligning with regulatory requirements for disclosure and authorization.\n\nA total of 4 compliance-related tasks were tracked, with only 1 completed to date and 3 remaining outstanding. These tasks are critical to ensuring adherence to internal policies and regulatory expectations, and their timely resolution is a priority for the RM team. The discrepancy between completed and pending tasks underscores the need for enhanced follow-up mechanisms to mitigate potential compliance gaps.\n\nOverall, the RM function demonstrated effective customer risk mitigation, achieving a high intervention-to-save ratio. However, the presence of outstanding tasks indicates an area for improvement in operational execution. Regulatory oversight should note the strong save rate but should also monitor progress on pending tasks to ensure full compliance alignment. Further details on task-specific justifications are available upon request.",
+    "source_hashes": {
+      "customers": "d0bc30f5722e7c95",
+      "outcomes": "4e07408562bedb8b",
+      "calls": "d4735e3a265e16ee"
+    },
+    "generator": "templated+llm-narrative"
+  },
+  {
+    "id": "RPT-1782851506603-VOWT",
+    "report_type": "bias_review",
+    "date_from": "",
+    "date_to": "",
+    "generated_at": "2026-06-30T20:31:46.603Z",
+    "generated_by": "admin",
+    "data": {
+      "period": {
+        "from": "all",
+        "to": "now"
+      },
+      "generated_at": "2026-06-30T20:31:43.301Z",
+      "churn_intervention": {
+        "total_customers": 50,
+        "at_risk": 18,
+        "interventions": 3,
+        "saves": 2,
+        "save_rate": "66.7%"
+      },
+      "compliance_audit": {
+        "total_customers": 50,
+        "calls_recorded": 2,
+        "compliance_flags": 0,
+        "consent_coverage": 2,
+        "tasks_completed": 1,
+        "tasks_outstanding": 3
+      },
+      "rm_activity": [
+        {
+          "rm_name": "Aditya Sharma",
+          "username": "rm_user",
+          "calls": 2,
+          "outcomes": 3,
+          "tasks": 4
+        },
+        {
+          "rm_name": "Deepa Krishnan",
+          "username": "rm_deepa",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Sunita Nair",
+          "username": "rm_sunita",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Vikram Joshi",
+          "username": "rm_vikram",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Rohit Kapoor",
+          "username": "rm_rohit",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Ritu Malhotra",
+          "username": "rm_ritu",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Anand Pillai",
+          "username": "rm_anand",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Priya Menon",
+          "username": "rm_priya",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        }
+      ]
+    },
+    "llm_summary": "**Executive Summary – Bias Review Compliance Report**\n\nIn compliance with regulatory review standards, this report summarizes bias mitigation efforts across a portfolio of 50 total customers. Eighteen customers (36%) were flagged as at-risk during the review period, prompting targeted interventions. Three interventions were executed, resulting in the successful retention of two at-risk customers, yielding a save rate of 66.7%. This demonstrates moderate effectiveness in addressing customer retention risks, though the sample size remains limited for statistically significant conclusions.\n\nCompliance adherence was maintained with zero recorded compliance flags related to calls, and consent coverage was obtained for 2 of 50 customers (4%). While consent alignment aligns with minimal risk thresholds, broader coverage remains an opportunity for improvement. Additionally, only one task out of four assigned (25%) was completed, indicating a need for enhanced operational execution in follow-up procedures.\n\nOverall, the data reflects partial success in bias mitigation and compliance adherence, with notable gaps in consent standardization and task completion. Recommendations include expanding consent protocols to cover additional customer segments and reinforcing intervention workflows to ensure full task execution. Further review is advised to assess long-term trend stability.",
+    "source_hashes": {
+      "customers": "d0bc30f5722e7c95",
+      "outcomes": "4e07408562bedb8b",
+      "calls": "d4735e3a265e16ee"
+    },
+    "generator": "templated+llm-narrative"
   }
 ]

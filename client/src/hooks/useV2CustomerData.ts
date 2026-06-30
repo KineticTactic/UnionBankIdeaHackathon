@@ -29,7 +29,7 @@ export function useV2CustomerData(customerId: string | undefined): V2CustomerDat
         Promise.all([
             api.getV2Score(customerId).catch(() => null),
             api.getV2ActionPlan(customerId).catch(() => null),
-            api.getV2Content(customerId).catch(() => null),
+            api.getV2ContentById(customerId).catch(() => null),
         ]).then(([scoreData, planData, contentData]) => {
             setScore(scoreData?.data ?? scoreData);
             setActionPlan(planData?.data ?? planData);

@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Users, Activity, BrainCircuit,
-  Send, BarChart3, Workflow, Shield, LogOut,
+  Send, BarChart3, LogOut,
   CalendarDays, BookOpen, ClipboardList,
   TrendingUp, CheckSquare, FileText, Mic,
   Command, UserCog, Scale, AlertTriangle, Settings,
@@ -17,36 +18,6 @@ const NAV_GROUPS = [
     label: null,
     items: [{ href: '/dashboard', label: 'Overview', icon: LayoutDashboard }],
   },
-  {
-    label: 'Intelligence',
-    items: [
-      { href: '/customers', label: 'Customers',      icon: Users      },
-      { href: '/signals',   label: 'Signal Monitor', icon: Activity   },
-    ],
-  },
-  {
-    label: 'Models',
-    items: [
-      { href: '/models',          label: 'CHRONOS Models', icon: BrainCircuit },
-      { href: '/admin/argus',     label: 'ARGUS Models',   icon: Activity     },
-      { href: '/admin/graphsage', label: 'GraphSAGE',      icon: Network      },
-      { href: '/admin/nexus',     label: 'NEXUS Cross-Sell', icon: Package    },
-    ],
-  },
-  {
-    label: 'Operations',
-    items: [
-      { href: '/outreach',  label: 'Outreach Hub', icon: Send      },
-      { href: '/analytics', label: 'Analytics',    icon: BarChart3 },
-      { href: '/pipeline',  label: 'Pipeline',     icon: Workflow  },
-    ],
-  },
-  {
-    label: 'Admin',
-    items: [
-      { href: '/reviews', label: 'Reviews', icon: Shield, roles: ['manager', 'admin'] as const },
-    ],
-  },
 ];
 
 const ADMIN_NAV_GROUPS = [
@@ -56,6 +27,7 @@ const ADMIN_NAV_GROUPS = [
     items: [
       { href: '/admin',               label: 'Command Center',  icon: Command,       roles: ['admin', 'manager', 'risk'] as const },
       { href: '/admin/architecture',  label: 'Architecture Map',icon: Map,           roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/customers',           label: 'Customers',       icon: Users,          roles: ['admin', 'manager', 'risk'] as const },
     ],
   },
   {
@@ -72,7 +44,13 @@ const ADMIN_NAV_GROUPS = [
     label: 'Models & AI',
     roles: ['admin', 'manager', 'risk'] as const,
     items: [
+      { href: '/admin/argus',         label: 'ARGUS',           icon: Activity,      roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/models',              label: 'CHRONOS',         icon: BrainCircuit,  roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/analytics',           label: 'VERDICT',         icon: BarChart3,     roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/admin/graphsage',     label: 'GraphSAGE',       icon: Network,       roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/admin/nexus',         label: 'NEXUS',           icon: Package,       roles: ['admin', 'manager', 'risk'] as const },
       { href: '/admin/relearning',    label: 'ORACLE Relearning',icon: Cpu,          roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/signals',             label: 'Signal Monitor',  icon: Activity,      roles: ['admin', 'manager', 'risk'] as const },
     ],
   },
   {
@@ -114,7 +92,7 @@ export default function Sidebar() {
   const isActive = (href: string) =>
     href === '/dashboard'
       ? pathname === '/dashboard'
-      : pathname === href || pathname.startsWith(href + '/');
+      : pathname === href;
 
   const userRole = user?.role as string;
 
@@ -126,42 +104,46 @@ export default function Sidebar() {
       <Link
         key={item.href}
         href={item.href}
-        className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] font-medium mb-0.5 transition-all duration-150 ${
+        className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-medium mb-0.5 transition-all duration-150 ${
           active
-            ? 'bg-white/12 text-white'
-            : 'text-white/60 hover:text-white hover:bg-white/8'
+            ? 'bg-gradient-brand text-white'
+            : 'text-[#2A161B]/70 hover:text-[#2A161B] hover:bg-[#F5F4F2]'
         }`}
       >
-        <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-white/50'}`} />
-        <span>{item.label}</span>
+        <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-[#2A161B]/50'}`} />
+        <span className="font-medium">{item.label}</span>
         {active && (
-          <span className="ml-auto w-1.5 h-1.5 rounded-full bg-sky-400" />
+          <span className="ml-auto w-1.5 h-1.5 rounded-sm bg-white" />
         )}
       </Link>
     );
   };
 
-  const isRmUser    = ['rm', 'manager'].includes(userRole);   // admin does NOT get RM portal
+  const isRmUser    = ['rm', 'manager'].includes(userRole);
   const isAdminUser = ['admin', 'manager', 'risk'].includes(userRole);
 
   return (
-    <aside className="w-[220px] shrink-0 h-screen fixed top-0 left-0 flex flex-col bg-[#0f2d5c] text-white select-none z-40">
+    <aside className="w-[220px] shrink-0 h-screen fixed top-0 left-0 flex flex-col bg-white text-[#2A161B] border-r border-[#E5E0DF] select-none z-40">
       {/* Logo */}
-      <div className="h-14 flex items-center px-5 border-b border-white/10">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded bg-white flex items-center justify-center">
-            <span className="text-[#0f2d5c] text-[10px] font-black tracking-tight">UB</span>
-          </div>
+      <div className="h-14 flex items-center px-4 border-b border-[#E5E0DF]">
+        <Link href="/dashboard" className="flex items-center gap-2.5">
+          <Image
+            src="/pcop_logo.png"
+            alt="PCOP"
+            width={36}
+            height={20}
+            className="h-5 w-auto"
+            priority
+          />
           <div className="flex flex-col">
-            <span className="text-[13px] font-bold tracking-tight leading-tight">PCOP</span>
-            <span className="text-[9px] text-white/50 leading-tight">Union Bank · 2026</span>
+            <span className="text-[13px] font-bold tracking-tight leading-tight text-[#2A161B] font-heading">PCOP</span>
+            <span className="text-[9px] text-[#6B6562] leading-tight uppercase tracking-wider">Union Bank · 2026</span>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-3 px-2">
-        {/* Standard nav groups — visible to all roles */}
         {NAV_GROUPS.map((group) => {
           const visibleItems = group.items.filter(item => {
             if (!('roles' in item) || !item.roles) return true;
@@ -171,7 +153,7 @@ export default function Sidebar() {
           return (
             <div key={group.label ?? 'top'} className="mb-4">
               {group.label && (
-                <p className="text-[9px] font-semibold uppercase tracking-widest text-white/35 px-3 py-1 mb-0.5">
+                <p className="text-[9px] font-bold uppercase tracking-widest text-[#6B6562] px-2.5 py-1 mb-0.5">
                   {group.label}
                 </p>
               )}
@@ -180,16 +162,15 @@ export default function Sidebar() {
           );
         })}
 
-        {/* Admin Portal section — divider */}
         {isAdminUser && (
-          <div className="my-2 mx-3 border-t border-white/10" />
+          <div className="my-2 mx-2.5 border-t border-[#E5E0DF]" />
         )}
         {isAdminUser && ADMIN_NAV_GROUPS.map((group) => {
           const visible = group.items.filter(item => (item.roles as readonly string[]).includes(userRole));
           if (!visible.length) return null;
           return (
             <div key={group.label} className="mb-3">
-              <p className="text-[9px] font-semibold uppercase tracking-widest text-amber-400/60 px-3 py-1 mb-0.5">
+              <p className="text-[9px] font-bold uppercase tracking-widest text-[#B46B3E] px-2.5 py-1 mb-0.5">
                 {group.label}
               </p>
               {visible.map(item => renderNavItem(item))}
@@ -197,15 +178,13 @@ export default function Sidebar() {
           );
         })}
 
-        {/* RM Portal section — divider */}
         {isRmUser && (
-          <div className="my-2 mx-3 border-t border-white/10" />
+          <div className="my-2 mx-2.5 border-t border-[#E5E0DF]" />
         )}
 
-        {/* RM Portal nav groups */}
         {isRmUser && RM_NAV_GROUPS.map((group) => (
           <div key={group.label} className="mb-4">
-            <p className="text-[9px] font-semibold uppercase tracking-widest text-sky-400/70 px-3 py-1 mb-0.5">
+            <p className="text-[9px] font-bold uppercase tracking-widest text-[#B46B3E] px-2.5 py-1 mb-0.5">
               {group.label}
             </p>
             {group.items.map(item => renderNavItem(item))}
@@ -214,19 +193,19 @@ export default function Sidebar() {
       </nav>
 
       {/* User footer */}
-      <div className="p-3 border-t border-white/10">
+      <div className="p-3 border-t border-[#E5E0DF]">
         <div className="flex items-center gap-2 px-2 py-1.5 mb-1">
-          <div className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center text-[10px] font-bold shrink-0">
+          <div className="w-7 h-7 rounded-md bg-[#F5E6E9] flex items-center justify-center text-[10px] font-bold shrink-0 text-[#6B132B]">
             {user ? initials(user.name) : 'U'}
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-[11px] font-semibold text-white truncate">{user?.name || 'User'}</span>
-            <span className="text-[9px] text-white/40 capitalize">{user?.role || 'guest'}</span>
+            <span className="text-[11px] font-semibold text-[#2A161B] truncate">{user?.name || 'User'}</span>
+            <span className="text-[9px] text-[#6B6562] capitalize">{user?.role || 'guest'}</span>
           </div>
         </div>
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-[12px] text-white/50 hover:text-white hover:bg-white/8 transition-all duration-150"
+          className="w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-[12px] text-[#2A161B]/60 hover:text-[#6B132B] hover:bg-[#F5F4F2] transition-all duration-150"
         >
           <LogOut className="w-3.5 h-3.5" />
           Sign out

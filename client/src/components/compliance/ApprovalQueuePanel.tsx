@@ -60,21 +60,21 @@ export function ApprovalQueuePanel() {
   const pending = approvals.filter(a => a.status === 'PENDING');
 
   return (
-    <div className="bg-white rounded-xl border border-amber-200 shadow-sm overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-3.5 bg-amber-50 border-b border-amber-200">
+    <div className="bg-white rounded-xl border border-soft shadow-sm overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-3.5 bg-copper-soft border-b border-soft">
         <div className="flex items-center gap-2.5">
-          <ShieldAlert className="w-4 h-4 text-amber-600" />
+          <ShieldAlert className="w-4 h-4 text-copper-dark" />
           <span className="text-[13px] font-bold text-amber-900">
             Pending RM Approval
             {pending.length > 0 && (
-              <span className="ml-2 text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded-full">
+              <span className="ml-2 text-[10px] font-bold bg-copper text-white px-2 py-0.5 rounded-full">
                 {pending.length}
               </span>
             )}
           </span>
-          <span className="text-[10px] text-amber-600">RBI AI Governance 2024 — human override required</span>
+          <span className="text-[10px] text-copper-dark">RBI AI Governance 2024 — human override required</span>
         </div>
-        <button onClick={load} className="text-amber-500 hover:text-amber-700 transition-colors">
+        <button onClick={load} className="text-copper hover:text-copper-dark transition-colors">
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </button>
       </div>
@@ -83,7 +83,7 @@ export function ApprovalQueuePanel() {
         <div className="p-5 text-[12px] text-slate-400">Loading approval queue…</div>
       ) : pending.length === 0 ? (
         <div className="p-5 flex items-center gap-2 text-[12px] text-slate-400">
-          <CheckCircle2 className="w-4 h-4 text-green-500" />
+          <CheckCircle2 className="w-4 h-4 text-sage-brand" />
           No pending approvals — queue is clear.
         </div>
       ) : (
@@ -107,7 +107,7 @@ export function ApprovalQueuePanel() {
                       </p>
                     )}
                   </div>
-                  <div className="flex items-center gap-1 text-[10px] text-amber-600 shrink-0">
+                  <div className="flex items-center gap-1 text-[10px] text-copper-dark shrink-0">
                     <Clock className="w-3 h-3" />
                     expires in {expiresIn}h
                   </div>
@@ -125,7 +125,7 @@ export function ApprovalQueuePanel() {
                     <button
                       onClick={() => handleReject(a.approvalId)}
                       disabled={isActing || !rejectReason.trim()}
-                      className="text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 transition-colors">
+                      className="text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-crimson text-white hover:bg-crimson-dark disabled:opacity-50 transition-colors">
                       {isActing ? '…' : 'Confirm'}
                     </button>
                     <button onClick={() => setRejectTarget(null)} className="text-[12px] text-slate-400 hover:text-slate-600 px-2">Cancel</button>
@@ -135,14 +135,14 @@ export function ApprovalQueuePanel() {
                     <button
                       onClick={() => handleApprove(a.approvalId)}
                       disabled={isActing}
-                      className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 transition-colors">
+                      className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-sage-brand text-white hover:bg-sage-brand disabled:opacity-50 transition-colors">
                       <CheckCircle2 className="w-3.5 h-3.5" />
                       {isActing ? 'Approving…' : 'Approve & Send'}
                     </button>
                     <button
                       onClick={() => { setRejectTarget(a.approvalId); setRejectReason(''); }}
                       disabled={isActing}
-                      className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50 transition-colors">
+                      className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg border border-soft text-crimson hover:bg-crimson-soft disabled:opacity-50 transition-colors">
                       <XCircle className="w-3.5 h-3.5" />
                       Reject
                     </button>

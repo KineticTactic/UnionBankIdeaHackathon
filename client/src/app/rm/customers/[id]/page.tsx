@@ -248,6 +248,119 @@ function OutreachTab({ snap, customerId }: { snap: Snapshot; customerId: string 
           <p className="text-[13px]">Click Generate to create personalised outreach</p>
         </div>
       ) : null}
+
+      <SendEmailPanel
+        customerId={customerId}
+        customerEmail={snap.customer?.email || ''}
+        customerName={snap.customer?.full_name || ''}
+        defaultSubject={content?.email?.subject || ''}
+        defaultBody={content?.email?.body || ''}
+      />
+    </div>
+  );
+}
+
+// ── Send Email Panel (Resend) ─────────────────────────────────────────────────
+function SendEmailPanel({
+  customerId, customerEmail, customerName, defaultSubject, defaultBody,
+}: {
+  customerId: string;
+  customerEmail: string;
+  customerName: string;
+  defaultSubject: string;
+  defaultBody: string;
+}) {
+  const [subject,   setSubject]   = useState(defaultSubject);
+  const [body,      setBody]      = useState(defaultBody);
+  const [sending,   setSending]   = useState(false);
+  const [sendError, setSendError] = useState('');
+  const [result,    setResult]    = useState<any>(null);
+
+  useEffect(() => {
+    setSubject(defaultSubject);
+    setBody(defaultBody);
+  }, [defaultSubject, defaultBody]);
+
+  const canSend = subject.trim().length > 0 && body.trim().length > 0 && !sending;
+
+  const send = async () => {
+    setSending(true); setSendError(''); setResult(null);
+    try {
+      const r = await api.sendOutreachEmail({
+        customer_id: customerId,
+        subject:     subject,
+        body:        body,
+      });
+      setResult(r);
+    } catch (e: any) {
+      setSendError(e.message);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Send Email · Resend</p>
+          <p className="text-[12px] text-slate-600 mt-0.5">
+            Direct send via Resend API.  Routed through the human-approval gate and audit log.
+          </p>
+        </div>
+        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 uppercase tracking-wide">
+          EMAIL · Resend
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Customer email (display)</label>
+          <input value={customerEmail} readOnly
+            className="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 bg-slate-50 text-slate-500" />
+        </div>
+        <div>
+          <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Recipient (Resend sandbox)</label>
+          <input value="rudrajeetpal64@gmail.com" readOnly
+            className="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 bg-slate-50 text-slate-500 font-mono" />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Subject</label>
+        <input value={subject} onChange={e => setSubject(e.target.value)} placeholder={defaultSubject ? '' : 'Click Generate above to populate the subject…'}
+          className="w-full px-3 py-2 text-[13px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20" />
+      </div>
+      <div>
+        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Body</label>
+        <textarea value={body} onChange={e => setBody(e.target.value)} placeholder={defaultBody ? '' : 'Click Generate above to populate the body…'}
+          rows={6} className="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20 resize-none" />
+      </div>
+
+      {sendError && (
+        <div className="bg-red-50 border border-red-100 rounded-lg px-3 py-2 text-[12px] text-red-600">{sendError}</div>
+      )}
+
+      {result && (
+        <div className="bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2.5 text-[12px] text-emerald-800 space-y-1">
+          <p className="font-semibold flex items-center gap-1.5">
+            <CheckCircle className="w-3.5 h-3.5" /> Email dispatched
+          </p>
+          <p>Message ID: <span className="font-mono">{result.dispatch?.messageId}</span></p>
+          <p>To: <span className="font-mono">{result.dispatchedTo}</span>{result.sandboxOverride && <span className="ml-2 text-[10px] uppercase tracking-wide text-amber-700 font-semibold">(sandbox override)</span>}</p>
+          <p>Approval ID: <span className="font-mono">{result.approvalId}</span></p>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <p className="text-[10px] text-slate-400">
+          Sending to <span className="font-mono font-semibold">rudrajeetpal64@gmail.com</span> for the Resend sandbox demo.
+        </p>
+        <button onClick={send} disabled={!canSend}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 text-white text-[12px] font-semibold hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          {sending ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending…</> : <><Send className="w-3.5 h-3.5" /> Send via Resend</>}
+        </button>
+      </div>
     </div>
   );
 }

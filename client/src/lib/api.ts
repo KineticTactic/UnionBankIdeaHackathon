@@ -235,6 +235,21 @@ export const api = {
     fetchApi('/api/outreach/translate', { method: 'POST', body: JSON.stringify(data) }),
   getCallScript: (customerId: string) => fetchApi(`/api/outreach/call-script/${encodeURIComponent(customerId)}`),
 
+  // ── Outreach — Resend-backed email send ─────────────────────────────────────
+  // Routes through the existing approval gate and dispatches via Resend.
+  // subject/body are optional; if omitted, the server reuses the cached
+  // HERALD email content for the customer.
+  sendOutreachEmail: (data: {
+    customer_id: string;
+    subject?: string;
+    body?: string;
+    to?: string;
+    from?: string;
+    approval_id?: string;
+    reviewed_by?: string;
+  }) =>
+    fetchApi('/api/outreach/send-email', { method: 'POST', body: JSON.stringify(data) }),
+
   // ── Admin Portal ─────────────────────────────────────────────────────────────
   getAdminStats:       () => fetchApi('/api/admin/stats'),
   getAdminHealth:      () => fetchApi('/api/admin/health'),

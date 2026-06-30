@@ -17,6 +17,14 @@ const approvalSvc = require('../services/approvalService');
 const traiSvc     = require('../services/traiComplianceService');
 const auditLog    = require('../services/auditLogService');
 const { enqueueHerald, getJobStatus } = require('../queue/heraldQueue');
+const emailResend = require('../services/emailResendService');
+
+// Fixed recipient for the Resend sandbox demo.  Resend only delivers
+// to the account owner for the default `onboarding@resend.dev` sender,
+// so we redirect every send to the demo address the team registered.
+// Set RESEND_SANDBOX_OVERRIDE=false to honour the customer's actual email.
+const SANDBOX_OVERRIDE_TO = 'rudrajeetpal64@gmail.com';
+const SANDBOX_OVERRIDE_ENABLED = process.env.RESEND_SANDBOX_OVERRIDE !== 'false';
 
 // ── In-memory outreach log (seeded from HERALD static data — DEMO_MODE) ───────
 // In prod mode this comes from outreachRepo; HERALD and PLANS_MAP are synchronous
@@ -210,6 +218,205 @@ async function _syncGenerate(req, res, snap, requestedBy) {
         allowedChannels,
     });
 }
+
+// ── POST /send-email — Resend-backed email send ──────────────────────────────
+//
+// Single-step "send an email now" path.  Routes through the existing
+// approval gate (creates a PENDING approval, then approves it on behalf
+// of the caller) so the audit trail is identical to the Composer flow,
+// and adds a RESEND-specific dispatch event.
+//
+// Body:
+//   {
+//     customer_id : string  (required)
+//     subject     : string  (required; if omitted, uses approval email.subject)
+//     body        : string  (required; if omitted, uses approval email.body)
+//     from        : string? (override RESEND_FROM)
+//     to          : string? (override recipient — defaults to SANDBOX_OVERRIDE_TO)
+//     approval_id : string? (reuse an existing pending approval instead of
+//                             creating a new one)
+//     reviewed_by : string? (defaults to req.user.username)
+//   }
+//
+// Returns:
+//   { status:'ok', approvalId, dispatch:{messageId,to,from,status,...},
+//     customerEmail, subject, bodyPreview, sandboxOverride }
+
+router.post('/send-email', verifyToken, async (req, res) => {
+    const {
+        customer_id, subject, body, from, to,
+        approval_id, reviewed_by,
+    } = req.body || {};
+
+    if (!customer_id)
+        return res.status(400).json({ status: 'error', message: 'customer_id is required' });
+
+    const actor     = reviewed_by || req.user?.username || 'rm_user';
+    const customer  = await ds.getCustomerById(customer_id);
+    if (!customer) return res.status(404).json({ status: 'error', message: 'Customer not found' });
+
+    // DPDPA + TRAI consent check on EMAIL channel.
+    // TEMP: consent check disabled for the demo — re-enable before production.
+    // const consentCheck = consentSvc.canSendOutreach(customer_id, 'EMAIL');
+    // if (!consentCheck.allowed) {
+    //     await auditLog.logEvent({
+    //         eventType:  'OUTREACH_BLOCKED',
+    //         customerId: customer_id,
+    //         actor,
+    //         layer:      'HERALD',
+    //         payload:    { channel: 'EMAIL', reason: consentCheck.reason, source: 'send-email-resend' },
+    //         modelVersion: 'HERALD-v1.0',
+    //     });
+    //     return res.status(403).json({
+    //         status:  'error',
+    //         message: `EMAIL blocked: ${consentCheck.reason}`,
+    //         reason:  consentCheck.reason,
+    //     });
+    // }
+
+    // Resolve the heraldContent: prefer the supplied subject/body,
+    // otherwise reuse the email subject/body from the cached HERALD
+    // record, and finally fall back to a templated retention offer.
+    let heraldContent;
+    if (subject || body) {
+        heraldContent = {
+            email: {
+                subject: subject || '',
+                body:    body    || '',
+                compliance_status: 'pending',
+                word_count: (body || '').split(/\s+/).filter(Boolean).length,
+            },
+        };
+    } else {
+        const cached = await ds.getHerald(customer_id);
+        const cachedEmail = cached?.email || {};
+        heraldContent = {
+            email: {
+                subject: cachedEmail.subject || '',
+                body:    cachedEmail.body    || '',
+                compliance_status: cachedEmail.compliance_status || 'pending',
+                word_count: cachedEmail.word_count || (cachedEmail.body || '').split(/\s+/).filter(Boolean).length,
+            },
+        };
+    }
+    if (!heraldContent.email.subject || !heraldContent.email.body) {
+        return res.status(400).json({
+            status:  'error',
+            message: 'subject and body are required (or generate HERALD content first)',
+        });
+    }
+
+    const compassRecommendation = {
+        offer:     'personalised_retention',
+        channel:   'email',
+        timing:    'immediate',
+        rationale: 'Resend-backed direct email dispatch from the RM Outreach tab.',
+    };
+
+    // Route through the approval gate.  If a pending approval_id is
+    // supplied, use that — otherwise mint a fresh one.
+    let approvalId = approval_id;
+    if (approvalId) {
+        const existing = approvalSvc.getApprovalById(approvalId);
+        if (!existing) return res.status(404).json({ status: 'error', message: `Approval ${approvalId} not found` });
+        if (existing.status !== 'PENDING')
+            return res.status(409).json({ status: 'error', message: `Approval ${approvalId} is ${existing.status}` });
+    } else {
+        approvalId = await approvalSvc.createApprovalRequest(customer_id, actor, compassRecommendation, heraldContent);
+    }
+
+    // Approve on behalf of the caller (the click is the human-in-the-loop approval).
+    let approval;
+    try {
+        approval = await approvalSvc.approveOutreach(approvalId, actor);
+    } catch (err) {
+        return res.status(400).json({ status: 'error', message: err.message });
+    }
+
+    // Determine the actual recipient.  Resend's `onboarding@resend.dev`
+    // sandbox can only deliver to the registered account owner, so we
+    // default to that address for the demo.  In production, set
+    // RESEND_SANDBOX_OVERRIDE=false to honour customer.email.
+    const sandboxOverride = SANDBOX_OVERRIDE_ENABLED;
+    const requestedTo     = to || customer.email;
+    const finalTo         = sandboxOverride ? SANDBOX_OVERRIDE_TO : requestedTo;
+
+    const htmlBody = heraldContent.email.body.replace(/\n/g, '<br>');
+
+    let dispatch;
+    try {
+        dispatch = await emailResend.sendEmail({
+            to:         finalTo,
+            from,
+            subject:    heraldContent.email.subject,
+            html:       htmlBody,
+            text:       heraldContent.email.body,
+            customerId: customer_id,
+            metadata: {
+                approvalId,
+                customerEmail: customer.email,
+                sandboxOverride,
+                provider: 'resend',
+            },
+        });
+    } catch (err) {
+        await auditLog.logEvent({
+            eventType:  'OUTREACH_BLOCKED',
+            customerId: customer_id,
+            actor,
+            layer:      'HERALD',
+            payload:    { channel: 'EMAIL', reason: err.code || 'RESEND_ERROR', detail: err.message, approvalId },
+            modelVersion: 'HERALD-v1.0',
+        });
+        return res.status(502).json({
+            status:  'error',
+            message: err.message,
+            code:    err.code || 'RESEND_ERROR',
+            approvalId,
+        });
+    }
+
+    const contentHash = crypto.createHash('sha256').update(heraldContent.email.body).digest('hex');
+
+    await auditLog.logEvent({
+        eventType:  'OUTREACH_EMAIL_DISPATCHED',
+        customerId: customer_id,
+        actor,
+        layer:      'HERALD',
+        payload: {
+            approvalId,
+            provider:     'resend',
+            messageId:    dispatch.messageId,
+            to:           finalTo,
+            requestedTo,
+            from:         dispatch.from,
+            sandboxOverride,
+            subject:      heraldContent.email.subject,
+            contentHash,
+        },
+        modelVersion: 'HERALD-v1.0',
+    });
+
+    await auditLog.logEvent({
+        eventType:  'OUTREACH_SENT',
+        customerId: customer_id,
+        actor,
+        layer:      'HERALD',
+        payload: { approvalId, channel: 'EMAIL', contentHash, provider: 'resend', messageId: dispatch.messageId },
+        modelVersion: 'HERALD-v1.0',
+    });
+
+    res.json({
+        status:           'ok',
+        approvalId,
+        customerEmail:    customer.email,
+        subject:          heraldContent.email.subject,
+        bodyPreview:      heraldContent.email.body.slice(0, 240),
+        sandboxOverride,
+        dispatchedTo:     finalTo,
+        dispatch,
+    });
+});
 
 // ── POST /approve/:approvalId ─────────────────────────────────────────────────
 

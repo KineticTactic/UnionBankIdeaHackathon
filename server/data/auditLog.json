@@ -160,19 +160,126 @@
     "timestamp": "2026-06-30T08:53:28.904Z"
   },
   {
+<<<<<<< HEAD
     "eventId": "38ba4aa1-a746-41da-8df9-2d3348ede26f",
+=======
+    "eventId": "02c1fa22-70cb-49b4-94e0-d574e875920e",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-042",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "stress_overdraft",
+      "confidence": 0.9,
+      "cusum_value": 4.05,
+      "alarm_threshold": 2.5,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T08:55:11.556Z"
+  },
+  {
+    "eventId": "d0ed2402-5b06-41c6-b4de-e8c9bf9b9bb2",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-050",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "complaint_sentiment",
+      "confidence": 0.94,
+      "cusum_value": 3.68,
+      "alarm_threshold": 3,
+      "method": "CUSUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T08:55:26.238Z"
+  },
+  {
+    "eventId": "12be90a4-d868-4537-b350-69450346b34d",
+    "eventType": "RETENTION_CHECK",
+    "customerId": null,
+    "actor": "system",
+    "layer": "SYSTEM",
+    "payload": {
+      "checkedAt": "2026-06-30T08:55:33.236Z",
+      "archived": {
+        "approvals": 0
+      },
+      "errors": [],
+      "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+    },
+    "modelVersion": "N/A",
+    "timestamp": "2026-06-30T08:55:33.238Z"
+  },
+  {
+    "eventId": "2dad0bc6-e104-4058-be5f-50a2b40f53e0",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-045",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "salary_amount",
+      "confidence": 0.7,
+      "cusum_value": 3.08,
+      "alarm_threshold": 3,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T08:56:51.251Z"
+  },
+  {
+    "eventId": "210d56b5-e7be-4b18-8b7e-e792d0f8c021",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-050",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "lifecycle_mcc",
+      "confidence": 0.68,
+      "cusum_value": 3.62,
+      "alarm_threshold": 3,
+      "method": "BOCPD"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T08:57:39.255Z"
+  },
+  {
+    "eventId": "c67d669c-60ff-4364-bc59-543822da7ca8",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-049",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "salary_amount",
+      "confidence": 0.7,
+      "cusum_value": 4.23,
+      "alarm_threshold": 3,
+      "method": "CUSUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T08:59:11.568Z"
+  },
+  {
+    "eventId": "df1f880d-a553-4b25-be87-382cac7cf7b8",
+>>>>>>> c17349a (Email service)
     "eventType": "SIGNAL_FIRED",
     "customerId": "CUST-034",
     "actor": "ARGUS",
     "layer": "ARGUS",
     "payload": {
       "signal_type": "lifecycle_mcc",
+<<<<<<< HEAD
       "confidence": 0.71,
       "cusum_value": 4.32,
+=======
+      "confidence": 0.69,
+      "cusum_value": 3.86,
+>>>>>>> c17349a (Email service)
       "alarm_threshold": 3,
       "method": "CUSUM"
     },
     "modelVersion": "ARGUS-v1.0",
+<<<<<<< HEAD
     "timestamp": "2026-06-30T08:59:05.218Z"
   },
   {
@@ -225,11 +332,18 @@
   },
   {
     "eventId": "014ce21d-7555-41ef-b9a1-7e5f0aeab63e",
+=======
+    "timestamp": "2026-06-30T08:59:15.258Z"
+  },
+  {
+    "eventId": "40ef20f7-0733-40ac-a4a8-8290a42523a3",
+>>>>>>> c17349a (Email service)
     "eventType": "SIGNAL_FIRED",
     "customerId": "CUST-046",
     "actor": "ARGUS",
     "layer": "ARGUS",
     "payload": {
+<<<<<<< HEAD
       "signal_type": "salary_amount",
       "confidence": 0.77,
       "cusum_value": 3.83,
@@ -257,19 +371,740 @@
   },
   {
     "eventId": "faaf1bf5-e9f4-4c34-97d4-5b53437705d5",
+=======
+      "signal_type": "complaint_sentiment",
+      "confidence": 0.81,
+      "cusum_value": 4.84,
+      "alarm_threshold": 3,
+      "method": "CUSUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T08:59:59.572Z"
+  },
+  {
+    "eventId": "1a1e29c1-495b-4d5c-aea4-05b93dec7e11",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-001",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.208Z"
+  },
+  {
+    "eventId": "b5ca64a5-9d57-46d8-8526-9d50bbc167b4",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-002",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.237Z"
+  },
+  {
+    "eventId": "108bfbcb-7b7e-4649-9a45-6cab5e9e34b9",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-003",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.265Z"
+  },
+  {
+    "eventId": "71ed0938-28b2-427a-b69f-6cadfabe1f5d",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-004",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.293Z"
+  },
+  {
+    "eventId": "f1ab9d0b-9107-4534-a0c7-7733125c3d92",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-005",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.321Z"
+  },
+  {
+    "eventId": "24ab1c5a-35e4-4857-be02-166773e68032",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-006",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.349Z"
+  },
+  {
+    "eventId": "2ba9b711-566a-4503-9eb5-5e417a69b12a",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-007",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.378Z"
+  },
+  {
+    "eventId": "2c0832f2-b230-4089-a1c4-f935b2101216",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-008",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.406Z"
+  },
+  {
+    "eventId": "6dceb692-49e6-4bc3-9b48-796a32f10459",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-009",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 5,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.434Z"
+  },
+  {
+    "eventId": "675604a8-d5db-459c-b582-12dbbf85965d",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-010",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.462Z"
+  },
+  {
+    "eventId": "3ce2bd9b-31e4-4b8a-a5ba-09ed86a34d74",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-011",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.490Z"
+  },
+  {
+    "eventId": "83135992-6a3b-46b9-b73a-f347aebb20e0",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-012",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.518Z"
+  },
+  {
+    "eventId": "e6a42e1c-d242-4079-8a89-011b9b7022af",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-013",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.547Z"
+  },
+  {
+    "eventId": "0a784a96-4402-460b-b823-d60d052691d7",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-014",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.575Z"
+  },
+  {
+    "eventId": "76757bd8-9b52-4f81-a076-49d0ab9ecfaf",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-015",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.603Z"
+  },
+  {
+    "eventId": "6918a775-4f28-4e46-9b22-e909f7981747",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-016",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.631Z"
+  },
+  {
+    "eventId": "60c1af65-ba92-42e7-ba09-f03403756193",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-017",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.659Z"
+  },
+  {
+    "eventId": "38525cf4-748c-4e80-a3f1-ffca6ef6165b",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-018",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.687Z"
+  },
+  {
+    "eventId": "8054c39e-4521-40f1-8c1a-da2b5609b39f",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-019",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.716Z"
+  },
+  {
+    "eventId": "bf04b361-bd4c-457a-8a2f-17c238413522",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-020",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.744Z"
+  },
+  {
+    "eventId": "e8357545-99f2-4309-87b1-fdc5717e9c47",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-021",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.772Z"
+  },
+  {
+    "eventId": "ae760eb4-4fdc-4ea7-ac6f-8a1d51d419d9",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-022",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.800Z"
+  },
+  {
+    "eventId": "d7741813-1241-4786-a4dc-e66532d763b7",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-023",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.827Z"
+  },
+  {
+    "eventId": "7d094931-4bd4-49df-93ae-6ead746f2c57",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-024",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.855Z"
+  },
+  {
+    "eventId": "bf306db4-e865-4b87-b894-dd964b327b75",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-025",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.883Z"
+  },
+  {
+    "eventId": "a102da5c-137b-4a90-a164-a83131e9d7b9",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-026",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.911Z"
+  },
+  {
+    "eventId": "15735391-b8e7-4be9-8391-c90093c75366",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-027",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.939Z"
+  },
+  {
+    "eventId": "fecce455-fa4e-4d23-a6a4-8ef4544dad81",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-028",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.967Z"
+  },
+  {
+    "eventId": "f2bd9651-34cd-44da-8f5d-186853192f3a",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-029",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:00.995Z"
+  },
+  {
+    "eventId": "0f798ee1-7f07-4fd6-abd6-286c6bb82515",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-030",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.023Z"
+  },
+  {
+    "eventId": "bf7e9bcc-edf3-4d09-ac2e-ba19f899c151",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-031",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.051Z"
+  },
+  {
+    "eventId": "9e2c6937-0ed6-499c-a957-49e302540645",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-032",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.080Z"
+  },
+  {
+    "eventId": "12d90c77-1189-4b54-be32-41327753226a",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-033",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.108Z"
+  },
+  {
+    "eventId": "f1bfd178-becd-487c-904c-83232bbf3475",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-034",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.137Z"
+  },
+  {
+    "eventId": "4fce3b42-9f95-49b0-a354-c50995c51de4",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-035",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.165Z"
+  },
+  {
+    "eventId": "c388860b-f773-4e15-9099-216ba476530d",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-036",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.192Z"
+  },
+  {
+    "eventId": "83768554-f108-460b-8892-5c6376327498",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-037",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.220Z"
+  },
+  {
+    "eventId": "121e0f4d-33ec-47d6-a733-cdc9234b8c7a",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-038",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.249Z"
+  },
+  {
+    "eventId": "df1dd594-3086-4491-bc7f-3de588c55f19",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-039",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.278Z"
+  },
+  {
+    "eventId": "c147a971-5bb8-4c7e-ae15-52c06236f4d7",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-040",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.306Z"
+  },
+  {
+    "eventId": "7b865580-b72b-471a-822f-f4439d86eb56",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-041",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.336Z"
+  },
+  {
+    "eventId": "8a2636ea-92c3-4d2f-947f-0be4dade434e",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-042",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.363Z"
+  },
+  {
+    "eventId": "415d5383-554d-4ae6-8845-b5ef56646a7d",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-043",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.391Z"
+  },
+  {
+    "eventId": "ac428ef2-0129-4ed3-98fd-9f6f301c6707",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-044",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.419Z"
+  },
+  {
+    "eventId": "71390807-8d6b-4d90-8391-9fee741ef7e8",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-045",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "NONE"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.448Z"
+  },
+  {
+    "eventId": "56a81679-3ea1-46bd-bca1-3431c91abd1e",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-046",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.476Z"
+  },
+  {
+    "eventId": "72b4f18a-92b1-4f35-9bd1-3e64470933eb",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-047",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.504Z"
+  },
+  {
+    "eventId": "aebd38f9-d9e1-44d1-bd00-a2a1f86f572a",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-048",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.532Z"
+  },
+  {
+    "eventId": "a0adc29c-d208-40f0-9fd1-913fb6c2f2b9",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-049",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.562Z"
+  },
+  {
+    "eventId": "ec35684a-140a-4574-a9b9-08bdc121fb8c",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-050",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "NONE"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:00:01.591Z"
+  },
+  {
+    "eventId": "c4420f65-fa6f-4583-ad11-8b45a56f2d46",
+>>>>>>> c17349a (Email service)
     "eventType": "SIGNAL_FIRED",
     "customerId": "CUST-044",
     "actor": "ARGUS",
     "layer": "ARGUS",
     "payload": {
+<<<<<<< HEAD
       "signal_type": "complaint_sentiment",
       "confidence": 0.72,
       "cusum_value": 3.25,
+=======
+      "signal_type": "digital_engagement",
+      "confidence": 0.68,
+      "cusum_value": 4.15,
+>>>>>>> c17349a (Email service)
       "alarm_threshold": 3,
       "method": "CUSUM"
     },
     "modelVersion": "ARGUS-v1.0",
+<<<<<<< HEAD
     "timestamp": "2026-06-30T09:07:05.679Z"
+<<<<<<< HEAD
   },
   {
     "eventId": "7076bc52-d37c-44fb-8716-32d757e3006d",
@@ -281,14 +1116,443 @@
       "signal_type": "salary_amount",
       "confidence": 0.69,
       "cusum_value": 3.81,
+=======
+=======
+    "timestamp": "2026-06-30T09:00:03.262Z"
+  },
+  {
+    "eventId": "272a93be-2bf5-4c74-89b7-31775edb0c7c",
+    "eventType": "OUTREACH_PENDING_APPROVAL",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "de849b94-a05c-4536-b8b6-177b1074de40",
+      "channel": "email"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:00:32.689Z"
+  },
+  {
+    "eventId": "e6e15c17-6cdd-4485-8de0-0847e4b73af2",
+    "eventType": "OUTREACH_QUEUED",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "de849b94-a05c-4536-b8b6-177b1074de40",
+      "allowedChannels": [],
+      "consentStatus": {
+        "EMAIL": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "SMS": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "PUSH": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        }
+      },
+      "source": "llm-live"
+    },
+    "modelVersion": "mistralai/mistral-small-4-119b-2603",
+    "timestamp": "2026-06-30T09:00:32.690Z"
+  },
+  {
+    "eventId": "a52b309e-affc-4af5-93f4-1f292d21ddb9",
+    "eventType": "OUTREACH_PENDING_APPROVAL",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "a707cfd0-f0a0-44f4-af5b-386043386c8a",
+      "channel": "email"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:00:43.705Z"
+  },
+  {
+    "eventId": "be76e7d6-d33c-4e1d-ab45-cae29135aa17",
+    "eventType": "OUTREACH_QUEUED",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "a707cfd0-f0a0-44f4-af5b-386043386c8a",
+      "allowedChannels": [],
+      "consentStatus": {
+        "EMAIL": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "SMS": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "PUSH": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        }
+      },
+      "source": "llm-live"
+    },
+    "modelVersion": "mistralai/mistral-small-4-119b-2603",
+    "timestamp": "2026-06-30T09:00:43.706Z"
+  },
+  {
+    "eventId": "cb3af55e-f735-4482-a5fa-f58d7271f100",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-034",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "complaint_sentiment",
+      "confidence": 0.88,
+      "cusum_value": 4.69,
+      "alarm_threshold": 3,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:02:23.588Z"
+  },
+  {
+    "eventId": "edd5d2d7-b60e-41f3-8f9a-b01dbb680669",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-039",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "lifecycle_mcc",
+      "confidence": 0.68,
+      "cusum_value": 3.49,
+>>>>>>> d6ac3e4 (Email service)
       "alarm_threshold": 3,
       "method": "CUSUM"
     },
     "modelVersion": "ARGUS-v1.0",
+<<<<<<< HEAD
     "timestamp": "2026-06-30T09:07:53.749Z"
   },
   {
     "eventId": "589205af-5af7-4329-ad0a-8699a646e968",
+=======
+    "timestamp": "2026-06-30T09:03:15.287Z"
+  },
+  {
+    "eventId": "926806b0-158f-4221-b25e-9f82a44fbf3d",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-046",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "digital_engagement",
+      "confidence": 0.88,
+      "cusum_value": 3.46,
+      "alarm_threshold": 3,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:03:59.597Z"
+  },
+  {
+    "eventId": "da343b72-d034-4391-9844-2393fd8c93c0",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-039",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "digital_engagement",
+      "confidence": 0.86,
+      "cusum_value": 4.49,
+      "alarm_threshold": 3,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:04:47.602Z"
+  },
+  {
+    "eventId": "72e852fe-3da6-4c83-b948-405185cbe779",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-039",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "lifecycle_mcc",
+      "confidence": 0.91,
+      "cusum_value": 4.11,
+      "alarm_threshold": 3,
+      "method": "CUSUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:05:35.610Z"
+  },
+  {
+    "eventId": "40036558-44df-4bbb-b061-a0c939b5e688",
+    "eventType": "OUTREACH_BLOCKED",
+    "customerId": "CUST-001",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "channel": "EMAIL",
+      "reason": "NO_DPDPA_CONSENT",
+      "source": "send-email-resend"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:05:54.615Z"
+  },
+  {
+    "eventId": "20db12f7-362b-4212-a45f-32fa05fe1784",
+    "eventType": "OUTREACH_BLOCKED",
+    "customerId": "CUST-001",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "channel": "EMAIL",
+      "reason": "NO_DPDPA_CONSENT",
+      "source": "send-email-resend"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:06:02.388Z"
+  },
+  {
+    "eventId": "7f00aa94-c7b1-4dd4-acb9-8aaf26fef38f",
+    "eventType": "OUTREACH_PENDING_APPROVAL",
+    "customerId": "CUST-001",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "eb2f6979-b523-45f7-a901-ca201d328612",
+      "channel": "email"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:06:17.347Z"
+  },
+  {
+    "eventId": "4e6cac03-ba6a-483f-a0ee-d410c3cc61a8",
+    "eventType": "HUMAN_APPROVAL",
+    "customerId": "CUST-001",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "eb2f6979-b523-45f7-a901-ca201d328612"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:06:17.348Z"
+  },
+  {
+    "eventId": "f4d69a15-8aae-483b-b8a1-2a93d9b5a66a",
+    "eventType": "OUTREACH_BLOCKED",
+    "customerId": "CUST-001",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "channel": "EMAIL",
+      "reason": "RESEND_NOT_CONFIGURED",
+      "detail": "Resend is not configured: set RESEND_API_KEY in server/.env (get a key at https://resend.com/api-keys).",
+      "approvalId": "eb2f6979-b523-45f7-a901-ca201d328612"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:06:17.348Z"
+  },
+  {
+    "eventId": "b901ac90-6af0-414d-9d3a-9173c6a44b2e",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-037",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "lifecycle_mcc",
+      "confidence": 0.88,
+      "cusum_value": 4.37,
+      "alarm_threshold": 3,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:07:29.068Z"
+  },
+  {
+    "eventId": "d6fd1377-44ee-4145-a66f-286e3c6233dd",
+    "eventType": "RETENTION_CHECK",
+    "customerId": null,
+    "actor": "system",
+    "layer": "SYSTEM",
+    "payload": {
+      "checkedAt": "2026-06-30T09:07:36.067Z",
+      "archived": {
+        "approvals": 0
+      },
+      "errors": [],
+      "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+    },
+    "modelVersion": "N/A",
+    "timestamp": "2026-06-30T09:07:36.070Z"
+  },
+  {
+    "eventId": "4d9dd08b-a09e-4088-a1e5-f41fd9b2b4ee",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-047",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "transaction_frequency",
+      "confidence": 0.81,
+      "cusum_value": 4.36,
+      "alarm_threshold": 3,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:07:59.628Z"
+  },
+  {
+    "eventId": "ecb744f6-970e-4a76-9806-c6e827659c24",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-026",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "digital_engagement",
+      "confidence": 0.73,
+      "cusum_value": 4.2,
+      "alarm_threshold": 3,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:08:06.073Z"
+  },
+  {
+    "eventId": "8145b86f-ed24-4756-91c0-6d44e6bdcda1",
+    "eventType": "OUTREACH_PENDING_APPROVAL",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "42299fc0-6cc3-4438-95d3-19866f654423",
+      "channel": "email"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:08:36.892Z"
+  },
+  {
+    "eventId": "7e11f1ee-9713-414c-8da6-1efef3849776",
+    "eventType": "OUTREACH_QUEUED",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "42299fc0-6cc3-4438-95d3-19866f654423",
+      "allowedChannels": [],
+      "consentStatus": {
+        "EMAIL": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "SMS": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "PUSH": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        }
+      },
+      "source": "llm-live"
+    },
+    "modelVersion": "mistralai/mistral-small-4-119b-2603",
+    "timestamp": "2026-06-30T09:08:36.893Z"
+  },
+  {
+    "eventId": "9b61bdb0-099a-4ce0-b9af-bbf2f3a1a974",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-036",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "location_city",
+      "confidence": 0.74,
+      "cusum_value": 3.54,
+      "alarm_threshold": 3.5,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:08:47.632Z"
+  },
+  {
+    "eventId": "22f5d322-170a-4eb1-a127-24c1232317df",
+    "eventType": "OUTREACH_PENDING_APPROVAL",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "7d64ffc3-3051-445b-bfdc-336804263375",
+      "channel": "email"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:09:10.578Z"
+  },
+  {
+    "eventId": "f088dc22-b481-4859-8e66-4371388033b6",
+    "eventType": "OUTREACH_QUEUED",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "7d64ffc3-3051-445b-bfdc-336804263375",
+      "allowedChannels": [],
+      "consentStatus": {
+        "EMAIL": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "SMS": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "PUSH": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        }
+      },
+      "source": "llm-live"
+    },
+    "modelVersion": "mistralai/mistral-small-4-119b-2603",
+    "timestamp": "2026-06-30T09:09:10.580Z"
+  },
+  {
+    "eventId": "79a0441a-311e-4b7c-83ce-2bc8e9649b9f",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-040",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "stress_overdraft",
+      "confidence": 0.72,
+      "cusum_value": 2.74,
+      "alarm_threshold": 2.5,
+      "method": "BOCPD"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:10:23.642Z"
+  },
+  {
+    "eventId": "ceb0b8ab-18e3-41ed-86f3-b8cc956b9d06",
+    "eventType": "OUTREACH_BLOCKED",
+    "customerId": "CUST-001",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "channel": "EMAIL",
+      "reason": "NO_DPDPA_CONSENT",
+      "source": "send-email-resend"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:10:46.575Z"
+  },
+  {
+    "eventId": "62e435fc-6b2a-471f-b563-ae0f6110ee5f",
+>>>>>>> d6ac3e4 (Email service)
     "eventType": "SIGNAL_FIRED",
     "customerId": "CUST-042",
     "actor": "ARGUS",
@@ -296,6 +1560,7 @@
     "payload": {
       "signal_type": "digital_engagement",
       "confidence": 0.88,
+<<<<<<< HEAD
       "cusum_value": 4.62,
       "alarm_threshold": 3,
       "method": "CUSUM"
@@ -497,11 +1762,54 @@
   },
   {
     "eventId": "a5990301-b76f-4055-b795-c1d29e5eba56",
+=======
+      "cusum_value": 3.35,
+      "alarm_threshold": 3,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:11:36.128Z"
+  },
+  {
+    "eventId": "6af15c49-b400-4f12-b726-3f8b5a5ac063",
+    "eventType": "OUTREACH_BLOCKED",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "channel": "EMAIL",
+      "reason": "NO_DPDPA_CONSENT",
+      "source": "send-email-resend"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:11:41.995Z"
+  },
+  {
+    "eventId": "abd59d82-b257-4a91-b6f5-b15bc261eb98",
+    "eventType": "RETENTION_CHECK",
+    "customerId": null,
+    "actor": "system",
+    "layer": "SYSTEM",
+    "payload": {
+      "checkedAt": "2026-06-30T09:11:43.126Z",
+      "archived": {
+        "approvals": 0
+      },
+      "errors": [],
+      "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+    },
+    "modelVersion": "N/A",
+    "timestamp": "2026-06-30T09:11:43.128Z"
+  },
+  {
+    "eventId": "588c50b6-2768-483f-b4a2-a45154683d52",
+>>>>>>> d6ac3e4 (Email service)
     "eventType": "SIGNAL_FIRED",
     "customerId": "CUST-038",
     "actor": "ARGUS",
     "layer": "ARGUS",
     "payload": {
+<<<<<<< HEAD
       "signal_type": "salary_amount",
       "confidence": 0.7,
       "cusum_value": 3.28,
@@ -665,10 +1973,1892 @@
       "signal_type": "salary_amount",
       "confidence": 0.83,
       "cusum_value": 4.1,
+=======
+      "signal_type": "transaction_frequency",
+      "confidence": 0.93,
+      "cusum_value": 3.09,
+>>>>>>> d6ac3e4 (Email service)
       "alarm_threshold": 3,
       "method": "CUSUM"
     },
     "modelVersion": "ARGUS-v1.0",
+<<<<<<< HEAD
     "timestamp": "2026-06-30T09:48:43.733Z"
+=======
+    "timestamp": "2026-06-30T09:12:13.131Z"
+  },
+  {
+    "eventId": "1a05f020-44af-4ff3-b68f-9600912f12e3",
+    "eventType": "CONSENT_GRANTED",
+    "customerId": "CUST-046",
+    "actor": "rm_user",
+    "layer": "CONSENT",
+    "payload": {
+      "type": "DPDPA",
+      "grant": true
+    },
+    "modelVersion": "N/A",
+    "timestamp": "2026-06-30T09:12:46.955Z"
+  },
+  {
+    "eventId": "98d91e8b-6913-4f16-9f9e-308cda4cbf14",
+    "eventType": "CONSENT_GRANTED",
+    "customerId": "CUST-046",
+    "actor": "rm_user",
+    "layer": "CONSENT",
+    "payload": {
+      "type": "DPDPA",
+      "grant": true
+    },
+    "modelVersion": "N/A",
+    "timestamp": "2026-06-30T09:13:10.106Z"
+  },
+  {
+    "eventId": "037de994-21b9-4c20-9998-b7845c58a636",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-035",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "digital_engagement",
+      "confidence": 0.92,
+      "cusum_value": 3.8,
+      "alarm_threshold": 3,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:14:56.568Z"
+  },
+  {
+    "eventId": "957e4437-8ab7-4161-bfa3-f35802eb83cd",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-001",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.232Z"
+  },
+  {
+    "eventId": "cf67e1fe-7011-4737-92a8-1ab0f2cd79d1",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-002",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.264Z"
+  },
+  {
+    "eventId": "459a27be-23dd-4cb7-8703-a92877965a2c",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-003",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.294Z"
+  },
+  {
+    "eventId": "2d0e2b4d-b0d9-4e13-bc11-bfcf8ef9bb8b",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-004",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.323Z"
+  },
+  {
+    "eventId": "44264812-1180-431e-a139-5d413f3d8074",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-005",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.352Z"
+  },
+  {
+    "eventId": "1dc48ef5-f112-4daf-bad2-373655706773",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-006",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.381Z"
+  },
+  {
+    "eventId": "62afed63-5973-4798-83b0-7629b9680bec",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-007",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.410Z"
+  },
+  {
+    "eventId": "284d4647-ebf2-4fb9-b3a0-4eba5d499b68",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-008",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.439Z"
+  },
+  {
+    "eventId": "a6f3570d-c2e1-42eb-8287-37f8d6f7898b",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-009",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 5,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.468Z"
+  },
+  {
+    "eventId": "8504c375-78e1-43be-b52f-53fc9368aea8",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-010",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.497Z"
+  },
+  {
+    "eventId": "4e49181b-defe-4432-9032-100255890b01",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-011",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.527Z"
+  },
+  {
+    "eventId": "436fe864-8bd2-481a-8382-2d111ff1ea71",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-012",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.556Z"
+  },
+  {
+    "eventId": "d787adb2-b0b6-4395-bd85-4acfcceea6c7",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-013",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.585Z"
+  },
+  {
+    "eventId": "cf3dbd98-cbb5-41dc-8b5e-d65fe0320ac1",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-014",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.615Z"
+  },
+  {
+    "eventId": "03ac9d64-67bb-41b0-ae9a-9a071936b71c",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-015",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.644Z"
+  },
+  {
+    "eventId": "c6613dbc-3812-46b8-8b66-83dba9be04c5",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-016",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.673Z"
+  },
+  {
+    "eventId": "6f6e138d-3f9a-4297-bd35-e3b5843102bf",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-017",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.702Z"
+  },
+  {
+    "eventId": "14b934aa-275b-4ef4-b356-e01e303606d9",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-018",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.732Z"
+  },
+  {
+    "eventId": "1339e7d2-e40a-4463-b8c8-9b8dce9409cb",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-019",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.761Z"
+  },
+  {
+    "eventId": "cebfa499-2006-48b8-af0f-8b00af4c9394",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-020",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.790Z"
+  },
+  {
+    "eventId": "9e1d9d28-7ebf-4c93-88ef-3f4a57228ccc",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-021",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.819Z"
+  },
+  {
+    "eventId": "122dceea-ddf2-41d3-bbed-f86b35f72841",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-022",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.848Z"
+  },
+  {
+    "eventId": "a3e404f5-9fc9-47ca-aada-f97f6c24f996",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-023",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.877Z"
+  },
+  {
+    "eventId": "d1e06720-d282-448d-8b38-fd4d60353767",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-024",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.906Z"
+  },
+  {
+    "eventId": "33a7752f-de88-41ee-b39f-f877e081d445",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-025",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.935Z"
+  },
+  {
+    "eventId": "60e4fd69-fdcf-4fee-8578-1e5c4133133b",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-026",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.964Z"
+  },
+  {
+    "eventId": "6bf45a9a-0559-4e06-b287-f83bc6784843",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-027",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:00.993Z"
+  },
+  {
+    "eventId": "66c6c287-df48-4bdd-a323-a1d8e5c62f50",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-028",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.022Z"
+  },
+  {
+    "eventId": "79077520-1aa1-411f-bba5-1a776db16048",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-029",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.050Z"
+  },
+  {
+    "eventId": "c409c9bc-3aba-4b96-99a9-790d2f451d39",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-030",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.080Z"
+  },
+  {
+    "eventId": "9b96905a-77c0-47c2-bb4f-c22af99cc0f0",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-031",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.111Z"
+  },
+  {
+    "eventId": "4a0a36a9-7304-460b-8f5f-82f161f10d42",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-032",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.140Z"
+  },
+  {
+    "eventId": "fa35222a-bf57-4f13-b29e-be73d16f66a1",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-033",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.169Z"
+  },
+  {
+    "eventId": "dc1fc1d2-bde5-407f-81eb-0b52aa2967b6",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-034",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.198Z"
+  },
+  {
+    "eventId": "9b89d9c8-7f49-45e7-ad77-cab0966c7316",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-035",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.227Z"
+  },
+  {
+    "eventId": "3da12ca4-c253-463f-94db-573c2bc5983d",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-036",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.256Z"
+  },
+  {
+    "eventId": "66307156-dafe-46d3-ba8b-5afa4945334d",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-037",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.291Z"
+  },
+  {
+    "eventId": "d8f34f80-49f7-4e4a-869b-8104aa983ef9",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-038",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.337Z"
+  },
+  {
+    "eventId": "f1443a85-323d-471d-ad95-c0dd2aa07612",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-039",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.369Z"
+  },
+  {
+    "eventId": "9b98631d-9459-4558-af4f-acb81c5ffbaa",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-040",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.402Z"
+  },
+  {
+    "eventId": "0f89fab6-1939-43d5-afb7-390b11d6673c",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-041",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.434Z"
+  },
+  {
+    "eventId": "e74e86bb-4bcb-4627-bcf7-15af59162b94",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-042",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.462Z"
+  },
+  {
+    "eventId": "769f790c-9b81-43dc-9375-ecfb009f7130",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-043",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.492Z"
+  },
+  {
+    "eventId": "c3bca874-87fb-40b8-802a-e7325cfbf29b",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-044",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.522Z"
+  },
+  {
+    "eventId": "852f063f-d7be-4878-b00d-2875625f89db",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-045",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "NONE"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.551Z"
+  },
+  {
+    "eventId": "5f780729-1fb5-4dfe-aceb-2e17c26e4755",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-046",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.581Z"
+  },
+  {
+    "eventId": "e89e3d06-c943-4d8d-abbb-126ee5680c52",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-047",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.609Z"
+  },
+  {
+    "eventId": "e9c0cddf-9b01-434b-8d2d-492bcb029b04",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-048",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.639Z"
+  },
+  {
+    "eventId": "b4c037e3-2957-439a-a3c8-c192f8ab37ac",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-049",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.669Z"
+  },
+  {
+    "eventId": "b9ef8baa-ad31-40af-8a94-bcf403123b2e",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-050",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "NONE"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:15:01.699Z"
+  },
+  {
+    "eventId": "26a3fb10-d524-4aaf-b6ee-81ec216a9d9f",
+    "eventType": "RETENTION_CHECK",
+    "customerId": null,
+    "actor": "system",
+    "layer": "SYSTEM",
+    "payload": {
+      "checkedAt": "2026-06-30T09:15:03.566Z",
+      "archived": {
+        "approvals": 0
+      },
+      "errors": [],
+      "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+    },
+    "modelVersion": "N/A",
+    "timestamp": "2026-06-30T09:15:03.570Z"
+  },
+  {
+    "eventId": "30dddbff-8f2c-48b5-a45e-be59c5d3353c",
+    "eventType": "RETENTION_CHECK",
+    "customerId": null,
+    "actor": "system",
+    "layer": "SYSTEM",
+    "payload": {
+      "checkedAt": "2026-06-30T09:16:07.868Z",
+      "archived": {
+        "approvals": 0
+      },
+      "errors": [],
+      "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+    },
+    "modelVersion": "N/A",
+    "timestamp": "2026-06-30T09:16:07.873Z"
+  },
+  {
+    "eventId": "f232e6c1-b493-4e64-b96b-abf57f0d950c",
+    "eventType": "OUTREACH_PENDING_APPROVAL",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "1a0c294a-0c01-4c01-8751-04cf0777d882",
+      "channel": "email"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:16:09.332Z"
+  },
+  {
+    "eventId": "33adeff5-ee47-43ec-91f1-8c6719676f32",
+    "eventType": "HUMAN_APPROVAL",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "1a0c294a-0c01-4c01-8751-04cf0777d882"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:16:09.334Z"
+  },
+  {
+    "eventId": "72c8d54a-7bb2-4439-a8d7-3b7513d509ab",
+    "eventType": "OUTREACH_BLOCKED",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "channel": "EMAIL",
+      "reason": "RESEND_NOT_CONFIGURED",
+      "detail": "Resend is not configured: set RESEND_API_KEY in server/.env (get a key at https://resend.com/api-keys).",
+      "approvalId": "1a0c294a-0c01-4c01-8751-04cf0777d882"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:16:09.334Z"
+  },
+  {
+    "eventId": "3b030f95-c0b0-4611-b381-d4c9629acfa2",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-038",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "complaint_sentiment",
+      "confidence": 0.83,
+      "cusum_value": 4.27,
+      "alarm_threshold": 3,
+      "method": "BOCPD"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:16:59.631Z"
+  },
+  {
+    "eventId": "f2515845-5947-48bf-b6c1-b3914708aa24",
+    "eventType": "OUTREACH_PENDING_APPROVAL",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "1330e5c2-bb1a-470f-9f69-109b182df467",
+      "channel": "email"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:17:01.275Z"
+  },
+  {
+    "eventId": "e7314d00-82ff-4999-b88e-3e6ac489e959",
+    "eventType": "HUMAN_APPROVAL",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "1330e5c2-bb1a-470f-9f69-109b182df467"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:17:01.277Z"
+  },
+  {
+    "eventId": "b8404833-495f-49b2-a4ee-3937d14f30f7",
+    "eventType": "OUTREACH_EMAIL_DISPATCHED",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "1330e5c2-bb1a-470f-9f69-109b182df467",
+      "provider": "resend",
+      "messageId": "630d03b2-4845-48f2-8651-98fc6f87c42a",
+      "to": "rudrajeetpal64@gmail.com",
+      "requestedTo": "naveen.chakraborty@email.com",
+      "from": "onboarding@resend.dev",
+      "sandboxOverride": true,
+      "subject": "A personal note from your Relationship Manager",
+      "contentHash": "e1f8f9e15a313e373dda2bedccff2760f96634e5d5fc62bebe5432a4cdf4f6e4"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:17:02.060Z"
+  },
+  {
+    "eventId": "20ed5ad9-b2f6-409d-88ec-5b0717c83be8",
+    "eventType": "OUTREACH_SENT",
+    "customerId": "CUST-049",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "1330e5c2-bb1a-470f-9f69-109b182df467",
+      "channel": "EMAIL",
+      "contentHash": "e1f8f9e15a313e373dda2bedccff2760f96634e5d5fc62bebe5432a4cdf4f6e4",
+      "provider": "resend",
+      "messageId": "630d03b2-4845-48f2-8651-98fc6f87c42a"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:17:02.061Z"
+  },
+  {
+    "eventId": "f8b77c0b-e9b5-42ab-b790-08371fc23273",
+    "eventType": "RETENTION_CHECK",
+    "customerId": null,
+    "actor": "system",
+    "layer": "SYSTEM",
+    "payload": {
+      "checkedAt": "2026-06-30T09:17:06.629Z",
+      "archived": {
+        "approvals": 0
+      },
+      "errors": [],
+      "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+    },
+    "modelVersion": "N/A",
+    "timestamp": "2026-06-30T09:17:06.632Z"
+  },
+  {
+    "eventId": "952a521f-4d2c-4bb1-b403-4ac0bb68db2d",
+    "eventType": "OUTREACH_PENDING_APPROVAL",
+    "customerId": "CUST-034",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "67b6d2a2-acde-4a42-81e6-b811468cf319",
+      "channel": "sms"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:18:39.106Z"
+  },
+  {
+    "eventId": "df7b2dc1-4373-418b-9c55-b4f67489f9c8",
+    "eventType": "OUTREACH_QUEUED",
+    "customerId": "CUST-034",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "67b6d2a2-acde-4a42-81e6-b811468cf319",
+      "allowedChannels": [],
+      "consentStatus": {
+        "EMAIL": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "SMS": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "PUSH": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        }
+      },
+      "source": "llm-live"
+    },
+    "modelVersion": "mistralai/mistral-small-4-119b-2603",
+    "timestamp": "2026-06-30T09:18:39.108Z"
+  },
+  {
+    "eventId": "bbf7afad-0c86-49d7-bedc-a53030378aaa",
+    "eventType": "OUTREACH_PENDING_APPROVAL",
+    "customerId": "CUST-034",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "131e2c1f-80a4-4cb3-8b8e-8be644736bb3",
+      "channel": "sms"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:18:55.615Z"
+  },
+  {
+    "eventId": "8c3c1d48-c0e5-4c58-b13d-8181152eddf7",
+    "eventType": "OUTREACH_QUEUED",
+    "customerId": "CUST-034",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "131e2c1f-80a4-4cb3-8b8e-8be644736bb3",
+      "allowedChannels": [],
+      "consentStatus": {
+        "EMAIL": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "SMS": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "PUSH": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        }
+      },
+      "source": "llm-live"
+    },
+    "modelVersion": "mistralai/mistral-small-4-119b-2603",
+    "timestamp": "2026-06-30T09:18:55.619Z"
+  },
+  {
+    "eventId": "dd6400ff-981e-4e89-a85c-1ecb7fff8df9",
+    "eventType": "OUTREACH_TRANSLATED",
+    "customerId": "CUST-034",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "target_language": "te",
+      "content_hash": "937e326ad8dcf6d18ef49e503c22004a92ed973dd141d4f3dc485f85a94d5b95"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:19:15.928Z"
+  },
+  {
+    "eventId": "fd99925f-206c-4084-9743-49c34df884b5",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-001",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.202Z"
+  },
+  {
+    "eventId": "ab37f8ab-c63b-4c08-b080-7a25e110b9b1",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-002",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.232Z"
+  },
+  {
+    "eventId": "c6841303-f1f5-4e86-9663-7b09fbf2ead4",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-003",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.262Z"
+  },
+  {
+    "eventId": "530b3af7-d63e-499b-9d61-200d8b138a14",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-004",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.293Z"
+  },
+  {
+    "eventId": "825f5b0c-15e5-41fb-b55d-ec6c3469c089",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-005",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.323Z"
+  },
+  {
+    "eventId": "fe437c80-e2b0-4495-b9f0-52e2d680d96d",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-006",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.354Z"
+  },
+  {
+    "eventId": "4f7a7199-d7d1-4fe5-8584-3a9c96e6c49d",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-007",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.386Z"
+  },
+  {
+    "eventId": "44b98605-a044-4ca5-b05c-409776ece1b8",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-008",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.417Z"
+  },
+  {
+    "eventId": "0f436b59-1d09-4325-ab4d-1c3afbfd05bf",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-009",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 5,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.446Z"
+  },
+  {
+    "eventId": "4149e8ae-464a-495e-83ae-bbc2e0a42cdb",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-010",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.476Z"
+  },
+  {
+    "eventId": "39b3fd97-9f38-41a3-a474-e33a1d8a21c5",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-011",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.507Z"
+  },
+  {
+    "eventId": "642dcc7f-4f2e-48c4-86a9-f969999eb406",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-012",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.535Z"
+  },
+  {
+    "eventId": "85f2aa5d-a730-4e38-acda-c1294ae285f1",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-013",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.565Z"
+  },
+  {
+    "eventId": "e1139180-486b-4046-851f-42d70f31ae56",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-014",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.595Z"
+  },
+  {
+    "eventId": "51c877fb-2e19-4b58-8a4d-c6067cd0c808",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-015",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.625Z"
+  },
+  {
+    "eventId": "4be90fc5-8837-4b07-ac22-dd4b273f15b8",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-016",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.654Z"
+  },
+  {
+    "eventId": "fde0b155-a555-44ee-affc-48a8b4c83c7f",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-017",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.683Z"
+  },
+  {
+    "eventId": "c5b7a981-be21-44ac-a48b-92a8240a1b74",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-018",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.713Z"
+  },
+  {
+    "eventId": "e8f81cf2-a3b8-4274-a528-ac77e7a2b93f",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-019",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.742Z"
+  },
+  {
+    "eventId": "7e0303c6-fabb-474b-a785-505c0edaa7dc",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-020",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.772Z"
+  },
+  {
+    "eventId": "68448ba4-436a-4cbe-9f0b-f4ebda7af164",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-021",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.802Z"
+  },
+  {
+    "eventId": "f49ace0b-f3aa-4f9b-8568-68bc784d983f",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-022",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.831Z"
+  },
+  {
+    "eventId": "fa1f8099-d240-4478-bc81-10004c905b53",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-023",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.861Z"
+  },
+  {
+    "eventId": "c52ddcd1-42e9-4042-ab3e-dce5e2ae321e",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-024",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.890Z"
+  },
+  {
+    "eventId": "1a88f3ec-a287-4514-9389-d5a38eb7ad9a",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-025",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.919Z"
+  },
+  {
+    "eventId": "0f8555f9-6399-47d2-9a42-4f613647be12",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-026",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.948Z"
+  },
+  {
+    "eventId": "6cd638d3-049a-4409-a50f-613044891d2d",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-027",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:00.977Z"
+  },
+  {
+    "eventId": "4f212f9a-85ed-48df-9ae5-da5ed4879316",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-028",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.007Z"
+  },
+  {
+    "eventId": "99efbc40-1c5b-41d5-a964-d4c8d9d13f15",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-029",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.036Z"
+  },
+  {
+    "eventId": "81cf8ecd-9ffd-438c-b887-c9a784b11bc7",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-030",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.066Z"
+  },
+  {
+    "eventId": "a3a2c96a-1a9b-444a-8812-055b6c43dce7",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-031",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.098Z"
+  },
+  {
+    "eventId": "864d6b1e-b195-47a9-8386-20287b153232",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-032",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.128Z"
+  },
+  {
+    "eventId": "5298d85a-ed92-413c-b858-dcc087019be8",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-033",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.157Z"
+  },
+  {
+    "eventId": "ac6d5c54-6cd4-4a97-995b-ff69aa5c1b28",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-034",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.187Z"
+  },
+  {
+    "eventId": "9ecb8d45-498f-4cf1-980b-a0d26af68e47",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-035",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.217Z"
+  },
+  {
+    "eventId": "4e86f4f6-0414-4149-9c19-2345d9a32398",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-036",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.249Z"
+  },
+  {
+    "eventId": "ef43245a-77bb-4948-87e6-d763fb644708",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-037",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "MEDIUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.281Z"
+  },
+  {
+    "eventId": "4ed3e488-f8df-467a-accd-130b2d6d553b",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-038",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.311Z"
+  },
+  {
+    "eventId": "9d79d904-8c04-4127-80df-7052a3b8c425",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-039",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.343Z"
+  },
+  {
+    "eventId": "a0a9df4e-e296-4f8c-a857-d60b23d23848",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-040",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.375Z"
+  },
+  {
+    "eventId": "2a02a365-9e95-4217-ac0a-1fc3c18c62ed",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-041",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.409Z"
+  },
+  {
+    "eventId": "cbf2c311-93f5-45c7-955d-7dd3f18b3a84",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-042",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.448Z"
+  },
+  {
+    "eventId": "54221be9-3dd3-4d32-a3f7-5e41cce1063e",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-043",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.478Z"
+  },
+  {
+    "eventId": "df8b523b-816f-4c3e-9799-fb1987d881cd",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-044",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.510Z"
+  },
+  {
+    "eventId": "cf05b34b-6b54-4f67-9ccb-f9bfb2dd7823",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-045",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "NONE"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.540Z"
+  },
+  {
+    "eventId": "86c5c4c9-1d9d-4940-8a22-36f63a2aaffd",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-046",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.571Z"
+  },
+  {
+    "eventId": "2eeaab68-0303-45cd-b80e-08b44535076c",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-047",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.600Z"
+  },
+  {
+    "eventId": "cba98dd4-2367-4869-aee0-9c93fb2f7cc9",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-048",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 3,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.629Z"
+  },
+  {
+    "eventId": "c91f584c-1cbd-4213-a3b7-0838e0b40cf9",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-049",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 4,
+      "total": 9,
+      "severity": "LOW"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.658Z"
+  },
+  {
+    "eventId": "e02c4b12-a4c3-4544-b90b-4fb337c62439",
+    "eventType": "ARGUS_EVALUATION",
+    "customerId": "CUST-050",
+    "actor": "orchestrator",
+    "layer": "ARGUS",
+    "payload": {
+      "detected": 2,
+      "total": 9,
+      "severity": "NONE"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:20:01.688Z"
+  },
+  {
+    "eventId": "45ec8b36-78fd-4809-9a43-830a5b764f9b",
+    "eventType": "RETENTION_CHECK",
+    "customerId": null,
+    "actor": "system",
+    "layer": "SYSTEM",
+    "payload": {
+      "checkedAt": "2026-06-30T09:21:48.550Z",
+      "archived": {
+        "approvals": 0
+      },
+      "errors": [],
+      "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+    },
+    "modelVersion": "N/A",
+    "timestamp": "2026-06-30T09:21:48.553Z"
+  },
+  {
+    "eventId": "06488c36-4fd1-443b-a2a9-47ed2e03751f",
+    "eventType": "OUTREACH_TRANSLATED",
+    "customerId": null,
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "target_language": "hi",
+      "mode": "gcp",
+      "content_hash": "e0c78b716cda6560ec7361ad33ecd5e521c5ebbf612cb62424ab05e1f120e714"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:21:49.370Z"
+  },
+  {
+    "eventId": "8f765242-34ac-476d-a5c3-3cea06259314",
+    "eventType": "OUTREACH_PENDING_APPROVAL",
+    "customerId": "CUST-034",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "43bf8ba3-0a48-4173-a7ba-87254579cc6e",
+      "channel": "sms"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:22:15.416Z"
+  },
+  {
+    "eventId": "68d80837-e71b-4ae9-b3c1-f13c674c6a48",
+    "eventType": "OUTREACH_QUEUED",
+    "customerId": "CUST-034",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "43bf8ba3-0a48-4173-a7ba-87254579cc6e",
+      "allowedChannels": [],
+      "consentStatus": {
+        "EMAIL": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "SMS": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        },
+        "PUSH": {
+          "allowed": false,
+          "reason": "NO_DPDPA_CONSENT"
+        }
+      },
+      "source": "llm-live"
+    },
+    "modelVersion": "mistralai/mistral-small-4-119b-2603",
+    "timestamp": "2026-06-30T09:22:15.419Z"
+  },
+  {
+    "eventId": "94f06975-d35c-43bf-bd99-b1a999787fa3",
+    "eventType": "RETENTION_CHECK",
+    "customerId": null,
+    "actor": "system",
+    "layer": "SYSTEM",
+    "payload": {
+      "checkedAt": "2026-06-30T09:22:18.373Z",
+      "archived": {
+        "approvals": 0
+      },
+      "errors": [],
+      "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+    },
+    "modelVersion": "N/A",
+    "timestamp": "2026-06-30T09:22:18.377Z"
+  },
+  {
+    "eventId": "cc4c8b9b-abaf-4be4-883b-d698a0573c65",
+    "eventType": "OUTREACH_TRANSLATED",
+    "customerId": null,
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "target_language": "bn",
+      "mode": "gcp",
+      "content_hash": "fdf3d504cdb1946cf4b250eaf853b00b4cac9cb41bbe826ed1eca2e45edb5ff1"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:22:23.967Z"
+  },
+  {
+    "eventId": "302ad440-78c8-4ab8-9ca8-8d7dcd4f73ac",
+    "eventType": "HUMAN_APPROVAL",
+    "customerId": "CUST-034",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "43bf8ba3-0a48-4173-a7ba-87254579cc6e"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:22:45.264Z"
+  },
+  {
+    "eventId": "3e929a0c-9399-4f8e-88b6-960f799aa7bc",
+    "eventType": "OUTREACH_EMAIL_DISPATCHED",
+    "customerId": "CUST-034",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "43bf8ba3-0a48-4173-a7ba-87254579cc6e",
+      "provider": "resend",
+      "messageId": "8da686cd-4a89-40d7-a0ce-9d594da78c00",
+      "to": "rudrajeetpal64@gmail.com",
+      "requestedTo": "komal.iyengar@email.com",
+      "from": "onboarding@resend.dev",
+      "sandboxOverride": true,
+      "subject": "কোমল, আমরা তোমার কথা শুনছি এবং তোমার জন্য সবকিছু ঠিক করে দিতে চাই।",
+      "contentHash": "a99fa5d9ddd5f9f32cd7973d448352657af75589cf175d2ded488848d907de83"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:22:45.635Z"
+  },
+  {
+    "eventId": "c4fd4371-f640-4e94-859e-8fac486e92af",
+    "eventType": "OUTREACH_SENT",
+    "customerId": "CUST-034",
+    "actor": "rm_user",
+    "layer": "HERALD",
+    "payload": {
+      "approvalId": "43bf8ba3-0a48-4173-a7ba-87254579cc6e",
+      "channel": "EMAIL",
+      "contentHash": "a99fa5d9ddd5f9f32cd7973d448352657af75589cf175d2ded488848d907de83",
+      "provider": "resend",
+      "messageId": "8da686cd-4a89-40d7-a0ce-9d594da78c00"
+    },
+    "modelVersion": "HERALD-v1.0",
+    "timestamp": "2026-06-30T09:22:45.637Z"
+  },
+  {
+    "eventId": "cb00e7bd-9c9f-49ae-83e1-2eb61cf34d1b",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-046",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "lifecycle_mcc",
+      "confidence": 0.76,
+      "cusum_value": 4.78,
+      "alarm_threshold": 3,
+      "method": "CUSUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T09:22:48.379Z"
+>>>>>>> c17349a (Email service)
+>>>>>>> d6ac3e4 (Email service)
   }
 ]

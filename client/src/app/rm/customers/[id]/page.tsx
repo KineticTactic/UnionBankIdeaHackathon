@@ -15,6 +15,41 @@ import {
   Package, Sparkles, Ban, ShieldCheck,
 } from 'lucide-react';
 
+function mdToHtml(md: string): string {
+  let html = md
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  html = html
+    .replace(/### (.+)/g, '<h3 class="text-[14px] font-bold text-[#2A161B] mt-3 mb-1">$1</h3>')
+    .replace(/## (.+)/g, '<h2 class="text-[15px] font-bold text-[#2A161B] mt-4 mb-1.5">$1</h2>')
+    .replace(/# (.+)/g, '<h1 class="text-[17px] font-black text-[#2A161B] mt-4 mb-2">$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-[#2A161B]">$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code class="bg-[#F9F9F7] text-[#6B132B] px-1 rounded text-[11px]">$1</code>')
+    .replace(/^> (.+)/gm, '<blockquote class="border-l-2 border-[#B46B3E] pl-3 text-[#6B6562] italic my-2">$1</blockquote>');
+  const lines = html.split('\n');
+  let inList = false;
+  const out: string[] = [];
+  for (const line of lines) {
+    if (/^- (.+)/.test(line)) {
+      if (!inList) { out.push('<ul class="list-disc pl-5 space-y-0.5 my-1.5">'); inList = true; }
+      out.push(`<li class="text-[12px] text-[#2A161B]">${line.replace(/^- /, '')}</li>`);
+    } else {
+      if (inList) { out.push('</ul>'); inList = false; }
+      if (line.trim() === '') {
+        out.push('</p><p class="text-[12px] text-[#2A161B] leading-relaxed">');
+      } else if (!line.startsWith('<h') && !line.startsWith('<blockquote') && !line.startsWith('</blockquote') && !line.startsWith('<ul') && !line.startsWith('</ul') && !line.startsWith('<li')) {
+        out.push(line + ' ');
+      } else {
+        out.push(line);
+      }
+    }
+  }
+  if (inList) out.push('</ul>');
+  return `<p class="text-[12px] text-[#2A161B] leading-relaxed">${out.join('').replace(/<\/p><p class="text-\[12px\] text-\[\#2A161B\] leading-relaxed"><\/p>/g, '</p><p class="text-[12px] text-[#2A161B] leading-relaxed">')}</p>`;
+}
+
 interface Snapshot {
   customer: Record<string, any>;
   score: Record<string, any>;
@@ -1231,13 +1266,14 @@ export default function RmCustomer360Page() {
 
                   {/* AI Analysis inline result */}
                   {analysis && (
-                    <div className="mt-4 bg-slate-50 rounded-xl border border-slate-200 px-4 py-3">
+                    <div className="mt-4 bg-[#F9F9F7] rounded-md border border-soft px-4 py-3">
                       <div className="flex items-center gap-2 mb-1.5">
-                        <TrendingUp className="w-3.5 h-3.5 text-[var(--crimson)]" />
-                        <p className="text-[10px] font-bold text-[var(--crimson)] uppercase tracking-wide">AI Risk Analysis</p>
-                        <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-teal-soft text-teal-dark uppercase tracking-wide">NVIDIA DeepSeek V4 Pro</span>
+                        <TrendingUp className="w-3.5 h-3.5 text-[#6B132B]" />
+                        <p className="text-[10px] font-bold text-[#6B132B] uppercase tracking-wide">AI Risk Analysis</p>
+                        <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-[#6B132B] text-white uppercase tracking-wide">NVIDIA DeepSeek V4 Pro</span>
                       </div>
-                      <p className="text-[12px] text-slate-700 leading-relaxed">{analysis}</p>
+                      <div className="text-[12px] text-[#2A161B] leading-relaxed prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{ __html: mdToHtml(analysis) }} />
                     </div>
                   )}
                 </div>

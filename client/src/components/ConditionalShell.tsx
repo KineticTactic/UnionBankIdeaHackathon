@@ -15,10 +15,6 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
 
   useEffect(() => {
     if (!user || isPublic) return;
-    // RM users confined to /rm/*
-    if (user.role === 'rm' && !pathname.startsWith('/rm')) {
-      router.replace('/rm/today');
-    }
     // Admin users must NOT enter /rm/* — send to dashboard
     if (user.role === 'admin' && pathname.startsWith('/rm')) {
       router.replace('/dashboard');

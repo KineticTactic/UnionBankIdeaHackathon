@@ -818,5 +818,382 @@
     },
     "modelVersion": "mistralai/mistral-small-4-119b-2603",
     "timestamp": "2026-06-30T04:55:27.969Z"
+  },
+  {
+    "eventId": "bbffee32-9f84-456d-b7eb-3aad82dc65b6",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-040",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "stress_overdraft",
+      "confidence": 0.89,
+      "cusum_value": 4.12,
+      "alarm_threshold": 2.5,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T05:05:14.036Z"
+  },
+  {
+    "eventId": "c7fcdbf8-06d0-4e23-8c66-9005b2b3176b",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-026",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "location_city",
+      "confidence": 0.75,
+      "cusum_value": 4,
+      "alarm_threshold": 3.5,
+      "method": "CUSUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T05:05:35.519Z"
+  },
+  {
+    "eventId": "399fac56-7c1f-403b-b0be-7ac2d2548f91",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-049",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "transaction_frequency",
+      "confidence": 0.79,
+      "cusum_value": 3,
+      "alarm_threshold": 3,
+      "method": "SPRT"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T05:06:40.378Z"
+  },
+  {
+    "eventId": "1fc490b2-e4b0-49df-9869-5dd154f510b1",
+    "eventType": "ADMIN_NOTE_SENT",
+    "customerId": null,
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "to_rm": "rm_user",
+      "message_len": 42,
+      "message_hash": "dc060a3cf1d4d4e6"
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:06:41.646Z"
+  },
+  {
+    "eventId": "4ac68857-0f9f-4e4d-bc2c-906991d4852a",
+    "eventType": "BROADCAST_SENT",
+    "customerId": null,
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "audience": "all",
+      "message_len": 45,
+      "message_hash": "4e13e769df6e4d57"
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:06:41.889Z"
+  },
+  {
+    "eventId": "17dfd3e3-a569-49f0-9c3f-1b1a730382c4",
+    "eventType": "AUDIT_REPORT_GENERATED",
+    "customerId": null,
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "report_id": "RPT-1782796067542-6232",
+      "report_type": "churn_intervention",
+      "llm_used": false,
+      "source_hashes": {
+        "customers": "d0bc30f5722e7c95",
+        "outcomes": "4e07408562bedb8b",
+        "calls": "d4735e3a265e16ee"
+      }
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:07:47.543Z"
+  },
+  {
+    "eventId": "2c1d7f20-1348-490b-b57b-600d447486bf",
+    "eventType": "AUDIT_REPORT_GENERATED",
+    "customerId": null,
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "report_id": "RPT-1782796069889-TAJV",
+      "report_type": "compliance_audit",
+      "llm_used": true,
+      "source_hashes": {
+        "customers": "d0bc30f5722e7c95",
+        "outcomes": "4e07408562bedb8b",
+        "calls": "d4735e3a265e16ee"
+      }
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:07:49.890Z"
+  },
+  {
+    "eventId": "289e3e3e-6feb-4fa4-b483-c50bc3765b89",
+    "eventType": "POLICY_CHANGED",
+    "customerId": null,
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "kind": "thresholds",
+      "before": {
+        "PRIORITY": 0.8,
+        "ESCALATE": 0.65,
+        "STANDARD": 0.45,
+        "MONITOR": 0.25
+      },
+      "after": {
+        "PRIORITY": 0.85,
+        "ESCALATE": 0.7,
+        "STANDARD": 0.5,
+        "MONITOR": 0.3
+      }
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:07:50.249Z"
+  },
+  {
+    "eventId": "6c5e3b9f-2432-4e8e-a5d9-2c332883fc30",
+    "eventType": "BOOK_REASSIGNED",
+    "customerId": null,
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "from_rm": "rm_user",
+      "to_rm": "rm_deepa",
+      "to_rm_name": "Deepa Krishnan",
+      "count": 2,
+      "customer_ids": [
+        "CUST-001",
+        "CUST-002"
+      ]
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:07:50.330Z"
+  },
+  {
+    "eventId": "f6c37e34-34de-4ba4-9d73-a63d1ec34102",
+    "eventType": "ROLE_CHANGED",
+    "customerId": null,
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "target_user": "rm_test1",
+      "new_role": "manager"
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:07:50.490Z"
+  },
+  {
+    "eventId": "59ef9382-fd44-4936-be5b-8e27cec7cec2",
+    "eventType": "DATA_ACCESS_REQUEST",
+    "customerId": "CUST-046",
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "basis": "admin_oversight",
+      "view": "decision_lineage"
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:09:23.443Z"
+  },
+  {
+    "eventId": "292bde0d-a3f7-4ea5-8fe2-7003bc8f75f8",
+    "eventType": "ROLE_CHANGED",
+    "customerId": null,
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "target_user": "rm_test1",
+      "new_role": "manager"
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:09:23.608Z"
+  },
+  {
+    "eventId": "acdee3ad-7b6f-42ef-8595-e829eeff66e0",
+    "eventType": "CASE_ESCALATED",
+    "customerId": "CUST-033",
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "review_id": "REV-0001",
+      "outcome": "approved",
+      "notify_rm": true
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:09:23.769Z"
+  },
+  {
+    "eventId": "9d79c02e-dd28-42b2-8737-158fec6e8eee",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-047",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "stress_overdraft",
+      "confidence": 0.78,
+      "cusum_value": 2.89,
+      "alarm_threshold": 2.5,
+      "method": "CUSUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T05:10:35.667Z"
+  },
+  {
+    "eventId": "b653100c-85cb-43fc-8fc0-c218ef336864",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-026",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "salary_amount",
+      "confidence": 0.89,
+      "cusum_value": 4.58,
+      "alarm_threshold": 3,
+      "method": "CUSUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T05:11:11.321Z"
+  },
+  {
+    "eventId": "adb4f9eb-bb4e-478b-b8ae-2dc820b59ba1",
+    "eventType": "CASE_ESCALATED",
+    "customerId": "CUST-035",
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "review_id": "REV-0003",
+      "notify_rm": false
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:11:13.135Z"
+  },
+  {
+    "eventId": "88b3caca-4144-4ea9-8d2b-2372a1cfd7de",
+    "eventType": "CASE_ESCALATED",
+    "customerId": "CUST-035",
+    "actor": "manager",
+    "layer": "ADMIN",
+    "payload": {
+      "review_id": "REV-0003",
+      "notify_rm": false
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:11:13.143Z"
+  },
+  {
+    "eventId": "07696aa7-fad7-409e-9338-fd8928fccfa6",
+    "eventType": "POLICY_CHANGED",
+    "customerId": null,
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "kind": "fatigue",
+      "before": {
+        "max_per_day": 3,
+        "min_days_between": 2,
+        "suppression_window_days": 30
+      },
+      "after": {
+        "max_per_day": 3,
+        "min_days_between": 2,
+        "suppression_window_days": 30
+      }
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:11:13.318Z"
+  },
+  {
+    "eventId": "f381a909-0fc3-4aab-9897-359e1625158e",
+    "eventType": "DATA_ACCESS_REQUEST",
+    "customerId": "CUST-046",
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "basis": "admin_oversight",
+      "view": "decision_lineage"
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:11:13.355Z"
+  },
+  {
+    "eventId": "33d1b40e-6a2e-4f4a-9beb-713e5a467098",
+    "eventType": "DATA_ACCESS_REQUEST",
+    "customerId": "CUST-046",
+    "actor": "manager",
+    "layer": "ADMIN",
+    "payload": {
+      "basis": "admin_oversight",
+      "view": "decision_lineage"
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:11:13.362Z"
+  },
+  {
+    "eventId": "4904cd95-fa1f-41be-b404-1082e3605641",
+    "eventType": "DATA_ACCESS_REQUEST",
+    "customerId": "CUST-046",
+    "actor": "risk_user",
+    "layer": "ADMIN",
+    "payload": {
+      "basis": "admin_oversight",
+      "view": "decision_lineage"
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:11:13.369Z"
+  },
+  {
+    "eventId": "77ab88e0-86e7-4123-8dd4-49d83504133b",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-024",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "complaint_sentiment",
+      "confidence": 0.87,
+      "cusum_value": 3.66,
+      "alarm_threshold": 3,
+      "method": "BOCPD"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T05:20:23.171Z"
+  },
+  {
+    "eventId": "ca109064-d3b4-4a21-82f7-b0dd1e347687",
+    "eventType": "DATA_ACCESS_REQUEST",
+    "customerId": "CUST-046",
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "basis": "admin_oversight",
+      "view": "decision_lineage"
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:20:24.145Z"
+  },
+  {
+    "eventId": "fdc399bd-8ef0-4307-b402-4786e3be8161",
+    "eventType": "AUDIT_REPORT_GENERATED",
+    "customerId": null,
+    "actor": "admin",
+    "layer": "ADMIN",
+    "payload": {
+      "report_id": "RPT-1782796824318-L2FX",
+      "report_type": "churn_intervention",
+      "llm_used": false,
+      "source_hashes": {
+        "customers": "d0bc30f5722e7c95",
+        "outcomes": "4e07408562bedb8b",
+        "calls": "d4735e3a265e16ee"
+      }
+    },
+    "modelVersion": "ADMIN-v1.0",
+    "timestamp": "2026-06-30T05:20:24.318Z"
   }
 ]

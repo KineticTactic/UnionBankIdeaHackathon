@@ -210,6 +210,96 @@ function applySignalOverride(customerId, signal) {
         liveSignalOverrides[customerId] = liveSignalOverrides[customerId].slice(-20);
 }
 
+// ──────────────────────────────────────────────────────────────────────────
+// Admin extension block — file-backed collections + user mutators
+// used by the admin portal (server/routes/admin.js).  Reuses the
+// DATA_DIR constant declared at the top of this file.
+// ──────────────────────────────────────────────────────────────────────────
+
+function _readJsonFile(name, fallback) {
+    try {
+        const raw = fs.readFileSync(path.join(DATA_DIR, name), 'utf8');
+        return JSON.parse(raw);
+    } catch (e) { return fallback; }
+}
+function _writeJsonFile(name, data) {
+    try {
+        fs.writeFileSync(path.join(DATA_DIR, name), JSON.stringify(data, null, 2), 'utf8');
+        return true;
+    } catch (e) { return false; }
+}
+
+// Synchronous accessor: returns the in-memory CUSTOMERS array.
+function getAllCustomers() { return CUSTOMERS; }
+
+// File-backed admin helpers (read-mostly — written via admin routes
+// only; safe in DEMO_MODE since the orchestrator process is single-
+// threaded and we never write from concurrent requests).
+function getAllOutcomes()    { return _readJsonFile('outcomes.json', []); }
+function getAllCalls()       { return _readJsonFile('calls.json', []); }
+function getAllTasks()       { return _readJsonFile('tasks.json', []); }
+function getAllConsents()    {
+    const raw = _readJsonFile('consents.json', []);
+    return raw.reduce((acc, c) => { acc[c.customer_id] = c; return acc; }, {});
+}
+
+// User mutators (in-memory; persists for the process lifetime).
+// In production these would write to the users table; in DEMO_MODE
+// we keep the change visible without restarting the server.
+const _extraUsers = []; // new users created via /api/admin/users
+const _roleOverrides = {}; // username -> new role
+
+function listUsers() {
+    // Merge the static USERS table (exported by auth.js) with any
+    // runtime additions.  We import it lazily to avoid a require cycle.
+    const { USERS } = require('../routes/auth');
+    const out = USERS.map(u => ({ ...u, password: undefined, active: true }));
+    for (const u of _extraUsers) out.push({ ...u, active: true });
+    for (const [username, role] of Object.entries(_roleOverrides)) {
+        const row = out.find(u => u.username === username);
+        if (row) row.role = role;
+    }
+    return out;
+}
+function addUser({ username, name, role, password_hash }) {
+    if (_extraUsers.find(u => u.username === username)) {
+        return { ok: false, error: 'username already exists' };
+    }
+    const id = 1000 + _extraUsers.length + 1;
+    const user = { id, username, name: name || username, role: role || 'rm', password: password_hash, password_plain: null };
+    _extraUsers.push(user);
+    return { ok: true, user };
+}
+function updateUserRole(username, role) {
+    if (!['admin','manager','risk','rm','analyst'].includes(role)) {
+        return { ok: false, error: 'invalid role' };
+    }
+    _roleOverrides[username] = role;
+    return { ok: true, username, role };
+}
+
+// Reviews: lives in routes/reviews.js in-memory.  We expose getters
+// + a mutator so the admin portal can list/resolve.
+function getReviews() { return _readJsonFile('reviews.json', null); }
+function saveReviews(list) { return _writeJsonFile('reviews.json', list); }
+function resolveReview(reviewId, patch) {
+    let reviews = getReviews();
+    if (!reviews) return null; // reviews still in-memory only (legacy behaviour)
+    const idx = reviews.findIndex(r => r.id === reviewId);
+    if (idx === -1) return null;
+    reviews[idx] = { ...reviews[idx], ...patch, id: reviews[idx].id };
+    saveReviews(reviews);
+    return reviews[idx];
+}
+
+// Reports — file-backed, append-only.
+function getReports()    { return _readJsonFile('reports.json', []); }
+function saveReport(r)  {
+    const list = getReports();
+    list.push(r);
+    return _writeJsonFile('reports.json', list);
+}
+
 module.exports = {
     // Static data (synchronous — used at module-load time by routes)
     CUSTOMERS, SCORES, SIGNALS, TRANSACTIONS, SURVIVAL,
@@ -228,4 +318,10 @@ module.exports = {
 
     // Mutators
     applyScoreOverride, applySignalOverride,
+
+    // Admin extensions
+    getAllCustomers, getAllOutcomes, getAllCalls, getAllTasks, getAllConsents,
+    listUsers, addUser, updateUserRole,
+    getReviews, saveReviews, resolveReview,
+    getReports, saveReport,
 };

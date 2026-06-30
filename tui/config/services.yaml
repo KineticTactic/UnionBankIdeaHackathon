@@ -129,6 +129,20 @@ app_services:
     no_auto_start: true
     description: "Live-event simulator — posts synthetic banking events to /api/kafka/publish"
 
+  # Admin portal — backed by the orchestrator's /api/admin/* routes.
+  # Not a long-lived process; registered so the dashboard surfaces
+  # the admin group in the status grid.  Use the commands below to
+  # call individual admin endpoints.
+  - name: admin
+    color: "#7C3AED"   # purple (matches orchestrator)
+    dir: .
+    start_cmd: "true"   # noop — admin routes are exposed by the orchestrator
+    health_url: http://localhost:8000/api/admin/health
+    port: 0
+    kind: bash
+    no_auto_start: true
+    description: "Admin Portal — TM2 backend: /api/admin/* (stats, rms, users, consent, bias-audit, escalations, reports, settings)"
+
 commands:
   # ── Top-level orchestration ─────────────────────────────────────────────
   - name: "pipeline run"
@@ -185,6 +199,73 @@ commands:
     description: "Fire 3 signals + 1 score spike + 1 negative CRM on a single customer (churn tier jumps visibly)"
     service: simulator
     cmd: "python3 scripts/simulate_events.py --scenario critical_cascade"
+    dir: .
+
+  # ── Admin portal (TM2 backend) ────────────────────────────────────────
+  - name: "admin stats"
+    description: "Command Center KPIs + RM leaderboard + top-at-risk"
+    service: admin
+    cmd: "/usr/bin/curl -sS -H \"Authorization: Bearer $(python3 -c 'import json, urllib.request; req=urllib.request.Request(\"http://localhost:8000/auth/login\", data=json.dumps({\"username\":\"admin\",\"password\":\"admin123\"}).encode(), headers={\"Content-Type\":\"application/json\"}, method=\"POST\"); print(json.loads(urllib.request.urlopen(req, timeout=5).read())[\"token\"])')\" http://localhost:8000/api/admin/stats | python3 -m json.tool | head -40"
+    dir: .
+
+  - name: "admin rm roster"
+    description: "List every RM + per-RM book stats"
+    service: admin
+    cmd: "/usr/bin/curl -sS -H \"Authorization: Bearer $(python3 -c 'import json, urllib.request; req=urllib.request.Request(\"http://localhost:8000/auth/login\", data=json.dumps({\"username\":\"admin\",\"password\":\"admin123\"}).encode(), headers={\"Content-Type\":\"application/json\"}, method=\"POST\"); print(json.loads(urllib.request.urlopen(req, timeout=5).read())[\"token\"])')\" http://localhost:8000/api/admin/rms | python3 -m json.tool | head -80"
+    dir: .
+
+  - name: "admin rm detail"
+    description: "Drill into one RM (book, stats, activity feed) — rm_user"
+    service: admin
+    cmd: "/usr/bin/curl -sS -H \"Authorization: Bearer $(python3 -c 'import json, urllib.request; req=urllib.request.Request(\"http://localhost:8000/auth/login\", data=json.dumps({\"username\":\"admin\",\"password\":\"admin123\"}).encode(), headers={\"Content-Type\":\"application/json\"}, method=\"POST\"); print(json.loads(urllib.request.urlopen(req, timeout=5).read())[\"token\"])')\" http://localhost:8000/api/admin/rms/rm_user | python3 -m json.tool | head -100"
+    dir: .
+
+  - name: "admin decision lineage"
+    description: "Reconstruct the 7-layer pipeline trace for one customer (CUST-046)"
+    service: admin
+    cmd: "/usr/bin/curl -sS -H \"Authorization: Bearer $(python3 -c 'import json, urllib.request; req=urllib.request.Request(\"http://localhost:8000/auth/login\", data=json.dumps({\"username\":\"admin\",\"password\":\"admin123\"}).encode(), headers={\"Content-Type\":\"application/json\"}, method=\"POST\"); print(json.loads(urllib.request.urlopen(req, timeout=5).read())[\"token\"])')\" http://localhost:8000/api/admin/lineage/CUST-046 | python3 -m json.tool"
+    dir: .
+
+  - name: "admin consent ledger"
+    description: "God-view of every customer's DPDPA + TRAI consent"
+    service: admin
+    cmd: "/usr/bin/curl -sS -H \"Authorization: Bearer $(python3 -c 'import json, urllib.request; req=urllib.request.Request(\"http://localhost:8000/auth/login\", data=json.dumps({\"username\":\"admin\",\"password\":\"admin123\"}).encode(), headers={\"Content-Type\":\"application/json\"}, method=\"POST\"); print(json.loads(urllib.request.urlopen(req, timeout=5).read())[\"token\"])')\" http://localhost:8000/api/admin/consent/ledger | python3 -m json.tool | head -30"
+    dir: .
+
+  - name: "admin bias audit"
+    description: "Segment × tier fairness matrix + disparate-impact flags"
+    service: admin
+    cmd: "/usr/bin/curl -sS -H \"Authorization: Bearer $(python3 -c 'import json, urllib.request; req=urllib.request.Request(\"http://localhost:8000/auth/login\", data=json.dumps({\"username\":\"admin\",\"password\":\"admin123\"}).encode(), headers={\"Content-Type\":\"application/json\"}, method=\"POST\"); print(json.loads(urllib.request.urlopen(req, timeout=5).read())[\"token\"])')\" http://localhost:8000/api/admin/bias-audit | python3 -m json.tool"
+    dir: .
+
+  - name: "admin escalations"
+    description: "List all review/escalation cases across RMs"
+    service: admin
+    cmd: "/usr/bin/curl -sS -H \"Authorization: Bearer $(python3 -c 'import json, urllib.request; req=urllib.request.Request(\"http://localhost:8000/auth/login\", data=json.dumps({\"username\":\"admin\",\"password\":\"admin123\"}).encode(), headers={\"Content-Type\":\"application/json\"}, method=\"POST\"); print(json.loads(urllib.request.urlopen(req, timeout=5).read())[\"token\"])')\" http://localhost:8000/api/admin/escalations | python3 -m json.tool | head -40"
+    dir: .
+
+  - name: "admin generate report (templated)"
+    description: "Generate a churn-intervention audit report (templated only, no LLM)"
+    service: admin
+    cmd: "/usr/bin/curl -sS -X POST -H \"Authorization: Bearer $(python3 -c 'import json, urllib.request; req=urllib.request.Request(\"http://localhost:8000/auth/login\", data=json.dumps({\"username\":\"admin\",\"password\":\"admin123\"}).encode(), headers={\"Content-Type\":\"application/json\"}, method=\"POST\"); print(json.loads(urllib.request.urlopen(req, timeout=5).read())[\"token\"])')\" -H 'Content-Type: application/json' -d '{\"report_type\":\"churn_intervention\",\"include_llm_summary\":false}' http://localhost:8000/api/admin/reports/generate | python3 -m json.tool"
+    dir: .
+
+  - name: "admin generate report (with LLM)"
+    description: "Generate a compliance_audit report with live NVIDIA mistral-small narrative"
+    service: admin
+    cmd: "/usr/bin/curl -sS -X POST -H \"Authorization: Bearer $(python3 -c 'import json, urllib.request; req=urllib.request.Request(\"http://localhost:8000/auth/login\", data=json.dumps({\"username\":\"admin\",\"password\":\"admin123\"}).encode(), headers={\"Content-Type\":\"application/json\"}, method=\"POST\"); print(json.loads(urllib.request.urlopen(req, timeout=5).read())[\"token\"])')\" -H 'Content-Type: application/json' -d '{\"report_type\":\"compliance_audit\",\"include_llm_summary\":true}' http://localhost:8000/api/admin/reports/generate | python3 -m json.tool | head -50"
+    dir: .
+
+  - name: "admin resolve first escalation"
+    description: "Mark REV-0001 resolved (manager+); logs CASE_ESCALATED audit event"
+    service: admin
+    cmd: "/usr/bin/curl -sS -X PATCH -H \"Authorization: Bearer $(python3 -c 'import json, urllib.request; req=urllib.request.Request(\"http://localhost:8000/auth/login\", data=json.dumps({\"username\":\"admin\",\"password\":\"admin123\"}).encode(), headers={\"Content-Type\":\"application/json\"}, method=\"POST\"); print(json.loads(urllib.request.urlopen(req, timeout=5).read())[\"token\"])')\" -H 'Content-Type: application/json' -d '{\"outcome\":\"approved\",\"notes\":\"Approved by ops lead during weekly review\",\"notify_rm\":true}' http://localhost:8000/api/admin/escalations/REV-0001/resolve | python3 -m json.tool"
+    dir: .
+
+  - name: "admin broadcast"
+    description: "Push a notice to all RMs (BROADCAST_SENT audit)"
+    service: admin
+    cmd: "/usr/bin/curl -sS -X POST -H \"Authorization: Bearer $(python3 -c 'import json, urllib.request; req=urllib.request.Request(\"http://localhost:8000/auth/login\", data=json.dumps({\"username\":\"admin\",\"password\":\"admin123\"}).encode(), headers={\"Content-Type\":\"application/json\"}, method=\"POST\"); print(json.loads(urllib.request.urlopen(req, timeout=5).read())[\"token\"])')\" -H 'Content-Type: application/json' -d '{\"audience\":\"all\",\"message\":\"Reminder: weekly risk review tomorrow at 10am\"}' http://localhost:8000/api/admin/broadcast | python3 -m json.tool"
     dir: .
 
   - name: "infra down"

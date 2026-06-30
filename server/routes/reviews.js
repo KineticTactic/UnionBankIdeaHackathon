@@ -1,27 +1,52 @@
 'use strict';
+const path = require('path');
+const fs   = require('fs');
 const router = require('express').Router();
 const { verifyToken, requireRole } = require('../middleware/auth');
 const ds = require('../services/dataStore');
 
-// In-memory review queue — seeded at startup from static CUSTOMERS data.
-// In DEMO_MODE CUSTOMERS is a synchronous array export (no await needed here).
-const reviewQueue = ds.CUSTOMERS
-    .filter(c => ['PRIORITY', 'ESCALATE'].includes(c.risk_tier))
-    .slice(0, 10)
-    .map((c, i) => ({
-        id:          `REV-${String(i + 1).padStart(4, '0')}`,
-        customer_id: c.customer_id,
-        full_name:   c.full_name,
-        risk_tier:   c.risk_tier,
-        churn_score: c.churn_score,
-        action:      ds.PLANS_MAP[c.customer_id]?.action || 'EMAIL',
-        status:      'pending',
-        created_at:  new Date(Date.now() - i * 3_600_000).toISOString(),
-        reviewed_at: null,
-        reviewer:    null,
-        notes:       null,
-        actionLog:   [],
-    }));
+// Review queue — persisted to data/reviews.json so the admin portal
+// can list/resolve it across server restarts.  In-memory is the
+// source of truth during the process lifetime; writes flush to disk
+// on every mutation.
+const REVIEWS_FILE = path.join(__dirname, '..', 'data', 'reviews.json');
+
+function _load() {
+    try { return JSON.parse(fs.readFileSync(REVIEWS_FILE, 'utf8')); }
+    catch (e) { return null; }
+}
+function _save(list) {
+    try { fs.writeFileSync(REVIEWS_FILE, JSON.stringify(list, null, 2), 'utf8'); }
+    catch (e) { console.error('[reviews] save failed:', e.message); }
+}
+
+function _seed() {
+    return ds.CUSTOMERS
+        .filter(c => ['PRIORITY', 'ESCALATE'].includes(c.risk_tier))
+        .slice(0, 10)
+        .map((c, i) => ({
+            id:          `REV-${String(i + 1).padStart(4, '0')}`,
+            customer_id: c.customer_id,
+            full_name:   c.full_name,
+            risk_tier:   c.risk_tier,
+            churn_score: c.churn_score,
+            action:      ds.PLANS_MAP[c.customer_id]?.action || 'EMAIL',
+            status:      'pending',
+            created_at:  new Date(Date.now() - i * 3_600_000).toISOString(),
+            reviewed_at: null,
+            reviewer:    null,
+            notes:       null,
+            actionLog:   [],
+        }));
+}
+
+let reviewQueue = _load();
+if (!reviewQueue) {
+    reviewQueue = _seed();
+    _save(reviewQueue);
+}
+
+function _persist() { _save(reviewQueue); }
 
 // GET /api/reviews
 router.get('/', verifyToken, (req, res) => {
@@ -64,6 +89,7 @@ router.post('/:id/approve', verifyToken, requireRole(['manager', 'admin']), (req
     r.reviewed_at = new Date().toISOString();
     r.reviewer    = req.user.name;
     r.notes       = req.body.notes || null;
+    _persist();
     const { actionLog, ...review } = r;
     res.json({ status: 'ok', review });
 });
@@ -76,6 +102,7 @@ router.post('/:id/reject', verifyToken, requireRole(['manager', 'admin']), (req,
     r.reviewed_at = new Date().toISOString();
     r.reviewer    = req.user.name;
     r.notes       = req.body.notes || null;
+    _persist();
     const { actionLog, ...review } = r;
     res.json({ status: 'ok', review });
 });
@@ -88,8 +115,36 @@ router.post('/:id/action', verifyToken, (req, res) => {
     if (action === 'start_review') r.status = 'in_review';
     else if (action === 'escalate') r.status = 'escalated';
     r.actionLog.push({ id: `${r.id}-${Date.now()}`, action, comment: comment || null, timestamp: new Date().toISOString(), actor: req.user?.name || 'system' });
+    _persist();
     const { actionLog, ...review } = r;
     res.json({ status: 'ok', review });
 });
 
+// ── PATCH /api/reviews/:id/resolve — admin resolve endpoint ────────────────
+router.patch('/:id/resolve', verifyToken, requireRole(['admin', 'manager']), (req, res) => {
+    const r = reviewQueue.find(x => x.id === req.params.id);
+    if (!r) return res.status(404).json({ status: 'error', message: 'Not found' });
+    const { outcome, notes, notify_rm } = req.body;
+    r.status      = 'resolved';
+    r.reviewed_at = new Date().toISOString();
+    r.reviewer    = req.user.name;
+    r.notes       = notes || r.notes || null;
+    if (outcome) r.outcome = outcome;
+    r.actionLog.push({
+        id: `${r.id}-${Date.now()}`,
+        action: 'resolved',
+        comment: notes || null,
+        timestamp: new Date().toISOString(),
+        actor: req.user.name,
+    });
+    _persist();
+    if (notify_rm) console.log(`[Admin] Notifying RM of resolution: ${req.params.id}`);
+    const { actionLog, ...review } = r;
+    res.json({ status: 'ok', escalation: review });
+});
+
+// Export the in-memory queue so the admin route can call helpers
+// (e.g. listing without HTTP round-trip).
 module.exports = router;
+module.exports.getReviewQueue = () => reviewQueue;
+module.exports.persistQueue   = _persist;

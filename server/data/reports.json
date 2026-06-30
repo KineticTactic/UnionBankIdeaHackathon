@@ -1,0 +1,283 @@
+[
+  {
+    "id": "RPT-1782796067542-6232",
+    "report_type": "churn_intervention",
+    "date_from": "2026-06-01",
+    "date_to": "2026-06-30",
+    "generated_at": "2026-06-30T05:07:47.542Z",
+    "generated_by": "admin",
+    "data": {
+      "period": {
+        "from": "2026-06-01",
+        "to": "2026-06-30"
+      },
+      "generated_at": "2026-06-30T05:07:47.542Z",
+      "churn_intervention": {
+        "total_customers": 50,
+        "at_risk": 18,
+        "interventions": 3,
+        "saves": 2,
+        "save_rate": "66.7%"
+      },
+      "compliance_audit": {
+        "total_customers": 50,
+        "calls_recorded": 2,
+        "compliance_flags": 0,
+        "consent_coverage": 1,
+        "tasks_completed": 1,
+        "tasks_outstanding": 3
+      },
+      "rm_activity": [
+        {
+          "rm_name": "Aditya Sharma",
+          "username": "rm_user",
+          "calls": 2,
+          "outcomes": 3,
+          "tasks": 4
+        },
+        {
+          "rm_name": "Deepa Krishnan",
+          "username": "rm_deepa",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Sunita Nair",
+          "username": "rm_sunita",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Vikram Joshi",
+          "username": "rm_vikram",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Rohit Kapoor",
+          "username": "rm_rohit",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Ritu Malhotra",
+          "username": "rm_ritu",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Anand Pillai",
+          "username": "rm_anand",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Priya Menon",
+          "username": "rm_priya",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        }
+      ]
+    },
+    "llm_summary": null,
+    "source_hashes": {
+      "customers": "d0bc30f5722e7c95",
+      "outcomes": "4e07408562bedb8b",
+      "calls": "d4735e3a265e16ee"
+    },
+    "generator": "templated+llm-narrative"
+  },
+  {
+    "id": "RPT-1782796069889-TAJV",
+    "report_type": "compliance_audit",
+    "generated_at": "2026-06-30T05:07:49.889Z",
+    "generated_by": "admin",
+    "data": {
+      "period": {
+        "from": "all",
+        "to": "now"
+      },
+      "generated_at": "2026-06-30T05:07:47.625Z",
+      "churn_intervention": {
+        "total_customers": 50,
+        "at_risk": 18,
+        "interventions": 3,
+        "saves": 2,
+        "save_rate": "66.7%"
+      },
+      "compliance_audit": {
+        "total_customers": 50,
+        "calls_recorded": 2,
+        "compliance_flags": 0,
+        "consent_coverage": 1,
+        "tasks_completed": 1,
+        "tasks_outstanding": 3
+      },
+      "rm_activity": [
+        {
+          "rm_name": "Aditya Sharma",
+          "username": "rm_user",
+          "calls": 2,
+          "outcomes": 3,
+          "tasks": 4
+        },
+        {
+          "rm_name": "Deepa Krishnan",
+          "username": "rm_deepa",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Sunita Nair",
+          "username": "rm_sunita",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Vikram Joshi",
+          "username": "rm_vikram",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Rohit Kapoor",
+          "username": "rm_rohit",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Ritu Malhotra",
+          "username": "rm_ritu",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Anand Pillai",
+          "username": "rm_anand",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Priya Menon",
+          "username": "rm_priya",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        }
+      ]
+    },
+    "llm_summary": "**Executive Summary: Compliance Audit Findings**\n\nThis compliance audit evaluates all-time customer interactions across 50 total customers, with 18 identified as at-risk. A total of 3 interventions were executed, resulting in 2 successful customer saves, yielding a save rate of 66.7%. No compliance flags were recorded during reviewed calls, demonstrating adherence to procedural protocols. Consent coverage was obtained for 1 of the 50 customers, highlighting a potential gap in documentation practices that warrants further review.\n\nTask completion remains low, with only 1 of 4 tasks finalized and 3 outstanding. While intervention outcomes show moderate effectiveness in retaining at-risk customers, the high volume of pending tasks suggests operational inefficiencies or resource constraints. No formal compliance breaches were detected, but the lack of comprehensive consent tracking may pose regulatory risks if not addressed.\n\nThis audit underscores the need for improved task prioritization and consent management to align with compliance standards. Recommendations include strengthening consent tracking mechanisms and expediting outstanding tasks to mitigate potential future risks. Further monitoring is advised to ensure sustained adherence to regulatory requirements.",
+    "source_hashes": {
+      "customers": "d0bc30f5722e7c95",
+      "outcomes": "4e07408562bedb8b",
+      "calls": "d4735e3a265e16ee"
+    },
+    "generator": "templated+llm-narrative"
+  },
+  {
+    "id": "RPT-1782796824318-L2FX",
+    "report_type": "churn_intervention",
+    "generated_at": "2026-06-30T05:20:24.318Z",
+    "generated_by": "admin",
+    "data": {
+      "period": {
+        "from": "all",
+        "to": "now"
+      },
+      "generated_at": "2026-06-30T05:20:24.318Z",
+      "churn_intervention": {
+        "total_customers": 50,
+        "at_risk": 18,
+        "interventions": 3,
+        "saves": 2,
+        "save_rate": "66.7%"
+      },
+      "compliance_audit": {
+        "total_customers": 50,
+        "calls_recorded": 2,
+        "compliance_flags": 0,
+        "consent_coverage": 1,
+        "tasks_completed": 1,
+        "tasks_outstanding": 3
+      },
+      "rm_activity": [
+        {
+          "rm_name": "Aditya Sharma",
+          "username": "rm_user",
+          "calls": 2,
+          "outcomes": 3,
+          "tasks": 4
+        },
+        {
+          "rm_name": "Deepa Krishnan",
+          "username": "rm_deepa",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Sunita Nair",
+          "username": "rm_sunita",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Vikram Joshi",
+          "username": "rm_vikram",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Rohit Kapoor",
+          "username": "rm_rohit",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Ritu Malhotra",
+          "username": "rm_ritu",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Anand Pillai",
+          "username": "rm_anand",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Priya Menon",
+          "username": "rm_priya",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        }
+      ]
+    },
+    "llm_summary": null,
+    "source_hashes": {
+      "customers": "d0bc30f5722e7c95",
+      "outcomes": "4e07408562bedb8b",
+      "calls": "d4735e3a265e16ee"
+    },
+    "generator": "templated+llm-narrative"
+  }
+]

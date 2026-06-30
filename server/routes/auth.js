@@ -13,6 +13,13 @@ const USERS = [
     { id: 5, username: 'risk_user',  password: 'risk123',    role: 'risk',    name: 'Risk Officer' },
 ];
 
+// Export the user table for cross-module reuse (admin portal).  The
+// password fields are still here — callers MUST strip them before
+// returning to clients.
+module.exports = router;
+module.exports.USERS = USERS;
+
+
 router.post('/login', (req, res) => {
     const { username, password } = req.body;
 
@@ -72,5 +79,3 @@ router.get('/me', require('../middleware/auth').verifyToken, (req, res) => {
         }
     });
 });
-
-module.exports = router;

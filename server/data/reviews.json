@@ -1,0 +1,166 @@
+[
+  {
+    "id": "REV-0001",
+    "customer_id": "CUST-033",
+    "full_name": "Sunil Rajan",
+    "risk_tier": "ESCALATE",
+    "churn_score": 0.6538,
+    "action": "PHONE_CALL",
+    "status": "resolved",
+    "created_at": "2026-06-30T05:03:40.158Z",
+    "reviewed_at": "2026-06-30T05:09:23.768Z",
+    "reviewer": "System Administrator",
+    "notes": "Approved by ops lead during weekly review",
+    "actionLog": [
+      {
+        "id": "REV-0001-1782796163768",
+        "action": "resolved",
+        "comment": "Approved by ops lead during weekly review",
+        "timestamp": "2026-06-30T05:09:23.768Z",
+        "actor": "System Administrator"
+      }
+    ],
+    "outcome": "approved"
+  },
+  {
+    "id": "REV-0002",
+    "customer_id": "CUST-034",
+    "full_name": "Komal Iyengar",
+    "risk_tier": "ESCALATE",
+    "churn_score": 0.6374,
+    "action": "PHONE_CALL",
+    "status": "pending",
+    "created_at": "2026-06-30T04:03:40.158Z",
+    "reviewed_at": null,
+    "reviewer": null,
+    "notes": null,
+    "actionLog": []
+  },
+  {
+    "id": "REV-0003",
+    "customer_id": "CUST-035",
+    "full_name": "Ashish Goswami",
+    "risk_tier": "ESCALATE",
+    "churn_score": 0.6314,
+    "action": "PHONE_CALL",
+    "status": "resolved",
+    "created_at": "2026-06-30T03:03:40.158Z",
+    "reviewed_at": "2026-06-30T05:11:13.143Z",
+    "reviewer": "Portfolio Manager",
+    "notes": null,
+    "actionLog": [
+      {
+        "id": "REV-0003-1782796273134",
+        "action": "resolved",
+        "comment": null,
+        "timestamp": "2026-06-30T05:11:13.134Z",
+        "actor": "System Administrator"
+      },
+      {
+        "id": "REV-0003-1782796273143",
+        "action": "resolved",
+        "comment": null,
+        "timestamp": "2026-06-30T05:11:13.143Z",
+        "actor": "Portfolio Manager"
+      }
+    ]
+  },
+  {
+    "id": "REV-0004",
+    "customer_id": "CUST-036",
+    "full_name": "Tanvi Desai",
+    "risk_tier": "ESCALATE",
+    "churn_score": 0.7956,
+    "action": "PHONE_CALL",
+    "status": "pending",
+    "created_at": "2026-06-30T02:03:40.158Z",
+    "reviewed_at": null,
+    "reviewer": null,
+    "notes": null,
+    "actionLog": []
+  },
+  {
+    "id": "REV-0005",
+    "customer_id": "CUST-037",
+    "full_name": "Ravi Jain",
+    "risk_tier": "ESCALATE",
+    "churn_score": 0.7075,
+    "action": "PHONE_CALL",
+    "status": "pending",
+    "created_at": "2026-06-30T01:03:40.158Z",
+    "reviewed_at": null,
+    "reviewer": null,
+    "notes": null,
+    "actionLog": []
+  },
+  {
+    "id": "REV-0006",
+    "customer_id": "CUST-038",
+    "full_name": "Shweta Chopra",
+    "risk_tier": "ESCALATE",
+    "churn_score": 0.6556,
+    "action": "PHONE_CALL",
+    "status": "pending",
+    "created_at": "2026-06-30T00:03:40.158Z",
+    "reviewed_at": null,
+    "reviewer": null,
+    "notes": null,
+    "actionLog": []
+  },
+  {
+    "id": "REV-0007",
+    "customer_id": "CUST-039",
+    "full_name": "Manoj Kapoor",
+    "risk_tier": "ESCALATE",
+    "churn_score": 0.7874,
+    "action": "PHONE_CALL",
+    "status": "pending",
+    "created_at": "2026-06-29T23:03:40.158Z",
+    "reviewed_at": null,
+    "reviewer": null,
+    "notes": null,
+    "actionLog": []
+  },
+  {
+    "id": "REV-0008",
+    "customer_id": "CUST-040",
+    "full_name": "Preeti Saxena",
+    "risk_tier": "ESCALATE",
+    "churn_score": 0.6733,
+    "action": "PHONE_CALL",
+    "status": "pending",
+    "created_at": "2026-06-29T22:03:40.158Z",
+    "reviewed_at": null,
+    "reviewer": null,
+    "notes": null,
+    "actionLog": []
+  },
+  {
+    "id": "REV-0009",
+    "customer_id": "CUST-041",
+    "full_name": "Gaurav Bajaj",
+    "risk_tier": "ESCALATE",
+    "churn_score": 0.6938,
+    "action": "PHONE_CALL",
+    "status": "pending",
+    "created_at": "2026-06-29T21:03:40.158Z",
+    "reviewed_at": null,
+    "reviewer": null,
+    "notes": null,
+    "actionLog": []
+  },
+  {
+    "id": "REV-0010",
+    "customer_id": "CUST-042",
+    "full_name": "Rekha Oberoi",
+    "risk_tier": "ESCALATE",
+    "churn_score": 0.658,
+    "action": "PHONE_CALL",
+    "status": "pending",
+    "created_at": "2026-06-29T20:03:40.158Z",
+    "reviewed_at": null,
+    "reviewer": null,
+    "notes": null,
+    "actionLog": []
+  }
+]

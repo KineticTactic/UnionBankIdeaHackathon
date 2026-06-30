@@ -20,10 +20,24 @@ const CALLS_FILE    = path.join(__dirname, '../data/calls.json');
 function readJson(file)          { try { return JSON.parse(fs.readFileSync(file,'utf8')); } catch { return []; } }
 function writeJson(file, data)   { fs.writeFileSync(file, JSON.stringify(data, null, 2), 'utf8'); }
 
-// ── RM book mapping (demo): username → relationship_manager name in customer data
+// ── RM book mapping (demo): username → relationship_manager name in customer data.
+//     For the admin portal we surface every relationship-manager name
+//     from customers.json as a distinct "RM persona" (with username
+//     `rm_<slug>`) so the leaderboard and RM Management page are
+//     realistic.
 const RM_BOOK_MAP = {
-  rm_user: 'Aditya Sharma',
+  rm_user:       'Aditya Sharma',
+  rm_deepa:      'Deepa Krishnan',
+  rm_sunita:     'Sunita Nair',
+  rm_vikram:     'Vikram Joshi',
+  rm_rohit:      'Rohit Kapoor',
+  rm_ritu:       'Ritu Malhotra',
+  rm_anand:      'Anand Pillai',
+  rm_priya:      'Priya Menon',
 };
+
+// Lookup the username for a given relationship_manager name.
+const RM_NAME_TO_USER = Object.entries(RM_BOOK_MAP).reduce((m, [u, n]) => { m[n] = u; return m; }, {});
 
 function getRmName(user) {
   return RM_BOOK_MAP[user.username] || user.name;
@@ -447,3 +461,5 @@ router.get('/performance', verifyToken, requireRm, (req, res) => {
 });
 
 module.exports = router;
+module.exports.RM_BOOK_MAP    = RM_BOOK_MAP;
+module.exports.RM_NAME_TO_USER = RM_NAME_TO_USER;

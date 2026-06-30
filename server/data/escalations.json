@@ -1,0 +1,46 @@
+[
+  {
+    "id": "ESC-001",
+    "customer_id": "CUST-0001",
+    "customer_name": "Rajesh Kumar",
+    "rm_name": "Aditya Sharma",
+    "severity": "HIGH",
+    "reason": "PRIORITY tier customer — churn score 0.91 with no outreach response in 14 days",
+    "status": "open",
+    "created_at": "2026-06-28T09:15:00Z"
+  },
+  {
+    "id": "ESC-002",
+    "customer_id": "CUST-0005",
+    "customer_name": "Priya Nair",
+    "rm_name": "Aditya Sharma",
+    "severity": "MEDIUM",
+    "reason": "Salary credit stopped for 2 consecutive months — potential employer change",
+    "status": "open",
+    "created_at": "2026-06-27T14:30:00Z"
+  },
+  {
+    "id": "ESC-003",
+    "customer_id": "CUST-0003",
+    "customer_name": "Amit Verma",
+    "rm_name": "Aditya Sharma",
+    "severity": "HIGH",
+    "reason": "Large outward transfer detected — possible account closure intent",
+    "status": "resolved",
+    "outcome": "customer_retained",
+    "notes": "Called customer directly — they were consolidating savings. Offered better FD rate.",
+    "created_at": "2026-06-20T10:00:00Z",
+    "resolved_at": "2026-06-21T11:30:00Z",
+    "resolved_by": "manager"
+  },
+  {
+    "id": "ESC-004",
+    "customer_id": "CUST-0008",
+    "customer_name": "Sunita Reddy",
+    "rm_name": "Aditya Sharma",
+    "severity": "LOW",
+    "reason": "Customer complaint registered via mobile app — SLA at risk",
+    "status": "open",
+    "created_at": "2026-06-29T16:00:00Z"
+  }
+]

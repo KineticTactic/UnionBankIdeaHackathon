@@ -7,6 +7,7 @@ import {
   Send, BarChart3, Workflow, Shield, LogOut,
   CalendarDays, BookOpen, PhoneCall, ClipboardList,
   TrendingUp, CheckSquare, FileText, Mic,
+  Command, UserCog, Scale, AlertTriangle, Settings,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -40,6 +41,21 @@ const NAV_GROUPS = [
     label: 'Admin',
     items: [
       { href: '/reviews', label: 'Reviews', icon: Shield, roles: ['manager', 'admin'] as const },
+    ],
+  },
+];
+
+const ADMIN_NAV_GROUPS = [
+  {
+    label: 'Admin Portal',
+    roles: ['admin', 'manager', 'risk'] as const,
+    items: [
+      { href: '/admin',            label: 'Command Center', icon: Command,       roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/admin/rms',        label: 'RM Management',  icon: UserCog,       roles: ['admin', 'manager'] as const },
+      { href: '/admin/compliance', label: 'Compliance Hub', icon: Scale,         roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/admin/escalations',label: 'Escalations',    icon: AlertTriangle, roles: ['admin', 'manager'] as const },
+      { href: '/admin/audit',      label: 'Audit Reports',  icon: FileText,      roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/admin/settings',   label: 'Settings',       icon: Settings,      roles: ['admin'] as const },
     ],
   },
 ];
@@ -99,7 +115,8 @@ export default function Sidebar() {
     );
   };
 
-  const isRmUser = ['rm', 'manager', 'admin'].includes(userRole);
+  const isRmUser    = ['rm', 'manager', 'admin'].includes(userRole);
+  const isAdminUser = ['admin', 'manager', 'risk'].includes(userRole);
 
   return (
     <aside className="w-[220px] shrink-0 h-screen fixed top-0 left-0 flex flex-col bg-[#0f2d5c] text-white select-none z-40">
@@ -122,7 +139,7 @@ export default function Sidebar() {
         {NAV_GROUPS.map((group) => {
           const visibleItems = group.items.filter(item => {
             if (!('roles' in item) || !item.roles) return true;
-            return user && item.roles.includes(user.role as 'manager' | 'admin');
+            return user && (item.roles as readonly string[]).includes(user.role);
           });
           if (!visibleItems.length) return null;
           return (
@@ -136,6 +153,19 @@ export default function Sidebar() {
             </div>
           );
         })}
+
+        {/* Admin Portal section — divider */}
+        {isAdminUser && (
+          <div className="my-2 mx-3 border-t border-white/10" />
+        )}
+        {isAdminUser && ADMIN_NAV_GROUPS.map((group) => (
+          <div key={group.label} className="mb-4">
+            <p className="text-[9px] font-semibold uppercase tracking-widest text-amber-400/70 px-3 py-1 mb-0.5">
+              {group.label}
+            </p>
+            {group.items.filter(item => (item.roles as readonly string[]).includes(userRole)).map(item => renderNavItem(item))}
+          </div>
+        ))}
 
         {/* RM Portal section — divider */}
         {isRmUser && (

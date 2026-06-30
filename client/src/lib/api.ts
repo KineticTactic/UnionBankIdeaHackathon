@@ -219,4 +219,30 @@ export const api = {
   translateOutreach: (data: { customer_id: string; content: Record<string, unknown>; target_language: string }) =>
     fetchApi('/api/outreach/translate', { method: 'POST', body: JSON.stringify(data) }),
   getCallScript: (customerId: string) => fetchApi(`/api/outreach/call-script/${encodeURIComponent(customerId)}`),
+
+  // ── Admin Portal ─────────────────────────────────────────────────────────────
+  getAdminStats:       () => fetchApi('/api/admin/stats'),
+  getAdminHealth:      () => fetchApi('/api/admin/health'),
+  getAdminRms:         () => fetchApi('/api/admin/rms'),
+  getAdminRm:          (id: string) => fetchApi(`/api/admin/rms/${id}`),
+  getAdminRmActivity:  (id: string) => fetchApi(`/api/admin/rms/${id}/activity`),
+  notifyRm:            (id: string, message: string) =>
+    fetchApi(`/api/admin/rms/${id}/notify`, { method: 'POST', body: JSON.stringify({ message }) }),
+  getAdminUsers:       () => fetchApi('/api/admin/users'),
+  updateUserRole:      (id: string, role: string) =>
+    fetchApi(`/api/admin/users/${id}/role`, { method: 'PATCH', body: JSON.stringify({ role }) }),
+  getConsentLedger:    () => fetchApi('/api/admin/consent/ledger'),
+  getBiasAudit:        () => fetchApi('/api/admin/bias-audit'),
+  getEscalations:      (status?: string) =>
+    fetchApi(`/api/admin/escalations${status ? `?status=${status}` : ''}`),
+  resolveEscalation:   (id: string, data: { outcome: string; notes: string }) =>
+    fetchApi(`/api/admin/escalations/${id}/resolve`, { method: 'PATCH', body: JSON.stringify(data) }),
+  generateReport:      (data: Record<string, unknown>) =>
+    fetchApi('/api/admin/reports/generate', { method: 'POST', body: JSON.stringify(data) }),
+  getReportHistory:    () => fetchApi('/api/admin/reports/history'),
+  getAdminSettings:    () => fetchApi('/api/admin/settings'),
+  updateThresholds:    (data: Record<string, number>) =>
+    fetchApi('/api/admin/settings/thresholds', { method: 'PATCH', body: JSON.stringify(data) }),
+  updateFatigue:       (data: Record<string, number>) =>
+    fetchApi('/api/admin/settings/fatigue', { method: 'PATCH', body: JSON.stringify(data) }),
 };

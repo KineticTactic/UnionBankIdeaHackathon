@@ -8,6 +8,7 @@ import {
   CalendarDays, BookOpen, PhoneCall, ClipboardList,
   TrendingUp, CheckSquare, FileText, Mic,
   Command, UserCog, Scale, AlertTriangle, Settings,
+  Network, GitBranch, CheckSquare2, Cpu, Zap, Map,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -47,15 +48,38 @@ const NAV_GROUPS = [
 
 const ADMIN_NAV_GROUPS = [
   {
-    label: 'Admin Portal',
+    label: 'Command',
     roles: ['admin', 'manager', 'risk'] as const,
     items: [
-      { href: '/admin',            label: 'Command Center', icon: Command,       roles: ['admin', 'manager', 'risk'] as const },
-      { href: '/admin/rms',        label: 'RM Management',  icon: UserCog,       roles: ['admin', 'manager'] as const },
-      { href: '/admin/compliance', label: 'Compliance Hub', icon: Scale,         roles: ['admin', 'manager', 'risk'] as const },
-      { href: '/admin/escalations',label: 'Escalations',    icon: AlertTriangle, roles: ['admin', 'manager'] as const },
-      { href: '/admin/audit',      label: 'Audit Reports',  icon: FileText,      roles: ['admin', 'manager', 'risk'] as const },
-      { href: '/admin/settings',   label: 'Settings',       icon: Settings,      roles: ['admin'] as const },
+      { href: '/admin',               label: 'Command Center',  icon: Command,       roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/admin/architecture',  label: 'Architecture Map',icon: Map,           roles: ['admin', 'manager', 'risk'] as const },
+    ],
+  },
+  {
+    label: 'Operations',
+    roles: ['admin', 'manager'] as const,
+    items: [
+      { href: '/admin/rms',           label: 'RM Management',   icon: UserCog,       roles: ['admin', 'manager'] as const },
+      { href: '/admin/approvals',     label: 'Approvals',       icon: CheckSquare2,  roles: ['admin', 'manager'] as const },
+      { href: '/admin/escalations',   label: 'Escalations',     icon: AlertTriangle, roles: ['admin', 'manager'] as const },
+      { href: '/admin/pipeline',      label: 'Live Pipeline',   icon: Zap,           roles: ['admin', 'manager'] as const },
+    ],
+  },
+  {
+    label: 'Models & AI',
+    roles: ['admin', 'manager', 'risk'] as const,
+    items: [
+      { href: '/admin/graphsage',     label: 'GraphSAGE',       icon: Network,       roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/admin/relearning',    label: 'ORACLE Relearning',icon: Cpu,          roles: ['admin', 'manager', 'risk'] as const },
+    ],
+  },
+  {
+    label: 'Compliance',
+    roles: ['admin', 'manager', 'risk'] as const,
+    items: [
+      { href: '/admin/compliance',    label: 'Compliance Hub',  icon: Scale,         roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/admin/audit',         label: 'Audit Reports',   icon: FileText,      roles: ['admin', 'manager', 'risk'] as const },
+      { href: '/admin/settings',      label: 'Settings & RBAC', icon: Settings,      roles: ['admin'] as const },
     ],
   },
 ];
@@ -158,14 +182,18 @@ export default function Sidebar() {
         {isAdminUser && (
           <div className="my-2 mx-3 border-t border-white/10" />
         )}
-        {isAdminUser && ADMIN_NAV_GROUPS.map((group) => (
-          <div key={group.label} className="mb-4">
-            <p className="text-[9px] font-semibold uppercase tracking-widest text-amber-400/70 px-3 py-1 mb-0.5">
-              {group.label}
-            </p>
-            {group.items.filter(item => (item.roles as readonly string[]).includes(userRole)).map(item => renderNavItem(item))}
-          </div>
-        ))}
+        {isAdminUser && ADMIN_NAV_GROUPS.map((group) => {
+          const visible = group.items.filter(item => (item.roles as readonly string[]).includes(userRole));
+          if (!visible.length) return null;
+          return (
+            <div key={group.label} className="mb-3">
+              <p className="text-[9px] font-semibold uppercase tracking-widest text-amber-400/60 px-3 py-1 mb-0.5">
+                {group.label}
+              </p>
+              {visible.map(item => renderNavItem(item))}
+            </div>
+          );
+        })}
 
         {/* RM Portal section — divider */}
         {isRmUser && (

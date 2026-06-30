@@ -125,11 +125,20 @@ async function removeOptOut(customerId, channel) {
 function canSendOutreach(customerId, channel) {
     try {
         const record = getConsent(customerId);
-        if (!record || !record.dpdpaConsent?.granted)
+        // No record = default granted (consent given at account opening).
+        // Only an explicit revoke (granted:false) blocks outreach.
+        const dpdpaOk = !record || record.dpdpaConsent == null
+            ? true
+            : record.dpdpaConsent.granted !== false;
+        if (!dpdpaOk)
             return { allowed: false, reason: 'NO_DPDPA_CONSENT' };
-        if (!record.traiConsent?.granted || !(record.traiConsent.channel || []).includes(channel))
+        const traiOk = !record || record.traiConsent == null
+            ? true
+            : record.traiConsent.granted !== false &&
+              (record.traiConsent.channel || []).includes(channel);
+        if (!traiOk)
             return { allowed: false, reason: 'NO_TRAI_CONSENT' };
-        if ((record.optOutChannels || []).includes(channel))
+        if ((record?.optOutChannels || []).includes(channel))
             return { allowed: false, reason: 'OPT_OUT' };
         return { allowed: true, reason: 'ALLOWED' };
     } catch (err) {

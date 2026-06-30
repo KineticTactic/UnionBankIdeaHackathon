@@ -2,174 +2,159 @@
 
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import { AlertTriangle, CheckCircle2, RefreshCw, Clock } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, RefreshCw, Clock, Filter } from 'lucide-react';
 
-const SEVERITY_COLORS: Record<string, string> = {
-  HIGH:   'bg-red-500/15 text-red-400 border-red-500/30',
-  MEDIUM: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
-  LOW:    'bg-amber-500/15 text-amber-400 border-amber-500/30',
-};
-
-function fmtDate(dt?: string) {
-  if (!dt) return '—';
-  try { return new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(dt)); }
-  catch { return dt; }
+function fmtDate(d?: string) {
+  if (!d) return '—';
+  try { return new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(d)); }
+  catch { return d; }
 }
 
+const TIER_BADGE: Record<string, string> = {
+  PRIORITY: 'bg-red-100 text-red-700 border border-red-200',
+  ESCALATE: 'bg-orange-100 text-orange-700 border border-orange-200',
+  STANDARD: 'bg-amber-100 text-amber-700 border border-amber-200',
+  MONITOR:  'bg-blue-100 text-blue-700 border border-blue-200',
+};
+const STATUS_BADGE: Record<string, string> = {
+  open:     'bg-red-100 text-red-700 border border-red-200',
+  pending:  'bg-amber-100 text-amber-700 border border-amber-200',
+  resolved: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+};
+
 export default function EscalationsPage() {
-  const [items, setItems]   = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'open' | 'resolved' | 'all'>('open');
-  const [resolving, setResolving] = useState<string | null>(null);
-  const [notes, setNotes]   = useState('');
-  const [outcome, setOutcome] = useState('resolved');
+  const [items,    setItems]    = useState<any[]>([]);
+  const [loading,  setLoading]  = useState(true);
+  const [filter,   setFilter]   = useState<string>('all');
+  const [resolveId, setResolveId] = useState<string | null>(null);
+  const [outcome,  setOutcome]  = useState('resolved');
+  const [notes,    setNotes]    = useState('');
+  const [acting,   setActing]   = useState(false);
 
   const load = async () => {
     setLoading(true);
     try {
-      const r = await api.getEscalations(filter === 'all' ? undefined : filter);
+      const r = await api.getEscalations();
       setItems(r.escalations || []);
     } catch {}
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, [filter]);
+  useEffect(() => { load(); }, []);
 
-  const handleResolve = async (id: string) => {
-    try { await api.resolveEscalation(id, { outcome, notes }); }
-    catch {}
-    setResolving(null);
-    setNotes('');
-    load();
+  const doResolve = async () => {
+    if (!resolveId) return;
+    setActing(true);
+    try {
+      await api.resolveEscalation(resolveId, { outcome, notes });
+      setResolveId(null); setNotes('');
+      await load();
+    } catch {}
+    setActing(false);
   };
 
-  const openCount     = items.filter(i => i.status === 'open').length;
-  const resolvedCount = items.filter(i => i.status === 'resolved').length;
+  const filtered = filter === 'all' ? items : items.filter(i => i.status === filter);
+  const open     = items.filter(i => i.status === 'open' || i.status === 'pending').length;
+  const resolved = items.filter(i => i.status === 'resolved').length;
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Escalation Queue</h1>
-          <p className="text-white/40 text-sm mt-0.5">High-priority customer cases requiring manager attention</p>
+          <h1 className="text-2xl font-bold text-slate-900">Escalations</h1>
+          <p className="text-slate-400 text-sm mt-0.5">Cases requiring manager or admin review</p>
         </div>
-        <button onClick={load} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/6 hover:bg-white/10 text-white/60 hover:text-white text-xs transition-all">
+        <button onClick={load} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-slate-700 text-xs shadow-sm transition-all">
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
 
-      {/* KPIs */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-5">
-          <p className="text-[10px] text-red-400/70 uppercase tracking-widest font-semibold mb-1">Open</p>
-          <p className="text-3xl font-bold text-red-400">{openCount}</p>
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 border-l-red-500">
+          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Open</p>
+          <p className="text-2xl font-bold text-red-600 tabular-nums">{open}</p>
         </div>
-        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-5">
-          <p className="text-[10px] text-emerald-400/70 uppercase tracking-widest font-semibold mb-1">Resolved</p>
-          <p className="text-3xl font-bold text-emerald-400">{resolvedCount}</p>
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 border-l-emerald-500">
+          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Resolved</p>
+          <p className="text-2xl font-bold text-emerald-600 tabular-nums">{resolved}</p>
         </div>
-        <div className="rounded-xl border border-white/8 bg-white/4 p-5">
-          <p className="text-[10px] text-white/40 uppercase tracking-widest font-semibold mb-1">Total</p>
-          <p className="text-3xl font-bold text-white">{items.length}</p>
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 border-l-[#0f2d5c]">
+          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Total</p>
+          <p className="text-2xl font-bold text-slate-900 tabular-nums">{items.length}</p>
         </div>
       </div>
 
-      {/* Filter tabs */}
-      <div className="flex gap-1 bg-white/4 border border-white/8 rounded-xl p-1 w-fit">
-        {(['open', 'resolved', 'all'] as const).map(f => (
+      {/* Filter */}
+      <div className="flex items-center gap-2">
+        <Filter className="w-4 h-4 text-slate-400" />
+        {['all', 'open', 'pending', 'resolved'].map(f => (
           <button key={f} onClick={() => setFilter(f)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all capitalize ${filter === f ? 'bg-white/12 text-white' : 'text-white/40 hover:text-white'}`}>
-            {f}
-          </button>
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
+              filter === f ? 'bg-[#0f2d5c] text-white' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
+            }`}>{f}</button>
         ))}
       </div>
 
-      {loading && <div className="text-white/30 text-sm animate-pulse py-4">Loading…</div>}
-
-      {!loading && items.length === 0 && (
-        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-8 text-center">
-          <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-3 opacity-60" />
-          <p className="text-emerald-300 font-semibold">No {filter !== 'all' ? filter : ''} escalations</p>
-          <p className="text-white/30 text-sm mt-1">Queue is clear</p>
+      {loading ? (
+        <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-24 bg-white rounded-xl border border-slate-200 animate-pulse" />)}</div>
+      ) : filtered.length === 0 ? (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-12 text-center">
+          <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
+          <p className="text-slate-500 font-medium">No escalations</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((item: any) => (
+            <div key={item.id} className={`bg-white rounded-xl border shadow-sm p-5 ${
+              (item.status === 'open' || item.status === 'pending') ? 'border-red-200' : 'border-slate-200'
+            }`}>
+              <div className="flex items-start gap-4">
+                <AlertTriangle className={`w-5 h-5 mt-0.5 shrink-0 ${item.status === 'resolved' ? 'text-slate-300' : 'text-red-500'}`} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <p className="font-bold text-slate-900">{item.customer_name || item.customer_id}</p>
+                    {item.risk_tier && <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${TIER_BADGE[item.risk_tier]||''}`}>{item.risk_tier}</span>}
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${STATUS_BADGE[item.status]||'bg-slate-100 text-slate-600 border-slate-200 border'}`}>{item.status?.toUpperCase()}</span>
+                  </div>
+                  <p className="text-sm text-slate-600 mb-2">{item.reason || item.notes || 'No reason provided'}</p>
+                  <div className="flex items-center gap-4 text-[11px] text-slate-400">
+                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{fmtDate(item.created_at)}</span>
+                    {item.assigned_to && <span>Assigned: {item.assigned_to}</span>}
+                    {item.reviewer && <span>Reviewed by: {item.reviewer}</span>}
+                  </div>
+                </div>
+                {(item.status === 'open' || item.status === 'pending') && (
+                  <button onClick={() => { setResolveId(item.id); setOutcome('resolved'); setNotes(''); }}
+                    className="px-3 py-1.5 rounded-lg bg-[#0f2d5c] text-white text-xs font-semibold hover:bg-[#0f2d5c]/90 transition-all shrink-0">
+                    Resolve
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      <div className="space-y-3">
-        {items.map((item: any) => (
-          <div key={item.id} className={`rounded-xl border p-5 ${item.status === 'resolved' ? 'border-white/6 bg-white/2 opacity-60' : 'border-white/10 bg-white/5'}`}>
-            <div className="flex items-start gap-4">
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${item.status === 'resolved' ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
-                {item.status === 'resolved'
-                  ? <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                  : <AlertTriangle className="w-5 h-5 text-red-400" />}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap mb-1">
-                  <p className="text-sm font-bold text-white">{item.customer_name || item.customer_id}</p>
-                  {item.severity && (
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${SEVERITY_COLORS[item.severity] || 'bg-white/10 text-white/50 border-white/10'}`}>
-                      {item.severity}
-                    </span>
-                  )}
-                  {item.status === 'resolved' && (
-                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold border bg-emerald-500/15 text-emerald-400 border-emerald-500/30">RESOLVED</span>
-                  )}
-                </div>
-                <p className="text-sm text-white/60">{item.reason || item.description || 'Escalation flagged by PCOP system'}</p>
-                <div className="flex items-center gap-4 mt-2">
-                  <span className="flex items-center gap-1 text-[11px] text-white/30">
-                    <Clock className="w-3 h-3" />{fmtDate(item.created_at)}
-                  </span>
-                  {item.rm_name && <span className="text-[11px] text-white/30">RM: {item.rm_name}</span>}
-                  {item.resolved_by && <span className="text-[11px] text-white/30">Resolved by: {item.resolved_by}</span>}
-                </div>
-                {item.notes && <p className="text-[12px] text-white/40 mt-2 italic">"{item.notes}"</p>}
-              </div>
-              {item.status !== 'resolved' && (
-                <button
-                  onClick={() => { setResolving(item.id); setNotes(''); setOutcome('resolved'); }}
-                  className="px-3 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold hover:bg-emerald-500/25 transition-all shrink-0"
-                >
-                  Resolve
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* Resolve modal */}
-      {resolving && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center" onClick={() => setResolving(null)}>
-          <div className="bg-[#0f2d5c] border border-white/15 rounded-2xl p-6 w-[440px] shadow-2xl" onClick={e => e.stopPropagation()}>
-            <h3 className="text-base font-bold text-white mb-4">Resolve Escalation</h3>
-            <div className="mb-3">
-              <label className="text-[11px] text-white/40 font-semibold uppercase tracking-widest block mb-1">Outcome</label>
-              <select
-                value={outcome}
-                onChange={e => setOutcome(e.target.value)}
-                className="w-full rounded-xl bg-white/6 border border-white/10 text-sm text-white p-3 focus:outline-none focus:border-white/30"
-              >
-                <option value="resolved">Resolved</option>
-                <option value="escalated_further">Escalated Further</option>
-                <option value="no_action_required">No Action Required</option>
-                <option value="customer_retained">Customer Retained</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <label className="text-[11px] text-white/40 font-semibold uppercase tracking-widest block mb-1">Notes</label>
-              <textarea
-                className="w-full rounded-xl bg-white/6 border border-white/10 text-sm text-white placeholder-white/25 p-3 resize-none focus:outline-none focus:border-white/30"
-                rows={3}
-                placeholder="Resolution notes…"
-                value={notes}
-                onChange={e => setNotes(e.target.value)}
-              />
-            </div>
-            <div className="flex gap-2 justify-end">
-              <button onClick={() => setResolving(null)} className="px-4 py-2 rounded-lg text-sm text-white/50 hover:text-white transition-colors">Cancel</button>
-              <button onClick={() => handleResolve(resolving)} className="px-4 py-2 rounded-lg bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-sm font-semibold hover:bg-emerald-500/30 transition-all">
-                Confirm Resolution
+      {resolveId && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center" onClick={() => setResolveId(null)}>
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 w-[440px] shadow-2xl" onClick={e => e.stopPropagation()}>
+            <h3 className="text-base font-bold text-slate-900 mb-4">Resolve Escalation</h3>
+            <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Outcome</label>
+            <select value={outcome} onChange={e => setOutcome(e.target.value)}
+              className="w-full rounded-xl border border-slate-200 text-sm text-slate-800 p-2.5 focus:outline-none focus:border-[#0f2d5c]/40 mb-3">
+              <option value="resolved">Resolved</option>
+              <option value="escalated">Escalated further</option>
+              <option value="dismissed">Dismissed</option>
+            </select>
+            <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Notes</label>
+            <textarea className="w-full rounded-xl border border-slate-200 text-sm text-slate-800 p-3 resize-none focus:outline-none focus:border-[#0f2d5c]/40"
+              rows={3} placeholder="Resolution notes…" value={notes} onChange={e => setNotes(e.target.value)} />
+            <div className="flex gap-2 justify-end mt-4">
+              <button onClick={() => setResolveId(null)} className="px-4 py-2 rounded-lg text-sm text-slate-500 hover:text-slate-700 transition-colors">Cancel</button>
+              <button onClick={doResolve} disabled={acting}
+                className="px-4 py-2 rounded-lg bg-[#0f2d5c] text-white text-sm font-semibold hover:bg-[#0f2d5c]/90 disabled:opacity-50 transition-all">
+                {acting ? 'Saving…' : 'Save Resolution'}
               </button>
             </div>
           </div>

@@ -1,152 +1,184 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { api } from '@/lib/api';
-import { ArrowLeft, PhoneCall, CheckSquare, ClipboardList, User, TrendingUp, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Phone, TrendingUp, AlertTriangle, CheckSquare, Bell } from 'lucide-react';
 
-const TIER_COLORS: Record<string, string> = {
-  PRIORITY: 'bg-red-500/15 text-red-400 border-red-500/30',
-  ESCALATE: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
-  STANDARD: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
-  MONITOR:  'bg-blue-500/15 text-blue-400 border-blue-500/30',
-  NONE:     'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+const TIER_BADGE: Record<string, string> = {
+  PRIORITY: 'bg-red-100 text-red-700 border border-red-200',
+  ESCALATE: 'bg-orange-100 text-orange-700 border border-orange-200',
+  STANDARD: 'bg-amber-100 text-amber-700 border border-amber-200',
+  MONITOR:  'bg-blue-100 text-blue-700 border border-blue-200',
+  NONE:     'bg-emerald-100 text-emerald-700 border border-emerald-200',
 };
 
-const ACT_ICONS: Record<string, React.ElementType> = {
-  call:    PhoneCall,
-  outcome: ClipboardList,
-  task:    CheckSquare,
-};
-
-const ACT_COLORS: Record<string, string> = {
-  call:    'bg-sky-500/20 text-sky-400',
-  outcome: 'bg-emerald-500/20 text-emerald-400',
-  task:    'bg-purple-500/20 text-purple-400',
-};
-
-function fmtDate(dt?: string) {
-  if (!dt) return '—';
-  try { return new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(dt)); }
-  catch { return dt; }
+function fmtDate(d?: string) {
+  if (!d) return '—';
+  try { return new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(d)); }
+  catch { return d; }
 }
 
-export default function RmProfilePage() {
+export default function RmDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const router  = useRouter();
-  const [data, setData]     = useState<any>(null);
+  const [detail,  setDetail]  = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab]       = useState<'activity' | 'book'>('activity');
+  const [noteMsg, setNoteMsg] = useState('');
+  const [sending, setSending] = useState(false);
+  const [sent,    setSent]    = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      try { const r = await api.getAdminRm(id as string); setData(r); } catch {}
-      setLoading(false);
-    })();
-  }, [id]);
+  const load = async () => {
+    setLoading(true);
+    try {
+      const r = await api.getAdminRm(id);
+      setDetail(r);
+    } catch {}
+    setLoading(false);
+  };
+
+  useEffect(() => { if (id) load(); }, [id]);
+
+  const sendNote = async () => {
+    if (!noteMsg.trim()) return;
+    setSending(true);
+    try {
+      await api.notifyRm(id, noteMsg);
+      setNoteMsg('');
+      setSent(true);
+      setTimeout(() => setSent(false), 3000);
+    } catch {}
+    setSending(false);
+  };
 
   if (loading) return (
-    <div className="flex items-center justify-center h-64 text-white/30 text-sm animate-pulse">Loading RM profile…</div>
-  );
-  if (!data) return (
-    <div className="text-white/40 text-sm p-8">RM not found.</div>
+    <div className="p-6 space-y-4">
+      {[1,2,3].map(i => <div key={i} className="h-24 bg-white rounded-xl border border-slate-200 animate-pulse" />)}
+    </div>
   );
 
-  const rm    = data.rm    || {};
-  const stats = data.stats || {};
-  const book  = data.book  || [];
-  const activity: any[] = data.activity || [];
+  if (!detail) return (
+    <div className="p-6">
+      <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <p className="text-slate-500">RM not found</p>
+        <Link href="/admin/rms" className="mt-3 inline-flex items-center gap-1 text-sm text-[#0f2d5c] hover:underline"><ArrowLeft className="w-3.5 h-3.5" /> Back to RMs</Link>
+      </div>
+    </div>
+  );
+
+  const rm    = detail.rm || {};
+  const st    = detail.stats || {};
+  const book  = detail.book || [];
+  const activity: any[] = (detail.recent_activity || []).slice(0, 10);
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       <div className="flex items-center gap-3">
-        <button onClick={() => router.push('/admin/rms')} className="p-2 rounded-lg bg-white/6 hover:bg-white/10 text-white/60 hover:text-white transition-all">
+        <Link href="/admin/rms" className="p-2 rounded-lg border border-slate-200 bg-white text-slate-400 hover:text-slate-700 transition-colors shadow-sm">
           <ArrowLeft className="w-4 h-4" />
+        </Link>
+        <div className="flex-1">
+          <h1 className="text-2xl font-bold text-slate-900">{rm.rm_name || id}</h1>
+          <p className="text-slate-400 text-sm">@{rm.username} · {rm.role}</p>
+        </div>
+        <button onClick={load} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-slate-700 text-xs shadow-sm transition-all">
+          <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
-        <div>
-          <h1 className="text-2xl font-bold text-white">{rm.rm_name}</h1>
-          <p className="text-white/40 text-sm">@{rm.username} · {rm.role}</p>
-        </div>
-        {rm.active && <span className="ml-2 flex items-center gap-1.5 text-[11px] text-emerald-400"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />Active</span>}
       </div>
 
-      {/* Stat strip */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      {/* KPIs */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {[
-          { label: 'Book Size',    value: stats.book_size    ?? '—', accent: '' },
-          { label: 'At-Risk',      value: stats.at_risk_count ?? '—', accent: 'text-red-400' },
-          { label: 'Saves',        value: stats.saves         ?? '—', accent: 'text-emerald-400' },
-          { label: 'Total Calls',  value: stats.calls         ?? '—', accent: 'text-sky-400' },
-          { label: 'Task Comp.',   value: `${stats.task_completion_rate ?? 0}%`, accent: 'text-purple-400' },
-        ].map(item => (
-          <div key={item.label} className="rounded-xl border border-white/8 bg-white/4 p-4">
-            <p className="text-[10px] text-white/40 uppercase tracking-widest font-semibold mb-1">{item.label}</p>
-            <p className={`text-2xl font-bold ${item.accent || 'text-white'}`}>{item.value}</p>
+          { label: 'Book Size',   value: st.book_size || 0,  icon: null,         accent: 'border-l-[#0f2d5c]' },
+          { label: 'At-Risk',     value: st.at_risk_count||0,icon: AlertTriangle, accent: 'border-l-red-500' },
+          { label: 'Saves',       value: st.saves || 0,      icon: TrendingUp,   accent: 'border-l-emerald-500' },
+          { label: 'Calls',       value: st.calls || 0,      icon: Phone,        accent: 'border-l-blue-500' },
+          { label: 'Task Rate',   value: `${st.task_rate||0}%`,icon: CheckSquare, accent: 'border-l-amber-500' },
+        ].map(c => (
+          <div key={c.label} className={`bg-white rounded-xl border border-slate-200 shadow-sm p-4 border-l-4 ${c.accent}`}>
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">{c.label}</p>
+            <p className="text-xl font-bold text-slate-900 tabular-nums">{c.value}</p>
           </div>
         ))}
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 bg-white/4 border border-white/8 rounded-xl p-1 w-fit">
-        {(['activity', 'book'] as const).map(t => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === t ? 'bg-white/12 text-white' : 'text-white/40 hover:text-white'}`}
-          >
-            {t === 'activity' ? 'Activity Feed' : `Book (${book.length})`}
-          </button>
-        ))}
-      </div>
-
-      {tab === 'activity' && (
-        <div className="rounded-xl border border-white/8 bg-white/4 divide-y divide-white/5 overflow-hidden">
-          {activity.length === 0 && <p className="px-5 py-8 text-white/30 text-sm">No activity recorded.</p>}
-          {activity.map((item: any, i: number) => {
-            const Icon  = ACT_ICONS[item.type] || ClipboardList;
-            const color = ACT_COLORS[item.type] || 'bg-white/10 text-white/50';
-            return (
-              <div key={i} className="flex items-start gap-4 px-5 py-4 hover:bg-white/3 transition-colors">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${color}`}>
-                  <Icon className="w-4 h-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white font-medium truncate">{item.customer_name}</p>
-                  <p className="text-[12px] text-white/50 truncate capitalize">{item.summary}</p>
-                </div>
-                <p className="text-[11px] text-white/25 shrink-0 mt-0.5">{fmtDate(item.timestamp)}</p>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {tab === 'book' && (
-        <div className="rounded-xl border border-white/8 bg-white/4 overflow-hidden">
-          <div className="grid grid-cols-[1fr_auto_auto_auto] gap-0 text-[10px] font-semibold uppercase tracking-widest text-white/30 px-5 py-3 border-b border-white/8">
-            <span>Customer</span>
-            <span className="w-24 text-center">Segment</span>
-            <span className="w-24 text-center">Tier</span>
-            <span className="w-20 text-right">Churn</span>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Book */}
+        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <h2 className="text-sm font-semibold text-slate-700 mb-4">Customer Book ({book.length})</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-100">
+                  <th className="text-left py-2 pr-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Customer</th>
+                  <th className="text-left py-2 pr-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Segment</th>
+                  <th className="text-left py-2 pr-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Tier</th>
+                  <th className="text-right py-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Score</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {book.slice(0, 12).map((c: any) => (
+                  <tr key={c.customer_id} className="hover:bg-slate-50 transition-colors">
+                    <td className="py-2.5 pr-3">
+                      <p className="font-medium text-slate-800 text-[13px]">{c.full_name}</p>
+                      <p className="text-[10px] text-slate-400">{c.city}</p>
+                    </td>
+                    <td className="py-2.5 pr-3 text-[12px] text-slate-600">{c.segment}</td>
+                    <td className="py-2.5 pr-3">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${TIER_BADGE[c.risk_tier]||''}`}>{c.risk_tier}</span>
+                    </td>
+                    <td className="py-2.5 text-right font-bold text-slate-900 text-[13px] tabular-nums">{Math.round((c.churn_score||0)*100)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {book.length > 12 && <p className="text-[11px] text-slate-400 text-center pt-3">+{book.length - 12} more customers</p>}
           </div>
-          {book.map((c: any) => (
-            <div key={c.customer_id} className="grid grid-cols-[1fr_auto_auto_auto] gap-0 items-center px-5 py-3 border-b border-white/5 last:border-0 hover:bg-white/4 transition-colors">
-              <div>
-                <p className="text-sm font-medium text-white">{c.full_name}</p>
-                <p className="text-[11px] text-white/35">{c.city}</p>
-              </div>
-              <div className="w-24 text-center text-xs text-white/50">{c.segment}</div>
-              <div className="w-24 text-center">
-                <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${TIER_COLORS[c.risk_tier] || ''}`}>{c.risk_tier}</span>
-              </div>
-              <div className="w-20 text-right text-sm font-bold text-white tabular-nums">
-                {Math.round((c.churn_score || 0) * 100)}%
-              </div>
-            </div>
-          ))}
         </div>
-      )}
+
+        {/* Sidebar: notify + activity */}
+        <div className="space-y-5">
+          {/* Send note */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+            <h2 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+              <Bell className="w-4 h-4 text-slate-400" /> Send Note to RM
+            </h2>
+            <textarea
+              className="w-full rounded-xl border border-slate-200 text-sm text-slate-800 p-3 resize-none focus:outline-none focus:border-[#0f2d5c]/40"
+              rows={3} placeholder="Message to this RM…"
+              value={noteMsg} onChange={e => setNoteMsg(e.target.value)}
+            />
+            <button
+              onClick={sendNote} disabled={!noteMsg.trim() || sending}
+              className="mt-2 w-full py-2 rounded-lg bg-[#0f2d5c] text-white text-sm font-semibold hover:bg-[#0f2d5c]/90 transition-colors disabled:opacity-50"
+            >
+              {sending ? 'Sending…' : sent ? '✓ Sent' : 'Send Note'}
+            </button>
+          </div>
+
+          {/* Recent activity */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+            <h2 className="text-sm font-semibold text-slate-700 mb-3">Recent Activity</h2>
+            {activity.length === 0 ? (
+              <p className="text-slate-400 text-sm text-center py-4">No activity yet</p>
+            ) : (
+              <div className="space-y-3">
+                {activity.map((a: any, i: number) => (
+                  <div key={i} className="flex items-start gap-2.5 text-sm border-b border-slate-50 pb-2.5 last:border-0">
+                    <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${
+                      a.type === 'outcome' ? 'bg-emerald-400' : a.type === 'call' ? 'bg-blue-400' : 'bg-amber-400'
+                    }`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[12px] text-slate-700 truncate">{a.summary}</p>
+                      <p className="text-[10px] text-slate-400">{a.customer_name} · {fmtDate(a.timestamp)}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

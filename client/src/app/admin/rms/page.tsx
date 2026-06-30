@@ -1,162 +1,141 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { api } from '@/lib/api';
-import { Users, TrendingUp, AlertTriangle, ChevronRight, RefreshCw, Bell } from 'lucide-react';
+import { Search, RefreshCw, Users, AlertTriangle, TrendingUp, Phone } from 'lucide-react';
 
-const TIER_DOT: Record<string, string> = {
-  PRIORITY: 'bg-red-500',
-  ESCALATE: 'bg-orange-500',
-  STANDARD: 'bg-amber-500',
-  MONITOR:  'bg-blue-500',
-  NONE:     'bg-emerald-500',
+const TIER_BADGE: Record<string, string> = {
+  PRIORITY: 'bg-red-100 text-red-700 border border-red-200',
+  ESCALATE: 'bg-orange-100 text-orange-700 border border-orange-200',
+  STANDARD: 'bg-amber-100 text-amber-700 border border-amber-200',
+  MONITOR:  'bg-blue-100 text-blue-700 border border-blue-200',
+  NONE:     'bg-emerald-100 text-emerald-700 border border-emerald-200',
 };
 
-export default function RmManagementPage() {
-  const [rms, setRms]       = useState<any[]>([]);
+export default function RmsPage() {
+  const [rms,     setRms]     = useState<any[]>([]);
+  const [stats,   setStats]   = useState<any>(null);
+  const [search,  setSearch]  = useState('');
   const [loading, setLoading] = useState(true);
-  const [notifyId, setNotifyId] = useState<string | null>(null);
-  const [msgDraft, setMsgDraft] = useState('');
-  const router = useRouter();
 
   const load = async () => {
     setLoading(true);
-    try { const r = await api.getAdminRms(); setRms(r.rms || []); } catch {}
+    try {
+      const [r, s] = await Promise.all([api.getAdminRms(), api.getAdminStats()]);
+      setRms(r.rms || []);
+      setStats(s?.stats || {});
+    } catch {}
     setLoading(false);
   };
 
   useEffect(() => { load(); }, []);
 
-  const sendNotify = async (username: string) => {
-    if (!msgDraft.trim()) return;
-    try { await api.notifyRm(username, msgDraft); }
-    catch {}
-    setNotifyId(null);
-    setMsgDraft('');
-  };
-
-  if (loading) return (
-    <div className="flex items-center justify-center h-64 text-white/30 text-sm animate-pulse">Loading RM data…</div>
+  const filtered = rms.filter(r =>
+    !search || r.rm_name?.toLowerCase().includes(search.toLowerCase()) || r.username?.toLowerCase().includes(search.toLowerCase())
   );
 
+  const totalBook = rms.reduce((s, r) => s + (r.book_size || 0), 0);
+  const totalRisk = rms.reduce((s, r) => s + (r.at_risk_count || 0), 0);
+  const totalSaves= rms.reduce((s, r) => s + (r.saves_this_month || 0), 0);
+
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">RM Management</h1>
-          <p className="text-white/40 text-sm mt-0.5">{rms.length} relationship managers in the system</p>
+          <h1 className="text-2xl font-bold text-slate-900">RM Management</h1>
+          <p className="text-slate-400 text-sm mt-0.5">Relationship manager roster and performance overview</p>
         </div>
-        <button onClick={load} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/6 hover:bg-white/10 text-white/60 hover:text-white text-xs transition-all">
+        <button onClick={load} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-slate-700 text-xs shadow-sm transition-all">
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
 
-      {/* Summary strip */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-xl border border-white/8 bg-white/4 p-4">
-          <p className="text-[10px] text-white/40 uppercase tracking-widest font-semibold mb-1">Total RMs</p>
-          <p className="text-3xl font-bold text-white">{rms.length}</p>
-        </div>
-        <div className="rounded-xl border border-white/8 bg-white/4 p-4">
-          <p className="text-[10px] text-white/40 uppercase tracking-widest font-semibold mb-1">Total Book Size</p>
-          <p className="text-3xl font-bold text-white">{rms.reduce((s, r) => s + r.book_size, 0)}</p>
-        </div>
-        <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
-          <p className="text-[10px] text-red-400/70 uppercase tracking-widest font-semibold mb-1">Total At-Risk</p>
-          <p className="text-3xl font-bold text-red-400">{rms.reduce((s, r) => s + r.at_risk_count, 0)}</p>
-        </div>
-      </div>
-
-      {/* RM Table */}
-      <div className="rounded-xl border border-white/8 bg-white/4 overflow-hidden">
-        <div className="grid grid-cols-[1fr_auto_auto_auto_auto_auto_auto] gap-0 text-[10px] font-semibold uppercase tracking-widest text-white/30 px-5 py-3 border-b border-white/8">
-          <span>RM Name</span>
-          <span className="text-right w-20">Book</span>
-          <span className="text-right w-20">At-Risk</span>
-          <span className="text-right w-20">Saves</span>
-          <span className="text-right w-24">Calls (7d)</span>
-          <span className="text-right w-24">Task %</span>
-          <span className="w-24" />
-        </div>
-        {rms.length === 0 && (
-          <p className="px-5 py-8 text-white/30 text-sm">No RMs found.</p>
-        )}
-        {rms.map((rm) => (
-          <div
-            key={rm.username}
-            className="grid grid-cols-[1fr_auto_auto_auto_auto_auto_auto] gap-0 items-center px-5 py-4 border-b border-white/5 last:border-0 hover:bg-white/4 transition-colors group"
-          >
-            {/* Name */}
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-8 h-8 rounded-full bg-[#0f2d5c] border border-white/15 flex items-center justify-center text-[11px] font-bold text-white shrink-0">
-                {rm.rm_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0,2)}
+      {/* KPIs */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: 'Total RMs',    value: rms.length,  icon: Users,         accent: 'border-l-[#0f2d5c]' },
+          { label: 'Total Book',   value: totalBook,   icon: Users,         accent: 'border-l-sky-500' },
+          { label: 'Total At-Risk',value: totalRisk,   icon: AlertTriangle, accent: 'border-l-red-500' },
+          { label: 'Saves (30d)',  value: totalSaves,  icon: TrendingUp,    accent: 'border-l-emerald-500' },
+        ].map(c => (
+          <div key={c.label} className={`bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 ${c.accent}`}>
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">{c.label}</p>
+                <p className="text-2xl font-bold text-slate-900 tabular-nums">{loading ? '—' : c.value}</p>
               </div>
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-white truncate">{rm.rm_name}</p>
-                <p className="text-[10px] text-white/35">@{rm.username} · {rm.role}</p>
-              </div>
-              {rm.active && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />}
-            </div>
-            <div className="w-20 text-right text-sm font-medium text-white tabular-nums">{rm.book_size}</div>
-            <div className="w-20 text-right">
-              <span className={`text-sm font-bold tabular-nums ${rm.at_risk_count > 0 ? 'text-red-400' : 'text-white/40'}`}>
-                {rm.at_risk_count}
-              </span>
-            </div>
-            <div className="w-20 text-right text-sm font-bold text-emerald-400 tabular-nums">{rm.saves_this_month}</div>
-            <div className="w-24 text-right text-sm text-white/70 tabular-nums">{rm.calls_this_week}</div>
-            <div className="w-24 text-right">
-              <div className="flex items-center justify-end gap-1.5">
-                <div className="w-12 h-1.5 rounded-full bg-white/10 overflow-hidden">
-                  <div className="h-full bg-sky-400 rounded-full" style={{ width: `${rm.task_completion_rate}%` }} />
-                </div>
-                <span className="text-[11px] text-white/50 tabular-nums">{rm.task_completion_rate}%</span>
-              </div>
-            </div>
-            <div className="w-24 flex items-center justify-end gap-1.5">
-              <button
-                onClick={(e) => { e.stopPropagation(); setNotifyId(rm.username); setMsgDraft(''); }}
-                className="p-1.5 rounded-md bg-white/0 hover:bg-white/10 text-white/30 hover:text-amber-400 transition-all"
-                title="Notify RM"
-              >
-                <Bell className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => router.push(`/admin/rms/${rm.username}`)}
-                className="p-1.5 rounded-md bg-white/0 hover:bg-white/10 text-white/30 hover:text-white transition-all"
-                title="View profile"
-              >
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
+              <c.icon className="w-5 h-5 text-slate-300 mt-1" />
             </div>
           </div>
         ))}
       </div>
 
-      {/* Notify modal */}
-      {notifyId && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center" onClick={() => setNotifyId(null)}>
-          <div className="bg-[#0f2d5c] border border-white/15 rounded-2xl p-6 w-[440px] shadow-2xl" onClick={e => e.stopPropagation()}>
-            <h3 className="text-base font-bold text-white mb-1">Notify RM</h3>
-            <p className="text-[12px] text-white/40 mb-4">@{notifyId}</p>
-            <textarea
-              className="w-full rounded-xl bg-white/6 border border-white/10 text-sm text-white placeholder-white/25 p-3 resize-none focus:outline-none focus:border-white/30"
-              rows={4}
-              placeholder="Type your message…"
-              value={msgDraft}
-              onChange={e => setMsgDraft(e.target.value)}
-            />
-            <div className="flex gap-2 mt-4 justify-end">
-              <button onClick={() => setNotifyId(null)} className="px-4 py-2 rounded-lg text-sm text-white/50 hover:text-white transition-colors">Cancel</button>
-              <button
-                onClick={() => sendNotify(notifyId)}
-                className="px-4 py-2 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-300 text-sm font-semibold hover:bg-amber-500/30 transition-all"
-              >
-                Send
-              </button>
-            </div>
-          </div>
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <input
+          className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#0f2d5c]/40 shadow-sm"
+          placeholder="Search by RM name or username…"
+          value={search} onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
+      {/* RM cards */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {[1,2,3,4,5,6].map(i => <div key={i} className="h-44 bg-white rounded-xl border border-slate-200 animate-pulse" />)}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {filtered.map((rm: any, i: number) => (
+            <Link key={rm.username} href={`/admin/rms/${rm.username}`}
+              className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:border-[#0f2d5c]/30 hover:shadow-md transition-all group">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-11 h-11 rounded-full bg-[#0f2d5c] flex items-center justify-center text-white text-sm font-bold shrink-0">
+                  {rm.rm_name?.split(' ').map((n: string) => n[0]).join('').slice(0,2)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-slate-900 truncate">{rm.rm_name}</p>
+                  <p className="text-[11px] text-slate-400">@{rm.username}</p>
+                </div>
+                <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${rm.active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                  {rm.active ? 'ACTIVE' : 'INACTIVE'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                {[
+                  { label: 'Book',    value: rm.book_size || 0 },
+                  { label: 'At-Risk', value: rm.at_risk_count || 0, red: true },
+                  { label: 'Saves',   value: rm.saves_this_month || 0, green: true },
+                ].map(m => (
+                  <div key={m.label} className="bg-slate-50 rounded-lg p-2.5 text-center">
+                    <p className={`text-lg font-bold tabular-nums ${m.red ? 'text-red-600' : m.green ? 'text-emerald-600' : 'text-slate-900'}`}>{m.value}</p>
+                    <p className="text-[9px] text-slate-400 uppercase tracking-wide">{m.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] text-slate-400">
+                <div className="flex items-center gap-1">
+                  <Phone className="w-3 h-3" />
+                  <span>{rm.calls_this_week || 0} calls this week</span>
+                </div>
+                <span className={`font-semibold ${(rm.task_completion_rate || 0) >= 80 ? 'text-emerald-600' : (rm.task_completion_rate || 0) >= 50 ? 'text-amber-600' : 'text-red-500'}`}>
+                  {rm.task_completion_rate || 0}% tasks done
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {!loading && filtered.length === 0 && (
+        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+          <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+          <p className="text-slate-500 font-medium">No RMs found</p>
+          <p className="text-slate-400 text-sm mt-1">Try a different search term</p>
         </div>
       )}
     </div>

@@ -1,278 +1,149 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
-import { ExternalLink } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 
 const LAYERS = [
-  { id: 'l1', name: 'L1 Bank API',    sub: 'Data Ingestion',        color: '#64748b', x: 50,  y: 60  },
-  { id: 'l2', name: 'L2 ARGUS',       sub: '9 Signal Detectors',    color: '#3b82f6', x: 200, y: 60  },
-  { id: 'l3', name: 'L3 CHRONOS',     sub: 'ML Ensemble + GraphSAGE', color: '#8b5cf6', x: 380, y: 60 },
-  { id: 'l4', name: 'L4 COMPASS',     sub: 'LangGraph Orchestration',color: '#f59e0b', x: 560, y: 60 },
-  { id: 'l5', name: 'L5 HERALD',      sub: 'Content Generation',    color: '#10b981', x: 740, y: 60  },
-  { id: 'l6', name: 'L6 VERDICT',     sub: 'DR Uplift Measurement', color: '#f43f5e', x: 560, y: 200 },
-  { id: 'l7', name: 'L7 ORACLE',      sub: 'Continuous Learning',   color: '#f97316', x: 380, y: 200 },
+  { id: 'l1',      x: 20,  y: 140, label: 'L1 Bank API',    sub: 'Data Ingestion',          color: '#64748b' },
+  { id: 'argus',   x: 210, y: 140, label: 'L2 ARGUS',       sub: '9 Signal Detectors',      color: '#0f2d5c' },
+  { id: 'chronos', x: 400, y: 140, label: 'L3 CHRONOS',     sub: 'ML Ensemble + GraphSAGE', color: '#0f2d5c' },
+  { id: 'compass', x: 590, y: 140, label: 'L4 COMPASS',     sub: 'LangGraph Orchestration', color: '#0f2d5c' },
+  { id: 'herald',  x: 780, y: 140, label: 'L5 HERALD',      sub: 'Content Generation',      color: '#1d4ed8' },
+  { id: 'verdict', x: 590, y: 300, label: 'L6 VERDICT',     sub: 'DR Uplift Measurement',   color: '#7c3aed' },
+  { id: 'oracle',  x: 400, y: 300, label: 'L7 ORACLE',      sub: 'Continuous Learning',     color: '#059669' },
 ];
-
 const EDGES = [
-  { from: 'l1', to: 'l2', label: 'raw events',       feedback: false },
-  { from: 'l2', to: 'l3', label: 'pcop.alarms.v1',   feedback: false },
-  { from: 'l3', to: 'l4', label: 'risk scores',       feedback: false },
-  { from: 'l4', to: 'l5', label: 'pcop.action_plans.v1', feedback: false },
-  { from: 'l5', to: 'l6', label: 'pcop.dispatched.v1',   feedback: false },
-  { from: 'l6', to: 'l7', label: 'pcop.measurements.v1', feedback: true },
-  { from: 'l7', to: 'l3', label: 'retrained models',  feedback: true },
+  { from: 'l1', to: 'argus',        label: 'raw events',            ly: 120 },
+  { from: 'argus', to: 'chronos',   label: 'pcop.alarms.v1',        ly: 120 },
+  { from: 'chronos', to: 'compass', label: 'risk scores',           ly: 120 },
+  { from: 'compass', to: 'herald',  label: 'pcop.action_plans.v1',  ly: 120 },
 ];
-
-const LAYER_LINKS: Record<string, string> = {
-  l3: '/models',
-  l4: '/pipeline',
-  l5: '/pipeline',
-  l6: '/admin/relearning',
-  l7: '/admin/relearning',
+const FEEDBACK = [
+  { from: 'herald', to: 'verdict',  label: 'pcop.dispatched.v1' },
+  { from: 'verdict', to: 'oracle',  label: 'pcop.measurements.v1' },
+  { from: 'oracle', to: 'chronos',  label: 'retrained models' },
+];
+const DETAIL: Record<string, { desc: string; facts: string[] }> = {
+  l1:      { desc: 'Ingests bank data from CBS, mobile app, and transaction systems.', facts: ['50 customers (demo)', 'Balance, transactions, KYC', 'Real-time + batch modes', 'DPDPA consent gating'] },
+  argus:   { desc: '9 specialist signal agents flag behavioural anomalies.', facts: ['CFSI, Beta-CUSUM, Adaptive SR', 'Inactivity, salary, sentiment', 'Fires pcop.alarms.v1', 'AUC: 0.91 per-signal'] },
+  chronos: { desc: 'FusionX ensemble scores every customer. Includes GraphSAGE GNN.', facts: ['FusionX AUC: 0.930', 'GraphSAGE GNN (0.88)', 'TARE gradient boost (0.91)', 'DeepHit survival model'] },
+  compass: { desc: '7-node LangGraph agent plans the best action per customer.', facts: ['NBA: Next Best Action', 'Channel selection logic', 'Fatigue suppression', 'Cooldown enforcement'] },
+  herald:  { desc: '5-node content pipeline generates personalised outreach via LLM.', facts: ['DeepSeek-V3 via Azure', 'Email / SMS / Push / Call', 'Multi-language support', 'Human-in-loop gate'] },
+  verdict: { desc: 'Measures true causal lift using Doubly Robust estimator.', facts: ['DR-ATE: +18pp avg lift', 'Removes selection bias', 'CATE per customer', 'Feeds ORACLE weekly'] },
+  oracle:  { desc: '4 learning cycles continuously improve every component.', facts: ['RETRAIN: weekly AUC gate', 'REFINE: daily prompt perf', 'ROUTE: real-time channel', 'NARRATE: LLM stakeholder'] },
 };
-
-const HEALTH_IDS: Record<string, string> = {
-  l2: 'argus', l3: 'chronos', l4: 'compass', l5: 'herald', l6: 'verdict', l7: 'oracle',
-};
-
-function getPos(id: string) {
-  return LAYERS.find(l => l.id === id)!;
-}
-
-function edgePath(from: string, to: string) {
-  const f = getPos(from);
-  const t = getPos(to);
-  const mx = (f.x + t.x) / 2;
-  const my = (f.y + t.y) / 2;
-  return `M ${f.x + 70} ${f.y + 26} Q ${mx} ${my} ${t.x} ${t.y + 26}`;
-}
+const NW = 150, NH = 64;
 
 export default function ArchitecturePage() {
-  const [health, setHealth]     = useState<any[]>([]);
-  const [kafka,  setKafka]      = useState<any>(null);
+  const [health,   setHealth]   = useState<any[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
-  const [packet, setPacket]     = useState<number | null>(null);
-  const router = useRouter();
-  const tickRef = useRef(0);
 
-  useEffect(() => {
-    Promise.all([api.getAdminHealth(), api.getKafkaStatus()]).then(([h, k]) => {
-      setHealth(h.layers || []);
-      setKafka(k);
-    }).catch(() => {});
-  }, []);
+  const reload = () => api.getAdminHealth().then(r => setHealth(r.layers || [])).catch(() => {});
+  useEffect(() => { reload(); }, []);
 
-  // Animate a data packet along the forward edges every 4s
-  useEffect(() => {
-    const iv = setInterval(() => {
-      setPacket(p => (p === null ? 0 : (p + 1) % 5));
-    }, 1800);
-    return () => clearInterval(iv);
-  }, []);
-
-  const healthMap: Record<string, any> = {};
-  health.forEach(h => { healthMap[h.id] = h; });
-
-  const sel = selected ? LAYERS.find(l => l.id === selected) : null;
-  const selHealth = sel ? healthMap[HEALTH_IDS[sel.id]] : null;
-
-  const W = 880, H = 300;
+  const hMap = Object.fromEntries(health.map((l: any) => [l.id, l]));
+  const nx = (id: string) => LAYERS.find(l => l.id === id)?.x ?? 0;
+  const ny = (id: string) => LAYERS.find(l => l.id === id)?.y ?? 0;
+  const sel  = selected ? DETAIL[selected] : null;
+  const selL = selected ? LAYERS.find(l => l.id === selected) : null;
+  const selH = selected ? hMap[selected] : null;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">Architecture Map</h1>
-        <p className="text-white/40 text-sm mt-0.5">Live 7-layer PCOP pipeline — click any layer for details</p>
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Architecture Map</h1>
+          <p className="text-slate-400 text-sm mt-0.5">Live 7-layer PCOP pipeline — click any node for details</p>
+        </div>
+        <button onClick={reload} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-slate-700 text-xs shadow-sm transition-all">
+          <RefreshCw className="w-3.5 h-3.5" /> Refresh
+        </button>
       </div>
 
-      {/* Main diagram */}
-      <div className="rounded-2xl border border-white/8 bg-white/3 p-6 overflow-x-auto">
-        <svg viewBox={`0 0 ${W} ${H}`} className="w-full min-w-[600px]" style={{ height: 280 }}>
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <svg viewBox="0 0 980 420" className="w-full" style={{ height: 400 }}>
           <defs>
-            <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-              <path d="M0,0 L0,6 L8,3 z" fill="rgba(255,255,255,0.25)" />
-            </marker>
-            <marker id="arrow-feed" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-              <path d="M0,0 L0,6 L8,3 z" fill="#f97316" />
-            </marker>
+            <marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#94a3b8" /></marker>
+            <marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#f97316" /></marker>
           </defs>
 
-          {/* Edges */}
           {EDGES.map((e, i) => {
-            const f = getPos(e.from);
-            const t = getPos(e.to);
-            const isFeed = e.feedback;
-            const isActive = packet === i % 5;
+            const x1 = nx(e.from) + NW, y1 = ny(e.from) + NH / 2;
+            const x2 = nx(e.to),        y2 = ny(e.to)   + NH / 2;
             return (
               <g key={i}>
-                <path
-                  d={edgePath(e.from, e.to)}
-                  fill="none"
-                  stroke={isFeed ? '#f97316' : 'rgba(255,255,255,0.15)'}
-                  strokeWidth={isFeed ? 1.5 : 1}
-                  strokeDasharray={isFeed ? '5 4' : 'none'}
-                  markerEnd={isFeed ? 'url(#arrow-feed)' : 'url(#arrow)'}
-                />
-                {/* Animated packet */}
-                {isActive && !isFeed && (
-                  <circle r="4" fill="#38bdf8" opacity="0.9">
-                    <animateMotion dur="1.5s" repeatCount="indefinite"
-                      path={`M ${f.x + 70} ${f.y + 26} Q ${(f.x+t.x)/2} ${(f.y+t.y)/2} ${t.x} ${t.y + 26}`}
-                    />
-                  </circle>
-                )}
-                {/* Edge label */}
-                <text
-                  x={(f.x + t.x) / 2 + 35}
-                  y={(f.y + t.y) / 2 + (isFeed ? -8 : -6)}
-                  textAnchor="middle"
-                  fontSize="8"
-                  fill={isFeed ? '#f97316' : 'rgba(255,255,255,0.3)'}
-                  className="select-none"
-                >{e.label}</text>
+                <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#cbd5e1" strokeWidth={2} markerEnd="url(#a1)" />
+                <text x={(x1+x2)/2} y={e.ly} textAnchor="middle" fontSize="11" fill="#94a3b8">{e.label}</text>
+                <circle r="4" fill="#0f2d5c">
+                  <animateMotion dur={`${2.2 + i * 0.4}s`} repeatCount="indefinite" path={`M${x1},${y1} L${x2},${y2}`} />
+                </circle>
               </g>
             );
           })}
 
-          {/* Layer nodes */}
-          {LAYERS.map((layer) => {
-            const hKey = HEALTH_IDS[layer.id];
-            const h = hKey ? healthMap[hKey] : null;
-            const isOk = !h || h.status === 'live';
-            const isSelected = selected === layer.id;
+          {FEEDBACK.map((e, i) => {
+            const x1 = nx(e.from) + NW/2, y1 = ny(e.from) + NH;
+            const x2 = nx(e.to)   + NW/2, y2 = ny(e.to)   + NH;
+            const my = 410;
             return (
-              <g
-                key={layer.id}
-                transform={`translate(${layer.x}, ${layer.y})`}
-                className="cursor-pointer"
-                onClick={() => setSelected(s => s === layer.id ? null : layer.id)}
-              >
-                <rect
-                  width={140} height={52} rx={10}
-                  fill={isSelected ? layer.color + '33' : 'rgba(255,255,255,0.05)'}
-                  stroke={isSelected ? layer.color : 'rgba(255,255,255,0.12)'}
-                  strokeWidth={isSelected ? 2 : 1}
-                />
-                {/* Health dot */}
-                {hKey && (
-                  <circle cx={130} cy={10} r={4} fill={isOk ? '#4ade80' : '#f87171'}>
-                    {isOk && <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite" />}
-                  </circle>
-                )}
-                <text x={70} y={22} textAnchor="middle" fontSize="11" fontWeight="bold" fill="white" className="select-none">
-                  {layer.name}
-                </text>
-                <text x={70} y={38} textAnchor="middle" fontSize="8" fill="rgba(255,255,255,0.45)" className="select-none">
-                  {layer.sub}
-                </text>
+              <g key={i}>
+                <path d={`M${x1},${y1} L${x1},${my} L${x2},${my} L${x2},${y2}`}
+                  fill="none" stroke="#f97316" strokeWidth={1.8} strokeDasharray="6 4" markerEnd="url(#a2)" />
+                <text x={(x1+x2)/2} y={my - 6} textAnchor="middle" fontSize="10" fill="#f97316">{e.label}</text>
               </g>
             );
           })}
 
-          {/* Feedback loop label */}
-          <text x={440} y={290} textAnchor="middle" fontSize="9" fill="#f97316" opacity="0.7" className="select-none">
-            ↺ Continuous learning feedback loop (VERDICT → ORACLE → CHRONOS)
-          </text>
+          {LAYERS.map(l => {
+            const h = hMap[l.id];
+            const isSel = selected === l.id;
+            return (
+              <g key={l.id} onClick={() => setSelected(s => s === l.id ? null : l.id)} className="cursor-pointer" style={{ userSelect: 'none' }}>
+                <rect x={l.x} y={l.y} width={NW} height={NH} rx={10}
+                  fill={isSel ? l.color : '#f8fafc'} stroke={isSel ? l.color : '#e2e8f0'} strokeWidth={isSel ? 2.5 : 1.5} />
+                <text x={l.x+NW/2} y={l.y+24} textAnchor="middle" fontSize="12" fontWeight="700" fill={isSel ? '#fff' : '#1e293b'}>{l.label}</text>
+                <text x={l.x+NW/2} y={l.y+42} textAnchor="middle" fontSize="10" fill={isSel ? 'rgba(255,255,255,0.7)' : '#94a3b8'}>{l.sub}</text>
+                {h && <circle cx={l.x+NW-10} cy={l.y+10} r={5} fill={h.status==='live'?'#10b981':'#ef4444'} />}
+              </g>
+            );
+          })}
         </svg>
       </div>
 
-      {/* Selected layer detail */}
-      {sel && (
-        <div className="rounded-xl border p-5 transition-all" style={{ borderColor: sel.color + '40', background: sel.color + '0d' }}>
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-3 h-3 rounded-full" style={{ background: sel.color }} />
-                <h2 className="text-lg font-bold text-white">{sel.name}</h2>
-                {selHealth && (
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${selHealth.status === 'live' ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-red-500/15 text-red-400 border-red-500/30'}`}>
-                    {selHealth.status?.toUpperCase()} · {selHealth.latency_ms}ms
-                  </span>
-                )}
-              </div>
-              <p className="text-white/50 text-sm">{sel.sub}</p>
+      {sel && selL && (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-[10px] font-black shrink-0" style={{ background: selL.color }}>
+              {selL.id.slice(0,2).toUpperCase()}
             </div>
-            {LAYER_LINKS[sel.id] && (
-              <button onClick={() => router.push(LAYER_LINKS[sel.id])}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/8 hover:bg-white/12 text-white/60 hover:text-white text-xs transition-all shrink-0">
-                <ExternalLink className="w-3 h-3" /> Open
-              </button>
-            )}
+            <div>
+              <h3 className="font-bold text-slate-900 text-base">{selL.label}
+                {selH && <span className={`ml-2 text-[10px] font-bold px-2 py-0.5 rounded ${selH.status==='live'?'bg-emerald-100 text-emerald-700':'bg-red-100 text-red-700'}`}>{selH.status?.toUpperCase()} · {selH.latency_ms}ms</span>}
+              </h3>
+              <p className="text-sm text-slate-500">{sel.desc}</p>
+            </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-            {LAYER_DETAIL[sel.id]?.map((f: any) => (
-              <div key={f.label} className="rounded-lg bg-white/5 border border-white/8 p-3">
-                <p className="text-[10px] text-white/35 uppercase tracking-widest font-semibold mb-1">{f.label}</p>
-                <p className="text-sm font-semibold text-white">{f.value}</p>
-              </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {sel.facts.map((f, i) => (
+              <div key={i} className="bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 text-[12px] text-slate-600">{f}</div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Kafka status strip */}
-      {kafka && (
-        <div className="rounded-xl border border-white/8 bg-white/3 p-4 flex items-center gap-6 flex-wrap">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-            </span>
-            <span className="text-xs font-semibold text-white/60">Kafka Simulation</span>
-            <span className="text-xs text-emerald-400 font-bold">{kafka.mode || 'DEMO'}</span>
-          </div>
-          {['pcop.alarms.v1','pcop.action_plans.v1','pcop.dispatched.v1','pcop.measurements.v1'].map(t => (
-            <span key={t} className="text-[10px] text-white/30 font-mono">{t}</span>
-          ))}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex items-center gap-4 flex-wrap">
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+          </span>
+          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Kafka Sim · DEMO</span>
         </div>
-      )}
+        {['pcop.alarms.v1','pcop.action_plans.v1','pcop.dispatched.v1','pcop.measurements.v1'].map(t => (
+          <span key={t} className="text-[11px] font-mono bg-slate-100 text-[#0f2d5c] px-2.5 py-1 rounded-lg border border-slate-200">{t}</span>
+        ))}
+      </div>
     </div>
   );
 }
-
-const LAYER_DETAIL: Record<string, { label: string; value: string }[]> = {
-  l1: [
-    { label: 'Source', value: 'Core Banking API' },
-    { label: 'Events', value: 'Txn, Login, CRM' },
-    { label: 'Interval', value: '8s (demo sim)' },
-    { label: 'Protocol', value: 'Kafka Producer' },
-  ],
-  l2: [
-    { label: 'Detectors', value: '9 signal agents' },
-    { label: 'Methods', value: 'CUSUM, SPRT, EWMA' },
-    { label: 'Output', value: 'pcop.alarms.v1' },
-    { label: 'Latency', value: '< 20ms' },
-  ],
-  l3: [
-    { label: 'Models', value: 'TARE, HABITAT, GraphSAGE' },
-    { label: 'Ensemble AUC', value: '0.93' },
-    { label: 'GraphSAGE wt', value: '0.20' },
-    { label: 'Output', value: 'Churn score + tier' },
-  ],
-  l4: [
-    { label: 'Framework', value: 'LangGraph 7-node' },
-    { label: 'LLM', value: 'Kimi K2.6 / K2.5' },
-    { label: 'Output', value: 'Action plan (NBA)' },
-    { label: 'Gate', value: 'Cooldown + Consent' },
-  ],
-  l5: [
-    { label: 'Framework', value: 'LangGraph 5-node' },
-    { label: 'LLM', value: 'DeepSeek V3' },
-    { label: 'Channels', value: 'Email, SMS, Push, RM' },
-    { label: 'Compliance', value: 'RBI 2024 gated' },
-  ],
-  l6: [
-    { label: 'Method', value: 'Doubly Robust' },
-    { label: 'Holdout', value: '20% control group' },
-    { label: 'Windows', value: '7d / 14d / 30d' },
-    { label: 'Output', value: 'CATE per customer' },
-  ],
-  l7: [
-    { label: 'Cycles', value: '4 (weekly–realtime)' },
-    { label: 'RETRAIN', value: 'Sunday 2am' },
-    { label: 'REFINE', value: 'Daily 1am' },
-    { label: 'NARRATE', value: 'Nightly 11pm' },
-  ],
-};

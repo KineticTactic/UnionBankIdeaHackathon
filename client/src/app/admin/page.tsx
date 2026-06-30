@@ -1,52 +1,28 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { api } from '@/lib/api';
-import {
-  Users, TrendingUp, AlertTriangle, Shield,
-  Activity, Zap, BarChart3, RefreshCw,
-  ArrowUpRight, CheckCircle2, Clock, ChevronRight, Radio,
-} from 'lucide-react';
+import { Users, AlertTriangle, TrendingUp, Activity, RefreshCw, ArrowUpRight, Radio, BarChart3, Zap } from 'lucide-react';
 
-const TIER_COLORS: Record<string, string> = {
-  PRIORITY: 'bg-red-500/15 text-red-400 border-red-500/30',
-  ESCALATE: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
-  STANDARD: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
-  MONITOR:  'bg-blue-500/15 text-blue-400 border-blue-500/30',
-  NONE:     'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+const TIER_BADGE: Record<string, string> = {
+  PRIORITY: 'bg-red-100 text-red-700 border border-red-200',
+  ESCALATE: 'bg-orange-100 text-orange-700 border border-orange-200',
+  STANDARD: 'bg-amber-100 text-amber-700 border border-amber-200',
+  MONITOR:  'bg-blue-100 text-blue-700 border border-blue-200',
+  NONE:     'bg-emerald-100 text-emerald-700 border border-emerald-200',
 };
-
-function PulseDot() {
-  return (
-    <span className="relative flex h-2 w-2">
-      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
-      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-    </span>
-  );
-}
-
-function StatCard({ label, value, sub, icon: Icon, accent }: { label: string; value: string | number; sub?: string; icon: React.ElementType; accent: string }) {
-  return (
-    <div className={`rounded-xl border bg-white/4 p-5 flex flex-col gap-3 ${accent}`}>
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] font-semibold uppercase tracking-widest text-white/50">{label}</span>
-        <Icon className="w-4 h-4 text-white/25" />
-      </div>
-      <div className="flex items-end gap-2">
-        <span className="text-3xl font-bold text-white tabular-nums">{value}</span>
-        {sub && <span className="text-[11px] text-white/40 mb-1">{sub}</span>}
-      </div>
-    </div>
-  );
-}
+const TIER_BAR: Record<string, string> = {
+  PRIORITY: 'bg-red-500', ESCALATE: 'bg-orange-500', STANDARD: 'bg-amber-500',
+  MONITOR: 'bg-blue-500', NONE: 'bg-emerald-500',
+};
 
 const LIVE_EVENTS = [
   'ARGUS → salary credit stopped · CUST-0008 · ESCALATE tier',
   'COMPASS → action plan: phone call + FD renewal offer · CUST-0001',
   'HERALD → email dispatched · CUST-0003 · consent verified',
   'VERDICT → email opened · CUST-0003 · +1 engagement event',
-  'ARGUS → inactivity spike detected · CUST-0011 · MONITOR→STANDARD',
+  'ARGUS → inactivity spike · CUST-0011 · MONITOR→STANDARD',
   'ORACLE → REFINE cycle: promoted 3 prompt variants',
   'HERALD → push notification sent · CUST-0019 · FCM OK',
   'COMPASS → suppressed · CUST-0007 · cooldown 7d active',
@@ -54,131 +30,103 @@ const LIVE_EVENTS = [
   'VERDICT → retention outcome confirmed · CUST-0003 · +0.22 CATE',
 ];
 
+function StatCard({ label, value, sub, icon: Icon, accent }: {
+  label: string; value: string | number; sub?: string; icon: React.ElementType; accent: string;
+}) {
+  return (
+    <div className={`bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 ${accent}`}>
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">{label}</p>
+          <p className="text-2xl font-bold text-slate-900 tabular-nums">{value}</p>
+          {sub && <p className="text-[11px] text-slate-400 mt-1">{sub}</p>}
+        </div>
+        <Icon className="w-5 h-5 text-slate-300 mt-1" />
+      </div>
+    </div>
+  );
+}
+
 export default function AdminCommandCenter() {
   const [stats,   setStats]   = useState<any>(null);
   const [health,  setHealth]  = useState<any>(null);
   const [kafka,   setKafka]   = useState<any>(null);
-  const [mhealth, setMhealth] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [tickIdx, setTickIdx] = useState(0);
-  const router = useRouter();
   const tickRef = useRef(0);
 
   const load = async () => {
     setLoading(true);
     try {
-      const [s, h, k, mh] = await Promise.all([
-        api.getAdminStats(),
-        api.getAdminHealth(),
-        api.getKafkaStatus(),
-        api.getModelHealth(),
-      ]);
-      setStats(s);
-      setHealth(h);
-      setKafka(k);
-      setMhealth(mh);
+      const [s, h, k] = await Promise.all([api.getAdminStats(), api.getAdminHealth(), api.getKafkaStatus()]);
+      setStats(s); setHealth(h); setKafka(k);
     } catch {}
     setLoading(false);
   };
 
   useEffect(() => { load(); }, []);
-
-  // Ticker
   useEffect(() => {
-    const iv = setInterval(() => setTickIdx(i => (i + 1) % LIVE_EVENTS.length), 2200);
+    const iv = setInterval(() => { tickRef.current = (tickRef.current + 1) % LIVE_EVENTS.length; setTickIdx(tickRef.current); }, 2200);
     return () => clearInterval(iv);
   }, []);
 
-  if (loading) return (
-    <div className="flex items-center justify-center h-72 text-white/30 text-sm animate-pulse">Loading Command Center…</div>
-  );
-
-  const s = stats?.stats || {};
-  const leaderboard: any[] = stats?.rm_leaderboard || [];
-  const atRisk: any[] = stats?.top_at_risk || [];
+  const st  = stats?.stats || {};
+  const tiers = st.tier_distribution || {};
+  const total = st.total_customers || 1;
   const layers: any[] = health?.layers || [];
-  const tierDist = s.tier_distribution || {};
-  const totalTier = Object.values(tierDist).reduce((a: number, b) => a + (b as number), 0) || 1;
-
-  // Attention rail counts
-  const pendingEsc = 3; // demo — from escalations data
-  const pendingApprovals = kafka?.pendingApprovals ?? 1;
+  const leaderboard: any[] = stats?.rm_leaderboard || [];
+  const topAtRisk: any[] = stats?.top_at_risk || [];
 
   return (
-    <div className="space-y-5">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Command Center</h1>
-          <p className="text-white/40 text-sm mt-0.5">Bank-wide live overview — PCOP v2 · Union Bank</p>
+          <h1 className="text-2xl font-bold text-slate-900">Command Center</h1>
+          <p className="text-slate-400 text-sm mt-0.5">Live overview of the PCOP platform</p>
         </div>
-        <button onClick={load}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/6 hover:bg-white/10 text-white/60 hover:text-white text-xs transition-all">
+        <button onClick={load} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-slate-700 text-xs shadow-sm transition-all">
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
 
-      {/* Attention rail */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {[
-          { label: 'Pending Approvals', value: pendingApprovals, href: '/admin/approvals', accent: 'border-amber-500/30 bg-amber-500/8', color: 'text-amber-400' },
-          { label: 'Open Escalations',  value: pendingEsc,       href: '/admin/escalations', accent: 'border-red-500/20 bg-red-500/5', color: 'text-red-400' },
-          { label: 'Active Signals',    value: s.active_signals_today ?? 32, href: '/signals', accent: 'border-sky-500/20 bg-sky-500/5', color: 'text-sky-400' },
-          { label: 'Outreach (24h)',    value: s.outreach_sent_24h ?? '—', href: '/admin/approvals', accent: 'border-emerald-500/20 bg-emerald-500/5', color: 'text-emerald-400' },
-        ].map(item => (
-          <button key={item.label} onClick={() => router.push(item.href)}
-            className={`rounded-xl border p-4 text-left hover:brightness-110 transition-all group ${item.accent}`}>
-            <p className="text-[10px] text-white/40 uppercase tracking-widest font-semibold mb-1">{item.label}</p>
-            <div className="flex items-end justify-between">
-              <p className={`text-2xl font-bold tabular-nums ${item.color}`}>{item.value}</p>
-              <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-white/50 transition-colors" />
-            </div>
-          </button>
-        ))}
-      </div>
-
       {/* Live Kafka ticker */}
-      <div className="rounded-xl border border-white/8 bg-white/3 px-4 py-3 flex items-center gap-3 overflow-hidden">
+      <div className="bg-[#0f2d5c] rounded-xl p-3 flex items-center gap-3 overflow-hidden">
         <div className="flex items-center gap-2 shrink-0">
-          <PulseDot />
-          <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">LIVE</span>
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+          </span>
+          <Radio className="w-3.5 h-3.5 text-white/60" />
+          <span className="text-[11px] font-semibold text-white/60 uppercase tracking-widest">Live</span>
         </div>
-        <div className="flex-1 overflow-hidden">
-          <p key={tickIdx} className="text-[12px] text-sky-300/80 font-mono truncate animate-in slide-in-from-right duration-300">
-            {LIVE_EVENTS[tickIdx]}
-          </p>
-        </div>
-        <span className="text-[10px] text-white/20 shrink-0 tabular-nums">
-          {new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-        </span>
+        <p className="text-[12px] text-white/80 truncate font-mono">{LIVE_EVENTS[tickIdx]}</p>
       </div>
 
-      {/* KPI strip */}
+      {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total Customers"  value={s.total_customers ?? '—'} sub="portfolio"           icon={Users}        accent="border-white/8" />
-        <StatCard label="At-Risk"          value={s.at_risk_count ?? '—'}   sub="PRIORITY+ESCALATE"  icon={AlertTriangle} accent="border-red-500/20" />
-        <StatCard label="Saves (30d)"      value={s.saves_this_month ?? '—'} sub="retained/converted" icon={CheckCircle2} accent="border-emerald-500/20" />
-        <StatCard label="Avg Churn Score"  value={s.avg_churn_score !== undefined ? `${Math.round(s.avg_churn_score*100)}%` : '—'} sub="portfolio avg" icon={TrendingUp} accent="border-purple-500/20" />
+        <StatCard label="Total Customers" value={loading ? '—' : st.total_customers || 0} icon={Users}         accent="border-l-[#0f2d5c]" />
+        <StatCard label="At Risk"         value={loading ? '—' : st.at_risk_count || 0}   icon={AlertTriangle} accent="border-l-red-500"     sub="PRIORITY + ESCALATE" />
+        <StatCard label="Saves (30d)"     value={loading ? '—' : st.saves_this_month || 0} icon={TrendingUp}   accent="border-l-emerald-500" />
+        <StatCard label="Avg Churn Score" value={loading ? '—' : `${Math.round((st.avg_churn_score||0)*100)}%`} icon={Activity} accent="border-l-amber-500" />
       </div>
 
-      {/* Middle row: tier dist + model health + layer health */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Tier distribution */}
-        <div className="rounded-xl border border-white/8 bg-white/4 p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40 mb-4">Risk Tier Distribution</p>
-          <div className="space-y-2.5">
-            {(['PRIORITY','ESCALATE','STANDARD','MONITOR','NONE'] as const).map(tier => {
-              const count = tierDist[tier] || 0;
-              const pct   = Math.round((count / totalTier) * 100);
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <h2 className="text-sm font-semibold text-slate-700 mb-4">Tier Distribution</h2>
+          <div className="space-y-3">
+            {['PRIORITY','ESCALATE','STANDARD','MONITOR','NONE'].map(tier => {
+              const count = tiers[tier] || 0;
+              const pct   = Math.round(count / total * 100);
               return (
                 <div key={tier}>
-                  <div className="flex items-center justify-between text-xs mb-0.5">
-                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border ${TIER_COLORS[tier]}`}>{tier}</span>
-                    <span className="text-white/40 tabular-nums">{count} <span className="text-white/25">({pct}%)</span></span>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${TIER_BADGE[tier]}`}>{tier}</span>
+                    <span className="text-[11px] text-slate-500 tabular-nums">{count} <span className="text-slate-300">({pct}%)</span></span>
                   </div>
-                  <div className="h-1.5 rounded-full bg-white/8 overflow-hidden">
-                    <div className={`h-full rounded-full ${tier==='PRIORITY'?'bg-red-500':tier==='ESCALATE'?'bg-orange-500':tier==='STANDARD'?'bg-amber-500':tier==='MONITOR'?'bg-blue-500':'bg-emerald-500'}`}
-                      style={{ width: `${pct}%` }} />
+                  <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div className={`h-full rounded-full ${TIER_BAR[tier]}`} style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               );
@@ -187,99 +135,109 @@ export default function AdminCommandCenter() {
         </div>
 
         {/* Model health */}
-        <div className="rounded-xl border border-white/8 bg-white/4 p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40 mb-4">Model Health (CHRONOS)</p>
-          {mhealth ? (
-            <div className="space-y-2">
-              {[
-                { name: 'Ensemble (FusionX)', auc: mhealth.ensemble_auc ?? 0.93, weight: null },
-                { name: 'TARE (GRU)',          auc: mhealth.tare_auc    ?? 0.91, weight: '35%' },
-                { name: 'HABITAT (XGBoost)',   auc: mhealth.habitat_auc ?? 0.89, weight: '30%' },
-                { name: 'GraphSAGE (GNN)',     auc: mhealth.graphsage_auc ?? 0.88, weight: '20%' },
-                { name: 'GENESIS (LR)',        auc: mhealth.genesis_auc ?? 0.82, weight: '15%' },
-              ].map(m => (
-                <div key={m.name} className="flex items-center gap-2 py-1.5 border-b border-white/5 last:border-0">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[12px] text-white/70 truncate">{m.name}</p>
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <h2 className="text-sm font-semibold text-slate-700 mb-4">Model Health</h2>
+          <div className="space-y-2.5">
+            {[
+              { label: 'FusionX Ensemble', auc: 0.930 },
+              { label: 'TARE (gradient boost)', auc: 0.910 },
+              { label: 'HABITAT (survival)', auc: 0.890 },
+              { label: 'GraphSAGE GNN', auc: 0.880 },
+              { label: 'CAUSAL-NET', auc: 0.820 },
+              { label: 'DeepHit', auc: 0.870 },
+            ].map(m => (
+              <div key={m.label} className="flex items-center justify-between">
+                <span className="text-[12px] text-slate-600 truncate">{m.label}</span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-[#0f2d5c] rounded-full" style={{ width: `${m.auc * 100}%` }} />
                   </div>
-                  {m.weight && <span className="text-[10px] text-white/30">{m.weight}</span>}
-                  <span className="text-sm font-bold text-emerald-400 tabular-nums">{m.auc.toFixed(3)}</span>
+                  <span className="text-[11px] font-bold text-slate-700 tabular-nums w-10 text-right">{m.auc.toFixed(3)}</span>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {[['Ensemble (FusionX)','0.930'],['TARE','0.913'],['HABITAT','0.889'],['GraphSAGE','0.882'],['GENESIS','0.820']].map(([n,v]) => (
-                <div key={n} className="flex items-center justify-between py-1.5 border-b border-white/5 last:border-0">
-                  <span className="text-[12px] text-white/60">{n}</span>
-                  <span className="text-sm font-bold text-emerald-400">{v}</span>
-                </div>
-              ))}
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Layer health */}
-        <div className="rounded-xl border border-white/8 bg-white/4 p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40 mb-4">System Health</p>
-          <div className="space-y-1.5">
-            {layers.map((l: any) => (
-              <div key={l.id} className="flex items-center gap-2.5 py-1.5 border-b border-white/5 last:border-0">
-                <span className="relative flex h-2 w-2 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <h2 className="text-sm font-semibold text-slate-700 mb-4">Layer Health</h2>
+          <div className="space-y-2">
+            {loading ? (
+              [1,2,3,4,5].map(i => <div key={i} className="h-8 bg-slate-50 rounded animate-pulse" />)
+            ) : layers.map((l: any) => (
+              <div key={l.id} className="flex items-center gap-2.5 py-1.5 border-b border-slate-50 last:border-0">
+                <span className={`w-2 h-2 rounded-full shrink-0 ${l.status === 'live' ? 'bg-emerald-400' : 'bg-red-400'}`} />
+                <span className="text-[12px] text-slate-700 flex-1">{l.name}</span>
+                <span className="text-[11px] text-slate-400 tabular-nums">{l.latency_ms}ms</span>
+                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${l.status === 'live' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                  {l.status?.toUpperCase()}
                 </span>
-                <span className="text-[12px] text-white/70 flex-1">{l.name}</span>
-                <span className="text-[11px] text-white/35 tabular-nums">{l.latency_ms}ms</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* RM Leaderboard + Top At-Risk */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="rounded-xl border border-white/8 bg-white/4 p-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* RM Leaderboard */}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40">RM Leaderboard</p>
-            <button onClick={() => router.push('/admin/rms')} className="text-[11px] text-white/30 hover:text-white transition-colors flex items-center gap-1">
-              View all <ChevronRight className="w-3 h-3" />
-            </button>
+            <h2 className="text-sm font-semibold text-slate-700">RM Leaderboard</h2>
+            <Link href="/admin/rms" className="text-xs text-[#0f2d5c] hover:underline flex items-center gap-1">
+              Manage RMs <ArrowUpRight className="w-3 h-3" />
+            </Link>
           </div>
-          {leaderboard.map((rm: any, i: number) => (
-            <div key={rm.username} className="flex items-center gap-3 py-2.5 border-b border-white/5 last:border-0">
-              <div className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-[11px] font-bold shrink-0">{i+1}</div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white truncate">{rm.rm_name}</p>
-                <p className="text-[11px] text-white/35">{rm.book_size} customers · {rm.at_risk_count} at risk</p>
-              </div>
-              <div className="text-right shrink-0">
-                <p className="text-sm font-bold text-emerald-400">{rm.saves}</p>
-                <p className="text-[10px] text-white/25">saves</p>
-              </div>
-              <div className="text-right shrink-0">
-                <p className="text-sm font-bold text-sky-400">{rm.task_completion_rate}%</p>
-                <p className="text-[10px] text-white/25">tasks</p>
-              </div>
+          {loading ? (
+            <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-10 bg-slate-50 rounded animate-pulse" />)}</div>
+          ) : (
+            <div className="divide-y divide-slate-50">
+              {leaderboard.slice(0, 6).map((rm: any, i: number) => (
+                <div key={rm.username} className="flex items-center gap-3 py-2.5">
+                  <span className="w-5 text-[11px] font-bold text-slate-300 text-right shrink-0">{i+1}</span>
+                  <div className="w-7 h-7 rounded-full bg-[#0f2d5c] flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+                    {rm.rm_name?.split(' ').map((n: string) => n[0]).join('').slice(0,2)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[12px] font-semibold text-slate-800 truncate">{rm.rm_name}</p>
+                    <p className="text-[10px] text-slate-400">{rm.book_size} customers</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-bold text-emerald-600">{rm.saves}</p>
+                    <p className="text-[9px] text-slate-400">saves</p>
+                  </div>
+                  <div className="text-right shrink-0 w-10">
+                    <p className="text-sm font-bold text-red-500">{rm.at_risk_count}</p>
+                    <p className="text-[9px] text-slate-400">at-risk</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
 
-        <div className="rounded-xl border border-white/8 bg-white/4 p-5">
+        {/* Top at-risk */}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40">Top At-Risk</p>
-            <Shield className="w-4 h-4 text-white/20" />
+            <h2 className="text-sm font-semibold text-slate-700">Top At-Risk</h2>
+            <Zap className="w-4 h-4 text-slate-300" />
           </div>
-          {atRisk.slice(0,8).map((c: any) => (
-            <div key={c.customer_id} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{c.full_name}</p>
-                <p className="text-[11px] text-white/35 truncate">{c.rm_name}</p>
-              </div>
-              <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border shrink-0 ${TIER_COLORS[c.risk_tier]}`}>{c.risk_tier}</span>
-              <span className="text-sm font-bold text-white/60 tabular-nums shrink-0">{Math.round((c.churn_score||0)*100)}%</span>
+          {loading ? (
+            <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-10 bg-slate-50 rounded animate-pulse" />)}</div>
+          ) : (
+            <div className="divide-y divide-slate-50">
+              {topAtRisk.slice(0, 6).map((c: any) => (
+                <div key={c.customer_id} className="flex items-center gap-3 py-2.5">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[12px] font-semibold text-slate-800 truncate">{c.full_name}</p>
+                    <p className="text-[10px] text-slate-400">{c.city} · {c.segment}</p>
+                  </div>
+                  <span className="text-sm font-bold text-slate-900 tabular-nums">{Math.round((c.churn_score||0)*100)}%</span>
+                  <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${TIER_BADGE[c.risk_tier]||''}`}>{c.risk_tier}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

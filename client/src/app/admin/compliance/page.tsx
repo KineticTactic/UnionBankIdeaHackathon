@@ -10,17 +10,17 @@ import {
 
 /* ── constants ─────────────────────────────────────────────────────────────── */
 const TIER_BADGE: Record<string, string> = {
-  PRIORITY: 'bg-crimson-soft text-crimson border-soft',
-  ESCALATE: 'bg-copper-soft text-copper-dark border-soft',
-  STANDARD: 'bg-copper-soft text-copper-dark border-soft',
-  MONITOR:  'bg-teal-soft text-teal-dark border-soft',
-  NONE:     'bg-sage-soft text-sage-brand border-soft',
+  PRIORITY: 'bg-[#6B132B] text-white',
+  ESCALATE: 'bg-[#B46B3E] text-white',
+  STANDARD: 'bg-[#F9F9F7] text-[#2A161B] border border-soft',
+  MONITOR:  'bg-[#F4D9C0] text-[#2A161B]',
+  NONE:     'bg-[#F9F9F7] text-[#6B6562] border border-soft',
 };
 const SEG_BADGE: Record<string, string> = {
-  HNW:    'bg-teal-soft text-teal-dark',
-  MASS:   'bg-slate-100 text-slate-600',
-  SME:    'bg-teal-soft text-teal-dark',
-  NRI:    'bg-teal-100 text-teal-700',
+  HNW:    'bg-[#6B132B] text-white',
+  MASS:   'bg-[#F9F9F7] text-[#6B6562] border border-soft',
+  SME:    'bg-[#B46B3E] text-white',
+  NRI:    'bg-[#F4D9C0] text-[#2A161B]',
 };
 const CHANNELS = ['EMAIL', 'SMS', 'PUSH'] as const;
 type Channel = typeof CHANNELS[number];
@@ -36,22 +36,20 @@ function fmtDate(d?: string) {
 const CORRECTABLE_FIELDS = ['full_name', 'city', 'email', 'phone', 'segment', 'age'];
 
 function downloadPdf(record: any, exportData: any) {
+  const css = `body{font-family:Poppins,sans-serif;padding:32px;color:#2A161B;font-size:12px}
+h1{font-size:20px;font-weight:800;margin:0 0 4px;color:#2A161B}
+h2{font-size:13px;font-weight:700;margin:20px 0 6px;border-bottom:1px solid #E5E0DF;padding-bottom:4px;color:#2A161B}
+.meta{color:#6B6562;font-size:11px;margin-bottom:24px}
+table{width:100%;border-collapse:collapse;margin-bottom:8px}
+td,th{padding:6px 8px;text-align:left;font-size:11px}
+th{background:#F9F9F7;font-weight:700;color:#6B6562}
+tr:nth-child(even) td{background:#F9F9F7}
+.green{color:#6B132B;font-weight:700} .red{color:#B46B3E;font-weight:700}
+.footer{margin-top:32px;font-size:10px;color:#8B8481;border-top:1px solid #E5E0DF;padding-top:12px}
+@media print{body{padding:16px}}`;
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
 <title>Data Package — ${record.full_name}</title>
-<style>
-  body{font-family:Arial,sans-serif;padding:32px;color:var(--gray-700);font-size:12px}
-  h1{font-size:20px;font-weight:800;margin:0 0 4px}
-  h2{font-size:13px;font-weight:700;margin:20px 0 6px;border-bottom:1px solid var(--border-color);padding-bottom:4px}
-  .meta{color:var(--gray-500);font-size:11px;margin-bottom:24px}
-  .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;background:var(--teal-soft);color:#0369a1}
-  table{width:100%;border-collapse:collapse;margin-bottom:8px}
-  td,th{padding:6px 8px;text-align:left;font-size:11px}
-  th{background:var(--background);font-weight:700;color:var(--gray-600)}
-  tr:nth-child(even) td{background:var(--background)}
-  .green{color:var(--sage-brand);font-weight:700} .red{color:var(--crimson);font-weight:700}
-  .footer{margin-top:32px;font-size:10px;color:var(--gray-400);border-top:1px solid var(--border-color);padding-top:12px}
-  @media print{body{padding:16px}}
-</style></head><body>
+<style>${css}</style></head><body>
 <h1>Data Package — ${record.full_name}</h1>
 <p class="meta">DPDPA 2023 §12 · Right to Access · Generated: ${new Date().toLocaleString('en-IN')} · By: Admin</p>
 
@@ -108,7 +106,6 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
   const [loadingH, setLoadingH] = useState(false);
   const [showHist, setShowHist] = useState(false);
   const [exporting, setExporting] = useState(false);
-  // §13 correction state
   const [showCorrect,  setShowCorrect]  = useState(false);
   const [correctField, setCorrectField] = useState('city');
   const [correctValue, setCorrectValue] = useState('');
@@ -154,14 +151,12 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
         await (dpdpa ? api.grantDpdpaConsent(cid) : api.revokeDpdpaConsent(cid));
       if (trai !== record.trai_consent)
         await (trai ? api.grantTraiConsent(cid, ['SMS','EMAIL','PUSH']) : api.revokeTraiConsent(cid));
-      // channel opt-outs: reconcile diff
       for (const ch of CHANNELS) {
         const wasOut = (record.opt_out_channels || []).includes(ch);
         const isOut  = optOuts.includes(ch);
         if (wasOut && !isOut) await api.removeOptOut(cid, ch);
         if (!wasOut && isOut) await api.addOptOut(cid, ch);
       }
-      // erasure request
       if (erasure && reason.trim()) {
         await api.requestErasure(cid, reason);
       }
@@ -175,57 +170,56 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg" onClick={e => e.stopPropagation()}>
-        {/* header */}
-        <div className="flex items-start justify-between p-5 border-b border-slate-100">
+      <div className="bg-white rounded-md border border-soft w-full max-w-lg" onClick={e => e.stopPropagation()}>
+        <div className="flex items-start justify-between p-5 border-b border-soft">
           <div>
-            <h3 className="font-bold text-slate-900 text-base">{record.full_name}</h3>
-            <p className="text-[11px] text-slate-400">{record.customer_id} · {record.city} · RM: {record.relationship_manager || '—'}</p>
+            <h3 className="font-bold text-[#2A161B] text-base">{record.full_name}</h3>
+            <p className="text-[11px] text-[#6B6562]">{record.customer_id} · {record.city} · RM: {record.relationship_manager || '—'}</p>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
+          <button onClick={onClose} className="text-[#8B8481] hover:text-[#2A161B] transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <div className="p-5 space-y-5 overflow-y-auto" style={{ maxHeight: '70vh' }}>
           {/* DPDPA */}
-          <div className="bg-slate-50 rounded-xl p-4 space-y-2">
+          <div className="bg-[#F9F9F7] rounded-md p-4 space-y-2">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-slate-800">DPDPA 2023 Consent</p>
-                <p className="text-[11px] text-slate-400">Digital Personal Data Protection Act — processing permission</p>
+                <p className="text-sm font-semibold text-[#2A161B]">DPDPA 2023 Consent</p>
+                <p className="text-[11px] text-[#6B6562]">Digital Personal Data Protection Act — processing permission</p>
               </div>
               <button onClick={() => setDpdpa(p => !p)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${dpdpa ? 'bg-sage-brand' : 'bg-red-400'}`}>
-                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${dpdpa ? 'left-6' : 'left-1'}`} />
+                className={`relative w-11 h-6 rounded-full transition-colors ${dpdpa ? 'bg-[#6B132B]' : 'bg-[#B46B3E]'}`}>
+                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${dpdpa ? 'left-6' : 'left-1'}`} />
               </button>
             </div>
             {!dpdpa && (
-              <p className="text-[11px] text-copper-dark bg-copper-soft border border-soft rounded-lg p-2">
+              <p className="text-[11px] text-[#B46B3E] bg-[#F4D9C0] border border-soft rounded-md p-2">
                 ⚠ Revoking DPDPA will cancel all pending outreach approvals and block further AI-driven contact.
               </p>
             )}
           </div>
 
           {/* TRAI */}
-          <div className="bg-slate-50 rounded-xl p-4">
+          <div className="bg-[#F9F9F7] rounded-md p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-slate-800">TRAI Consent</p>
-                <p className="text-[11px] text-slate-400">Telecom Regulatory Authority — commercial communication</p>
+                <p className="text-sm font-semibold text-[#2A161B]">TRAI Consent</p>
+                <p className="text-[11px] text-[#6B6562]">Telecom Regulatory Authority — commercial communication</p>
               </div>
               <button onClick={() => setTrai(p => !p)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${trai ? 'bg-sage-brand' : 'bg-red-400'}`}>
-                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${trai ? 'left-6' : 'left-1'}`} />
+                className={`relative w-11 h-6 rounded-full transition-colors ${trai ? 'bg-[#6B132B]' : 'bg-[#B46B3E]'}`}>
+                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${trai ? 'left-6' : 'left-1'}`} />
               </button>
             </div>
           </div>
 
           {/* Channel opt-outs */}
-          <div className="bg-slate-50 rounded-xl p-4 space-y-3">
+          <div className="bg-[#F9F9F7] rounded-md p-4 space-y-3">
             <div>
-              <p className="text-sm font-semibold text-slate-800">Channel Opt-Outs</p>
-              <p className="text-[11px] text-slate-400">Customer has opted out of specific communication channels</p>
+              <p className="text-sm font-semibold text-[#2A161B]">Channel Opt-Outs</p>
+              <p className="text-[11px] text-[#6B6562]">Customer has opted out of specific communication channels</p>
             </div>
             <div className="flex gap-3">
               {CHANNELS.map(ch => {
@@ -233,12 +227,12 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
                 const isOut = optOuts.includes(ch);
                 return (
                   <button key={ch} onClick={() => toggleOptOut(ch)}
-                    className={`flex-1 flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all ${
-                      isOut ? 'border-red-400 bg-crimson-soft' : 'border-slate-200 bg-white hover:border-slate-300'
+                    className={`flex-1 flex flex-col items-center gap-1.5 p-3 rounded-md border-2 transition-all ${
+                      isOut ? 'border-[#6B132B] bg-[#6B132B]' : 'border-soft bg-white hover:border-[#B46B3E]'
                     }`}>
-                    <Icon className={`w-4 h-4 ${isOut ? 'text-crimson' : 'text-slate-400'}`} />
-                    <span className={`text-[10px] font-bold ${isOut ? 'text-crimson' : 'text-slate-500'}`}>{ch}</span>
-                    <span className={`text-[9px] font-semibold ${isOut ? 'text-crimson' : 'text-sage-brand'}`}>
+                    <Icon className={`w-4 h-4 ${isOut ? 'text-white' : 'text-[#6B6562]'}`} />
+                    <span className={`text-[10px] font-bold ${isOut ? 'text-white' : 'text-[#6B6562]'}`}>{ch}</span>
+                    <span className={`text-[9px] font-semibold ${isOut ? 'text-white' : 'text-[#6B132B]'}`}>
                       {isOut ? 'OPTED OUT' : 'ACTIVE'}
                     </span>
                   </button>
@@ -248,48 +242,48 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
           </div>
 
           {/* §12 — Data Export */}
-          <div className="bg-slate-50 rounded-xl p-4 flex items-center justify-between gap-3">
+          <div className="bg-[#F9F9F7] rounded-md p-4 flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold text-slate-800 flex items-center gap-1.5">
-                <FileDown className="w-4 h-4 text-slate-400" /> Data Package Export
+              <p className="text-sm font-semibold text-[#2A161B] flex items-center gap-1.5">
+                <FileDown className="w-4 h-4 text-[#6B6562]" /> Data Package Export
               </p>
-              <p className="text-[11px] text-slate-400 mt-0.5">DPDPA 2023 §12 — Right to Access. Opens print dialog for PDF download.</p>
+              <p className="text-[11px] text-[#6B6562] mt-0.5">DPDPA 2023 §12 — Right to Access. Opens print dialog for PDF download.</p>
             </div>
             <button onClick={handleExport} disabled={exporting}
-              className="shrink-0 px-3 py-1.5 rounded-lg bg-[var(--crimson)] text-white text-xs font-bold hover:bg-[var(--crimson)]/90 disabled:opacity-50 transition-all">
+              className="shrink-0 px-3 py-1.5 rounded-md bg-[#6B132B] text-white text-xs font-bold hover:bg-[#6B132B]/90 disabled:opacity-50 transition-all">
               {exporting ? 'Loading…' : 'Export PDF'}
             </button>
           </div>
 
           {/* §13 — Right to Correction */}
-          <div className={`rounded-xl p-4 border-2 transition-all ${showCorrect ? 'border-soft bg-teal-soft' : 'border-slate-200 bg-slate-50'}`}>
+          <div className={`rounded-md p-4 border-2 transition-all ${showCorrect ? 'border-[#B46B3E] bg-[#F4D9C0]' : 'border-soft bg-[#F9F9F7]'}`}>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <PenLine className={`w-4 h-4 ${showCorrect ? 'text-teal' : 'text-slate-400'}`} />
-                <p className={`text-sm font-semibold ${showCorrect ? 'text-teal-dark' : 'text-slate-800'}`}>Request Data Correction</p>
+                <PenLine className={`w-4 h-4 ${showCorrect ? 'text-[#B46B3E]' : 'text-[#6B6562]'}`} />
+                <p className={`text-sm font-semibold ${showCorrect ? 'text-[#B46B3E]' : 'text-[#2A161B]'}`}>Request Data Correction</p>
               </div>
               <button onClick={() => setShowCorrect(p => !p)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${showCorrect ? 'bg-teal' : 'bg-slate-200'}`}>
-                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${showCorrect ? 'left-6' : 'left-1'}`} />
+                className={`relative w-11 h-6 rounded-full transition-colors ${showCorrect ? 'bg-[#B46B3E]' : 'bg-[#E5E0DF]'}`}>
+                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${showCorrect ? 'left-6' : 'left-1'}`} />
               </button>
             </div>
-            <p className="text-[11px] text-slate-400 mb-2">DPDPA 2023 §13 — right to correction. Logged for DBA review; no immediate data change.</p>
+            <p className="text-[11px] text-[#6B6562] mb-2">DPDPA 2023 §13 — right to correction. Logged for DBA review; no immediate data change.</p>
             {showCorrect && (
               <div className="space-y-2 mt-3">
                 <div className="flex gap-2">
                   <select value={correctField} onChange={e => setCorrectField(e.target.value)}
-                    className="flex-1 rounded-lg border border-soft text-xs text-slate-800 p-2 bg-white focus:outline-none focus:border-blue-400">
+                    className="flex-1 rounded-md border border-soft text-xs text-[#2A161B] p-2 bg-white focus:outline-none focus:border-[#6B132B]/40">
                     {CORRECTABLE_FIELDS.map(f => <option key={f} value={f}>{f.replace('_',' ')}</option>)}
                   </select>
                   <input value={correctValue} onChange={e => setCorrectValue(e.target.value)}
                     placeholder="New value…"
-                    className="flex-1 rounded-lg border border-soft text-xs text-slate-800 p-2 bg-white focus:outline-none focus:border-blue-400" />
+                    className="flex-1 rounded-md border border-soft text-xs text-[#2A161B] p-2 bg-white focus:outline-none focus:border-[#6B132B]/40" />
                 </div>
                 <input value={correctReason} onChange={e => setCorrectReason(e.target.value)}
                   placeholder="Reason for correction (required)…"
-                  className="w-full rounded-lg border border-soft text-xs text-slate-800 p-2 bg-white focus:outline-none focus:border-blue-400" />
+                  className="w-full rounded-md border border-soft text-xs text-[#2A161B] p-2 bg-white focus:outline-none focus:border-[#6B132B]/40" />
                 <button onClick={handleCorrect} disabled={!correctValue.trim() || !correctReason.trim()}
-                  className="px-4 py-1.5 rounded-lg bg-teal-dark text-white text-xs font-bold hover:bg-teal-dark disabled:opacity-50 transition-all">
+                  className="px-4 py-1.5 rounded-md bg-[#B46B3E] text-white text-xs font-bold hover:bg-[#B46B3E]/90 disabled:opacity-50 transition-all">
                   Submit Correction Request
                 </button>
               </div>
@@ -297,44 +291,44 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
           </div>
 
           {/* Erasure request */}
-          <div className={`rounded-xl p-4 border-2 transition-all ${erasure ? 'border-soft bg-crimson-soft' : 'border-slate-200 bg-slate-50'}`}>
+          <div className={`rounded-md p-4 border-2 transition-all ${erasure ? 'border-[#6B132B] bg-[#F4D9C0]' : 'border-soft bg-[#F9F9F7]'}`}>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Trash2 className={`w-4 h-4 ${erasure ? 'text-crimson' : 'text-slate-400'}`} />
-                <p className={`text-sm font-semibold ${erasure ? 'text-crimson' : 'text-slate-800'}`}>Request Data Erasure</p>
+                <Trash2 className={`w-4 h-4 ${erasure ? 'text-[#6B132B]' : 'text-[#6B6562]'}`} />
+                <p className={`text-sm font-semibold ${erasure ? 'text-[#6B132B]' : 'text-[#2A161B]'}`}>Request Data Erasure</p>
               </div>
               <button onClick={() => setErasure(p => !p)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${erasure ? 'bg-crimson' : 'bg-slate-200'}`}>
-                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${erasure ? 'left-6' : 'left-1'}`} />
+                className={`relative w-11 h-6 rounded-full transition-colors ${erasure ? 'bg-[#6B132B]' : 'bg-[#E5E0DF]'}`}>
+                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${erasure ? 'left-6' : 'left-1'}`} />
               </button>
             </div>
-            <p className="text-[11px] text-slate-400 mb-2">DPDPA 2023 §14 — customer's right to erasure. Audit logs are retained 7 years (legal obligation).</p>
+            <p className="text-[11px] text-[#6B6562] mb-2">DPDPA 2023 §14 — customer's right to erasure. Audit logs are retained 7 years (legal obligation).</p>
             {erasure && (
               <textarea value={reason} onChange={e => setReason(e.target.value)}
                 placeholder="Reason for erasure request (required)…"
-                rows={2} className="w-full rounded-lg border border-soft text-xs text-slate-800 p-2.5 resize-none focus:outline-none focus:border-red-400 bg-white" />
+                rows={2} className="w-full rounded-md border border-soft text-xs text-[#2A161B] p-2.5 resize-none focus:outline-none focus:border-[#6B132B]/40 bg-white" />
             )}
           </div>
 
           {/* Consent history */}
           <button onClick={loadHistory}
-            className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors text-sm text-slate-600 font-medium">
-            <span className="flex items-center gap-2"><History className="w-4 h-4 text-slate-400" /> Consent History</span>
-            {loadingH ? <span className="w-3.5 h-3.5 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin" /> : <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${showHist ? 'rotate-180' : ''}`} />}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-md border border-soft hover:bg-[#F9F9F7] transition-colors text-sm text-[#6B6562] font-medium">
+            <span className="flex items-center gap-2"><History className="w-4 h-4 text-[#8B8481]" /> Consent History</span>
+            {loadingH ? <span className="w-3.5 h-3.5 border-2 border-[#E5E0DF] border-t-[#6B132B] rounded-full animate-spin" /> : <ChevronDown className={`w-4 h-4 text-[#8B8481] transition-transform ${showHist ? 'rotate-180' : ''}`} />}
           </button>
           {showHist && (
-            <div className="rounded-xl border border-slate-100 divide-y divide-slate-50 max-h-48 overflow-y-auto">
+            <div className="rounded-md border border-soft divide-y divide-soft max-h-48 overflow-y-auto">
               {history.length === 0 ? (
-                <p className="px-4 py-3 text-[12px] text-slate-400 text-center">No consent history recorded</p>
+                <p className="px-4 py-3 text-[12px] text-[#6B6562] text-center">No consent history recorded</p>
               ) : history.map((h: any, i: number) => (
                 <div key={i} className="px-4 py-2.5">
                   <div className="flex items-center justify-between mb-0.5">
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${h.action?.includes('GRANT') || h.action === 'GRANTED' ? 'bg-sage-soft text-sage-brand' : 'bg-crimson-soft text-crimson'}`}>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${h.action?.includes('GRANT') || h.action === 'GRANTED' ? 'bg-[#6B132B] text-white' : 'bg-[#6B132B] text-white'}`}>
                       {h.action || h.event}
                     </span>
-                    <span className="text-[10px] text-slate-400">{fmtDate(h.timestamp || h.ts)}</span>
+                    <span className="text-[10px] text-[#6B6562]">{fmtDate(h.timestamp || h.ts)}</span>
                   </div>
-                  <p className="text-[11px] text-slate-500">{h.type || h.purpose || ''} {h.actor ? `· by ${h.actor}` : ''}</p>
+                  <p className="text-[11px] text-[#6B6562]">{h.type || h.purpose || ''} {h.actor ? `· by ${h.actor}` : ''}</p>
                 </div>
               ))}
             </div>
@@ -342,14 +336,14 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
         </div>
 
         {/* footer */}
-        <div className="flex items-center justify-between p-5 border-t border-slate-100 gap-3">
+        <div className="flex items-center justify-between p-5 border-t border-soft gap-3">
           {msg ? (
-            <p className={`text-xs font-semibold ${msg.startsWith('Error') ? 'text-crimson' : 'text-sage-brand'}`}>{msg}</p>
+            <p className={`text-xs font-semibold ${msg.startsWith('Error') ? 'text-[#6B132B]' : 'text-[#B46B3E]'}`}>{msg}</p>
           ) : <span />}
           <div className="flex gap-2">
-            <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-slate-500 hover:text-slate-700">Cancel</button>
+            <button onClick={onClose} className="px-4 py-2 rounded-md text-sm text-[#6B6562] hover:text-[#2A161B]">Cancel</button>
             <button onClick={save} disabled={saving || (erasure && !reason.trim())}
-              className="px-5 py-2 rounded-xl bg-[var(--crimson)] text-white text-sm font-bold hover:bg-[var(--crimson)]/90 disabled:opacity-50 transition-all">
+              className="px-5 py-2 rounded-md bg-[#6B132B] text-white text-sm font-bold hover:bg-[#6B132B]/90 disabled:opacity-50 transition-all">
               {saving ? 'Saving…' : 'Save Changes'}
             </button>
           </div>
@@ -401,16 +395,16 @@ export default function CompliancePage() {
   const dpdpaOk   = allRecords.filter(r => r.dpdpa_consent !== false).length;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#F9F9F7] min-h-screen">
       {selected && <ConsentModal record={selected} onClose={() => setSelected(null)} onSaved={load} />}
 
       {/* header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Compliance Hub</h1>
-          <p className="text-slate-400 text-sm mt-0.5">DPDPA 2023 consent ledger · channel opt-outs · bias audit · data rights</p>
+          <h1 className="text-[22px] font-black text-[#2A161B] font-heading">Compliance Hub</h1>
+          <p className="text-[13px] text-[#6B6562] mt-0.5">DPDPA 2023 consent ledger · channel opt-outs · bias audit · data rights</p>
         </div>
-        <button onClick={load} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-slate-700 text-xs shadow-sm transition-all">
+        <button onClick={load} className="flex items-center gap-2 px-3 py-2 rounded-md border border-soft bg-white text-[#6B6562] hover:text-[#2A161B] text-xs transition-colors">
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
@@ -418,40 +412,40 @@ export default function CompliancePage() {
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total Customers', value: allRecords.length,        accent: 'border-l-[var(--crimson)]', icon: Users,         color: 'text-slate-900' },
-          { label: 'DPDPA Consented', value: dpdpaOk,                  accent: 'border-l-emerald-500', icon: CheckCircle2, color: 'text-sage-brand' },
-          { label: 'Channel Opt-Outs',value: optedOut,                  accent: optedOut ? 'border-l-red-500' : 'border-l-emerald-500', icon: XCircle, color: optedOut ? 'text-crimson' : 'text-slate-900' },
-          { label: 'Bias Flags',      value: flags.length,              accent: flags.length > 0 ? 'border-l-orange-500' : 'border-l-emerald-500', icon: Shield, color: flags.length ? 'text-copper-dark' : 'text-slate-900' },
+          { label: 'Total Customers', value: allRecords.length,        color: '#6B132B', icon: Users },
+          { label: 'DPDPA Consented', value: dpdpaOk,                  color: '#6B132B', icon: CheckCircle2 },
+          { label: 'Channel Opt-Outs',value: optedOut,                 color: optedOut ? '#6B132B' : '#B46B3E', icon: XCircle },
+          { label: 'Bias Flags',      value: flags.length,             color: flags.length > 0 ? '#6B132B' : '#B46B3E', icon: Shield },
         ].map(c => (
-          <div key={c.label} className={`bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 ${c.accent}`}>
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">{c.label}</p>
-                <p className={`text-2xl font-bold tabular-nums ${c.color}`}>{loading ? '—' : c.value}</p>
-              </div>
-              <c.icon className="w-5 h-5 text-slate-300 mt-1" />
+          <div key={c.label} className="bg-white rounded-md border border-soft p-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-md flex items-center justify-center shrink-0" style={{ backgroundColor: `${c.color}18` }}>
+              <c.icon className="w-4.5 h-4.5" style={{ color: c.color }} />
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold text-[#6B6562] uppercase tracking-wider">{c.label}</p>
+              <p className="text-xl font-black text-[#2A161B] tabular-nums">{loading ? '—' : c.value}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* DPDPA RBI notice */}
-      <div className="bg-teal-soft border border-soft rounded-xl p-4 flex items-start gap-3">
-        <Shield className="w-4 h-4 text-teal-dark mt-0.5 shrink-0" />
-        <p className="text-sm text-teal-dark">
+      <div className="bg-[#F9F9F7] border border-soft rounded-md p-4 flex items-start gap-3">
+        <Shield className="w-4 h-4 text-[#6B132B] mt-0.5 shrink-0" />
+        <p className="text-sm text-[#2A161B]">
           <strong>DPDPA 2023 Compliance</strong> — All consent changes are logged with actor identity and timestamp. Revoking DPDPA consent immediately blocks AI-driven outreach. Erasure requests follow §14 — audit logs retained 7 years per Rule 4.
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-slate-200">
+      <div className="flex gap-2 border-b border-soft">
         {[
           { key: 'consent', label: 'Consent Ledger' },
           { key: 'bias',    label: 'Bias Audit' },
         ].map(t => (
           <button key={t.key} onClick={() => setTab(t.key as any)}
             className={`px-4 py-2.5 text-sm font-semibold transition-all border-b-2 -mb-px ${
-              tab === t.key ? 'border-[var(--crimson)] text-[var(--crimson)]' : 'border-transparent text-slate-400 hover:text-slate-600'
+              tab === t.key ? 'border-[#6B132B] text-[#6B132B]' : 'border-transparent text-[#6B6562] hover:text-[#2A161B]'
             }`}>{t.label}</button>
         ))}
       </div>
@@ -462,10 +456,10 @@ export default function CompliancePage() {
           {/* search + filter */}
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8B8481]" />
               <input value={search} onChange={e => setSearch(e.target.value)}
                 placeholder="Search by name, ID, or city…"
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-800 focus:outline-none focus:border-[var(--crimson)]/40 bg-white" />
+                className="w-full pl-9 pr-4 py-2.5 rounded-md border border-soft text-sm text-[#2A161B] focus:outline-none focus:border-[#6B132B]/40 bg-white" />
             </div>
             <div className="flex gap-2">
               {[
@@ -475,62 +469,62 @@ export default function CompliancePage() {
                 { key: 'opted_out', label: 'Opted Out' },
               ].map(f => (
                 <button key={f.key} onClick={() => setFilter(f.key as any)}
-                  className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
-                    filter === f.key ? 'bg-[var(--crimson)] text-white border-[var(--crimson)]' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                  className={`px-3 py-2 rounded-md text-xs font-semibold border transition-all ${
+                    filter === f.key ? 'bg-[#6B132B] text-white border-[#6B132B]' : 'bg-white text-[#6B6562] border-soft hover:border-[#B46B3E]'
                   }`}>{f.label}</button>
               ))}
             </div>
           </div>
-          <p className="text-[11px] text-slate-400">{records.length} of {allRecords.length} customers · click any row to manage consent</p>
+          <p className="text-[11px] text-[#6B6562]">{records.length} of {allRecords.length} customers · click any row to manage consent</p>
 
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-md border border-soft overflow-hidden">
             {loading ? (
-              <div className="p-6 space-y-2">{[1,2,3,4,5].map(i => <div key={i} className="h-12 bg-slate-50 rounded animate-pulse" />)}</div>
+              <div className="p-6 space-y-2">{[1,2,3,4,5].map(i => <div key={i} className="h-12 bg-[#F9F9F7] rounded animate-pulse" />)}</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-slate-50 border-b border-slate-200">
+                  <thead className="bg-[#F9F9F7] border-b border-soft">
                     <tr>
-                      <th className="text-left py-3 px-4 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Customer</th>
-                      <th className="text-left py-3 px-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Segment / Tier</th>
-                      <th className="text-center py-3 px-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">DPDPA</th>
-                      <th className="text-center py-3 px-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">TRAI</th>
-                      <th className="text-center py-3 px-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Channels</th>
-                      <th className="text-right py-3 px-4 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Last Updated</th>
-                      <th className="py-3 px-4 text-[10px] font-semibold text-slate-400 uppercase tracking-wide"></th>
+                      <th className="text-left py-3 px-4 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">Customer</th>
+                      <th className="text-left py-3 px-3 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">Segment / Tier</th>
+                      <th className="text-center py-3 px-3 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">DPDPA</th>
+                      <th className="text-center py-3 px-3 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">TRAI</th>
+                      <th className="text-center py-3 px-3 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">Channels</th>
+                      <th className="text-right py-3 px-4 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">Last Updated</th>
+                      <th className="py-3 px-4 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider"></th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-50">
+                  <tbody className="divide-y divide-soft">
                     {records.map((r: any) => {
                       const optedChans: string[] = r.opt_out_channels || [];
                       return (
-                        <tr key={r.customer_id} className="hover:bg-slate-50/70 transition-colors cursor-pointer"
+                        <tr key={r.customer_id} className="hover:bg-[#F9F9F7]/70 transition-colors cursor-pointer"
                           onClick={() => setSelected(r)}>
                           <td className="py-3 px-4">
-                            <p className="font-medium text-slate-800">{r.full_name}</p>
-                            <p className="text-[10px] text-slate-400">{r.customer_id} · {r.city || '—'}</p>
+                            <p className="font-medium text-[#2A161B]">{r.full_name}</p>
+                            <p className="text-[10px] text-[#6B6562]">{r.customer_id} · {r.city || '—'}</p>
                           </td>
                           <td className="py-3 px-3">
                             <div className="flex flex-col gap-1">
                               {r.segment && (
-                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded w-fit ${SEG_BADGE[r.segment] || 'bg-slate-100 text-slate-600'}`}>
+                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded w-fit ${SEG_BADGE[r.segment] || 'bg-[#F9F9F7] text-[#6B6562] border border-soft'}`}>
                                   {r.segment}
                                 </span>
                               )}
-                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border w-fit ${TIER_BADGE[r.risk_tier] || 'bg-slate-100 text-slate-600 border-slate-200'}`}>
+                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border w-fit ${TIER_BADGE[r.risk_tier] || 'bg-[#F9F9F7] text-[#6B6562] border border-soft'}`}>
                                 {r.risk_tier}
                               </span>
                             </div>
                           </td>
                           <td className="py-3 px-3 text-center">
                             {r.dpdpa_consent !== false
-                              ? <CheckCircle2 className="w-4 h-4 text-sage-brand mx-auto" />
-                              : <XCircle className="w-4 h-4 text-crimson mx-auto" />}
+                              ? <CheckCircle2 className="w-4 h-4 text-[#6B132B] mx-auto" />
+                              : <XCircle className="w-4 h-4 text-[#B46B3E] mx-auto" />}
                           </td>
                           <td className="py-3 px-3 text-center">
                             {r.trai_consent !== false
-                              ? <CheckCircle2 className="w-4 h-4 text-sage-brand mx-auto" />
-                              : <XCircle className="w-4 h-4 text-crimson mx-auto" />}
+                              ? <CheckCircle2 className="w-4 h-4 text-[#6B132B] mx-auto" />
+                              : <XCircle className="w-4 h-4 text-[#B46B3E] mx-auto" />}
                           </td>
                           <td className="py-3 px-3">
                             <div className="flex items-center gap-1.5 justify-center">
@@ -539,17 +533,17 @@ export default function CompliancePage() {
                                 const out  = optedChans.includes(ch);
                                 return (
                                   <span key={ch} title={`${ch}: ${out ? 'Opted out' : 'Active'}`}
-                                    className={`w-6 h-6 rounded flex items-center justify-center ${out ? 'bg-crimson-soft' : 'bg-sage-soft'}`}>
-                                    <Icon className={`w-3 h-3 ${out ? 'text-crimson' : 'text-sage-brand'}`} />
+                                    className={`w-6 h-6 rounded flex items-center justify-center ${out ? 'bg-[#6B132B]' : 'bg-[#F9F9F7] border border-soft'}`}>
+                                    <Icon className={`w-3 h-3 ${out ? 'text-white' : 'text-[#6B6562]'}`} />
                                   </span>
                                 );
                               })}
                             </div>
                           </td>
-                          <td className="py-3 px-4 text-right text-[11px] text-slate-400">{fmtDate(r.last_updated)}</td>
+                          <td className="py-3 px-4 text-right text-[11px] text-[#6B6562]">{fmtDate(r.last_updated)}</td>
                           <td className="py-3 px-4">
                             <button onClick={e => { e.stopPropagation(); setSelected(r); }}
-                              className="text-[11px] font-semibold text-[var(--crimson)] hover:underline whitespace-nowrap">
+                              className="text-[11px] font-semibold text-[#6B132B] hover:underline whitespace-nowrap">
                               Manage →
                             </button>
                           </td>
@@ -560,8 +554,8 @@ export default function CompliancePage() {
                 </table>
                 {records.length === 0 && (
                   <div className="py-12 text-center">
-                    <Search className="w-6 h-6 text-slate-300 mx-auto mb-2" />
-                    <p className="text-slate-400 text-sm">No customers match your filters</p>
+                    <Search className="w-6 h-6 text-[#8B8481] mx-auto mb-2" />
+                    <p className="text-[#6B6562] text-sm">No customers match your filters</p>
                   </div>
                 )}
               </div>
@@ -574,11 +568,11 @@ export default function CompliancePage() {
       {tab === 'bias' && (
         <div className="space-y-4">
           {flags.length > 0 && (
-            <div className="bg-copper-soft border border-soft rounded-xl p-4 flex items-start gap-3">
-              <AlertTriangle className="w-4 h-4 text-copper-dark mt-0.5 shrink-0" />
+            <div className="bg-[#F4D9C0] border border-soft rounded-md p-4 flex items-start gap-3">
+              <AlertTriangle className="w-4 h-4 text-[#B46B3E] mt-0.5 shrink-0" />
               <div>
-                <p className="font-semibold text-orange-800 text-sm">Disparate Impact Detected</p>
-                <p className="text-sm text-copper-dark">
+                <p className="font-semibold text-[#2A161B] text-sm">Disparate Impact Detected</p>
+                <p className="text-sm text-[#2A161B]">
                   Segments with PRIORITY rate &gt; 2× portfolio avg: <strong>{flags.join(', ')}</strong>.
                   Review for potential algorithmic bias per RBI AI Governance guidelines.
                 </p>
@@ -586,56 +580,56 @@ export default function CompliancePage() {
             </div>
           )}
           {flags.length === 0 && !loading && (
-            <div className="bg-sage-soft border border-soft rounded-xl p-4 flex items-start gap-3">
-              <CheckCircle2 className="w-4 h-4 text-sage-brand mt-0.5 shrink-0" />
-              <p className="text-sm text-sage-brand">
+            <div className="bg-[#F9F9F7] border border-soft rounded-md p-4 flex items-start gap-3">
+              <CheckCircle2 className="w-4 h-4 text-[#6B132B] mt-0.5 shrink-0" />
+              <p className="text-sm text-[#2A161B]">
                 <strong>No disparate impact detected.</strong> All segments are within 2× of the portfolio PRIORITY rate. Bias audit passed.
               </p>
             </div>
           )}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-3 border-b border-slate-100">
-              <p className="text-sm font-semibold text-slate-700">Segment × Risk Tier Matrix</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">Portfolio PRIORITY rate: {Math.round((bias?.portfolio_priority_rate||0)*100)}% · Flags if segment rate &gt; {Math.round((bias?.portfolio_priority_rate||0)*200)}%</p>
+          <div className="bg-white rounded-md border border-soft overflow-hidden">
+            <div className="px-5 py-3 border-b border-soft">
+              <p className="text-sm font-bold text-[#2A161B]">Segment × Risk Tier Matrix</p>
+              <p className="text-[11px] text-[#6B6562] mt-0.5">Portfolio PRIORITY rate: {Math.round((bias?.portfolio_priority_rate||0)*100)}% · Flags if segment rate &gt; {Math.round((bias?.portfolio_priority_rate||0)*200)}%</p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-[#F9F9F7] border-b border-soft">
                   <tr>
-                    <th className="text-left py-3 px-4 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Segment</th>
-                    <th className="text-center py-3 px-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Customers</th>
+                    <th className="text-left py-3 px-4 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">Segment</th>
+                    <th className="text-center py-3 px-3 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">Customers</th>
                     {['PRIORITY','ESCALATE','STANDARD','MONITOR','NONE'].map(t => (
-                      <th key={t} className="text-center py-3 px-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">{t}</th>
+                      <th key={t} className="text-center py-3 px-2 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">{t}</th>
                     ))}
-                    <th className="text-right py-3 px-4 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Priority %</th>
+                    <th className="text-right py-3 px-4 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">Priority %</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50">
+                <tbody className="divide-y divide-soft">
                   {matrix.map((row: any) => {
                     const isFlagged = flags.includes(row.segment);
                     const rate = Math.round((row.priority_rate || 0) * 100);
                     return (
-                      <tr key={row.segment} className={`hover:bg-slate-50 transition-colors ${isFlagged ? 'bg-copper-soft/40' : ''}`}>
+                      <tr key={row.segment} className={`hover:bg-[#F9F9F7] transition-colors ${isFlagged ? 'bg-[#F4D9C0]/40' : ''}`}>
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-2">
-                            {isFlagged && <AlertTriangle className="w-3.5 h-3.5 text-copper shrink-0" />}
-                            <span className="font-medium text-slate-800">{row.segment}</span>
+                            {isFlagged && <AlertTriangle className="w-3.5 h-3.5 text-[#B46B3E] shrink-0" />}
+                            <span className="font-medium text-[#2A161B]">{row.segment}</span>
                           </div>
                         </td>
-                        <td className="py-3 px-3 text-center font-semibold text-slate-700">{row.count}</td>
+                        <td className="py-3 px-3 text-center font-semibold text-[#2A161B]">{row.count}</td>
                         {['PRIORITY','ESCALATE','STANDARD','MONITOR','NONE'].map(t => (
                           <td key={t} className="py-3 px-2 text-center">
-                            <span className={`text-sm ${t === 'PRIORITY' && row.tiers?.[t] > 0 ? 'font-bold text-crimson' : 'text-slate-600'}`}>
+                            <span className={`text-sm ${t === 'PRIORITY' && row.tiers?.[t] > 0 ? 'font-bold text-[#6B132B]' : 'text-[#6B6562]'}`}>
                               {row.tiers?.[t] ?? 0}
                             </span>
                           </td>
                         ))}
                         <td className="py-3 px-4 text-right">
                           <div className="flex items-center justify-end gap-2">
-                            <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                              <div className={`h-full rounded-full ${isFlagged ? 'bg-copper' : 'bg-[var(--crimson)]'}`} style={{ width: `${Math.min(rate, 100)}%` }} />
+                            <div className="w-16 h-1.5 bg-[#F9F9F7] rounded-full overflow-hidden">
+                              <div className={`h-full rounded-full ${isFlagged ? 'bg-[#B46B3E]' : 'bg-[#6B132B]'}`} style={{ width: `${Math.min(rate, 100)}%` }} />
                             </div>
-                            <span className={`text-[11px] font-bold px-2 py-0.5 rounded min-w-[40px] text-center ${isFlagged ? 'bg-copper-soft text-copper-dark' : 'bg-slate-100 text-slate-600'}`}>
+                            <span className={`text-[11px] font-bold px-2 py-0.5 rounded min-w-[40px] text-center ${isFlagged ? 'bg-[#F4D9C0] text-[#2A161B]' : 'bg-[#F9F9F7] text-[#6B6562]'}`}>
                               {rate}%
                             </span>
                           </div>

@@ -6,33 +6,33 @@ import { RefreshCw, Radio, Zap, Activity, Send, AlertTriangle, BarChart2, Cpu } 
 
 /* ── topic metadata ──────────────────────────────────────────────────────────── */
 const TOPIC_META: Record<string, { layer: string; color: string; label: string }> = {
-  'cbs.transactions':       { layer: 'L1 CBS',     color: 'var(--gray-500)', label: 'Transactions' },
-  'cbs.account_updates':    { layer: 'L1 CBS',     color: 'var(--gray-500)', label: 'Account Updates' },
-  'crm.customer_events':    { layer: 'L1 CRM',     color: 'var(--gray-500)', label: 'CRM Events' },
-  'risk.signal_detections': { layer: 'L2 ARGUS',   color: 'var(--crimson)', label: 'Signal Detections' },
-  'risk.score_updates':     { layer: 'L3 CHRONOS', color: 'var(--crimson)', label: 'Score Updates' },
-  'engagement.activity':    { layer: 'L5 HERALD',  color: 'var(--crimson)', label: 'Engagement' },
-  'pcop.alarms.v1':         { layer: 'L2 ARGUS',   color: 'var(--crimson)', label: 'PCOP Alarms' },
-  'pcop.action_plans.v1':   { layer: 'L4 COMPASS', color: 'var(--teal-dark)', label: 'Action Plans' },
-  'pcop.dispatched.v1':     { layer: 'L5 HERALD',  color: 'var(--crimson)', label: 'Dispatched' },
-  'pcop.measurements.v1':   { layer: 'L6 VERDICT', color: 'var(--sage-brand)', label: 'Measurements' },
+  'cbs.transactions':       { layer: 'L1 CBS',     color: '#8B8481', label: 'Transactions' },
+  'cbs.account_updates':    { layer: 'L1 CBS',     color: '#8B8481', label: 'Account Updates' },
+  'crm.customer_events':    { layer: 'L1 CRM',     color: '#8B8481', label: 'CRM Events' },
+  'risk.signal_detections': { layer: 'L2 ARGUS',   color: '#6B132B', label: 'Signal Detections' },
+  'risk.score_updates':     { layer: 'L3 CHRONOS', color: '#6B132B', label: 'Score Updates' },
+  'engagement.activity':    { layer: 'L5 HERALD',  color: '#6B132B', label: 'Engagement' },
+  'pcop.alarms.v1':         { layer: 'L2 ARGUS',   color: '#6B132B', label: 'PCOP Alarms' },
+  'pcop.action_plans.v1':   { layer: 'L4 COMPASS', color: '#B46B3E', label: 'Action Plans' },
+  'pcop.dispatched.v1':     { layer: 'L5 HERALD',  color: '#6B132B', label: 'Dispatched' },
+  'pcop.measurements.v1':   { layer: 'L6 VERDICT', color: '#2A161B', label: 'Measurements' },
 };
 
 const TOPICS = Object.entries(TOPIC_META).map(([key, m]) => ({ key, ...m }));
 
 /* derive a short event-type label from the topic */
 function evtLabel(topic: string): { text: string; bg: string; fg: string } {
-  if (topic.includes('signal'))     return { text: 'SIGNAL',      bg: 'bg-crimson-soft',     fg: 'text-crimson' };
-  if (topic.includes('score'))      return { text: 'SCORE',       bg: 'bg-teal-soft',    fg: 'text-teal-dark' };
-  if (topic.includes('action'))     return { text: 'ACTION PLAN', bg: 'bg-teal-soft',  fg: 'text-teal-dark' };
-  if (topic.includes('dispatch'))   return { text: 'DISPATCH',    bg: 'bg-teal-soft',  fg: 'text-teal-dark' };
-  if (topic.includes('measure'))    return { text: 'MEASUREMENT', bg: 'bg-sage-soft', fg: 'text-sage-brand' };
-  if (topic.includes('alarm'))      return { text: 'ALARM',       bg: 'bg-crimson-soft',     fg: 'text-crimson' };
-  if (topic.includes('transaction'))return { text: 'TXN',         bg: 'bg-slate-100',   fg: 'text-slate-600' };
-  if (topic.includes('account'))    return { text: 'ACCOUNT',     bg: 'bg-slate-100',   fg: 'text-slate-600' };
-  if (topic.includes('crm'))        return { text: 'CRM',         bg: 'bg-copper-soft',   fg: 'text-copper-dark' };
-  if (topic.includes('engag'))      return { text: 'ENGAGEMENT',  bg: 'bg-teal-soft',     fg: 'text-teal-dark' };
-  return { text: 'EVENT', bg: 'bg-slate-100', fg: 'text-slate-600' };
+  if (topic.includes('signal'))     return { text: 'SIGNAL',      bg: 'bg-[#6B132B]',     fg: 'text-white' };
+  if (topic.includes('score'))      return { text: 'SCORE',       bg: 'bg-[#B46B3E]', fg: 'text-white' };
+  if (topic.includes('action'))     return { text: 'ACTION PLAN', bg: 'bg-[#B46B3E]', fg: 'text-white' };
+  if (topic.includes('dispatch'))   return { text: 'DISPATCH',    bg: 'bg-[#B46B3E]', fg: 'text-white' };
+  if (topic.includes('measure'))    return { text: 'MEASUREMENT', bg: 'bg-[#2A161B]', fg: 'text-white' };
+  if (topic.includes('alarm'))      return { text: 'ALARM',       bg: 'bg-[#6B132B]',     fg: 'text-white' };
+  if (topic.includes('transaction'))return { text: 'TXN',         bg: 'bg-[#F9F9F7]',   fg: 'text-[#6B6562]' };
+  if (topic.includes('account'))    return { text: 'ACCOUNT',     bg: 'bg-[#F9F9F7]',   fg: 'text-[#6B6562]' };
+  if (topic.includes('crm'))        return { text: 'CRM',         bg: 'bg-[#F4D9C0]',   fg: 'text-[#2A161B]' };
+  if (topic.includes('engag'))      return { text: 'ENGAGEMENT',  bg: 'bg-[#B46B3E]',     fg: 'text-white' };
+  return { text: 'EVENT', bg: 'bg-[#F9F9F7]', fg: 'text-[#6B6562]' };
 }
 
 function fmtTime(ts: string) {
@@ -41,7 +41,7 @@ function fmtTime(ts: string) {
 }
 
 function StatusDot({ status }: { status: string }) {
-  const c = status === 'live' ? 'bg-sage-brand' : status === 'warning' ? 'bg-copper' : 'bg-crimson';
+  const c = status === 'live' ? 'bg-[#6B132B]' : status === 'warning' ? 'bg-[#B46B3E]' : 'bg-[#2A161B]';
   return (
     <span className="relative flex h-2.5 w-2.5 shrink-0">
       <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-50 ${c}`} />
@@ -57,7 +57,7 @@ function Spark({ counts }: { counts: number[] }) {
       {(counts.length ? counts : [0]).map((v, i) => (
         <div key={i} className="flex-1 rounded-sm transition-all" style={{
           height: `${Math.max(2, (v / max) * 20)}px`,
-          background: 'var(--crimson)',
+          background: '#6B132B',
           opacity: 0.25 + (i / Math.max(counts.length - 1, 1)) * 0.75,
         }} />
       ))}
@@ -68,7 +68,7 @@ function Spark({ counts }: { counts: number[] }) {
 /* ── main page ───────────────────────────────────────────────────────────────── */
 export default function PipelinePage() {
   const [health,      setHealth]      = useState<any[]>([]);
-  const [sseStatus,   setSseStatus]   = useState<any>(null);   // from SSE 'status' message
+  const [sseStatus,   setSseStatus]   = useState<any>(null);
   const [events,      setEvents]      = useState<any[]>([]);
   const [topicCounts, setTopicCounts] = useState<Record<string, number>>({});
   const [sparkData,   setSparkData]   = useState<Record<string, number[]>>({});
@@ -113,7 +113,6 @@ export default function PipelinePage() {
     const token = getToken();
     if (!token) return;
 
-    /* ⚠ connect DIRECTLY to port 8000 — Next.js proxy buffers SSE */
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
     const es = new EventSource(`${backendUrl}/api/kafka/stream?token=${encodeURIComponent(token)}`);
     sseRef.current = es;
@@ -130,12 +129,10 @@ export default function PipelinePage() {
         if (d.type === 'status') {
           setSseStatus(d);
           setConnState('connected');
-          /* seed history */
           const hist: any[] = d.recentEvents || [];
           if (hist.length) {
             eventsRef.current = hist.map(h => ({ ...h, _rid: Math.random() }));
             setEvents([...eventsRef.current]);
-            /* seed topic counts */
             const counts: Record<string, number> = {};
             hist.forEach(h => { counts[h.topic] = (counts[h.topic] || 0) + 1; });
             countRef.current = counts;
@@ -176,29 +173,29 @@ export default function PipelinePage() {
   const totalMsgs = sseStatus?.messagesProcessed ?? 0;
 
   return (
-    <div className="p-6 space-y-5">
+    <div className="p-6 space-y-5 bg-[#F9F9F7] min-h-screen">
       {/* header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Live Pipeline Console</h1>
-          <p className="text-slate-400 text-sm mt-0.5">SSE event stream direct to port 8000 · per-topic throughput · inject test events</p>
+          <h1 className="text-[22px] font-black text-[#2A161B] font-heading">Live Pipeline Console</h1>
+          <p className="text-[13px] text-[#6B6562] mt-0.5">SSE event stream direct to port 8000 · per-topic throughput · inject test events</p>
         </div>
-        <button onClick={connectSSE} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-slate-700 text-xs shadow-sm transition-all">
+        <button onClick={connectSSE} className="flex items-center gap-2 px-3 py-2 rounded-md border border-soft bg-white text-[#6B6562] hover:text-[#2A161B] text-xs transition-colors">
           <RefreshCw className="w-3.5 h-3.5" /> Reconnect
         </button>
       </div>
 
       {/* SSE status banner */}
-      <div className={`rounded-xl border p-4 flex items-center gap-4 ${
-        connState === 'connected' ? 'bg-sage-soft border-soft' :
-        connState === 'error'     ? 'bg-crimson-soft border-soft' : 'bg-copper-soft border-soft'
+      <div className={`rounded-md border border-soft p-4 flex items-center gap-4 ${
+        connState === 'connected' ? 'bg-[#F9F9F7]' :
+        connState === 'error'     ? 'bg-[#F9F9F7]' : 'bg-[#F9F9F7]'
       }`}>
-        <Radio className={`w-5 h-5 shrink-0 ${connState === 'connected' ? 'text-sage-brand' : connState === 'error' ? 'text-crimson' : 'text-copper'}`} />
+        <Radio className={`w-5 h-5 shrink-0 ${connState === 'connected' ? 'text-[#6B132B]' : connState === 'error' ? 'text-[#6B132B]' : 'text-[#B46B3E]'}`} />
         <div className="flex-1">
-          <p className="font-bold text-slate-900 text-sm">
+          <p className="font-bold text-[#2A161B] text-sm">
             Kafka {sseStatus?.mode === 'kafka' ? 'LIVE' : 'SIMULATION'} — SSE Stream
           </p>
-          <p className={`text-xs ${connState === 'connected' ? 'text-sage-brand' : connState === 'error' ? 'text-crimson' : 'text-copper-dark'}`}>
+          <p className={`text-xs ${connState === 'connected' ? 'text-[#6B132B]' : connState === 'error' ? 'text-[#6B132B]' : 'text-[#B46B3E]'}`}>
             {connState === 'connecting' ? 'Connecting to localhost:8000…' :
              connState === 'error'      ? 'Connection error — click Reconnect' :
              `Stream active · ${totalMsgs.toLocaleString()} total messages · ${throughput} events/min`}
@@ -210,17 +207,19 @@ export default function PipelinePage() {
       {/* KPIs */}
       <div className="grid grid-cols-4 gap-4">
         {[
-          { label: 'Total Events',  value: totalMsgs.toLocaleString(), accent: 'border-l-[var(--crimson)]', Icon: Activity },
-          { label: 'Events / Min',  value: throughput,                  accent: 'border-l-emerald-500', Icon: Zap },
-          { label: 'Topics',        value: TOPICS.length,               accent: 'border-l-purple-500', Icon: BarChart2 },
-          { label: 'Layers Live',   value: `${health.filter(l=>l.status==='live').length}/${health.length || 8}`, accent: 'border-l-amber-500', Icon: Cpu },
-        ].map(({ label, value, accent, Icon }) => (
-          <div key={label} className={`bg-white rounded-xl border border-slate-200 shadow-sm p-4 border-l-4 ${accent}`}>
-            <div className="flex items-center gap-2 mb-1">
-              <Icon className="w-3.5 h-3.5 text-slate-400" />
-              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">{label}</p>
+          { label: 'Total Events',  value: totalMsgs.toLocaleString(), color: '#6B132B', Icon: Activity },
+          { label: 'Events / Min',  value: throughput,                  color: '#B46B3E', Icon: Zap },
+          { label: 'Topics',        value: TOPICS.length,               color: '#2A161B', Icon: BarChart2 },
+          { label: 'Layers Live',   value: `${health.filter(l=>l.status==='live').length}/${health.length || 8}`, color: '#B46B3E', Icon: Cpu },
+        ].map(({ label, value, color, Icon }) => (
+          <div key={label} className="bg-white rounded-md border border-soft p-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-md flex items-center justify-center shrink-0" style={{ backgroundColor: `${color}18` }}>
+              <Icon className="w-4 h-4" style={{ color }} />
             </div>
-            <p className="text-2xl font-bold text-slate-900 tabular-nums">{value}</p>
+            <div>
+              <p className="text-[10px] font-semibold text-[#6B6562] uppercase tracking-wide">{label}</p>
+              <p className="text-xl font-black text-[#2A161B] tabular-nums">{value}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -231,41 +230,41 @@ export default function PipelinePage() {
         <div className="space-y-5">
 
           {/* live event log */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+          <div className="bg-white rounded-md border border-soft overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-soft">
+              <h2 className="text-sm font-bold text-[#2A161B] flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6B132B] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#6B132B]" />
                 </span>
                 Live Event Stream
               </h2>
-              <span className="text-[11px] text-slate-400">{events.length} buffered</span>
+              <span className="text-[11px] text-[#6B6562]">{events.length} buffered</span>
             </div>
-            <div ref={logRef} className="divide-y divide-slate-50 overflow-y-auto" style={{ maxHeight: 440 }}>
+            <div ref={logRef} className="divide-y divide-soft overflow-y-auto" style={{ maxHeight: 440 }}>
               {events.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
-                  <div className="w-10 h-10 border-2 border-slate-200 border-t-[var(--crimson)] rounded-full animate-spin mb-4" />
-                  <p className="text-slate-400 text-sm">
+                  <div className="w-10 h-10 border-2 border-soft border-t-[#6B132B] rounded-full animate-spin mb-4" />
+                  <p className="text-[#6B6562] text-sm">
                     {connState === 'connecting' ? 'Connecting…' : 'Waiting for events (simulation fires every 8s)'}
                   </p>
                 </div>
               ) : events.map((evt, i) => {
-                const meta = TOPIC_META[evt.topic] || { layer: '', color: 'var(--gray-400)', label: evt.topic };
+                const meta = TOPIC_META[evt.topic] || { layer: '', color: '#8B8481', label: evt.topic };
                 const lbl  = evtLabel(evt.topic || '');
                 return (
-                  <div key={evt._rid ?? i} className="flex items-start gap-3 px-5 py-2.5 hover:bg-slate-50/60 transition-colors">
+                  <div key={evt._rid ?? i} className="flex items-start gap-3 px-5 py-2.5 hover:bg-[#F9F9F7]/60 transition-colors">
                     <div className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: meta.color }} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-0.5">
                         <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${lbl.bg} ${lbl.fg}`}>{lbl.text}</span>
-                        <span className="text-[10px] font-bold text-slate-500">{meta.layer}</span>
-                        {evt.customerId && <span className="text-[10px] font-mono text-slate-400">{evt.customerId}</span>}
+                        <span className="text-[10px] font-bold text-[#6B6562]">{meta.layer}</span>
+                        {evt.customerId && <span className="text-[10px] text-[#8B8481]">{evt.customerId}</span>}
                       </div>
-                      <p className="text-[12px] text-slate-700 leading-snug">{evt.description || evt.topic}</p>
-                      <p className="text-[10px] text-slate-300 font-mono mt-0.5">{evt.topic}</p>
+                      <p className="text-[12px] text-[#2A161B] leading-snug">{evt.description || evt.topic}</p>
+                      <p className="text-[10px] text-[#8B8481] mt-0.5">{evt.topic}</p>
                     </div>
-                    <span className="text-[10px] text-slate-300 font-mono shrink-0 mt-1">{fmtTime(evt.ts)}</span>
+                    <span className="text-[10px] text-[#8B8481] shrink-0 mt-1">{fmtTime(evt.ts)}</span>
                   </div>
                 );
               })}
@@ -273,21 +272,21 @@ export default function PipelinePage() {
           </div>
 
           {/* topic throughput */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-3 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-700">Topic Throughput</h2>
-              <p className="text-[11px] text-slate-400 mt-0.5">Message counts since page load — sparkline shows last 10 ticks</p>
+          <div className="bg-white rounded-md border border-soft overflow-hidden">
+            <div className="px-5 py-3 border-b border-soft">
+              <h2 className="text-sm font-bold text-[#2A161B]">Topic Throughput</h2>
+              <p className="text-[11px] text-[#6B6562] mt-0.5">Message counts since page load — sparkline shows last 10 ticks</p>
             </div>
-            <div className="divide-y divide-slate-50">
+            <div className="divide-y divide-soft">
               {TOPICS.map(t => (
-                <div key={t.key} className="flex items-center gap-4 px-5 py-3 hover:bg-slate-50/50">
+                <div key={t.key} className="flex items-center gap-4 px-5 py-3 hover:bg-[#F9F9F7]/50">
                   <div className="w-2 h-2 rounded-full shrink-0" style={{ background: t.color }} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-mono text-slate-700">{t.key}</p>
-                    <p className="text-[10px] text-slate-400">{t.layer} · {t.label}</p>
+                    <p className="text-[11px] text-[#2A161B]">{t.key}</p>
+                    <p className="text-[10px] text-[#6B6562]">{t.layer} · {t.label}</p>
                   </div>
                   <Spark counts={sparkData[t.key] || [0]} />
-                  <span className="text-sm font-bold text-slate-900 tabular-nums w-10 text-right">
+                  <span className="text-sm font-bold text-[#2A161B] tabular-nums w-10 text-right">
                     {(topicCounts[t.key] || 0)}
                   </span>
                 </div>
@@ -300,21 +299,21 @@ export default function PipelinePage() {
         <div className="space-y-5">
 
           {/* layer health */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-3 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-700">Layer Health</h2>
+          <div className="bg-white rounded-md border border-soft overflow-hidden">
+            <div className="px-5 py-3 border-b border-soft">
+              <h2 className="text-sm font-bold text-[#2A161B]">Layer Health</h2>
             </div>
-            <div className="divide-y divide-slate-50">
+            <div className="divide-y divide-soft">
               {health.length === 0 ? (
-                <div className="p-6 space-y-2">{[1,2,3,4,5].map(i=><div key={i} className="h-9 bg-slate-50 rounded-lg animate-pulse"/>)}</div>
+                <div className="p-6 space-y-2">{[1,2,3,4,5].map(i=><div key={i} className="h-9 bg-[#F9F9F7] rounded-md animate-pulse"/>)}</div>
               ) : health.map((l: any) => (
                 <div key={l.id} className="flex items-center gap-3 px-5 py-3">
                   <StatusDot status={l.status} />
-                  <p className="text-sm font-medium text-slate-800 flex-1">{l.name}</p>
-                  <span className="text-sm font-bold text-slate-700 tabular-nums">{l.latency_ms}<span className="text-slate-400 text-[10px]">ms</span></span>
+                  <p className="text-sm font-medium text-[#2A161B] flex-1">{l.name}</p>
+                  <span className="text-sm font-bold text-[#2A161B] tabular-nums">{l.latency_ms}<span className="text-[#6B6562] text-[10px]">ms</span></span>
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded w-14 text-center ${
-                    l.status === 'live' ? 'bg-sage-soft text-sage-brand' :
-                    l.status === 'warning' ? 'bg-copper-soft text-copper-dark' : 'bg-crimson-soft text-crimson'
+                    l.status === 'live' ? 'bg-[#6B132B] text-white' :
+                    l.status === 'warning' ? 'bg-[#B46B3E] text-white' : 'bg-[#2A161B] text-white'
                   }`}>{l.status?.toUpperCase()}</span>
                 </div>
               ))}
@@ -322,48 +321,48 @@ export default function PipelinePage() {
           </div>
 
           {/* inject test event */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
+          <div className="bg-white rounded-md border border-soft p-5 space-y-4">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-copper" />
-              <h2 className="text-sm font-semibold text-slate-700">Inject Test Event</h2>
+              <AlertTriangle className="w-4 h-4 text-[#B46B3E]" />
+              <h2 className="text-sm font-bold text-[#2A161B]">Inject Test Event</h2>
             </div>
             <div className="space-y-3">
               <div>
-                <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1 block">Topic</label>
+                <label className="text-[10px] font-semibold text-[#6B6562] uppercase tracking-wide mb-1 block">Topic</label>
                 <select value={inject.topic} onChange={e => setInject(p => ({ ...p, topic: e.target.value }))}
-                  className="w-full rounded-lg border border-slate-200 text-xs text-slate-800 px-3 py-2 focus:outline-none focus:border-[var(--crimson)]/40 bg-white">
+                  className="w-full rounded-md border border-soft text-xs text-[#2A161B] px-3 py-2 focus:outline-none focus:border-[#6B132B]/40 bg-white">
                   {TOPICS.map(t => <option key={t.key} value={t.key}>{t.key}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1 block">Customer Key</label>
+                <label className="text-[10px] font-semibold text-[#6B6562] uppercase tracking-wide mb-1 block">Customer Key</label>
                 <input value={inject.key} onChange={e => setInject(p => ({ ...p, key: e.target.value }))}
                   placeholder="CUST-0001"
-                  className="w-full rounded-lg border border-slate-200 text-xs text-slate-800 px-3 py-2 focus:outline-none focus:border-[var(--crimson)]/40" />
+                  className="w-full rounded-md border border-soft text-xs text-[#2A161B] px-3 py-2 focus:outline-none focus:border-[#6B132B]/40" />
               </div>
               <div>
-                <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1 block">
-                  Payload JSON <span className="normal-case font-normal text-slate-300">(optional)</span>
+                <label className="text-[10px] font-semibold text-[#6B6562] uppercase tracking-wide mb-1 block">
+                  Payload JSON <span className="normal-case font-normal text-[#8B8481]">(optional)</span>
                 </label>
                 <textarea value={inject.value} onChange={e => setInject(p => ({ ...p, value: e.target.value }))}
                   rows={3} placeholder={'{\n  "signal_type": "inactivity",\n  "confidence": 0.92\n}'}
-                  className="w-full rounded-lg border border-slate-200 text-[11px] font-mono text-slate-800 px-3 py-2 resize-none focus:outline-none focus:border-[var(--crimson)]/40" />
+                  className="w-full rounded-md border border-soft text-[11px] text-[#2A161B] px-3 py-2 resize-none focus:outline-none focus:border-[#6B132B]/40" />
               </div>
             </div>
             <button onClick={doInject} disabled={injecting || !inject.key}
-              className="w-full py-2.5 rounded-xl bg-[var(--crimson)] text-white text-sm font-bold hover:bg-[var(--crimson)]/90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
+              className="w-full py-2.5 rounded-md bg-[#6B132B] text-white text-sm font-bold hover:bg-[#6B132B]/90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
               {injecting
                 ? <><span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />Injecting…</>
                 : <><Send className="w-3.5 h-3.5" />Inject Event</>}
             </button>
             {injectMsg && (
-              <p className={`text-xs text-center font-semibold ${injectMsg.startsWith('Error') ? 'text-crimson' : 'text-sage-brand'}`}>{injectMsg}</p>
+              <p className={`text-xs text-center font-semibold ${injectMsg.startsWith('Error') ? 'text-[#6B132B]' : 'text-[#B46B3E]'}`}>{injectMsg}</p>
             )}
           </div>
 
           {/* broker info */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-            <h2 className="text-sm font-semibold text-slate-700 mb-3">Broker Info</h2>
+          <div className="bg-white rounded-md border border-soft p-5">
+            <h2 className="text-sm font-bold text-[#2A161B] mb-3">Broker Info</h2>
             <div className="space-y-2.5 text-[12px]">
               {[
                 { label: 'Mode',      value: sseStatus?.mode?.toUpperCase() || '—' },
@@ -372,8 +371,8 @@ export default function PipelinePage() {
                 { label: 'Last event',value: fmtTime(sseStatus?.lastEventAt || '') || '—' },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between items-center">
-                  <span className="text-slate-400">{label}</span>
-                  <span className="font-mono text-[11px] text-slate-600 font-semibold">{value}</span>
+                  <span className="text-[#6B6562]">{label}</span>
+                  <span className="text-[11px] text-[#2A161B] font-semibold">{value}</span>
                 </div>
               ))}
             </div>

@@ -1942,5 +1942,40 @@
     "reviewedAt": "2026-06-30T13:09:11.099Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T13:08:48.131Z"
+  },
+  {
+    "approvalId": "da8cd11d-c9ff-4e77-be64-8a4e77ac06aa",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-06-30T21:17:56.919Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let’s make your new chapter smoother",
+        "body": "Hi Naveen, I hope this email finds you well as you begin this exciting new phase. We’ve noticed you haven’t logged into the app recently, and we wanted to check in—sometimes life gets so busy that even the simplest things slip through the cracks. Your comfort and peace of mind matter to us, and we’re here to make sure Union Bank remains a seamless part of your journey. Would you consider a quick chat to see how we can better support you now? Reply to this email or give us a call at 1800-22-6666—no pressure, just here to help. Warmly, Union Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 102
+      },
+      "sms": {
+        "body": "Hi Naveen! We’ve missed seeing you in the app lately. As you settle into this new chapter, we’d love to ensure Union Bank stays effortless for you. Could we hop on a quick call at 1800-22-6666? No agenda—just here for you! Reply YES to set it up.",
+        "compliance_status": "APPROVED",
+        "char_count": 246
+      },
+      "push": {
+        "title": "Let’s make banking easier for you",
+        "body": "Naveen, we’ve missed you lately. Let’s chat about how Union Bank can simplify your new chapter—tap to schedule a call.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-06-30T21:18:19.256Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T21:17:56.919Z"
   }
 ]

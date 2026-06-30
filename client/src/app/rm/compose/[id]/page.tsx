@@ -499,65 +499,65 @@ export default function OutreachComposerPage() {
           {sendError && <div className="bg-crimson-soft border border-red-100 rounded-lg px-3 py-2 text-[12px] text-crimson mb-3">{sendError}</div>}
 
           {/* Resend direct email — routes through the same approval gate */}
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4">
+          <div className="bg-[#F9F9F7] border border-soft rounded-md p-4 mb-4">
             <div className="flex items-center gap-2 mb-2">
-              <Send className="w-4 h-4 text-sage-brand" />
-              <p className="text-[12px] font-bold text-slate-700">Or send email directly via Resend</p>
+              <Send className="w-4 h-4 text-[#6B132B]" />
+              <p className="text-[12px] font-bold text-[#2A161B]">Or send email directly via Resend</p>
             </div>
-            <p className="text-[11px] text-slate-500 mb-3">
-              Dispatches through the Resend API to <span className="font-mono font-semibold">rudrajeetpal64@gmail.com</span>
+            <p className="text-[11px] text-[#6B6562] mb-3">
+              Dispatches through the Resend API to <span className="font-semibold">rudrajeetpal64@gmail.com</span>
               (sandbox override).  Uses the approval ID above and the email draft from Step 4.
             </p>
             {emailError && (
-              <div className="bg-crimson-soft border border-red-100 rounded-lg px-3 py-2 text-[12px] text-crimson mb-3">{emailError}</div>
+              <div className="bg-[#F4D9C0] border border-soft rounded-md px-3 py-2 text-[12px] text-[#2A161B] mb-3">{emailError}</div>
             )}
             {emailResult && (
-              <div className="bg-sage-soft border border-emerald-100 rounded-lg px-3 py-2 text-[12px] text-emerald-800 mb-3 space-y-0.5">
+              <div className="bg-[#F9F9F7] border border-soft rounded-md px-3 py-2 text-[12px] text-[#2A161B] mb-3 space-y-0.5">
                 <p className="font-semibold flex items-center gap-1.5">
-                  <CheckCircle className="w-3.5 h-3.5" /> Resend dispatch successful
+                  <CheckCircle className="w-3.5 h-3.5 text-[#6B132B]" /> Resend dispatch successful
                 </p>
-                <p>Message ID: <span className="font-mono">{emailResult.dispatch?.messageId}</span></p>
-                <p>To: <span className="font-mono">{emailResult.dispatchedTo}</span></p>
+                <p>Message ID: <span className="font-semibold">{emailResult.dispatch?.messageId}</span></p>
+                <p>To: <span className="font-semibold">{emailResult.dispatchedTo}</span></p>
               </div>
             )}
             <button onClick={sendEmailViaResend} disabled={emailSending || sending || !approvalId}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-sage-brand text-white text-[12px] font-semibold hover:bg-sage-brand disabled:opacity-50 transition-colors">
+              className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-[#6B132B] text-white text-[12px] font-semibold hover:bg-[#6B132B]/90 disabled:opacity-50 transition-colors">
               {emailSending ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending via Resend…</> : <><Send className="w-3.5 h-3.5" /> Send Email via Resend</>}
             </button>
           </div>
 
           {/* Twilio direct WhatsApp — uses push.body from the edit step */}
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4">
+          <div className="bg-[#F9F9F7] border border-soft rounded-md p-4 mb-4">
             <div className="flex items-center gap-2 mb-2">
-              <MessageCircle className="w-4 h-4 text-sage-brand" />
-              <p className="text-[12px] font-bold text-slate-700">Or send WhatsApp message directly via Twilio</p>
+              <MessageCircle className="w-4 h-4 text-[#6B132B]" />
+              <p className="text-[12px] font-bold text-[#2A161B]">Or send WhatsApp message directly via Twilio</p>
             </div>
-            <p className="text-[11px] text-slate-500 mb-3">
-              Dispatches via Twilio to <span className="font-mono font-semibold">whatsapp:+919874618487</span>
+            <p className="text-[11px] text-[#6B6562] mb-3">
+              Dispatches via Twilio to <span className="font-semibold">whatsapp:+919874618487</span>
               (sandbox override).  Uses the push.body from Step 4 (falls back to sms.body).
             </p>
             {waError && (
-              <div className="bg-crimson-soft border border-red-100 rounded-lg px-3 py-2 text-[12px] text-crimson mb-3">{waError}</div>
+              <div className="bg-[#F4D9C0] border border-soft rounded-md px-3 py-2 text-[12px] text-[#2A161B] mb-3">{waError}</div>
             )}
             {waResult && (
-              <div className="bg-sage-soft border border-emerald-100 rounded-lg px-3 py-2 text-[12px] text-emerald-800 mb-3 space-y-0.5">
+              <div className="bg-[#F9F9F7] border border-soft rounded-md px-3 py-2 text-[12px] text-[#2A161B] mb-3 space-y-0.5">
                 <p className="font-semibold flex items-center gap-1.5">
-                  <CheckCircle className="w-3.5 h-3.5" /> Twilio dispatch successful
+                  <CheckCircle className="w-3.5 h-3.5 text-[#6B132B]" /> Twilio dispatch successful
                 </p>
-                <p>Message SID: <span className="font-mono">{waResult.dispatch?.messageSid}</span></p>
-                <p>To: <span className="font-mono">{waResult.dispatchedTo}</span></p>
+                <p>Message SID: <span className="font-semibold">{waResult.dispatch?.messageSid}</span></p>
+                <p>To: <span className="font-semibold">{waResult.dispatchedTo}</span></p>
               </div>
             )}
             <button onClick={sendWhatsappViaTwilio} disabled={waSending || sending || !approvalId}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-sage-brand text-white text-[12px] font-semibold hover:bg-sage-brand disabled:opacity-50 transition-colors">
+              className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-[#B46B3E] text-white text-[12px] font-semibold hover:bg-[#B46B3E]/90 disabled:opacity-50 transition-colors">
               {waSending ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending via Twilio…</> : <><MessageCircle className="w-3.5 h-3.5" /> Send via WhatsApp</>}
             </button>
           </div>
 
           <div className="flex gap-2">
-            <button onClick={() => setStep(4)} className="px-4 py-2 rounded-lg border border-slate-200 text-[12px] text-slate-600 hover:bg-slate-50 transition-colors">Back</button>
+            <button onClick={() => setStep(4)} className="px-4 py-2 rounded-md border border-soft text-[12px] text-[#6B6562] hover:text-[#2A161B] transition-colors">Back</button>
             <button onClick={submitForApproval} disabled={sending}
-              className="flex items-center gap-1.5 px-5 py-2.5 rounded-lg bg-sage-brand text-white text-[13px] font-semibold hover:bg-sage-brand disabled:opacity-50 transition-colors">
+              className="flex items-center gap-1.5 px-5 py-2.5 rounded-md bg-[#6B132B] text-white text-[13px] font-semibold hover:bg-[#6B132B]/90 disabled:opacity-50 transition-colors">
               {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</> : <><Send className="w-4 h-4" /> Approve & Send</>}
             </button>
           </div>
@@ -566,22 +566,22 @@ export default function OutreachComposerPage() {
 
       {/* ── Sent confirmation ──────────────────────────────────────────── */}
       {step === 5 && sendResult && (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-8 flex flex-col items-center text-center">
-          <CheckCircle className="w-14 h-14 text-sage-brand mb-4" />
-          <h2 className="text-[18px] font-black text-slate-900 mb-2">Outreach Sent!</h2>
-          <p className="text-[13px] text-slate-400 mb-4">
+        <div className="bg-white rounded-md border border-soft p-8 flex flex-col items-center text-center">
+          <CheckCircle className="w-14 h-14 text-[#6B132B] mb-4" />
+          <h2 className="text-[18px] font-black text-[#2A161B] mb-2 font-heading">Outreach Sent!</h2>
+          <p className="text-[13px] text-[#6B6562] mb-4">
             Sent via: {(sendResult.sentChannels || []).join(', ') || '—'}
           </p>
           {(sendResult.blockedChannels || []).length > 0 && (
-            <div className="bg-copper-soft border border-amber-100 rounded-lg px-4 py-3 mb-4 text-left">
-              <p className="text-[11px] font-semibold text-copper-dark mb-1">Blocked channels:</p>
+            <div className="bg-[#F4D9C0] border border-soft rounded-md px-4 py-3 mb-4 text-left">
+              <p className="text-[11px] font-semibold text-[#2A161B] mb-1">Blocked channels:</p>
               {sendResult.blockedChannels.map((b: any) => (
-                <p key={b.channel} className="text-[11px] text-copper-dark">• {b.channel}: {b.reason}</p>
+                <p key={b.channel} className="text-[11px] text-[#2A161B]">• {b.channel}: {b.reason}</p>
               ))}
             </div>
           )}
           <Link href={`/rm/customers/${id}`}
-            className="px-4 py-2 rounded-lg bg-[var(--crimson)] text-white text-[12px] font-semibold hover:bg-[var(--crimson-dark)] transition-colors">
+            className="px-4 py-2 rounded-md bg-[#6B132B] text-white text-[12px] font-semibold hover:bg-[#6B132B]/90 transition-colors">
             Back to Customer 360
           </Link>
         </div>

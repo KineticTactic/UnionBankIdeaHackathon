@@ -11,15 +11,15 @@ function fmtDate(d?: string) {
 }
 
 const TIER_BADGE: Record<string, string> = {
-  PRIORITY: 'bg-crimson-soft text-crimson border border-soft',
-  ESCALATE: 'bg-copper-soft text-copper-dark border border-soft',
-  STANDARD: 'bg-copper-soft text-copper-dark border border-soft',
-  MONITOR:  'bg-teal-soft text-teal-dark border border-soft',
+  PRIORITY: 'bg-[#6B132B] text-white',
+  ESCALATE: 'bg-[#B46B3E] text-white',
+  STANDARD: 'bg-[#F9F9F7] text-[#2A161B] border border-soft',
+  MONITOR:  'bg-[#F4D9C0] text-[#2A161B]',
 };
 const STATUS_BADGE: Record<string, string> = {
-  open:     'bg-crimson-soft text-crimson border border-soft',
-  pending:  'bg-copper-soft text-copper-dark border border-soft',
-  resolved: 'bg-sage-soft text-sage-brand border border-soft',
+  open:     'bg-[#6B132B] text-white',
+  pending:  'bg-[#B46B3E] text-white',
+  resolved: 'bg-[#F9F9F7] text-[#2A161B] border border-soft',
 };
 
 export default function EscalationsPage() {
@@ -58,66 +58,73 @@ export default function EscalationsPage() {
   const resolved = items.filter(i => i.status === 'resolved').length;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#F9F9F7] min-h-screen">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Escalations</h1>
-          <p className="text-slate-400 text-sm mt-0.5">Cases requiring manager or admin review</p>
+          <h1 className="text-[22px] font-black text-[#2A161B] font-heading">Escalations</h1>
+          <p className="text-[13px] text-[#6B6562] mt-0.5">Cases requiring manager or admin review</p>
         </div>
-        <button onClick={load} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-slate-700 text-xs shadow-sm transition-all">
+        <button onClick={load} className="flex items-center gap-2 px-3 py-2 rounded-md border border-soft bg-white text-[#6B6562] hover:text-[#2A161B] text-xs transition-colors">
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 border-l-red-500">
-          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Open</p>
-          <p className="text-2xl font-bold text-crimson tabular-nums">{open}</p>
+        <div className="bg-white rounded-md border border-soft p-4 flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-[#6B132B] shrink-0" />
+          <div>
+            <p className="text-[10px] font-semibold text-[#6B6562] uppercase tracking-wider">Open</p>
+            <p className="text-xl font-black text-[#2A161B] tabular-nums">{open}</p>
+          </div>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 border-l-emerald-500">
-          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Resolved</p>
-          <p className="text-2xl font-bold text-sage-brand tabular-nums">{resolved}</p>
+        <div className="bg-white rounded-md border border-soft p-4 flex items-center gap-3">
+          <CheckCircle2 className="w-5 h-5 text-[#B46B3E] shrink-0" />
+          <div>
+            <p className="text-[10px] font-semibold text-[#6B6562] uppercase tracking-wider">Resolved</p>
+            <p className="text-xl font-black text-[#2A161B] tabular-nums">{resolved}</p>
+          </div>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 border-l-[var(--crimson)]">
-          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Total</p>
-          <p className="text-2xl font-bold text-slate-900 tabular-nums">{items.length}</p>
+        <div className="bg-white rounded-md border border-soft p-4 flex items-center gap-3">
+          <Clock className="w-5 h-5 text-[#6B132B] shrink-0" />
+          <div>
+            <p className="text-[10px] font-semibold text-[#6B6562] uppercase tracking-wider">Total</p>
+            <p className="text-xl font-black text-[#2A161B] tabular-nums">{items.length}</p>
+          </div>
         </div>
       </div>
 
       {/* Filter */}
       <div className="flex items-center gap-2">
-        <Filter className="w-4 h-4 text-slate-400" />
+        <Filter className="w-4 h-4 text-[#8B8481]" />
         {['all', 'open', 'pending', 'resolved'].map(f => (
           <button key={f} onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
-              filter === f ? 'bg-[var(--crimson)] text-white' : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold capitalize transition-all ${
+              filter === f ? 'bg-[#6B132B] text-white' : 'bg-white border border-soft text-[#6B6562] hover:border-[#B46B3E]'
             }`}>{f}</button>
         ))}
       </div>
 
       {loading ? (
-        <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-24 bg-white rounded-xl border border-slate-200 animate-pulse" />)}</div>
+        <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-24 bg-white rounded-md border border-soft animate-pulse" />)}</div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-12 text-center">
-          <CheckCircle2 className="w-10 h-10 text-sage-brand mx-auto mb-3" />
-          <p className="text-slate-500 font-medium">No escalations</p>
+        <div className="bg-white rounded-md border border-soft p-12 text-center">
+          <CheckCircle2 className="w-10 h-10 text-[#B46B3E] mx-auto mb-3" />
+          <p className="text-[#2A161B] font-medium">No escalations</p>
         </div>
       ) : (
         <div className="space-y-3">
           {filtered.map((item: any) => (
-            <div key={item.id} className={`bg-white rounded-xl border shadow-sm p-5 ${
-              (item.status === 'open' || item.status === 'pending') ? 'border-soft' : 'border-slate-200'
-            }`}>
+            <div key={item.id} className="bg-white rounded-md border border-soft p-5">
               <div className="flex items-start gap-4">
-                <AlertTriangle className={`w-5 h-5 mt-0.5 shrink-0 ${item.status === 'resolved' ? 'text-slate-300' : 'text-crimson'}`} />
+                <AlertTriangle className={`w-5 h-5 mt-0.5 shrink-0 ${item.status === 'resolved' ? 'text-[#8B8481]' : 'text-[#6B132B]'}`} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <p className="font-bold text-slate-900">{item.customer_name || item.customer_id}</p>
+                    <p className="font-bold text-[#2A161B]">{item.customer_name || item.customer_id}</p>
                     {item.risk_tier && <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${TIER_BADGE[item.risk_tier]||''}`}>{item.risk_tier}</span>}
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${STATUS_BADGE[item.status]||'bg-slate-100 text-slate-600 border-slate-200 border'}`}>{item.status?.toUpperCase()}</span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${STATUS_BADGE[item.status]||'bg-[#F9F9F7] text-[#6B6562] border border-soft'}`}>{item.status?.toUpperCase()}</span>
                   </div>
-                  <p className="text-sm text-slate-600 mb-2">{item.reason || item.notes || 'No reason provided'}</p>
-                  <div className="flex items-center gap-4 text-[11px] text-slate-400">
+                  <p className="text-sm text-[#6B6562] mb-2">{item.reason || item.notes || 'No reason provided'}</p>
+                  <div className="flex items-center gap-4 text-[11px] text-[#6B6562]">
                     <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{fmtDate(item.created_at)}</span>
                     {item.assigned_to && <span>Assigned: {item.assigned_to}</span>}
                     {item.reviewer && <span>Reviewed by: {item.reviewer}</span>}
@@ -125,7 +132,7 @@ export default function EscalationsPage() {
                 </div>
                 {(item.status === 'open' || item.status === 'pending') && (
                   <button onClick={() => { setResolveId(item.id); setOutcome('resolved'); setNotes(''); }}
-                    className="px-3 py-1.5 rounded-lg bg-[var(--crimson)] text-white text-xs font-semibold hover:bg-[var(--crimson)]/90 transition-all shrink-0">
+                    className="px-3 py-1.5 rounded-md bg-[#6B132B] text-white text-xs font-semibold hover:bg-[#6B132B]/90 transition-all shrink-0">
                     Resolve
                   </button>
                 )}
@@ -138,22 +145,22 @@ export default function EscalationsPage() {
       {/* Resolve modal */}
       {resolveId && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center" onClick={() => setResolveId(null)}>
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 w-[440px] shadow-2xl" onClick={e => e.stopPropagation()}>
-            <h3 className="text-base font-bold text-slate-900 mb-4">Resolve Escalation</h3>
-            <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Outcome</label>
+          <div className="bg-white border border-soft rounded-md p-6 w-[440px]" onClick={e => e.stopPropagation()}>
+            <h3 className="text-base font-bold text-[#2A161B] mb-4">Resolve Escalation</h3>
+            <label className="block text-[11px] font-semibold text-[#6B6562] uppercase tracking-wide mb-1">Outcome</label>
             <select value={outcome} onChange={e => setOutcome(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 text-sm text-slate-800 p-2.5 focus:outline-none focus:border-[var(--crimson)]/40 mb-3">
+              className="w-full rounded-md border border-soft text-sm text-[#2A161B] p-2.5 focus:outline-none focus:border-[#6B132B]/40 mb-3 bg-white">
               <option value="resolved">Resolved</option>
               <option value="escalated">Escalated further</option>
               <option value="dismissed">Dismissed</option>
             </select>
-            <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Notes</label>
-            <textarea className="w-full rounded-xl border border-slate-200 text-sm text-slate-800 p-3 resize-none focus:outline-none focus:border-[var(--crimson)]/40"
+            <label className="block text-[11px] font-semibold text-[#6B6562] uppercase tracking-wide mb-1">Notes</label>
+            <textarea className="w-full rounded-md border border-soft text-sm text-[#2A161B] p-3 resize-none focus:outline-none focus:border-[#6B132B]/40 bg-white"
               rows={3} placeholder="Resolution notes…" value={notes} onChange={e => setNotes(e.target.value)} />
             <div className="flex gap-2 justify-end mt-4">
-              <button onClick={() => setResolveId(null)} className="px-4 py-2 rounded-lg text-sm text-slate-500 hover:text-slate-700 transition-colors">Cancel</button>
+              <button onClick={() => setResolveId(null)} className="px-4 py-2 rounded-md text-sm text-[#6B6562] hover:text-[#2A161B] transition-colors">Cancel</button>
               <button onClick={doResolve} disabled={acting}
-                className="px-4 py-2 rounded-lg bg-[var(--crimson)] text-white text-sm font-semibold hover:bg-[var(--crimson)]/90 disabled:opacity-50 transition-all">
+                className="px-4 py-2 rounded-md bg-[#6B132B] text-white text-sm font-semibold hover:bg-[#6B132B]/90 disabled:opacity-50 transition-all">
                 {acting ? 'Saving…' : 'Save Resolution'}
               </button>
             </div>

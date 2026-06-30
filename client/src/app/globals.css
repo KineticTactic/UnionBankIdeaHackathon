@@ -313,5 +313,9 @@ a, button { transition: all 120ms ease; }
   -webkit-text-fill-color: transparent;
 }
 
+.bg-gradient-brand {
+  background: linear-gradient(135deg, #6B132B 0%, #B46B3E 100%);
+}
+
 /* Number/data styling */
 .tabular-nums { font-variant-numeric: tabular-nums; }

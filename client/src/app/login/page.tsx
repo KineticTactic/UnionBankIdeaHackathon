@@ -8,9 +8,7 @@ import { Eye, EyeOff, AlertCircle, TrendingUp, Activity, Shield, Brain } from 'l
 
 const DEMO = [
   { user: 'analyst',   pass: 'analyst123',  role: 'Risk Analyst',       desc: 'Read-only · signals & analytics' },
-  { user: 'risk_user', pass: 'risk123',     role: 'Risk Officer',       desc: 'Approvals · bias & compliance'   },
   { user: 'rm_user',   pass: 'rm123',       role: 'Relationship Mgr',   desc: 'Outreach queue · customer notes' },
-  { user: 'manager',   pass: 'manager123',  role: 'Portfolio Manager',  desc: 'Campaigns · review approvals'   },
   { user: 'admin',     pass: 'admin123',    role: 'Administrator',      desc: 'Full platform access'           },
 ];
 
@@ -73,7 +71,7 @@ export default function LoginPage() {
           {/* Hero text */}
           <div className="my-auto">
             <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 rounded-md bg-crimson-soft border border-crimson">
-              <span className="w-1.5 h-1.5 rounded-full bg-crimson animate-live-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-gradient-brand animate-live-pulse" />
               <span className="text-crimson text-[10px] font-semibold uppercase tracking-widest">IDEA 2.0 Hackathon 2026</span>
             </div>
 
@@ -172,7 +170,7 @@ export default function LoginPage() {
 
             {/* Submit */}
             <button type="submit" disabled={loading || !username || !password}
-              className="w-full py-3.5 rounded-md text-[14px] font-bold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed mt-2 bg-crimson hover:bg-crimson-dark">
+              className="w-full py-3.5 rounded-md text-[14px] font-bold text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed mt-2 bg-gradient-brand hover:opacity-90">
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

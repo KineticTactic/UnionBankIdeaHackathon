@@ -1130,5 +1130,100 @@
       "calls": "d4735e3a265e16ee"
     },
     "generator": "templated+llm-narrative"
+  },
+  {
+    "id": "RPT-1782851506603-VOWT",
+    "report_type": "bias_review",
+    "date_from": "",
+    "date_to": "",
+    "generated_at": "2026-06-30T20:31:46.603Z",
+    "generated_by": "admin",
+    "data": {
+      "period": {
+        "from": "all",
+        "to": "now"
+      },
+      "generated_at": "2026-06-30T20:31:43.301Z",
+      "churn_intervention": {
+        "total_customers": 50,
+        "at_risk": 18,
+        "interventions": 3,
+        "saves": 2,
+        "save_rate": "66.7%"
+      },
+      "compliance_audit": {
+        "total_customers": 50,
+        "calls_recorded": 2,
+        "compliance_flags": 0,
+        "consent_coverage": 2,
+        "tasks_completed": 1,
+        "tasks_outstanding": 3
+      },
+      "rm_activity": [
+        {
+          "rm_name": "Aditya Sharma",
+          "username": "rm_user",
+          "calls": 2,
+          "outcomes": 3,
+          "tasks": 4
+        },
+        {
+          "rm_name": "Deepa Krishnan",
+          "username": "rm_deepa",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Sunita Nair",
+          "username": "rm_sunita",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Vikram Joshi",
+          "username": "rm_vikram",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Rohit Kapoor",
+          "username": "rm_rohit",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Ritu Malhotra",
+          "username": "rm_ritu",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Anand Pillai",
+          "username": "rm_anand",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Priya Menon",
+          "username": "rm_priya",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        }
+      ]
+    },
+    "llm_summary": "**Executive Summary – Bias Review Compliance Report**\n\nIn compliance with regulatory review standards, this report summarizes bias mitigation efforts across a portfolio of 50 total customers. Eighteen customers (36%) were flagged as at-risk during the review period, prompting targeted interventions. Three interventions were executed, resulting in the successful retention of two at-risk customers, yielding a save rate of 66.7%. This demonstrates moderate effectiveness in addressing customer retention risks, though the sample size remains limited for statistically significant conclusions.\n\nCompliance adherence was maintained with zero recorded compliance flags related to calls, and consent coverage was obtained for 2 of 50 customers (4%). While consent alignment aligns with minimal risk thresholds, broader coverage remains an opportunity for improvement. Additionally, only one task out of four assigned (25%) was completed, indicating a need for enhanced operational execution in follow-up procedures.\n\nOverall, the data reflects partial success in bias mitigation and compliance adherence, with notable gaps in consent standardization and task completion. Recommendations include expanding consent protocols to cover additional customer segments and reinforcing intervention workflows to ensure full task execution. Further review is advised to assess long-term trend stability.",
+    "source_hashes": {
+      "customers": "d0bc30f5722e7c95",
+      "outcomes": "4e07408562bedb8b",
+      "calls": "d4735e3a265e16ee"
+    },
+    "generator": "templated+llm-narrative"
   }
 ]

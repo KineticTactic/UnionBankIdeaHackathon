@@ -34,7 +34,7 @@ export default function Topbar() {
 
             <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1.5 text-[11px] text-[#2A161B]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#6B132B] animate-live-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-gradient-brand animate-live-pulse" />
                     <span className="font-semibold text-[#6B132B]">Kafka Live</span>
                 </div>
                 <div className="h-4 w-px bg-[#E5E0DF]" />

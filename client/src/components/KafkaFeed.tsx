@@ -30,7 +30,9 @@ export default function KafkaFeed({ maxEvents = 20 }: Props) {
     const token = getToken();
     if (!token) return;
 
-    const source = new EventSource(`/api/kafka/stream?token=${token}`);
+    // Connect directly to backend to avoid Next.js SSE buffering
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const source = new EventSource(`${backendUrl}/api/kafka/stream?token=${encodeURIComponent(token)}`);
 
     source.onmessage = (e) => {
       try {
@@ -65,7 +67,7 @@ export default function KafkaFeed({ maxEvents = 20 }: Props) {
       {/* Status bar */}
       <div className="flex items-center justify-between mb-2 px-1">
         <div className="flex items-center gap-2">
-          <span className={`w-2 h-2 rounded-full bg-crimson animate-live-pulse`} />
+          <span className={`w-2 h-2 rounded-full bg-gradient-brand animate-live-pulse`} />
           <span className="text-[11px] text-[#6B6562] capitalize">{mode}</span>
         </div>
         <span className="text-[10px] text-[#8B8481] tabular-nums">{count} events</span>

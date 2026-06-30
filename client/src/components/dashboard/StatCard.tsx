@@ -5,15 +5,16 @@ interface StatCardProps {
     value: string | number;
     subtitle: string;
     icon: ReactNode;
-    accent?: "default" | "crimson" | "copper" | "neutral";
+    accent?: "default" | "crimson" | "copper" | "neutral" | "brand";
     valueClassName?: string;
 }
 
-const ACCENT: Record<string, { border: string; icon: string; badge: string }> = {
-    default:  { border: "border-l-[#C9C3C0]",   icon: "bg-[#F5F4F2] text-[#6B6562]",       badge: "" },
-    crimson:  { border: "border-l-crimson",     icon: "bg-crimson-soft text-crimson",      badge: "text-crimson" },
-    copper:   { border: "border-l-copper",      icon: "bg-copper-soft text-[#8E5026]",      badge: "text-copper" },
-    neutral:  { border: "border-l-[#8B8481]",   icon: "bg-[#F5F4F2] text-[#6B6562]",       badge: "text-[#6B6562]" },
+const ACCENT: Record<string, { border: string; icon: string; badge: string; value: string }> = {
+    default:  { border: "border-l-[#C9C3C0]",   icon: "bg-[#F5F4F2] text-[#6B6562]",       badge: "",                  value: "text-[#2A161B]" },
+    crimson:  { border: "border-l-crimson",     icon: "bg-crimson-soft text-crimson",      badge: "text-crimson",        value: "text-[#2A161B]" },
+    copper:   { border: "border-l-copper",      icon: "bg-copper-soft text-[#8E5026]",      badge: "text-copper",         value: "text-[#2A161B]" },
+    neutral:  { border: "border-l-[#8B8481]",   icon: "bg-[#F5F4F2] text-[#6B6562]",       badge: "text-[#6B6562]",      value: "text-[#2A161B]" },
+    brand:    { border: "border-l-crimson",     icon: "bg-gradient-brand text-white",      badge: "text-crimson",        value: "text-gradient" },
 };
 
 export function StatCard({ title, value, subtitle, icon, accent = "default", valueClassName = "" }: StatCardProps) {
@@ -27,7 +28,7 @@ export function StatCard({ title, value, subtitle, icon, accent = "default", val
                 </div>
             </div>
             <div>
-                <div className={`text-3xl font-bold text-[#2A161B] leading-none ${valueClassName}`}>{value}</div>
+                <div className={`text-3xl font-bold leading-none ${a.value} ${valueClassName}`}>{value}</div>
                 <p className="text-xs text-[#8B8481] mt-1.5">{subtitle}</p>
             </div>
         </div>

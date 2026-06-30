@@ -37,7 +37,7 @@ const SIGNALS = [
 
 const CREDS = [
   { user: 'analyst', pass: 'analyst123', role: 'Risk Analyst',      access: 'Signals · scores · analytics (read-only)' },
-  { user: 'manager', pass: 'manager123', role: 'Portfolio Manager', access: 'Campaigns · review queue · approvals' },
+  { user: 'rm_user', pass: 'rm123',     role: 'Relationship Mgr',  access: 'Outreach queue · customer notes' },
   { user: 'admin',   pass: 'admin123',   role: 'Administrator',     access: 'Full platform access' },
 ];
 
@@ -81,7 +81,7 @@ function Navbar() {
           <a href="#architecture" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>Architecture</a>
           <a href="#api" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>API</a>
           <Link href="/login"
-            className="flex items-center gap-1.5 text-[13px] font-semibold px-4 py-2 rounded-md text-white bg-crimson hover:bg-crimson-dark transition-all">
+            className="flex items-center gap-1.5 text-[13px] font-semibold px-4 py-2 rounded-md text-white bg-gradient-brand hover:opacity-90 transition-all">
             Enter Platform <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -125,7 +125,7 @@ export default function LandingPage() {
 
         <div className="relative z-10 max-w-4xl mx-auto px-6">
           <div className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-md text-crimson text-[11px] font-semibold uppercase tracking-widest bg-crimson-soft border border-crimson">
-            <span className="w-1.5 h-1.5 rounded-full bg-crimson animate-live-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-gradient-brand animate-live-pulse" />
             Union Bank · IDEA 2.0 Hackathon 2026
           </div>
 
@@ -144,7 +144,7 @@ export default function LandingPage() {
 
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Link href="/login"
-              className="group inline-flex items-center gap-2 text-[15px] font-bold px-8 py-4 rounded-md text-white bg-crimson hover:bg-crimson-dark transition-all">
+              className="group inline-flex items-center gap-2 text-[15px] font-bold px-8 py-4 rounded-md text-white bg-gradient-brand hover:opacity-90 transition-all">
               Try the Demo
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
@@ -172,16 +172,16 @@ export default function LandingPage() {
         </div>
 
         {/* Scroll hint */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-400 animate-bounce">
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-400 animate-bounce">
           <span className="text-[10px] uppercase tracking-widest">Scroll</span>
           <ChevronDown className="w-4 h-4" />
         </div>
       </section>
 
       {/* ── DEMO DISCLAIMER ─────────────────────────────────────────────── */}
-      <section className="relative py-24 px-6 bg-crimson text-white overflow-hidden">
+      <section className="relative py-24 px-6 text-white overflow-hidden bg-gradient-brand">
         <div className="absolute inset-0 opacity-20"
-             style={{ background: 'radial-gradient(ellipse 800px 400px at 20% 30%, rgba(180,107,62,0.4) 0%, transparent 60%), radial-gradient(ellipse 600px 400px at 80% 70%, rgba(180,107,62,0.3) 0%, transparent 60%)' }} />
+             style={{ background: 'radial-gradient(ellipse 800px 400px at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 60%), radial-gradient(ellipse 600px 400px at 80% 70%, rgba(255,255,255,0.3) 0%, transparent 60%)' }} />
         <div className="absolute inset-0 bg-dot-grid opacity-30" />
 
         <div className="relative max-w-5xl mx-auto">
@@ -269,7 +269,7 @@ export default function LandingPage() {
                     <span>Confidence</span>
                     <div className="flex items-center gap-2 flex-1 ml-3">
                       <div className="flex-1 h-1 bg-cream rounded-full overflow-hidden">
-                        <div className="h-full bg-crimson transition-all duration-700"
+                        <div className="h-full bg-gradient-brand transition-all duration-700"
                              style={{ width: `${s.conf}%` }} />
                       </div>
                     </div>
@@ -319,7 +319,7 @@ export default function LandingPage() {
                   <p className="text-[12px] text-gray-500">{layer.desc}</p>
                 </div>
                 <div className="flex items-center pr-4">
-                  <span className="w-6 h-6 rounded-md text-[10px] font-black text-white flex items-center justify-center bg-crimson">{i + 1}</span>
+                  <span className="w-6 h-6 rounded-md text-[10px] font-black text-white flex items-center justify-center bg-gradient-brand">{i + 1}</span>
                 </div>
               </div>
             ))}
@@ -401,7 +401,7 @@ export default function LandingPage() {
               <div className="px-4 py-2.5 bg-cream border-t border-soft flex items-center justify-between">
                 <span className="text-[10px] text-gray-500 font-mono">$ curl -X GET {`{API}/customers/42`}</span>
                 <span className="flex items-center gap-1.5 text-[10px] text-crimson">
-                  <span className="w-1.5 h-1.5 rounded-full bg-crimson animate-live-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-gradient-brand animate-live-pulse" />
                   ONLINE
                 </span>
               </div>
@@ -420,7 +420,7 @@ export default function LandingPage() {
         <div className="relative max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-md text-crimson text-[10px] font-bold uppercase tracking-widest bg-crimson-soft border border-crimson animate-fade-up">
-              <span className="w-1.5 h-1.5 rounded-full bg-crimson animate-live-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-gradient-brand animate-live-pulse" />
               No sign-up required
             </div>
             <h2 className="text-[44px] font-heading font-bold text-charcoal mb-4 leading-[1.05] animate-fade-up delay-100"
@@ -440,7 +440,7 @@ export default function LandingPage() {
                 style={{ animationDelay: `${0.3 + i * 0.1}s` }}>
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-crimson via-copper to-crimson opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-md bg-crimson flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-12 h-12 rounded-md bg-gradient-brand flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <span className="text-white text-[12px] font-black tracking-tight">
                       {c.role.split(' ').map(w=>w[0]).join('').slice(0,2)}
                     </span>
@@ -468,7 +468,7 @@ export default function LandingPage() {
 
           <div className="text-center animate-fade-up delay-700">
             <Link href="/login"
-              className="group inline-flex items-center gap-3 text-[16px] font-bold px-12 py-5 rounded-md text-white bg-crimson hover:bg-crimson-dark transition-all hover-lift">
+              className="group inline-flex items-center gap-3 text-[16px] font-bold px-12 py-5 rounded-md text-white bg-gradient-brand hover:opacity-90 transition-all hover-lift">
               Enter the Platform
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>

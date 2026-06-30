@@ -104,14 +104,14 @@ export default function Sidebar() {
         href={item.href}
         className={`flex items-center gap-2.5 px-2.5 py-2 rounded-md text-[13px] font-medium mb-0.5 transition-all duration-150 ${
           active
-            ? 'bg-[#F5E6E9] text-[#6B132B]'
+            ? 'bg-gradient-brand text-white'
             : 'text-[#2A161B]/70 hover:text-[#2A161B] hover:bg-[#F5F4F2]'
         }`}
       >
-        <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-[#6B132B]' : 'text-[#2A161B]/50'}`} />
+        <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-[#2A161B]/50'}`} />
         <span className="font-medium">{item.label}</span>
         {active && (
-          <span className="ml-auto w-1.5 h-1.5 rounded-sm bg-[#6B132B]" />
+          <span className="ml-auto w-1.5 h-1.5 rounded-sm bg-white" />
         )}
       </Link>
     );

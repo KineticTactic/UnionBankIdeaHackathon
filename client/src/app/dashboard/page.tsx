@@ -8,7 +8,6 @@ import { Portfolio } from '@/types';
 import RiskBadge, { tierColor } from '@/components/RiskBadge';
 import ScoreBar from '@/components/ScoreBar';
 import KafkaFeed from '@/components/KafkaFeed';
-import { KnowledgeGraphCard } from '@/components/dashboard/KnowledgeGraphCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
@@ -215,9 +214,6 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
-
-      {/* Knowledge Graph */}
-      <KnowledgeGraphCard />
 
       {/* Live Kafka feed */}
       <div className="bg-white rounded-md border border-soft p-5">

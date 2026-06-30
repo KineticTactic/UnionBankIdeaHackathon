@@ -94,7 +94,7 @@ export function RMCopilotPanel({ customerId, customerName, rmUserId = 'rm-demo' 
       {/* FAB */}
       <button
         onClick={() => setOpen(o => !o)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-[#0f2d5c] text-white px-4 py-3 rounded-full shadow-xl hover:bg-[#1a3f7a] transition-all duration-200 group"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-[var(--crimson)] text-white px-4 py-3 rounded-full shadow-xl hover:bg-[var(--crimson-dark)] transition-all duration-200 group"
         aria-label="RM Copilot"
       >
         <Bot className="w-5 h-5" />
@@ -107,7 +107,7 @@ export function RMCopilotPanel({ customerId, customerName, rmUserId = 'rm-demo' 
         <div className="fixed bottom-20 right-6 z-50 w-[420px] max-h-[580px] flex flex-col bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
 
           {/* Header */}
-          <div className="flex items-center gap-3 px-4 py-3 bg-[#0f2d5c] text-white shrink-0">
+          <div className="flex items-center gap-3 px-4 py-3 bg-[var(--crimson)] text-white shrink-0">
             <Bot className="w-5 h-5 opacity-80" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-semibold leading-tight">RM Copilot</p>
@@ -130,7 +130,7 @@ export function RMCopilotPanel({ customerId, customerName, rmUserId = 'rm-demo' 
                     <button
                       key={q}
                       onClick={() => { setInput(q); }}
-                      className="w-full text-left text-[12px] text-slate-600 px-3 py-2 rounded-lg border border-slate-200 hover:border-[#0f2d5c] hover:text-[#0f2d5c] hover:bg-blue-50 transition-colors"
+                      className="w-full text-left text-[12px] text-slate-600 px-3 py-2 rounded-lg border border-slate-200 hover:border-[var(--crimson)] hover:text-[var(--crimson)] hover:bg-teal-soft transition-colors"
                     >
                       {q}
                     </button>
@@ -145,7 +145,7 @@ export function RMCopilotPanel({ customerId, customerName, rmUserId = 'rm-demo' 
                   <div
                     className={`px-3 py-2.5 rounded-xl text-[13px] leading-relaxed whitespace-pre-wrap ${
                       msg.role === 'user'
-                        ? 'bg-[#0f2d5c] text-white rounded-br-sm'
+                        ? 'bg-[var(--crimson)] text-white rounded-br-sm'
                         : 'bg-slate-50 border border-slate-200 text-slate-800 rounded-bl-sm'
                     }`}
                   >
@@ -190,13 +190,13 @@ export function RMCopilotPanel({ customerId, customerName, rmUserId = 'rm-demo' 
                 onKeyDown={handleKey}
                 placeholder="Ask about this customer…"
                 rows={1}
-                className="flex-1 resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-[13px] text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#0f2d5c] focus:ring-2 focus:ring-[#0f2d5c]/10 transition-colors max-h-28 overflow-y-auto"
+                className="flex-1 resize-none rounded-xl border border-slate-200 px-3 py-2.5 text-[13px] text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[var(--crimson)] focus:ring-2 focus:ring-[var(--crimson)]/10 transition-colors max-h-28 overflow-y-auto"
                 style={{ lineHeight: '1.4' }}
               />
               <button
                 onClick={send}
                 disabled={!input.trim() || loading}
-                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-[#0f2d5c] text-white hover:bg-[#1a3f7a] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-[var(--crimson)] text-white hover:bg-[var(--crimson-dark)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 <Send className="w-4 h-4" />
               </button>

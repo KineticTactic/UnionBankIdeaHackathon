@@ -10,16 +10,16 @@ import {
 
 /* ── constants ─────────────────────────────────────────────────────────────── */
 const TIER_BADGE: Record<string, string> = {
-  PRIORITY: 'bg-red-100 text-red-700 border-red-200',
-  ESCALATE: 'bg-orange-100 text-orange-700 border-orange-200',
-  STANDARD: 'bg-amber-100 text-amber-700 border-amber-200',
-  MONITOR:  'bg-blue-100 text-blue-700 border-blue-200',
-  NONE:     'bg-emerald-100 text-emerald-700 border-emerald-200',
+  PRIORITY: 'bg-crimson-soft text-crimson border-soft',
+  ESCALATE: 'bg-copper-soft text-copper-dark border-soft',
+  STANDARD: 'bg-copper-soft text-copper-dark border-soft',
+  MONITOR:  'bg-teal-soft text-teal-dark border-soft',
+  NONE:     'bg-sage-soft text-sage-brand border-soft',
 };
 const SEG_BADGE: Record<string, string> = {
-  HNW:    'bg-purple-100 text-purple-700',
+  HNW:    'bg-teal-soft text-teal-dark',
   MASS:   'bg-slate-100 text-slate-600',
-  SME:    'bg-sky-100 text-sky-700',
+  SME:    'bg-teal-soft text-teal-dark',
   NRI:    'bg-teal-100 text-teal-700',
 };
 const CHANNELS = ['EMAIL', 'SMS', 'PUSH'] as const;
@@ -39,17 +39,17 @@ function downloadPdf(record: any, exportData: any) {
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
 <title>Data Package — ${record.full_name}</title>
 <style>
-  body{font-family:Arial,sans-serif;padding:32px;color:#1e293b;font-size:12px}
+  body{font-family:Arial,sans-serif;padding:32px;color:var(--gray-700);font-size:12px}
   h1{font-size:20px;font-weight:800;margin:0 0 4px}
-  h2{font-size:13px;font-weight:700;margin:20px 0 6px;border-bottom:1px solid #e2e8f0;padding-bottom:4px}
-  .meta{color:#64748b;font-size:11px;margin-bottom:24px}
-  .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;background:#e0f2fe;color:#0369a1}
+  h2{font-size:13px;font-weight:700;margin:20px 0 6px;border-bottom:1px solid var(--border-color);padding-bottom:4px}
+  .meta{color:var(--gray-500);font-size:11px;margin-bottom:24px}
+  .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;background:var(--teal-soft);color:#0369a1}
   table{width:100%;border-collapse:collapse;margin-bottom:8px}
   td,th{padding:6px 8px;text-align:left;font-size:11px}
-  th{background:#f8fafc;font-weight:700;color:#475569}
-  tr:nth-child(even) td{background:#f8fafc}
-  .green{color:#16a34a;font-weight:700} .red{color:#dc2626;font-weight:700}
-  .footer{margin-top:32px;font-size:10px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:12px}
+  th{background:var(--background);font-weight:700;color:var(--gray-600)}
+  tr:nth-child(even) td{background:var(--background)}
+  .green{color:var(--sage-brand);font-weight:700} .red{color:var(--crimson);font-weight:700}
+  .footer{margin-top:32px;font-size:10px;color:var(--gray-400);border-top:1px solid var(--border-color);padding-top:12px}
   @media print{body{padding:16px}}
 </style></head><body>
 <h1>Data Package — ${record.full_name}</h1>
@@ -196,12 +196,12 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
                 <p className="text-[11px] text-slate-400">Digital Personal Data Protection Act — processing permission</p>
               </div>
               <button onClick={() => setDpdpa(p => !p)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${dpdpa ? 'bg-emerald-500' : 'bg-red-400'}`}>
+                className={`relative w-11 h-6 rounded-full transition-colors ${dpdpa ? 'bg-sage-brand' : 'bg-red-400'}`}>
                 <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${dpdpa ? 'left-6' : 'left-1'}`} />
               </button>
             </div>
             {!dpdpa && (
-              <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-2">
+              <p className="text-[11px] text-copper-dark bg-copper-soft border border-soft rounded-lg p-2">
                 ⚠ Revoking DPDPA will cancel all pending outreach approvals and block further AI-driven contact.
               </p>
             )}
@@ -215,7 +215,7 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
                 <p className="text-[11px] text-slate-400">Telecom Regulatory Authority — commercial communication</p>
               </div>
               <button onClick={() => setTrai(p => !p)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${trai ? 'bg-emerald-500' : 'bg-red-400'}`}>
+                className={`relative w-11 h-6 rounded-full transition-colors ${trai ? 'bg-sage-brand' : 'bg-red-400'}`}>
                 <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${trai ? 'left-6' : 'left-1'}`} />
               </button>
             </div>
@@ -234,11 +234,11 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
                 return (
                   <button key={ch} onClick={() => toggleOptOut(ch)}
                     className={`flex-1 flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all ${
-                      isOut ? 'border-red-400 bg-red-50' : 'border-slate-200 bg-white hover:border-slate-300'
+                      isOut ? 'border-red-400 bg-crimson-soft' : 'border-slate-200 bg-white hover:border-slate-300'
                     }`}>
-                    <Icon className={`w-4 h-4 ${isOut ? 'text-red-500' : 'text-slate-400'}`} />
-                    <span className={`text-[10px] font-bold ${isOut ? 'text-red-600' : 'text-slate-500'}`}>{ch}</span>
-                    <span className={`text-[9px] font-semibold ${isOut ? 'text-red-500' : 'text-emerald-600'}`}>
+                    <Icon className={`w-4 h-4 ${isOut ? 'text-crimson' : 'text-slate-400'}`} />
+                    <span className={`text-[10px] font-bold ${isOut ? 'text-crimson' : 'text-slate-500'}`}>{ch}</span>
+                    <span className={`text-[9px] font-semibold ${isOut ? 'text-crimson' : 'text-sage-brand'}`}>
                       {isOut ? 'OPTED OUT' : 'ACTIVE'}
                     </span>
                   </button>
@@ -256,20 +256,20 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
               <p className="text-[11px] text-slate-400 mt-0.5">DPDPA 2023 §12 — Right to Access. Opens print dialog for PDF download.</p>
             </div>
             <button onClick={handleExport} disabled={exporting}
-              className="shrink-0 px-3 py-1.5 rounded-lg bg-[#0f2d5c] text-white text-xs font-bold hover:bg-[#0f2d5c]/90 disabled:opacity-50 transition-all">
+              className="shrink-0 px-3 py-1.5 rounded-lg bg-[var(--crimson)] text-white text-xs font-bold hover:bg-[var(--crimson)]/90 disabled:opacity-50 transition-all">
               {exporting ? 'Loading…' : 'Export PDF'}
             </button>
           </div>
 
           {/* §13 — Right to Correction */}
-          <div className={`rounded-xl p-4 border-2 transition-all ${showCorrect ? 'border-blue-300 bg-blue-50' : 'border-slate-200 bg-slate-50'}`}>
+          <div className={`rounded-xl p-4 border-2 transition-all ${showCorrect ? 'border-soft bg-teal-soft' : 'border-slate-200 bg-slate-50'}`}>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <PenLine className={`w-4 h-4 ${showCorrect ? 'text-blue-500' : 'text-slate-400'}`} />
-                <p className={`text-sm font-semibold ${showCorrect ? 'text-blue-700' : 'text-slate-800'}`}>Request Data Correction</p>
+                <PenLine className={`w-4 h-4 ${showCorrect ? 'text-teal' : 'text-slate-400'}`} />
+                <p className={`text-sm font-semibold ${showCorrect ? 'text-teal-dark' : 'text-slate-800'}`}>Request Data Correction</p>
               </div>
               <button onClick={() => setShowCorrect(p => !p)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${showCorrect ? 'bg-blue-500' : 'bg-slate-200'}`}>
+                className={`relative w-11 h-6 rounded-full transition-colors ${showCorrect ? 'bg-teal' : 'bg-slate-200'}`}>
                 <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${showCorrect ? 'left-6' : 'left-1'}`} />
               </button>
             </div>
@@ -278,18 +278,18 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
               <div className="space-y-2 mt-3">
                 <div className="flex gap-2">
                   <select value={correctField} onChange={e => setCorrectField(e.target.value)}
-                    className="flex-1 rounded-lg border border-blue-200 text-xs text-slate-800 p-2 bg-white focus:outline-none focus:border-blue-400">
+                    className="flex-1 rounded-lg border border-soft text-xs text-slate-800 p-2 bg-white focus:outline-none focus:border-blue-400">
                     {CORRECTABLE_FIELDS.map(f => <option key={f} value={f}>{f.replace('_',' ')}</option>)}
                   </select>
                   <input value={correctValue} onChange={e => setCorrectValue(e.target.value)}
                     placeholder="New value…"
-                    className="flex-1 rounded-lg border border-blue-200 text-xs text-slate-800 p-2 bg-white focus:outline-none focus:border-blue-400" />
+                    className="flex-1 rounded-lg border border-soft text-xs text-slate-800 p-2 bg-white focus:outline-none focus:border-blue-400" />
                 </div>
                 <input value={correctReason} onChange={e => setCorrectReason(e.target.value)}
                   placeholder="Reason for correction (required)…"
-                  className="w-full rounded-lg border border-blue-200 text-xs text-slate-800 p-2 bg-white focus:outline-none focus:border-blue-400" />
+                  className="w-full rounded-lg border border-soft text-xs text-slate-800 p-2 bg-white focus:outline-none focus:border-blue-400" />
                 <button onClick={handleCorrect} disabled={!correctValue.trim() || !correctReason.trim()}
-                  className="px-4 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 disabled:opacity-50 transition-all">
+                  className="px-4 py-1.5 rounded-lg bg-teal-dark text-white text-xs font-bold hover:bg-teal-dark disabled:opacity-50 transition-all">
                   Submit Correction Request
                 </button>
               </div>
@@ -297,14 +297,14 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
           </div>
 
           {/* Erasure request */}
-          <div className={`rounded-xl p-4 border-2 transition-all ${erasure ? 'border-red-300 bg-red-50' : 'border-slate-200 bg-slate-50'}`}>
+          <div className={`rounded-xl p-4 border-2 transition-all ${erasure ? 'border-soft bg-crimson-soft' : 'border-slate-200 bg-slate-50'}`}>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Trash2 className={`w-4 h-4 ${erasure ? 'text-red-500' : 'text-slate-400'}`} />
-                <p className={`text-sm font-semibold ${erasure ? 'text-red-700' : 'text-slate-800'}`}>Request Data Erasure</p>
+                <Trash2 className={`w-4 h-4 ${erasure ? 'text-crimson' : 'text-slate-400'}`} />
+                <p className={`text-sm font-semibold ${erasure ? 'text-crimson' : 'text-slate-800'}`}>Request Data Erasure</p>
               </div>
               <button onClick={() => setErasure(p => !p)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${erasure ? 'bg-red-500' : 'bg-slate-200'}`}>
+                className={`relative w-11 h-6 rounded-full transition-colors ${erasure ? 'bg-crimson' : 'bg-slate-200'}`}>
                 <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${erasure ? 'left-6' : 'left-1'}`} />
               </button>
             </div>
@@ -312,7 +312,7 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
             {erasure && (
               <textarea value={reason} onChange={e => setReason(e.target.value)}
                 placeholder="Reason for erasure request (required)…"
-                rows={2} className="w-full rounded-lg border border-red-200 text-xs text-slate-800 p-2.5 resize-none focus:outline-none focus:border-red-400 bg-white" />
+                rows={2} className="w-full rounded-lg border border-soft text-xs text-slate-800 p-2.5 resize-none focus:outline-none focus:border-red-400 bg-white" />
             )}
           </div>
 
@@ -329,7 +329,7 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
               ) : history.map((h: any, i: number) => (
                 <div key={i} className="px-4 py-2.5">
                   <div className="flex items-center justify-between mb-0.5">
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${h.action?.includes('GRANT') || h.action === 'GRANTED' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${h.action?.includes('GRANT') || h.action === 'GRANTED' ? 'bg-sage-soft text-sage-brand' : 'bg-crimson-soft text-crimson'}`}>
                       {h.action || h.event}
                     </span>
                     <span className="text-[10px] text-slate-400">{fmtDate(h.timestamp || h.ts)}</span>
@@ -344,12 +344,12 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
         {/* footer */}
         <div className="flex items-center justify-between p-5 border-t border-slate-100 gap-3">
           {msg ? (
-            <p className={`text-xs font-semibold ${msg.startsWith('Error') ? 'text-red-600' : 'text-emerald-600'}`}>{msg}</p>
+            <p className={`text-xs font-semibold ${msg.startsWith('Error') ? 'text-crimson' : 'text-sage-brand'}`}>{msg}</p>
           ) : <span />}
           <div className="flex gap-2">
             <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-slate-500 hover:text-slate-700">Cancel</button>
             <button onClick={save} disabled={saving || (erasure && !reason.trim())}
-              className="px-5 py-2 rounded-xl bg-[#0f2d5c] text-white text-sm font-bold hover:bg-[#0f2d5c]/90 disabled:opacity-50 transition-all">
+              className="px-5 py-2 rounded-xl bg-[var(--crimson)] text-white text-sm font-bold hover:bg-[var(--crimson)]/90 disabled:opacity-50 transition-all">
               {saving ? 'Saving…' : 'Save Changes'}
             </button>
           </div>
@@ -418,10 +418,10 @@ export default function CompliancePage() {
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total Customers', value: allRecords.length,        accent: 'border-l-[#0f2d5c]', icon: Users,         color: 'text-slate-900' },
-          { label: 'DPDPA Consented', value: dpdpaOk,                  accent: 'border-l-emerald-500', icon: CheckCircle2, color: 'text-emerald-600' },
-          { label: 'Channel Opt-Outs',value: optedOut,                  accent: optedOut ? 'border-l-red-500' : 'border-l-emerald-500', icon: XCircle, color: optedOut ? 'text-red-600' : 'text-slate-900' },
-          { label: 'Bias Flags',      value: flags.length,              accent: flags.length > 0 ? 'border-l-orange-500' : 'border-l-emerald-500', icon: Shield, color: flags.length ? 'text-orange-600' : 'text-slate-900' },
+          { label: 'Total Customers', value: allRecords.length,        accent: 'border-l-[var(--crimson)]', icon: Users,         color: 'text-slate-900' },
+          { label: 'DPDPA Consented', value: dpdpaOk,                  accent: 'border-l-emerald-500', icon: CheckCircle2, color: 'text-sage-brand' },
+          { label: 'Channel Opt-Outs',value: optedOut,                  accent: optedOut ? 'border-l-red-500' : 'border-l-emerald-500', icon: XCircle, color: optedOut ? 'text-crimson' : 'text-slate-900' },
+          { label: 'Bias Flags',      value: flags.length,              accent: flags.length > 0 ? 'border-l-orange-500' : 'border-l-emerald-500', icon: Shield, color: flags.length ? 'text-copper-dark' : 'text-slate-900' },
         ].map(c => (
           <div key={c.label} className={`bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 ${c.accent}`}>
             <div className="flex items-start justify-between">
@@ -436,9 +436,9 @@ export default function CompliancePage() {
       </div>
 
       {/* DPDPA RBI notice */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
-        <Shield className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
-        <p className="text-sm text-blue-700">
+      <div className="bg-teal-soft border border-soft rounded-xl p-4 flex items-start gap-3">
+        <Shield className="w-4 h-4 text-teal-dark mt-0.5 shrink-0" />
+        <p className="text-sm text-teal-dark">
           <strong>DPDPA 2023 Compliance</strong> — All consent changes are logged with actor identity and timestamp. Revoking DPDPA consent immediately blocks AI-driven outreach. Erasure requests follow §14 — audit logs retained 7 years per Rule 4.
         </p>
       </div>
@@ -451,7 +451,7 @@ export default function CompliancePage() {
         ].map(t => (
           <button key={t.key} onClick={() => setTab(t.key as any)}
             className={`px-4 py-2.5 text-sm font-semibold transition-all border-b-2 -mb-px ${
-              tab === t.key ? 'border-[#0f2d5c] text-[#0f2d5c]' : 'border-transparent text-slate-400 hover:text-slate-600'
+              tab === t.key ? 'border-[var(--crimson)] text-[var(--crimson)]' : 'border-transparent text-slate-400 hover:text-slate-600'
             }`}>{t.label}</button>
         ))}
       </div>
@@ -465,7 +465,7 @@ export default function CompliancePage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input value={search} onChange={e => setSearch(e.target.value)}
                 placeholder="Search by name, ID, or city…"
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-800 focus:outline-none focus:border-[#0f2d5c]/40 bg-white" />
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-800 focus:outline-none focus:border-[var(--crimson)]/40 bg-white" />
             </div>
             <div className="flex gap-2">
               {[
@@ -476,7 +476,7 @@ export default function CompliancePage() {
               ].map(f => (
                 <button key={f.key} onClick={() => setFilter(f.key as any)}
                   className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
-                    filter === f.key ? 'bg-[#0f2d5c] text-white border-[#0f2d5c]' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                    filter === f.key ? 'bg-[var(--crimson)] text-white border-[var(--crimson)]' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
                   }`}>{f.label}</button>
               ))}
             </div>
@@ -524,13 +524,13 @@ export default function CompliancePage() {
                           </td>
                           <td className="py-3 px-3 text-center">
                             {r.dpdpa_consent !== false
-                              ? <CheckCircle2 className="w-4 h-4 text-emerald-500 mx-auto" />
-                              : <XCircle className="w-4 h-4 text-red-500 mx-auto" />}
+                              ? <CheckCircle2 className="w-4 h-4 text-sage-brand mx-auto" />
+                              : <XCircle className="w-4 h-4 text-crimson mx-auto" />}
                           </td>
                           <td className="py-3 px-3 text-center">
                             {r.trai_consent !== false
-                              ? <CheckCircle2 className="w-4 h-4 text-emerald-500 mx-auto" />
-                              : <XCircle className="w-4 h-4 text-red-500 mx-auto" />}
+                              ? <CheckCircle2 className="w-4 h-4 text-sage-brand mx-auto" />
+                              : <XCircle className="w-4 h-4 text-crimson mx-auto" />}
                           </td>
                           <td className="py-3 px-3">
                             <div className="flex items-center gap-1.5 justify-center">
@@ -539,8 +539,8 @@ export default function CompliancePage() {
                                 const out  = optedChans.includes(ch);
                                 return (
                                   <span key={ch} title={`${ch}: ${out ? 'Opted out' : 'Active'}`}
-                                    className={`w-6 h-6 rounded flex items-center justify-center ${out ? 'bg-red-100' : 'bg-emerald-50'}`}>
-                                    <Icon className={`w-3 h-3 ${out ? 'text-red-500' : 'text-emerald-500'}`} />
+                                    className={`w-6 h-6 rounded flex items-center justify-center ${out ? 'bg-crimson-soft' : 'bg-sage-soft'}`}>
+                                    <Icon className={`w-3 h-3 ${out ? 'text-crimson' : 'text-sage-brand'}`} />
                                   </span>
                                 );
                               })}
@@ -549,7 +549,7 @@ export default function CompliancePage() {
                           <td className="py-3 px-4 text-right text-[11px] text-slate-400">{fmtDate(r.last_updated)}</td>
                           <td className="py-3 px-4">
                             <button onClick={e => { e.stopPropagation(); setSelected(r); }}
-                              className="text-[11px] font-semibold text-[#0f2d5c] hover:underline whitespace-nowrap">
+                              className="text-[11px] font-semibold text-[var(--crimson)] hover:underline whitespace-nowrap">
                               Manage →
                             </button>
                           </td>
@@ -574,11 +574,11 @@ export default function CompliancePage() {
       {tab === 'bias' && (
         <div className="space-y-4">
           {flags.length > 0 && (
-            <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 flex items-start gap-3">
-              <AlertTriangle className="w-4 h-4 text-orange-600 mt-0.5 shrink-0" />
+            <div className="bg-copper-soft border border-soft rounded-xl p-4 flex items-start gap-3">
+              <AlertTriangle className="w-4 h-4 text-copper-dark mt-0.5 shrink-0" />
               <div>
                 <p className="font-semibold text-orange-800 text-sm">Disparate Impact Detected</p>
-                <p className="text-sm text-orange-700">
+                <p className="text-sm text-copper-dark">
                   Segments with PRIORITY rate &gt; 2× portfolio avg: <strong>{flags.join(', ')}</strong>.
                   Review for potential algorithmic bias per RBI AI Governance guidelines.
                 </p>
@@ -586,9 +586,9 @@ export default function CompliancePage() {
             </div>
           )}
           {flags.length === 0 && !loading && (
-            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start gap-3">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
-              <p className="text-sm text-emerald-700">
+            <div className="bg-sage-soft border border-soft rounded-xl p-4 flex items-start gap-3">
+              <CheckCircle2 className="w-4 h-4 text-sage-brand mt-0.5 shrink-0" />
+              <p className="text-sm text-sage-brand">
                 <strong>No disparate impact detected.</strong> All segments are within 2× of the portfolio PRIORITY rate. Bias audit passed.
               </p>
             </div>
@@ -615,17 +615,17 @@ export default function CompliancePage() {
                     const isFlagged = flags.includes(row.segment);
                     const rate = Math.round((row.priority_rate || 0) * 100);
                     return (
-                      <tr key={row.segment} className={`hover:bg-slate-50 transition-colors ${isFlagged ? 'bg-orange-50/40' : ''}`}>
+                      <tr key={row.segment} className={`hover:bg-slate-50 transition-colors ${isFlagged ? 'bg-copper-soft/40' : ''}`}>
                         <td className="py-3 px-4">
                           <div className="flex items-center gap-2">
-                            {isFlagged && <AlertTriangle className="w-3.5 h-3.5 text-orange-500 shrink-0" />}
+                            {isFlagged && <AlertTriangle className="w-3.5 h-3.5 text-copper shrink-0" />}
                             <span className="font-medium text-slate-800">{row.segment}</span>
                           </div>
                         </td>
                         <td className="py-3 px-3 text-center font-semibold text-slate-700">{row.count}</td>
                         {['PRIORITY','ESCALATE','STANDARD','MONITOR','NONE'].map(t => (
                           <td key={t} className="py-3 px-2 text-center">
-                            <span className={`text-sm ${t === 'PRIORITY' && row.tiers?.[t] > 0 ? 'font-bold text-red-600' : 'text-slate-600'}`}>
+                            <span className={`text-sm ${t === 'PRIORITY' && row.tiers?.[t] > 0 ? 'font-bold text-crimson' : 'text-slate-600'}`}>
                               {row.tiers?.[t] ?? 0}
                             </span>
                           </td>
@@ -633,9 +633,9 @@ export default function CompliancePage() {
                         <td className="py-3 px-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                              <div className={`h-full rounded-full ${isFlagged ? 'bg-orange-500' : 'bg-[#0f2d5c]'}`} style={{ width: `${Math.min(rate, 100)}%` }} />
+                              <div className={`h-full rounded-full ${isFlagged ? 'bg-copper' : 'bg-[var(--crimson)]'}`} style={{ width: `${Math.min(rate, 100)}%` }} />
                             </div>
-                            <span className={`text-[11px] font-bold px-2 py-0.5 rounded min-w-[40px] text-center ${isFlagged ? 'bg-orange-100 text-orange-700' : 'bg-slate-100 text-slate-600'}`}>
+                            <span className={`text-[11px] font-bold px-2 py-0.5 rounded min-w-[40px] text-center ${isFlagged ? 'bg-copper-soft text-copper-dark' : 'bg-slate-100 text-slate-600'}`}>
                               {rate}%
                             </span>
                           </div>

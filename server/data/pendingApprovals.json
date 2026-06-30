@@ -1050,7 +1050,7 @@
     "customerId": "CUST-007",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:54:48.811Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "email",
@@ -1075,8 +1075,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T19:28:44.795Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T04:54:48.811Z"
   },
@@ -1085,7 +1085,7 @@
     "customerId": "CUST-025",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:54:53.262Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "Product Upgrade",
       "channel": "phone",
@@ -1110,8 +1110,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T19:28:44.054Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T04:54:53.262Z"
   },
@@ -1663,7 +1663,7 @@
     "customerId": "CUST-049",
     "requestedBy": "rm_user",
     "requestedAt": "2026-06-30T10:23:17.301Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -1688,8 +1688,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T19:28:43.097Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T10:23:17.301Z"
   },

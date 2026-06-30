@@ -15,12 +15,12 @@ interface RiskScoreCardProps {
 export function RiskScoreCard({ score, tier, recommendedAction, reasonCodes }: RiskScoreCardProps) {
     const getTierColor = (t: string) => {
         switch (t) {
-            case 'critical': return '#EF4444';
-            case 'high': return '#F97316';
+            case 'critical': return 'var(--crimson)';
+            case 'high': return 'var(--copper)';
             case 'medium': return '#EAB308';
-            case 'watch': return '#3B82F6';
-            case 'low': return '#22C55E';
-            default: return '#94A3B8';
+            case 'watch': return 'var(--teal)';
+            case 'low': return 'var(--sage-brand)';
+            default: return 'var(--gray-400)';
         }
     };
 
@@ -45,7 +45,7 @@ export function RiskScoreCard({ score, tier, recommendedAction, reasonCodes }: R
                             >
                                 <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
                                 <RadialBar
-                                    background={{ fill: '#f1f5f9' }}
+                                    background={{ fill: 'var(--secondary)' }}
                                     dataKey="value"
                                     cornerRadius={10}
                                 />

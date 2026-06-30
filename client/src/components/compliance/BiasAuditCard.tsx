@@ -55,8 +55,8 @@ export function BiasAuditCard() {
 
   const s = status?.status;
   const statusStyle = {
-    PASS:    { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700', icon: <CheckCircle2 className="w-4 h-4" /> },
-    FAIL:    { bg: 'bg-red-50',     border: 'border-red-200',     text: 'text-red-600',     icon: <AlertTriangle className="w-4 h-4" /> },
+    PASS:    { bg: 'bg-sage-soft', border: 'border-soft', text: 'text-sage-brand', icon: <CheckCircle2 className="w-4 h-4" /> },
+    FAIL:    { bg: 'bg-crimson-soft',     border: 'border-soft',     text: 'text-crimson',     icon: <AlertTriangle className="w-4 h-4" /> },
     NOT_RUN: { bg: 'bg-slate-50',   border: 'border-slate-200',   text: 'text-slate-500',   icon: <Clock className="w-4 h-4" /> },
     UNKNOWN: { bg: 'bg-slate-50',   border: 'border-slate-200',   text: 'text-slate-500',   icon: <Clock className="w-4 h-4" /> },
   }[s || 'NOT_RUN'] || { bg: 'bg-slate-50', border: 'border-slate-200', text: 'text-slate-500', icon: <Clock className="w-4 h-4" /> };
@@ -72,7 +72,7 @@ export function BiasAuditCard() {
         <button
           onClick={handleRun}
           disabled={running || loading}
-          className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-[#0f2d5c] text-white hover:bg-[#1a3f7a] disabled:opacity-50 transition-colors">
+          className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-[var(--crimson)] text-white hover:bg-[var(--crimson-dark)] disabled:opacity-50 transition-colors">
           <Play className="w-3.5 h-3.5" />
           {running ? 'Running…' : 'Run Audit'}
         </button>
@@ -101,9 +101,9 @@ export function BiasAuditCard() {
               {Object.entries(status.attributes).map(([attr, v]) => (
                 <div key={attr} className={`text-center text-[10px] font-semibold px-2 py-1.5 rounded-lg border ${
                   v.status === 'PASS'
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                    ? 'bg-sage-soft border-soft text-sage-brand'
                     : v.status === 'FAIL'
-                    ? 'bg-red-50 border-red-200 text-red-600'
+                    ? 'bg-crimson-soft border-soft text-crimson'
                     : 'bg-slate-50 border-slate-200 text-slate-400'
                 }`}>
                   {attr.replace(/_/g, ' ')}

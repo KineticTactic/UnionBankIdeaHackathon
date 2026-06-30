@@ -16,8 +16,8 @@ export function useCustomerDetail(id: string) {
                 const [snapData, sigData, txData, insightData] = await Promise.all([
                     api.getCustomerById(id),
                     api.getCustomerSignals(id),
-                    api.getCustomerTransactions(id).catch(() => []), 
-                    api.getCustomerInsights(id).catch(() => null)
+                    api.getCustomerTransactions(id).catch(() => []),
+                    api.getV2ActionPlan(id).catch(() => null)
                 ]);
 
                 setSnapshot(snapData?.data || snapData);

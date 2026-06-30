@@ -7,15 +7,15 @@ import { RefreshCw, Info, Pause, Play, RotateCcw } from 'lucide-react';
 /* ─────────────── constants ─────────────── */
 const TIER_ORDER = ['PRIORITY', 'ESCALATE', 'STANDARD', 'MONITOR', 'NONE'];
 const TIER_COLOR: Record<string, string> = {
-  PRIORITY: '#ef4444', ESCALATE: '#f97316', STANDARD: '#f59e0b',
-  MONITOR:  '#3b82f6', NONE:     '#10b981',
+  PRIORITY: 'var(--crimson)', ESCALATE: 'var(--copper)', STANDARD: 'var(--copper)',
+  MONITOR:  'var(--teal)', NONE:     'var(--sage-brand)',
 };
 const TIER_BADGE: Record<string, string> = {
-  PRIORITY: 'bg-red-100 text-red-700 border border-red-200',
-  ESCALATE: 'bg-orange-100 text-orange-700 border border-orange-200',
-  STANDARD: 'bg-amber-100 text-amber-700 border border-amber-200',
-  MONITOR:  'bg-blue-100 text-blue-700 border border-blue-200',
-  NONE:     'bg-emerald-100 text-emerald-700 border border-emerald-200',
+  PRIORITY: 'bg-crimson-soft text-crimson border border-soft',
+  ESCALATE: 'bg-copper-soft text-copper-dark border border-soft',
+  STANDARD: 'bg-copper-soft text-copper-dark border border-soft',
+  MONITOR:  'bg-teal-soft text-teal-dark border border-soft',
+  NONE:     'bg-sage-soft text-sage-brand border border-soft',
 };
 
 // where each cluster naturally settles
@@ -146,7 +146,7 @@ export default function GraphSAGEPage() {
   // simulation lives in refs so it doesn't cause re-renders each tick
   const simNodes  = useRef<SimNode[]>([]);
   const simEdges  = useRef<SimEdge[]>([]);
-  const rafId     = useRef<number>();
+  const rafId     = useRef<number>(0);
   const pausedRef = useRef(false);
   const frameN    = useRef(0);
   const svgRef    = useRef<SVGSVGElement>(null);
@@ -345,7 +345,7 @@ export default function GraphSAGEPage() {
                 return (
                   <line key={i}
                     x1={na.x} y1={na.y} x2={nb.x} y2={nb.y}
-                    stroke={focused ? '#0f2d5c' : e.same ? '#94a3b8' : '#cbd5e1'}
+                    stroke={focused ? 'var(--crimson)' : e.same ? 'var(--gray-400)' : 'var(--gray-300)'}
                     strokeWidth={focused ? 2.5 : 1}
                     opacity={dimmed ? 0.04 : focused ? 0.9 : e.same ? 0.35 : 0.18}
                     strokeLinecap="round"
@@ -355,7 +355,7 @@ export default function GraphSAGEPage() {
 
               {/* nodes */}
               {rnodes.map(n => {
-                const col    = TIER_COLOR[n.data.risk_tier] || '#94a3b8';
+                const col    = TIER_COLOR[n.data.risk_tier] || 'var(--gray-400)';
                 const isSel  = selected?.customer_id === n.id;
                 const isHov  = hovered === n.id;
                 const isConn = connIds.has(n.id);
@@ -380,7 +380,7 @@ export default function GraphSAGEPage() {
                     {/* selected ring */}
                     {isSel && (
                       <circle cx={n.x} cy={n.y} r={r + 8}
-                        fill="none" stroke="#0f2d5c" strokeWidth={2} strokeDasharray="5 3">
+                        fill="none" stroke="var(--crimson)" strokeWidth={2} strokeDasharray="5 3">
                         <animate attributeName="stroke-dashoffset" from="0" to="16"
                           dur="1s" repeatCount="indefinite" />
                       </circle>
@@ -414,7 +414,7 @@ export default function GraphSAGEPage() {
                     <text x={n.x} y={n.y + r + 12} textAnchor="middle"
                       fontSize={isSel || isHov ? '9.5' : '8.5'}
                       fontWeight={isSel || isHov ? '700' : '500'}
-                      fill={isSel ? '#0f2d5c' : isHov ? '#334155' : '#64748b'}
+                      fill={isSel ? 'var(--crimson)' : isHov ? 'var(--gray-600)' : 'var(--gray-500)'}
                       style={{ pointerEvents: 'none' }}>
                       {first}
                     </text>
@@ -428,7 +428,7 @@ export default function GraphSAGEPage() {
         {/* ── right panel ── */}
         <div className="space-y-4">
           {selected ? (
-            <div className="bg-white rounded-xl border border-[#0f2d5c]/20 shadow-sm p-5 space-y-4">
+            <div className="bg-white rounded-xl border border-[var(--crimson)]/20 shadow-sm p-5 space-y-4">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-0.5">Selected Node</p>
@@ -474,7 +474,7 @@ export default function GraphSAGEPage() {
                   <div key={f.label} className="mb-2.5">
                     <div className="flex items-center justify-between text-[11px] mb-0.5">
                       <span className="text-slate-600">{f.label}</span>
-                      <span className={`font-bold ml-2 shrink-0 ${f.up ? 'text-red-500' : 'text-emerald-500'}`}>
+                      <span className={`font-bold ml-2 shrink-0 ${f.up ? 'text-crimson' : 'text-sage-brand'}`}>
                         {f.up ? '+' : '−'}{Math.round(ATTR_W[i] * 100)}%
                       </span>
                     </div>

@@ -26,7 +26,7 @@ function CopyBtn({ text }: { text: string }) {
     };
     return (
         <button onClick={copy} className="p-1.5 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors">
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-sage-brand" /> : <Copy className="w-3.5 h-3.5" />}
         </button>
     );
 }
@@ -41,8 +41,8 @@ function EmailPreview({ content }: { content: HeraldContent }) {
                 <div className="flex items-center gap-2">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider w-14 shrink-0">Subject</span>
                     <div className="flex-1 flex items-center justify-between bg-slate-50 rounded px-2.5 py-1.5 border border-slate-100">
-                        <span className="text-sm font-semibold text-slate-800">{content.subject_line}</span>
-                        <CopyBtn text={content.subject_line || ""} />
+                        <span className="text-sm font-semibold text-slate-800">{content.email?.subject || ''}</span>
+                        <CopyBtn text={content.email?.subject || ""} />
                     </div>
                 </div>
                 <div className="flex items-start gap-2">
@@ -56,7 +56,7 @@ function EmailPreview({ content }: { content: HeraldContent }) {
             <div>
                 <button
                     onClick={() => setExpanded(!expanded)}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-teal-dark hover:text-teal-dark transition-colors"
                 >
                     {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                     {expanded ? "Hide" : "Show"} email body
@@ -77,19 +77,19 @@ function EmailPreview({ content }: { content: HeraldContent }) {
                 <div>
                     <button
                         onClick={() => setShowAB(!showAB)}
-                        className="flex items-center gap-1.5 text-xs font-semibold text-violet-600 hover:text-violet-700 transition-colors"
+                        className="flex items-center gap-1.5 text-xs font-semibold text-teal-dark hover:text-teal-dark transition-colors"
                     >
                         {showAB ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                         A/B variant
                     </button>
                     {showAB && (
-                        <div className="mt-2 space-y-1.5 bg-violet-50 rounded-lg p-3 border border-violet-100">
+                        <div className="mt-2 space-y-1.5 bg-teal-soft rounded-lg p-3 border border-violet-100">
                             <div className="flex items-center justify-between">
-                                <span className="text-xs font-bold text-violet-400 uppercase tracking-wider">Alt Subject</span>
-                                <CopyBtn text={content.ab_variant.subject_line} />
+                                <span className="text-xs font-bold text-teal-dark uppercase tracking-wider">Alt Subject</span>
+                                <CopyBtn text={content.ab_variant.subject_line || ""} />
                             </div>
-                            <p className="text-sm text-violet-800 font-medium">{content.ab_variant.subject_line}</p>
-                            <p className="text-xs text-violet-500 italic">{content.ab_variant.preview_text}</p>
+                            <p className="text-sm text-teal-dark font-medium">{content.ab_variant.subject_line}</p>
+                            <p className="text-xs text-teal-dark italic">{content.ab_variant.preview_text}</p>
                         </div>
                     )}
                 </div>
@@ -103,7 +103,7 @@ function SmsPreview({ content }: { content: HeraldContent }) {
     return (
         <div className="space-y-2">
             <div className="flex items-start gap-2 justify-end">
-                <div className="max-w-[85%] bg-indigo-600 text-white rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm leading-relaxed shadow-sm">
+                <div className="max-w-[85%] bg-teal-dark text-white rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm leading-relaxed shadow-sm">
                     {body}
                 </div>
             </div>
@@ -119,7 +119,7 @@ function PushPreview({ content }: { content: HeraldContent }) {
     return (
         <div className="bg-slate-900 rounded-xl p-4 text-white space-y-1">
             <div className="flex items-center gap-2 mb-2">
-                <div className="w-5 h-5 bg-indigo-500 rounded-sm" />
+                <div className="w-5 h-5 bg-teal rounded-sm" />
                 <span className="text-[10px] text-slate-400 font-medium">Union Bank</span>
             </div>
             <p className="text-sm font-bold">{content.title}</p>
@@ -148,7 +148,7 @@ function CallBriefing({ content }: { content: HeraldContent }) {
                     <ol className="space-y-2">
                         {content.talking_points.map((tp, i) => (
                             <li key={i} className="flex gap-2.5">
-                                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-violet-100 text-violet-700 text-[10px] font-bold flex items-center justify-center">{i+1}</span>
+                                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-teal-soft text-teal-dark text-[10px] font-bold flex items-center justify-center">{i+1}</span>
                                 <span className="text-sm text-slate-700 leading-snug">{tp}</span>
                             </li>
                         ))}
@@ -179,15 +179,15 @@ export function HeraldPanel({ content, loading }: HeraldPanelProps) {
         );
     }
 
-    const channelIcon = CHANNEL_ICON[content.channel] || <Mail className="w-3.5 h-3.5" />;
-    const channelLabel = { email: "Email", sms: "SMS", app: "Push", call: "Call Brief", rm_visit: "RM Brief" }[content.channel] || content.channel;
+    const channelIcon = (content.channel && CHANNEL_ICON[content.channel]) || <Mail className="w-3.5 h-3.5" />;
+    const channelLabel = (content.channel && { email: "Email", sms: "SMS", app: "Push", call: "Call Brief", rm_visit: "RM Brief" }[content.channel]) || content.channel || "Email";
 
     return (
-        <div className="rounded-xl border border-rose-200 bg-white overflow-hidden">
+        <div className="rounded-xl border border-soft bg-white overflow-hidden">
             {/* Header */}
-            <div className="px-5 py-3 bg-rose-50 border-b border-rose-200 flex items-center justify-between">
+            <div className="px-5 py-3 bg-crimson-soft border-b border-soft flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                    <Sparkles className="w-4 h-4 text-rose-500" />
+                    <Sparkles className="w-4 h-4 text-crimson" />
                     <span className="text-sm font-bold text-slate-800">HERALD · Generated Content</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -195,7 +195,7 @@ export function HeraldPanel({ content, loading }: HeraldPanelProps) {
                         {channelIcon} {channelLabel}
                     </span>
                     {content.compliance_status === "approved" && (
-                        <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-sage-soft text-sage-brand border border-soft">
                             <ShieldCheck className="w-2.5 h-2.5" /> Approved
                         </span>
                     )}
@@ -205,10 +205,10 @@ export function HeraldPanel({ content, loading }: HeraldPanelProps) {
             <div className="p-5 space-y-4">
                 {/* Tone & strategy */}
                 <div className="flex flex-wrap gap-1.5">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100 uppercase tracking-wider">
-                        {content.content_strategy.replace(/_/g, " ")}
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-crimson-soft text-crimson border border-rose-100 uppercase tracking-wider">
+                        {(content.content_strategy || '').replace(/_/g, " ")}
                     </span>
-                    {content.tone_modifiers.map(t => (
+                    {content.tone_modifiers?.map(t => (
                         <span key={t} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 uppercase tracking-wider">
                             {t}
                         </span>
@@ -226,7 +226,7 @@ export function HeraldPanel({ content, loading }: HeraldPanelProps) {
 
                 <p className="text-[10px] text-slate-400 flex items-center gap-1">
                     <Sparkles className="w-2.5 h-2.5" />
-                    Generated by DeepSeek V4 Pro via NVIDIA API · {new Date(content.generated_at).toLocaleDateString()}
+                    Generated by DeepSeek V4 Pro via NVIDIA API · {content.generated_at ? new Date(content.generated_at).toLocaleDateString() : ''}
                 </p>
             </div>
         </div>

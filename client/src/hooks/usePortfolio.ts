@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
-import { PortfolioStats } from '@/types';
+
+interface PortfolioStats {
+    [key: string]: unknown;
+}
 
 export function usePortfolio() {
     const [stats, setStats] = useState<PortfolioStats | null>(null);
@@ -22,14 +25,12 @@ export function usePortfolio() {
                     trendData,
                     signalData,
                     topData,
-                    marketData
                 ] = await Promise.all([
-                    api.getPortfolioStats(),
-                    api.getRiskDistribution(),
-                    api.getChurnTrend(12),
+                    api.getPortfolioFull(),
+                    api.getTierDistribution(),
+                    api.getChurnTrend(),
                     api.getSignalBreakdown(),
-                    api.getTopAtRisk(10),
-                    api.getMarketSignals()
+                    api.getTopAtRisk(10)
                 ]);
 
                 setStats(statsData.data || statsData);
@@ -37,7 +38,7 @@ export function usePortfolio() {
                 setChurnTrend(trendData.data || trendData || []);
                 setSignalBreakdown(signalData.data || signalData || []);
                 setTopAtRisk(topData.data || topData || []);
-                setMarketSignals(marketData?.data || marketData || []);
+                setMarketSignals([]);
             } catch (err) {
                 setError(err instanceof Error ? err : new Error('Failed to fetch portfolio data'));
             } finally {

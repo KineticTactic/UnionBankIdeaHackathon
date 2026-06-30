@@ -14,8 +14,8 @@ const ACTION_ICON: Record<string, any> = {
   PHONE_CALL: Phone, EMAIL: Mail, SMS: MessageSquare, RM_VISIT: User,
 };
 const ACTION_COLOR: Record<string, string> = {
-  PHONE_CALL: 'text-amber-600 bg-amber-50', EMAIL: 'text-blue-600 bg-blue-50',
-  SMS: 'text-green-600 bg-green-50', RM_VISIT: 'text-purple-600 bg-purple-50',
+  PHONE_CALL: 'text-copper-dark bg-copper-soft', EMAIL: 'text-teal-dark bg-teal-soft',
+  SMS: 'text-sage-brand bg-sage-soft', RM_VISIT: 'text-teal-dark bg-teal-soft',
 };
 
 function fmtDate(d?: string) {
@@ -76,7 +76,7 @@ function ReviewCard({ r, onUpdated }: { r: any; onUpdated: () => void }) {
   const plan = snap?.plan || snap?.action_plan || {};
 
   return (
-    <div className={`rounded-xl border bg-white shadow-sm overflow-hidden transition-all ${open ? 'border-[#0f2d5c]/30' : 'border-slate-200'}`}>
+    <div className={`rounded-xl border bg-white shadow-sm overflow-hidden transition-all ${open ? 'border-[var(--crimson)]/30' : 'border-slate-200'}`}>
       {/* summary row */}
       <button onClick={expand} className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-50/60 transition-colors text-left">
         <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-[11px] font-bold text-slate-600 shrink-0">
@@ -166,16 +166,16 @@ function ReviewCard({ r, onUpdated }: { r: any; onUpdated: () => void }) {
             <textarea value={notes} onChange={e => setNotes(e.target.value)}
               placeholder="Notes / rationale (required for rejection)…"
               rows={2}
-              className="w-full text-xs text-slate-800 border border-slate-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:border-[#0f2d5c]/40" />
+              className="w-full text-xs text-slate-800 border border-slate-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:border-[var(--crimson)]/40" />
             {error && (
-              <p className="text-xs text-red-600 flex items-center gap-1.5">
+              <p className="text-xs text-crimson flex items-center gap-1.5">
                 <AlertTriangle className="w-3 h-3 shrink-0" />{error}
               </p>
             )}
 
             {/* rejection explains what happens */}
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-              <p className="text-[11px] text-amber-700">
+            <div className="bg-copper-soft border border-soft rounded-lg p-3">
+              <p className="text-[11px] text-copper-dark">
                 <strong>Approve</strong> → RM receives this as a manager-cleared action item in their Today page. They must act on it. <br />
                 <strong>Reject</strong> → COMPASS escalation is overridden. RM is notified the customer was reviewed but de-escalated — no action needed. Reason shown to RM.
               </p>
@@ -183,12 +183,12 @@ function ReviewCard({ r, onUpdated }: { r: any; onUpdated: () => void }) {
 
             <div className="flex gap-2">
               <button onClick={doApprove} disabled={!!acting}
-                className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 disabled:opacity-50 transition-all">
+                className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-sage-brand text-white text-sm font-bold hover:bg-sage-brand disabled:opacity-50 transition-all">
                 <CheckCircle className="w-4 h-4" />
                 {acting === 'approve' ? 'Approving…' : 'Approve — Send to RM'}
               </button>
               <button onClick={doReject} disabled={!!acting}
-                className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-red-50 border border-red-300 text-red-600 text-sm font-bold hover:bg-red-100 disabled:opacity-50 transition-all">
+                className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-crimson-soft border border-soft text-crimson text-sm font-bold hover:bg-crimson-soft disabled:opacity-50 transition-all">
                 <XCircle className="w-4 h-4" />
                 {acting === 'reject' ? 'Rejecting…' : 'Reject — De-escalate'}
               </button>
@@ -223,7 +223,7 @@ export default function ReviewsPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Shield className="w-6 h-6 text-[#0f2d5c]" />
+          <Shield className="w-6 h-6 text-[var(--crimson)]" />
           <div>
             <h1 className="text-2xl font-bold text-slate-900">Escalation Review Queue</h1>
             <p className="text-slate-400 text-sm mt-0.5">Manager sign-off on COMPASS escalations before RM action · {pending.length} pending</p>
@@ -238,12 +238,12 @@ export default function ReviewsPage() {
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 border-l-4 border-l-amber-500 shadow-sm p-5">
           <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Pending Review</p>
-          <p className="text-2xl font-bold text-amber-600 tabular-nums">{pending.length}</p>
+          <p className="text-2xl font-bold text-copper-dark tabular-nums">{pending.length}</p>
           <p className="text-[11px] text-slate-400 mt-1">Awaiting your decision</p>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 border-l-4 border-l-emerald-500 shadow-sm p-5">
           <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Approved → RM</p>
-          <p className="text-2xl font-bold text-emerald-600 tabular-nums">{approved.length}</p>
+          <p className="text-2xl font-bold text-sage-brand tabular-nums">{approved.length}</p>
           <p className="text-[11px] text-slate-400 mt-1">Sent as RM action items</p>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 border-l-4 border-l-slate-400 shadow-sm p-5">
@@ -254,9 +254,9 @@ export default function ReviewsPage() {
       </div>
 
       {/* RBI notice */}
-      <div className="bg-sky-50 border border-sky-200 rounded-xl p-4 flex items-start gap-3">
-        <TrendingDown className="w-4 h-4 text-sky-600 mt-0.5 shrink-0" />
-        <p className="text-sm text-sky-700">
+      <div className="bg-teal-soft border border-soft rounded-xl p-4 flex items-start gap-3">
+        <TrendingDown className="w-4 h-4 text-teal-dark mt-0.5 shrink-0" />
+        <p className="text-sm text-teal-dark">
           <strong>RBI AI Governance 2024</strong> — PRIORITY and ESCALATE tier decisions require manager review before RMs are assigned action. All decisions are audit-logged with reviewer identity and timestamp.
         </p>
       </div>
@@ -266,13 +266,13 @@ export default function ReviewsPage() {
         <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 bg-white rounded-xl border border-slate-200 animate-pulse" />)}</div>
       ) : pending.length === 0 ? (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-12 text-center">
-          <CheckCircle className="w-10 h-10 text-emerald-400 mx-auto mb-3 opacity-60" />
-          <p className="text-emerald-600 font-semibold">Queue is clear</p>
+          <CheckCircle className="w-10 h-10 text-sage-brand mx-auto mb-3 opacity-60" />
+          <p className="text-sage-brand font-semibold">Queue is clear</p>
           <p className="text-slate-400 text-sm mt-1">No escalations pending review</p>
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="text-[11px] font-semibold text-amber-600 uppercase tracking-widest">{pending.length} Pending — click to expand and review</p>
+          <p className="text-[11px] font-semibold text-copper-dark uppercase tracking-widest">{pending.length} Pending — click to expand and review</p>
           {pending.map(r => <ReviewCard key={r.id} r={r} onUpdated={load} />)}
         </div>
       )}
@@ -287,7 +287,7 @@ export default function ReviewsPage() {
             {[...approved, ...rejected].map(r => (
               <div key={r.id} className="flex items-center gap-4 px-5 py-3">
                 {r.status === 'approved'
-                  ? <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+                  ? <CheckCircle className="w-4 h-4 text-sage-brand shrink-0" />
                   : <XCircle className="w-4 h-4 text-slate-400 shrink-0" />}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
@@ -298,7 +298,7 @@ export default function ReviewsPage() {
                   {r.notes && <p className="text-[11px] text-slate-400 mt-0.5 truncate">"{r.notes}"</p>}
                 </div>
                 <div className="text-right shrink-0">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${r.status === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${r.status === 'approved' ? 'bg-sage-soft text-sage-brand' : 'bg-slate-100 text-slate-500'}`}>
                     {r.status === 'approved' ? 'SENT TO RM' : 'DE-ESCALATED'}
                   </span>
                   <p className="text-[10px] text-slate-400 mt-0.5">{r.reviewer}</p>

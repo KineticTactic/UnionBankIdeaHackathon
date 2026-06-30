@@ -11,9 +11,9 @@ import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGri
 import { Activity, AlertTriangle } from 'lucide-react';
 
 const METHOD_COLORS: Record<string, string> = {
-  SR:    'bg-blue-100 text-blue-700',
-  CUSUM: 'bg-orange-100 text-orange-700',
-  SPRT:  'bg-purple-100 text-purple-700',
+  SR:    'bg-[#FAF0E6] text-[#B46B3E]',
+  CUSUM: 'bg-[#F5E6E9] text-[#6B132B]',
+  SPRT:  'bg-[#F4D9C0] text-[#2A161B]',
 };
 
 interface SignalEntry {
@@ -85,54 +85,54 @@ export default function SignalsPage() {
     .sort((a,b) => b.alarm_count - a.alarm_count);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#F9F9F7] min-h-screen">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-[22px] font-black text-slate-900">ARGUS Signal Monitor</h1>
-          <p className="text-[13px] text-slate-400 mt-0.5">Statistical changepoint detection · 9 signal streams</p>
+          <h1 className="text-[22px] font-black text-[#2A161B] font-heading">ARGUS Signal Monitor</h1>
+          <p className="text-[13px] text-[#6B6562] mt-0.5">Statistical changepoint detection · 9 signal streams</p>
         </div>
-        <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-4 py-2 shadow-sm">
-          <AlertTriangle className="w-4 h-4 text-orange-500" />
-          <span className="text-[18px] font-black text-slate-900">{totalAlarms}</span>
-          <span className="text-[12px] text-slate-400">active alarms</span>
+        <div className="flex items-center gap-2 bg-white border border-soft rounded-md px-4 py-2">
+          <AlertTriangle className="w-4 h-4 text-[#B46B3E]" />
+          <span className="text-[18px] font-black text-[#2A161B]">{totalAlarms}</span>
+          <span className="text-[12px] text-[#6B6562]">active alarms</span>
         </div>
       </div>
 
-      {loading ? <Skeleton className="h-64 rounded-xl" /> : (
+      {loading ? <Skeleton className="h-64 rounded-md" /> : (
         <>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {/* Signal breakdown chart */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-              <h2 className="text-[14px] font-bold text-slate-800 mb-4">Alarm Count by Signal Type</h2>
+            <div className="bg-white rounded-md border border-soft p-5">
+              <h2 className="text-[14px] font-bold text-[#2A161B] mb-4 font-heading">Alarm Count by Signal Type</h2>
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={typeBreakdown} layout="vertical" margin={{top:0,right:10,left:80,bottom:0}}>
-                  <XAxis type="number" tick={{fontSize:10,fill:'#94a3b8'}} axisLine={false} tickLine={false} />
-                  <YAxis type="category" dataKey="type" tick={{fontSize:10,fill:'#64748b'}} axisLine={false} tickLine={false} width={80} />
-                  <Tooltip contentStyle={{fontSize:11,borderRadius:8,border:'1px solid #e2e8f0'}} />
-                  <Bar dataKey="count" fill="#0f2d5c" radius={[0,3,3,0]} maxBarSize={12} />
+                  <XAxis type="number" tick={{fontSize:10,fill:'#8B8481'}} axisLine={false} tickLine={false} />
+                  <YAxis type="category" dataKey="type" tick={{fontSize:10,fill:'#6B6562'}} axisLine={false} tickLine={false} width={80} />
+                  <Tooltip contentStyle={{fontSize:11,borderRadius:6,border:'1px solid #E5E0DF'}} />
+                  <Bar dataKey="count" fill="#6B132B" radius={[0,3,3,0]} maxBarSize={12} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
 
             {/* Top customers by alarm count */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-              <h2 className="text-[14px] font-bold text-slate-800 mb-4">Customers by Alarm Count</h2>
+            <div className="bg-white rounded-md border border-soft p-5">
+              <h2 className="text-[14px] font-bold text-[#2A161B] mb-4 font-heading">Customers by Alarm Count</h2>
               <div className="space-y-2">
                 {customersWithSignals.slice(0, 10).map(d => {
                   const info = custs[d.customer_id];
                   return (
                     <Link key={d.customer_id} href={`/customers/${d.customer_id}`}
-                      className="flex items-center gap-3 hover:bg-slate-50 px-2 py-1.5 rounded-lg transition-colors group">
-                      <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 shrink-0">
+                      className="flex items-center gap-3 hover:bg-[#F9F9F7] px-2 py-1.5 rounded-md transition-colors group">
+                      <div className="w-7 h-7 rounded-full bg-[#F9F9F7] flex items-center justify-center text-[10px] font-bold text-[#6B6562] shrink-0">
                         {info?.full_name?.split(' ').map(n=>n[0]).join('').slice(0,2) || '?'}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-semibold text-slate-800 truncate group-hover:text-[#0f2d5c]">{info?.full_name || d.customer_id}</p>
-                        <p className="text-[10px] text-slate-400">{d.customer_id}</p>
+                        <p className="text-[12px] font-semibold text-[#2A161B] truncate group-hover:text-[#6B132B]">{info?.full_name || d.customer_id}</p>
+                        <p className="text-[10px] text-[#6B6562]">{d.customer_id}</p>
                       </div>
                       {info?.risk_tier && <RiskBadge tier={info.risk_tier} size="sm" />}
-                      <span className="text-[12px] font-bold text-slate-700">{d.alarm_count}</span>
+                      <span className="text-[12px] font-bold text-[#2A161B]">{d.alarm_count}</span>
                     </Link>
                   );
                 })}
@@ -140,8 +140,8 @@ export default function SignalsPage() {
             </div>
 
             {/* Method breakdown */}
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-              <h2 className="text-[14px] font-bold text-slate-800 mb-4">Detection Method Distribution</h2>
+            <div className="bg-white rounded-md border border-soft p-5">
+              <h2 className="text-[14px] font-bold text-[#2A161B] mb-4 font-heading">Detection Method Distribution</h2>
               <div className="space-y-3">
                 {['SR','CUSUM','SPRT'].map(method => {
                   const count = allSignals.filter(s => s.method === method).length;
@@ -150,34 +150,34 @@ export default function SignalsPage() {
                     <div key={method}>
                       <div className="flex justify-between mb-1">
                         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${METHOD_COLORS[method]}`}>{method}</span>
-                        <span className="text-[11px] font-semibold text-slate-700">{count} ({(pct*100).toFixed(0)}%)</span>
+                        <span className="text-[11px] font-semibold text-[#2A161B]">{count} ({(pct*100).toFixed(0)}%)</span>
                       </div>
-                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-[#0f2d5c] rounded-full" style={{width:`${pct*100}%`}} />
+                      <div className="h-2 bg-[#F9F9F7] rounded-full overflow-hidden">
+                        <div className="h-full bg-[#6B132B] rounded-full" style={{width:`${pct*100}%`}} />
                       </div>
                     </div>
                   );
                 })}
               </div>
               <div className="mt-6 space-y-2">
-                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Method legend</p>
-                <p className="text-[10px] text-slate-500"><strong className="text-blue-700">SR</strong> — Shiryaev-Roberts: optimal for gradual distant changepoints</p>
-                <p className="text-[10px] text-slate-500"><strong className="text-orange-700">CUSUM</strong> — Two-sided CUSUM: fast one-step changes (increase or decrease)</p>
-                <p className="text-[10px] text-slate-500"><strong className="text-purple-700">SPRT</strong> — Wald SPRT: sequential binomial/Poisson test (complaints, salary)</p>
+                <p className="text-[10px] font-semibold text-[#6B6562] uppercase tracking-wider font-heading">Method legend</p>
+                <p className="text-[10px] text-[#6B6562]"><strong className="text-[#B46B3E]">SR</strong> — Shiryaev-Roberts: optimal for gradual distant changepoints</p>
+                <p className="text-[10px] text-[#6B6562]"><strong className="text-[#6B132B]">CUSUM</strong> — Two-sided CUSUM: fast one-step changes (increase or decrease)</p>
+                <p className="text-[10px] text-[#6B6562]"><strong className="text-[#2A161B]">SPRT</strong> — Wald SPRT: sequential binomial/Poisson test (complaints, salary)</p>
               </div>
             </div>
           </div>
 
           {/* Active alarms table */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-3 border-b border-slate-200 bg-slate-50">
-              <h2 className="text-[14px] font-bold text-slate-800">Active Alarm Log</h2>
-              <p className="text-[11px] text-slate-400">Sorted by CUSUM value (highest first)</p>
+          <div className="bg-white rounded-md border border-soft overflow-hidden">
+            <div className="px-5 py-3 border-b border-soft bg-[#F9F9F7]">
+              <h2 className="text-[14px] font-bold text-[#2A161B] font-heading">Active Alarm Log</h2>
+              <p className="text-[11px] text-[#6B6562]">Sorted by CUSUM value (highest first)</p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-[12px]">
                 <thead>
-                  <tr className="border-b border-slate-100 text-[10px] text-slate-400 uppercase tracking-wider">
+                  <tr className="border-b border-soft text-[10px] text-[#6B6562] uppercase tracking-wider font-heading">
                     {['Customer','Risk Tier','Signal Type','Method','Confidence','CUSUM Value','Days Active'].map(h => (
                       <th key={h} className="text-left py-2.5 px-4 font-semibold">{h}</th>
                     ))}
@@ -185,27 +185,27 @@ export default function SignalsPage() {
                 </thead>
                 <tbody>
                   {allSignals.slice(0, 40).map((s, i) => (
-                    <tr key={i} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                    <tr key={i} className="border-b border-soft hover:bg-[#F9F9F7] transition-colors">
                       <td className="py-2 px-4">
                         <Link href={`/customers/${s.customer_id}`}
-                          className="font-semibold text-slate-800 hover:text-[#0f2d5c] transition-colors">
+                          className="font-semibold text-[#2A161B] hover:text-[#6B132B] transition-colors">
                           {s.customer_name}
                         </Link>
                       </td>
                       <td className="py-2 px-4">
                         {s.risk_tier && <RiskBadge tier={s.risk_tier} />}
                       </td>
-                      <td className="py-2 px-4 capitalize text-slate-600">{s.signal_type.replace(/_/g,' ')}</td>
+                      <td className="py-2 px-4 capitalize text-[#2A161B]">{s.signal_type.replace(/_/g,' ')}</td>
                       <td className="py-2 px-4">
-                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase ${METHOD_COLORS[s.method] || 'bg-slate-100 text-slate-600'}`}>
+                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase ${METHOD_COLORS[s.method] || 'bg-[#F9F9F7] text-[#6B6562]'}`}>
                           {s.method}
                         </span>
                       </td>
-                      <td className="py-2 px-4 tabular-nums font-semibold text-slate-800">{(s.confidence*100).toFixed(0)}%</td>
-                      <td className="py-2 px-4 tabular-nums font-bold" style={{color: s.cusum_value > 15 ? '#dc2626' : '#ea580c'}}>
+                      <td className="py-2 px-4 tabular-nums font-semibold text-[#2A161B]">{(s.confidence*100).toFixed(0)}%</td>
+                      <td className="py-2 px-4 tabular-nums font-bold" style={{color: s.cusum_value > 15 ? '#6B132B' : '#B46B3E'}}>
                         {s.cusum_value?.toFixed(1)}
                       </td>
-                      <td className="py-2 px-4 text-slate-500">{s.days_active}d</td>
+                      <td className="py-2 px-4 text-[#6B6562]">{s.days_active}d</td>
                     </tr>
                   ))}
                 </tbody>

@@ -21,14 +21,14 @@ interface Customer {
 function CustomerCard({ c }: { c: Customer }) {
   return (
     <Link href={`/rm/customers/${c.customer_id}`}
-      className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 hover:border-[#0f2d5c]/30 hover:shadow-md transition-all group">
+      className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 hover:border-[var(--crimson)]/30 hover:shadow-md transition-all group">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-[12px] font-bold text-slate-600">
             {c.full_name.split(' ').map(n => n[0]).join('').slice(0,2)}
           </div>
           <div>
-            <p className="text-[13px] font-semibold text-slate-900 group-hover:text-[#0f2d5c] leading-tight">{c.full_name}</p>
+            <p className="text-[13px] font-semibold text-slate-900 group-hover:text-[var(--crimson)] leading-tight">{c.full_name}</p>
             <p className="text-[10px] text-slate-400">{c.customer_id}</p>
           </div>
         </div>
@@ -49,8 +49,8 @@ function CustomerCard({ c }: { c: Customer }) {
         <span>{c.tenure_months}mo</span>
       </div>
       {c.life_event && (
-        <div className="mt-2.5 px-2 py-1 rounded bg-purple-50 border border-purple-100">
-          <p className="text-[10px] text-purple-700 font-medium">{c.life_event.replace(/_/g,' ')}</p>
+        <div className="mt-2.5 px-2 py-1 rounded bg-teal-soft border border-purple-100">
+          <p className="text-[10px] text-teal-dark font-medium">{c.life_event.replace(/_/g,' ')}</p>
         </div>
       )}
     </Link>
@@ -65,7 +65,7 @@ function CustomerRow({ c }: { c: Customer }) {
         {c.full_name.split(' ').map(n=>n[0]).join('').slice(0,2)}
       </div>
       <div className="w-44 min-w-0">
-        <p className="text-[12px] font-semibold text-slate-800 truncate group-hover:text-[#0f2d5c]">{c.full_name}</p>
+        <p className="text-[12px] font-semibold text-slate-800 truncate group-hover:text-[var(--crimson)]">{c.full_name}</p>
         <p className="text-[10px] text-slate-400">{c.customer_id}</p>
       </div>
       <div className="w-28"><RiskBadge tier={c.risk_tier as any} /></div>
@@ -75,9 +75,9 @@ function CustomerRow({ c }: { c: Customer }) {
       <div className="w-28 text-[11px] text-slate-500">{c.segment}</div>
       <div className="w-24 text-[11px] text-slate-500">{c.city}</div>
       <div className="w-20 text-[11px] text-slate-500">{c.tenure_months}mo</div>
-      <div className="flex-1 text-[10px] text-purple-600">{c.life_event?.replace(/_/g,' ') || ''}</div>
+      <div className="flex-1 text-[10px] text-teal-dark">{c.life_event?.replace(/_/g,' ') || ''}</div>
       <Link href={`/rm/customers/${c.customer_id}`}
-        className="px-2.5 py-1 rounded-lg bg-[#0f2d5c] text-white text-[11px] font-semibold hover:bg-[#1a3f7a] transition-colors" onClick={e=>e.stopPropagation()}>
+        className="px-2.5 py-1 rounded-lg bg-[var(--crimson)] text-white text-[11px] font-semibold hover:bg-[var(--crimson-dark)] transition-colors" onClick={e=>e.stopPropagation()}>
         View
       </Link>
     </Link>
@@ -111,7 +111,7 @@ export default function MyBookPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <BookOpen className="w-5 h-5 text-[#0f2d5c]" />
+            <BookOpen className="w-5 h-5 text-[var(--crimson)]" />
             <h1 className="text-[22px] font-black text-slate-900">My Book</h1>
           </div>
           <p className="text-[13px] text-slate-400 mt-0.5">
@@ -121,11 +121,11 @@ export default function MyBookPage() {
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setView('grid')}
-            className={`p-2 rounded-lg border transition-colors ${view==='grid' ? 'bg-[#0f2d5c] border-[#0f2d5c] text-white' : 'bg-white border-slate-200 text-slate-400 hover:text-slate-600'}`}>
+            className={`p-2 rounded-lg border transition-colors ${view==='grid' ? 'bg-[var(--crimson)] border-[var(--crimson)] text-white' : 'bg-white border-slate-200 text-slate-400 hover:text-slate-600'}`}>
             <LayoutGrid className="w-4 h-4" />
           </button>
           <button onClick={() => setView('list')}
-            className={`p-2 rounded-lg border transition-colors ${view==='list' ? 'bg-[#0f2d5c] border-[#0f2d5c] text-white' : 'bg-white border-slate-200 text-slate-400 hover:text-slate-600'}`}>
+            className={`p-2 rounded-lg border transition-colors ${view==='list' ? 'bg-[var(--crimson)] border-[var(--crimson)] text-white' : 'bg-white border-slate-200 text-slate-400 hover:text-slate-600'}`}>
             <List className="w-4 h-4" />
           </button>
         </div>
@@ -136,14 +136,14 @@ export default function MyBookPage() {
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search name or ID…"
-            className="w-full pl-9 pr-3 py-2 text-[13px] rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20 focus:border-[#0f2d5c] transition-all" />
+            className="w-full pl-9 pr-3 py-2 text-[13px] rounded-lg border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20 focus:border-[var(--crimson)] transition-all" />
         </div>
         <select value={tier} onChange={e => setTier(e.target.value.includes('All') ? '' : e.target.value)}
-          className="px-3 py-2 text-[13px] rounded-lg border border-slate-200 bg-white text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20 focus:border-[#0f2d5c]">
+          className="px-3 py-2 text-[13px] rounded-lg border border-slate-200 bg-white text-slate-600 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20 focus:border-[var(--crimson)]">
           {TIERS.map(o => <option key={o} value={o.includes('All') ? '' : o}>{o}</option>)}
         </select>
         <select value={segment} onChange={e => setSegment(e.target.value.includes('All') ? '' : e.target.value)}
-          className="px-3 py-2 text-[13px] rounded-lg border border-slate-200 bg-white text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20 focus:border-[#0f2d5c]">
+          className="px-3 py-2 text-[13px] rounded-lg border border-slate-200 bg-white text-slate-600 focus:outline-none focus:ring-2 focus:ring-[var(--crimson)]/20 focus:border-[var(--crimson)]">
           {SEGMENTS.map(o => <option key={o} value={o.includes('All') ? '' : o}>{o}</option>)}
         </select>
       </div>

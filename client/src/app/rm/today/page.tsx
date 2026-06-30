@@ -28,8 +28,8 @@ function StatCard({ label, value, icon: Icon, accent = 'blue', loading }: {
   label: string; value: number | string; icon: React.ElementType;
   accent?: 'blue' | 'red' | 'orange' | 'emerald'; loading?: boolean;
 }) {
-  const border = { blue: 'border-l-[#0f2d5c]', red: 'border-l-red-500', orange: 'border-l-orange-500', emerald: 'border-l-emerald-500' }[accent];
-  const icon   = { blue: 'text-[#0f2d5c]',     red: 'text-red-500',     orange: 'text-orange-500',     emerald: 'text-emerald-500'   }[accent];
+  const border = { blue: 'border-l-[var(--crimson)]', red: 'border-l-red-500', orange: 'border-l-orange-500', emerald: 'border-l-emerald-500' }[accent];
+  const icon   = { blue: 'text-[var(--crimson)]',     red: 'text-crimson',     orange: 'text-copper',     emerald: 'text-sage-brand'   }[accent];
   return (
     <div className={`bg-white rounded-xl border border-slate-200 shadow-sm p-5 border-l-4 ${border}`}>
       <div className="flex items-start justify-between">
@@ -104,7 +104,7 @@ export default function TodayPage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-slate-700">Top At-Risk Customers</h2>
-            <Link href="/rm/book" className="text-xs text-[#0f2d5c] hover:underline flex items-center gap-1">
+            <Link href="/rm/book" className="text-xs text-[var(--crimson)] hover:underline flex items-center gap-1">
               View all <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
@@ -140,10 +140,10 @@ export default function TodayPage() {
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-semibold text-slate-700">Due Today / Overdue</h2>
               {dueTasks.length > 0 && (
-                <span className="bg-red-100 text-red-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full">{dueTasks.length}</span>
+                <span className="bg-crimson-soft text-crimson text-[10px] font-bold px-1.5 py-0.5 rounded-full">{dueTasks.length}</span>
               )}
             </div>
-            <Link href="/rm/tasks" className="text-xs text-[#0f2d5c] hover:underline flex items-center gap-1">
+            <Link href="/rm/tasks" className="text-xs text-[var(--crimson)] hover:underline flex items-center gap-1">
               All tasks <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
@@ -151,20 +151,20 @@ export default function TodayPage() {
             <div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} className="h-14 w-full" />)}</div>
           ) : dueTasks.length === 0 ? (
             <div className="py-8 text-center">
-              <CheckSquare className="w-8 h-8 text-emerald-400 mx-auto mb-2 opacity-60" />
-              <p className="text-emerald-600 text-sm font-semibold">All clear!</p>
+              <CheckSquare className="w-8 h-8 text-sage-brand mx-auto mb-2 opacity-60" />
+              <p className="text-sage-brand text-sm font-semibold">All clear!</p>
               <p className="text-slate-400 text-xs mt-1">No tasks due today</p>
             </div>
           ) : (
             <div className="divide-y divide-slate-50">
               {dueTasks.slice(0, 5).map(t => (
-                <div key={t.id} className={`py-3 flex items-start gap-3 ${isOverdue(t.due_date) ? 'text-red-600' : 'text-orange-600'}`}>
+                <div key={t.id} className={`py-3 flex items-start gap-3 ${isOverdue(t.due_date) ? 'text-crimson' : 'text-copper-dark'}`}>
                   <Clock className="w-4 h-4 mt-0.5 shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-800 truncate">{t.note || t.type}</p>
                     <p className="text-[11px] text-slate-400">{t.customer_id} · Due {fmtDate(t.due_date)}</p>
                   </div>
-                  {isOverdue(t.due_date) && <span className="text-[9px] font-bold bg-red-100 text-red-600 px-1.5 py-0.5 rounded shrink-0">OVERDUE</span>}
+                  {isOverdue(t.due_date) && <span className="text-[9px] font-bold bg-crimson-soft text-crimson px-1.5 py-0.5 rounded shrink-0">OVERDUE</span>}
                 </div>
               ))}
             </div>
@@ -174,25 +174,25 @@ export default function TodayPage() {
 
       {/* Manager-approved escalations */}
       {escalations.approved.length > 0 && (
-        <div className="bg-white rounded-xl border-2 border-emerald-300 shadow-sm overflow-hidden">
-          <div className="flex items-center gap-2 px-5 py-3 bg-emerald-50 border-b border-emerald-200">
-            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+        <div className="bg-white rounded-xl border-2 border-soft shadow-sm overflow-hidden">
+          <div className="flex items-center gap-2 px-5 py-3 bg-sage-soft border-b border-soft">
+            <ShieldCheck className="w-4 h-4 text-sage-brand shrink-0" />
             <h2 className="text-sm font-bold text-emerald-800">Manager-Cleared Actions ({escalations.approved.length})</h2>
-            <span className="text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full font-semibold">Action Required</span>
+            <span className="text-[10px] text-sage-brand bg-sage-soft px-2 py-0.5 rounded-full font-semibold">Action Required</span>
           </div>
           <div className="divide-y divide-slate-50">
             {escalations.approved.map((r: any) => {
               const initials = r.full_name.split(' ').map((n: string) => n[0]).join('').slice(0,2);
               return (
                 <div key={r.id} className="flex items-start gap-4 px-5 py-4 hover:bg-slate-50/50 transition-colors">
-                  <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-[11px] font-bold text-emerald-700 shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-sage-soft flex items-center justify-center text-[11px] font-bold text-sage-brand shrink-0">
                     {initials}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-sm font-bold text-slate-900">{r.full_name}</span>
                       <RiskBadge tier={r.risk_tier} />
-                      <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] font-semibold text-copper-dark bg-copper-soft px-1.5 py-0.5 rounded">
                         {r.action?.replace('_', ' ')}
                       </span>
                     </div>
@@ -256,8 +256,8 @@ export default function TodayPage() {
             { href: '/rm/performance', icon: TrendingUp,   label: 'My Performance', sub: `${sm.saves_this_month||0} saves` },
           ].map(a => (
             <Link key={a.href} href={a.href}
-              className="flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-[#0f2d5c]/30 hover:bg-slate-50 transition-all">
-              <a.icon className="w-5 h-5 text-[#0f2d5c] shrink-0" />
+              className="flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-[var(--crimson)]/30 hover:bg-slate-50 transition-all">
+              <a.icon className="w-5 h-5 text-[var(--crimson)] shrink-0" />
               <div>
                 <p className="text-sm font-semibold text-slate-800">{a.label}</p>
                 <p className="text-[11px] text-slate-400">{a.sub}</p>
@@ -274,7 +274,7 @@ export default function TodayPage() {
           <div className="divide-y divide-slate-50">
             {upcoming.map(t => (
               <div key={t.id} className="flex items-center gap-3 py-2.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#0f2d5c] shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-[var(--crimson)] shrink-0" />
                 <p className="text-sm text-slate-700 flex-1 truncate">{t.note || t.type}</p>
                 <span className="text-[11px] text-slate-400 shrink-0">{fmtDate(t.due_date)}</span>
               </div>

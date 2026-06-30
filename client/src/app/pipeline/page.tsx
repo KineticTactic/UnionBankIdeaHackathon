@@ -9,12 +9,12 @@ import { KafkaStatus } from '@/types';
 import { Zap, Database, Activity } from 'lucide-react';
 
 const TOPICS = [
-  { topic: 'cbs.transactions',       desc: 'Core Banking payment events',      color: 'bg-blue-100 text-blue-700'   },
-  { topic: 'cbs.account_updates',    desc: 'Balance & account changes',         color: 'bg-slate-100 text-slate-600' },
-  { topic: 'crm.customer_events',    desc: 'CRM complaints & notes',            color: 'bg-purple-100 text-purple-700'},
-  { topic: 'risk.signal_detections', desc: 'ARGUS-generated risk signals',      color: 'bg-red-100 text-red-700'     },
-  { topic: 'risk.score_updates',     desc: 'ML score refreshes from FusionXV2', color: 'bg-orange-100 text-orange-700'},
-  { topic: 'engagement.activity',    desc: 'Digital channel engagement events', color: 'bg-green-100 text-green-700' },
+  { topic: 'cbs.transactions',       desc: 'Core Banking payment events',      color: 'bg-[#F5E6E9] text-[#6B132B]'   },
+  { topic: 'cbs.account_updates',    desc: 'Balance & account changes',         color: 'bg-[#F9F9F7] text-[#6B6562]' },
+  { topic: 'crm.customer_events',    desc: 'CRM complaints & notes',            color: 'bg-[#FAF0E6] text-[#B46B3E]'},
+  { topic: 'risk.signal_detections', desc: 'ARGUS-generated risk signals',      color: 'bg-[#6B132B] text-white'     },
+  { topic: 'risk.score_updates',     desc: 'ML score refreshes from FusionXV2', color: 'bg-[#B46B3E] text-white'},
+  { topic: 'engagement.activity',    desc: 'Digital channel engagement events', color: 'bg-[#F4D9C0] text-[#2A161B]' },
 ];
 
 export default function PipelinePage() {
@@ -31,38 +31,38 @@ export default function PipelinePage() {
   }, [router]);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#F9F9F7] min-h-screen">
       <div>
-        <h1 className="text-[22px] font-black text-slate-900">Data Pipeline</h1>
-        <p className="text-[13px] text-slate-400 mt-0.5">Kafka stream inspector · live event feed · 6 topics</p>
+        <h1 className="text-[22px] font-black text-[#2A161B] font-heading">Data Pipeline</h1>
+        <p className="text-[13px] text-[#6B6562] mt-0.5">Kafka stream inspector · live event feed · 6 topics</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex items-center gap-3">
-          <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${status?.mode==='kafka'?'bg-green-100':'bg-amber-100'}`}>
-            <Zap className={`w-4 h-4 ${status?.mode==='kafka'?'text-green-600':'text-amber-600'}`} />
+        <div className="bg-white rounded-md border border-soft p-4 flex items-center gap-3">
+          <div className={`w-9 h-9 rounded-md flex items-center justify-center ${status?.mode==='kafka'?'bg-[#F5E6E9]':'bg-[#FAF0E6]'}`}>
+            <Zap className={`w-4 h-4 ${status?.mode==='kafka'?'text-[#6B132B]':'text-[#B46B3E]'}`} />
           </div>
           <div>
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Mode</p>
-            <p className="text-[16px] font-black text-slate-900 capitalize">{status?.mode || 'loading'}</p>
+            <p className="text-[10px] font-semibold text-[#6B6562] uppercase tracking-wider font-heading">Mode</p>
+            <p className="text-[16px] font-black text-[#2A161B] capitalize">{status?.mode || 'loading'}</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center">
-            <Database className="w-4 h-4 text-blue-600" />
+        <div className="bg-white rounded-md border border-soft p-4 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-md bg-[#F5E6E9] flex items-center justify-center">
+            <Database className="w-4 h-4 text-[#6B132B]" />
           </div>
           <div>
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Events Processed</p>
-            <p className="text-[16px] font-black text-slate-900">{status?.messagesProcessed?.toLocaleString() || '0'}</p>
+            <p className="text-[10px] font-semibold text-[#6B6562] uppercase tracking-wider font-heading">Events Processed</p>
+            <p className="text-[16px] font-black text-[#2A161B]">{status?.messagesProcessed?.toLocaleString() || '0'}</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-[#0f2d5c]/8 flex items-center justify-center">
-            <Activity className="w-4 h-4 text-[#0f2d5c]" />
+        <div className="bg-white rounded-md border border-soft p-4 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-md bg-[#F5E6E9] flex items-center justify-center">
+            <Activity className="w-4 h-4 text-[#6B132B]" />
           </div>
           <div>
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Last Event</p>
-            <p className="text-[13px] font-bold text-slate-900">
+            <p className="text-[10px] font-semibold text-[#6B6562] uppercase tracking-wider font-heading">Last Event</p>
+            <p className="text-[13px] font-bold text-[#2A161B]">
               {status?.lastEventAt ? new Date(status.lastEventAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }) : '—'}
             </p>
           </div>
@@ -70,35 +70,35 @@ export default function PipelinePage() {
       </div>
 
       {/* Topic list */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-        <h2 className="text-[14px] font-bold text-slate-800 mb-4">Subscribed Topics</h2>
+      <div className="bg-white rounded-md border border-soft p-5">
+        <h2 className="text-[14px] font-bold text-[#2A161B] mb-4 font-heading">Subscribed Topics</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
           {TOPICS.map(t => (
-            <div key={t.topic} className="flex items-start gap-3 p-3 rounded-lg border border-slate-100 bg-slate-50">
+            <div key={t.topic} className="flex items-start gap-3 p-3 rounded-md border border-soft bg-[#F9F9F7]">
               <span className={`shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wide mt-0.5 ${t.color}`}>
                 {t.topic.split('.')[0]}
               </span>
               <div>
-                <p className="text-[11px] font-semibold text-slate-700 font-mono">{t.topic}</p>
-                <p className="text-[10px] text-slate-400">{t.desc}</p>
+                <p className="text-[11px] font-semibold text-[#2A161B] font-mono">{t.topic}</p>
+                <p className="text-[10px] text-[#6B6562]">{t.desc}</p>
               </div>
             </div>
           ))}
         </div>
         {status?.mode === 'simulation' && (
-          <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200">
-            <p className="text-[12px] text-amber-700">
+          <div className="mt-4 p-3 rounded-md bg-[#FAF0E6] border border-[#F4D9C0]">
+            <p className="text-[12px] text-[#B46B3E]">
               <strong>Simulation mode:</strong> No Kafka broker detected.
               Generating realistic banking events every 8 seconds as a stand-in.
-              Deploy with <code className="font-mono bg-amber-100 px-1 rounded">KAFKA_BROKERS</code> to connect to a real cluster.
+              Deploy with <code className="font-mono bg-[#F4D9C0] px-1 rounded">KAFKA_BROKERS</code> to connect to a real cluster.
             </p>
           </div>
         )}
       </div>
 
       {/* Live feed */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-        <h2 className="text-[14px] font-bold text-slate-800 mb-4">Live Event Stream (SSE)</h2>
+      <div className="bg-white rounded-md border border-soft p-5">
+        <h2 className="text-[14px] font-bold text-[#2A161B] mb-4 font-heading">Live Event Stream (SSE)</h2>
         <div className="h-96">
           <KafkaFeed maxEvents={40} />
         </div>

@@ -52,7 +52,7 @@ export function InsightCard({ insights }: InsightCardProps) {
             <Card className="shadow-sm border-slate-200">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-semibold text-slate-500 uppercase tracking-wider flex items-center">
-                        <Activity className="w-4 h-4 mr-2 text-blue-500" />
+                        <Activity className="w-4 h-4 mr-2 text-teal" />
                         App Engagement (30d)
                     </CardTitle>
                 </CardHeader>
@@ -76,7 +76,7 @@ export function InsightCard({ insights }: InsightCardProps) {
                     {engagement.most_used_feature && (
                         <div className="mt-3 flex items-center justify-between px-1">
                             <span className="text-xs text-slate-500">Most Used Feature:</span>
-                            <Badge variant="outline" className="text-[10px] uppercase font-bold text-blue-600 bg-blue-50 border-blue-100">
+                            <Badge variant="outline" className="text-[10px] uppercase font-bold text-teal-dark bg-teal-soft border-blue-100">
                                 {engagement.most_used_feature.replace(/_/g, ' ')}
                             </Badge>
                         </div>
@@ -88,7 +88,7 @@ export function InsightCard({ insights }: InsightCardProps) {
             <Card className="shadow-sm border-slate-200">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-semibold text-slate-500 uppercase tracking-wider flex items-center">
-                        <MessageSquare className="w-4 h-4 mr-2 text-purple-500" />
+                        <MessageSquare className="w-4 h-4 mr-2 text-teal" />
                         Relationship Health
                     </CardTitle>
                 </CardHeader>
@@ -98,7 +98,7 @@ export function InsightCard({ insights }: InsightCardProps) {
                             <div className="text-xs text-slate-500 mb-1 flex items-center">
                                 <BarChart3 className="w-3 h-3 mr-1" /> Resolution Speed
                             </div>
-                            <div className={`text-lg font-bold ${crm.avg_resolution_days > 5 ? 'text-red-600' : 'text-slate-900'}`}>
+                            <div className={`text-lg font-bold ${crm.avg_resolution_days > 5 ? 'text-crimson' : 'text-slate-900'}`}>
                                 {crm.avg_resolution_days > 0 ? `${Math.round(crm.avg_resolution_days)} days` : 'N/A'}
                             </div>
                         </div>
@@ -106,7 +106,7 @@ export function InsightCard({ insights }: InsightCardProps) {
                             <div className="text-xs text-slate-500 mb-1 flex items-center">
                                 <AlertCircle className="w-3 h-3 mr-1" /> Active Complaints
                             </div>
-                            <div className={`text-lg font-bold ${crm.unresolved_count > 0 ? 'text-orange-600' : 'text-slate-900'}`}>
+                            <div className={`text-lg font-bold ${crm.unresolved_count > 0 ? 'text-copper-dark' : 'text-slate-900'}`}>
                                 {crm.unresolved_count}
                             </div>
                         </div>
@@ -118,19 +118,19 @@ export function InsightCard({ insights }: InsightCardProps) {
             <Card className="shadow-sm border-slate-200">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-semibold text-slate-500 uppercase tracking-wider flex items-center">
-                        <AlertCircle className="w-4 h-4 mr-2 text-red-500" />
+                        <AlertCircle className="w-4 h-4 mr-2 text-crimson" />
                         Financial Stress Markers
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex items-center justify-between p-4 bg-red-50/50 rounded-lg border border-red-100">
+                    <div className="flex items-center justify-between p-4 bg-crimson-soft/50 rounded-lg border border-red-100">
                         <div>
-                            <div className="text-xs text-red-700 font-semibold mb-1">Stress-Related MCC usage</div>
+                            <div className="text-xs text-crimson font-semibold mb-1">Stress-Related MCC usage</div>
                             <div className="text-2xl font-black text-red-800">{stress.stress_related_mcc_count}</div>
                         </div>
                         <div className="text-right">
                             <div className="text-xs text-slate-500 mb-1 italic">Detects payday loans, etc.</div>
-                            <Badge variant="outline" className={`text-[10px] ${stress.stress_related_mcc_count > 0 ? 'bg-red-100 text-red-700 border-red-200' : 'bg-green-100 text-green-700 border-green-200'}`}>
+                            <Badge variant="outline" className={`text-[10px] ${stress.stress_related_mcc_count > 0 ? 'bg-crimson-soft text-crimson border-soft' : 'bg-sage-soft text-sage-brand border-soft'}`}>
                                 {stress.stress_related_mcc_count > 0 ? 'Elevated Alert' : 'Normal / Low'}
                             </Badge>
                         </div>
@@ -142,7 +142,7 @@ export function InsightCard({ insights }: InsightCardProps) {
             <Card className="shadow-sm border-slate-200">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-semibold text-slate-500 uppercase tracking-wider flex items-center">
-                        <Plane className="w-4 h-4 mr-2 text-indigo-500" />
+                        <Plane className="w-4 h-4 mr-2 text-teal" />
                         Geographic Signal (180d)
                     </CardTitle>
                 </CardHeader>

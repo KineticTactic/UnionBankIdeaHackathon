@@ -7,11 +7,11 @@ import { api } from '@/lib/api';
 import { ArrowLeft, RefreshCw, Phone, TrendingUp, AlertTriangle, CheckSquare, Bell } from 'lucide-react';
 
 const TIER_BADGE: Record<string, string> = {
-  PRIORITY: 'bg-red-100 text-red-700 border border-red-200',
-  ESCALATE: 'bg-orange-100 text-orange-700 border border-orange-200',
-  STANDARD: 'bg-amber-100 text-amber-700 border border-amber-200',
-  MONITOR:  'bg-blue-100 text-blue-700 border border-blue-200',
-  NONE:     'bg-emerald-100 text-emerald-700 border border-emerald-200',
+  PRIORITY: 'bg-crimson-soft text-crimson border border-soft',
+  ESCALATE: 'bg-copper-soft text-copper-dark border border-soft',
+  STANDARD: 'bg-copper-soft text-copper-dark border border-soft',
+  MONITOR:  'bg-teal-soft text-teal-dark border border-soft',
+  NONE:     'bg-sage-soft text-sage-brand border border-soft',
 };
 
 function fmtDate(d?: string) {
@@ -61,7 +61,7 @@ export default function RmDetailPage() {
     <div className="p-6">
       <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
         <p className="text-slate-500">RM not found</p>
-        <Link href="/admin/rms" className="mt-3 inline-flex items-center gap-1 text-sm text-[#0f2d5c] hover:underline"><ArrowLeft className="w-3.5 h-3.5" /> Back to RMs</Link>
+        <Link href="/admin/rms" className="mt-3 inline-flex items-center gap-1 text-sm text-[var(--crimson)] hover:underline"><ArrowLeft className="w-3.5 h-3.5" /> Back to RMs</Link>
       </div>
     </div>
   );
@@ -89,7 +89,7 @@ export default function RmDetailPage() {
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {[
-          { label: 'Book Size',   value: st.book_size || 0,  icon: null,         accent: 'border-l-[#0f2d5c]' },
+          { label: 'Book Size',   value: st.book_size || 0,  icon: null,         accent: 'border-l-[var(--crimson)]' },
           { label: 'At-Risk',     value: st.at_risk_count||0,icon: AlertTriangle, accent: 'border-l-red-500' },
           { label: 'Saves',       value: st.saves || 0,      icon: TrendingUp,   accent: 'border-l-emerald-500' },
           { label: 'Calls',       value: st.calls || 0,      icon: Phone,        accent: 'border-l-blue-500' },
@@ -144,13 +144,13 @@ export default function RmDetailPage() {
               <Bell className="w-4 h-4 text-slate-400" /> Send Note to RM
             </h2>
             <textarea
-              className="w-full rounded-xl border border-slate-200 text-sm text-slate-800 p-3 resize-none focus:outline-none focus:border-[#0f2d5c]/40"
+              className="w-full rounded-xl border border-slate-200 text-sm text-slate-800 p-3 resize-none focus:outline-none focus:border-[var(--crimson)]/40"
               rows={3} placeholder="Message to this RM…"
               value={noteMsg} onChange={e => setNoteMsg(e.target.value)}
             />
             <button
               onClick={sendNote} disabled={!noteMsg.trim() || sending}
-              className="mt-2 w-full py-2 rounded-lg bg-[#0f2d5c] text-white text-sm font-semibold hover:bg-[#0f2d5c]/90 transition-colors disabled:opacity-50"
+              className="mt-2 w-full py-2 rounded-lg bg-[var(--crimson)] text-white text-sm font-semibold hover:bg-[var(--crimson)]/90 transition-colors disabled:opacity-50"
             >
               {sending ? 'Sending…' : sent ? '✓ Sent' : 'Send Note'}
             </button>

@@ -7,19 +7,19 @@ interface TopAtRiskTableProps {
 }
 
 const TIER_STYLE: Record<string, string> = {
-    critical: "bg-red-100 text-red-700",
-    high:     "bg-orange-100 text-orange-700",
-    medium:   "bg-yellow-100 text-yellow-700",
-    watch:    "bg-blue-100 text-blue-700",
-    low:      "bg-emerald-100 text-emerald-700",
+    critical: "bg-crimson-soft text-crimson",
+    high:     "bg-copper-soft text-copper-dark",
+    medium:   "bg-copper-pale text-copper-dark",
+    watch:    "bg-teal-soft text-teal-dark",
+    low:      "bg-sage-soft text-sage-brand",
 };
 
 const TIER_BAR: Record<string, string> = {
-    critical: "#EF4444",
-    high:     "#F97316",
+    critical: "var(--crimson)",
+    high:     "var(--copper)",
     medium:   "#EAB308",
-    watch:    "#3B82F6",
-    low:      "#22C55E",
+    watch:    "var(--teal)",
+    low:      "var(--sage-brand)",
 };
 
 export function TopAtRiskTable({ data = [] }: TopAtRiskTableProps) {
@@ -29,7 +29,7 @@ export function TopAtRiskTable({ data = [] }: TopAtRiskTableProps) {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                 <p className="text-sm font-semibold text-slate-800">Top At-Risk Customers</p>
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-100 uppercase tracking-wider">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-crimson-soft text-crimson border border-red-100 uppercase tracking-wider">
                     {data.filter(d => d.risk_tier === 'critical').length} critical
                 </span>
             </div>
@@ -50,7 +50,7 @@ export function TopAtRiskTable({ data = [] }: TopAtRiskTableProps) {
 
                         {/* Name + ID */}
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-slate-900 truncate group-hover:text-blue-700 transition-colors">{c.full_name}</p>
+                            <p className="text-sm font-semibold text-slate-900 truncate group-hover:text-teal-dark transition-colors">{c.full_name}</p>
                             <p className="text-[10px] font-mono text-slate-400">{c.id} · {c.segment}</p>
                         </div>
 
@@ -63,7 +63,7 @@ export function TopAtRiskTable({ data = [] }: TopAtRiskTableProps) {
                                 <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
                                     <div
                                         className="h-full rounded-full"
-                                        style={{ width: `${c.churn_score * 100}%`, backgroundColor: TIER_BAR[c.risk_tier] || '#94a3b8' }}
+                                        style={{ width: `${c.churn_score * 100}%`, backgroundColor: TIER_BAR[c.risk_tier] || 'var(--gray-400)' }}
                                     />
                                 </div>
                             </div>
@@ -78,7 +78,7 @@ export function TopAtRiskTable({ data = [] }: TopAtRiskTableProps) {
                 <div className="px-5 py-3 border-t border-slate-100 text-center">
                     <button
                         onClick={() => router.push('/customers')}
-                        className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                        className="text-xs font-semibold text-teal-dark hover:text-teal-dark transition-colors"
                     >
                         View all customers →
                     </button>

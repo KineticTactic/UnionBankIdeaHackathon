@@ -54,7 +54,7 @@ interface CompliancePanelProps {
 
 function StatusPill({ ok, label }: { ok: boolean; label: string }) {
     return (
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border ${ok ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-600 border-red-200'}`}>
+        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border ${ok ? 'bg-sage-soft text-sage-brand border-soft' : 'bg-crimson-soft text-crimson border-soft'}`}>
             {ok ? <CheckCircle2 className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
             {label}
         </div>
@@ -79,10 +79,10 @@ const INCOME_LABEL: Record<string, string> = {
 };
 
 const CREDIT_BAND_COLOR: Record<string, string> = {
-    excellent: 'text-emerald-600',
-    good: 'text-blue-600',
-    fair: 'text-amber-600',
-    poor: 'text-red-600',
+    excellent: 'text-sage-brand',
+    good: 'text-teal-dark',
+    fair: 'text-copper-dark',
+    poor: 'text-crimson',
 };
 
 export function CompliancePanel({ customer, accounts = [], enrichment }: CompliancePanelProps) {
@@ -106,7 +106,7 @@ export function CompliancePanel({ customer, accounts = [], enrichment }: Complia
                     <ShieldCheck className="w-4 h-4 text-slate-500" />
                     <span className="text-sm font-bold text-slate-800">Compliance & Channel Eligibility</span>
                 </div>
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider flex items-center gap-1 ${kycOk ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-600 border-red-200'}`}>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider flex items-center gap-1 ${kycOk ? 'bg-sage-soft text-sage-brand border-soft' : 'bg-crimson-soft text-crimson border-soft'}`}>
                     {kycOk ? <CheckCircle2 className="w-2.5 h-2.5" /> : <AlertTriangle className="w-2.5 h-2.5" />}
                     KYC {customer.kyc_status}
                 </span>
@@ -122,11 +122,11 @@ export function CompliancePanel({ customer, accounts = [], enrichment }: Complia
                             const Icon = ch.icon;
                             const isPref = customer.preferred_channel === ch.key || (customer.preferred_channel === 'in_app' && ch.key === 'push');
                             return (
-                                <div key={ch.key} className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-semibold ${ch.enabled ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-400 line-through'}`}>
+                                <div key={ch.key} className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-semibold ${ch.enabled ? 'bg-sage-soft border-soft text-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-400 line-through'}`}>
                                     <Icon className="w-3.5 h-3.5 shrink-0" />
                                     {ch.label}
                                     {isPref && ch.enabled && (
-                                        <span className="ml-auto text-[9px] font-bold bg-emerald-600 text-white px-1 py-0.5 rounded">PREF</span>
+                                        <span className="ml-auto text-[9px] font-bold bg-sage-brand text-white px-1 py-0.5 rounded">PREF</span>
                                     )}
                                     {!ch.enabled && (
                                         <XCircle className="ml-auto w-3 h-3 text-slate-300" />
@@ -136,7 +136,7 @@ export function CompliancePanel({ customer, accounts = [], enrichment }: Complia
                         })}
                     </div>
                     {!channels.some(c => c.enabled) && (
-                        <div className="mt-2 flex items-center gap-2 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                        <div className="mt-2 flex items-center gap-2 text-xs text-crimson bg-crimson-soft border border-soft rounded-lg px-3 py-2">
                             <ShieldX className="w-3.5 h-3.5 shrink-0" />
                             No outreach channels enabled — contact suppressed
                         </div>
@@ -216,7 +216,7 @@ export function CompliancePanel({ customer, accounts = [], enrichment }: Complia
                                     icon={AlertTriangle}
                                     label="Competitor"
                                     value={
-                                        <span className={enrichment.competitor_proximity <= 2 ? 'text-red-600 font-bold' : 'text-slate-700'}>
+                                        <span className={enrichment.competitor_proximity <= 2 ? 'text-crimson font-bold' : 'text-slate-700'}>
                                             {enrichment.competitor_proximity} branch{enrichment.competitor_proximity !== 1 ? 'es' : ''} nearby
                                         </span>
                                     }

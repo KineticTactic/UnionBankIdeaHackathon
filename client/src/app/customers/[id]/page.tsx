@@ -26,9 +26,9 @@ const TABS = ['Overview','Risk Score','Signals','Transactions','Action Plan','Ou
 type Tab = typeof TABS[number];
 
 const METHOD_COLORS: Record<string, string> = {
-  SR:    'bg-blue-100 text-blue-700',
-  CUSUM: 'bg-orange-100 text-orange-700',
-  SPRT:  'bg-purple-100 text-purple-700',
+  SR:    'bg-teal-soft text-teal-dark',
+  CUSUM: 'bg-copper-soft text-copper-dark',
+  SPRT:  'bg-teal-soft text-teal-dark',
 };
 
 function StatBox({ label, value, sub, color }: { label:string; value:string|number; sub?:string; color?:string }) {
@@ -196,7 +196,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
   return (
     <div className="p-6 space-y-4">
       {/* Breadcrumb */}
-      <Link href="/customers" className="flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-[#0f2d5c] transition-colors w-fit">
+      <Link href="/customers" className="flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-[var(--crimson)] transition-colors w-fit">
         <ArrowLeft className="w-3.5 h-3.5" />
         Back to Customers
       </Link>
@@ -241,7 +241,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                 <ConsentStatusBadge customerId={c.customer_id} />
               </div>
               {c.life_event && (
-                <span className="inline-flex items-center gap-1 text-[10px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full border border-purple-200">
+                <span className="inline-flex items-center gap-1 text-[10px] bg-teal-soft text-teal-dark px-2 py-0.5 rounded-full border border-soft">
                   {c.life_event.replace(/_/g,' ')}
                 </span>
               )}
@@ -256,7 +256,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
           <button key={t} onClick={() => setTab(t)}
             className={`flex-1 py-2.5 text-[12px] font-semibold transition-colors ${
               tab === t
-                ? 'bg-[#0f2d5c] text-white'
+                ? 'bg-[var(--crimson)] text-white'
                 : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50 border-r border-slate-200 last:border-0'
             }`}>
             {t}
@@ -273,20 +273,20 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
             <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-3">
               <StatBox label="Balance"      value={`₹${(c.balance/1000).toFixed(0)}K`} sub={c.segment} />
               <StatBox label="Income (ann)" value={`₹${(c.income/100000).toFixed(1)}L`} />
-              <StatBox label="Inactivity"   value={`${c.inactivity_days}d`}  color={c.inactivity_days>45?'#dc2626':undefined} />
-              <StatBox label="NPS Score"    value={c.nps}  color={c.nps < 3 ? '#dc2626' : c.nps > 7 ? '#16a34a' : undefined} />
+              <StatBox label="Inactivity"   value={`${c.inactivity_days}d`}  color={c.inactivity_days>45?'var(--crimson)':undefined} />
+              <StatBox label="NPS Score"    value={c.nps}  color={c.nps < 3 ? 'var(--crimson)' : c.nps > 7 ? 'var(--sage-brand)' : undefined} />
               <StatBox label="Products"     value={c.product_count} />
               <StatBox label="Txn Freq 90d" value={c.txn_freq_90d} sub="transactions" />
               <StatBox label="App Logins"   value={c.app_logins_30d} sub="last 30d" />
-              <StatBox label="Complaints"   value={c.complaint_count} color={c.complaint_count>2?'#dc2626':undefined} />
+              <StatBox label="Complaints"   value={c.complaint_count} color={c.complaint_count>2?'var(--crimson)':undefined} />
               <StatBox label="Digital"      value={`${(c.digital_ratio*100).toFixed(0)}%`} sub="of txns" />
               <StatBox label="Salary Credits" value={c.salary_credit_count} sub="last 3mo" />
             </div>
 
             {c.life_event && (
-              <div className="p-4 rounded-lg bg-purple-50 border border-purple-200">
-                <p className="text-[12px] font-semibold text-purple-800 mb-1">Life Event Detected: {c.life_event.replace(/_/g,' ')}</p>
-                <p className="text-[12px] text-purple-600">{c.life_event_desc}</p>
+              <div className="p-4 rounded-lg bg-teal-soft border border-soft">
+                <p className="text-[12px] font-semibold text-teal-dark mb-1">Life Event Detected: {c.life_event.replace(/_/g,' ')}</p>
+                <p className="text-[12px] text-teal-dark">{c.life_event_desc}</p>
               </div>
             )}
 
@@ -295,10 +295,10 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
               <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200">
                 <div className="flex items-center gap-2">
                   <p className="text-[13px] font-semibold text-slate-700">AI Risk Analysis</p>
-                  <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 uppercase tracking-wide">NVIDIA DeepSeek V4 Pro</span>
+                  <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-teal-soft text-teal-dark uppercase tracking-wide">NVIDIA DeepSeek V4 Pro</span>
                 </div>
                 <button onClick={handleAnalyze} disabled={analyzing}
-                  className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-[#0f2d5c] text-white hover:bg-[#1a3f7a] disabled:opacity-50 transition-colors">
+                  className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-[var(--crimson)] text-white hover:bg-[var(--crimson-dark)] disabled:opacity-50 transition-colors">
                   <TrendingUp className="w-3.5 h-3.5" />
                   {analyzing ? 'Analysing…' : analysis ? 'Regenerate' : 'Generate Analysis'}
                 </button>
@@ -307,7 +307,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                 {analyzing ? (
                   <div className="space-y-2.5">
                     <div className="flex items-center gap-2 mb-3 text-[12px] text-slate-400">
-                      <div className="w-4 h-4 border-2 border-[#0f2d5c] border-t-transparent rounded-full animate-spin shrink-0" />
+                      <div className="w-4 h-4 border-2 border-[var(--crimson)] border-t-transparent rounded-full animate-spin shrink-0" />
                       NVIDIA DeepSeek V4 Pro is analysing {c.full_name}'s risk profile…
                     </div>
                     <div className="h-3 bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-slate-200 rounded-full animate-pulse" style={{width:'85%'}} /></div>
@@ -316,11 +316,11 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                     <div className="h-3 bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-slate-200 rounded-full animate-pulse" style={{width:'50%'}} /></div>
                   </div>
                 ) : analysisError ? (
-                  <div className="flex items-start gap-3 p-3 rounded-lg bg-red-50 border border-red-200">
-                    <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-3 p-3 rounded-lg bg-crimson-soft border border-soft">
+                    <AlertCircle className="w-4 h-4 text-crimson shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-[12px] font-semibold text-red-700 mb-0.5">Analysis failed</p>
-                      <p className="text-[12px] text-red-600">{analysisError}</p>
+                      <p className="text-[12px] font-semibold text-crimson mb-0.5">Analysis failed</p>
+                      <p className="text-[12px] text-crimson">{analysisError}</p>
                     </div>
                   </div>
                 ) : analysis ? (
@@ -372,7 +372,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
               ].map(({ label, val }) => (
                 <div key={label} className="bg-slate-50 rounded-lg border border-slate-200 p-4 text-center">
                   <p className="text-[10px] text-slate-400 mb-1">{label}</p>
-                  <p className="text-2xl font-black tabular-nums" style={{color: val>0.5?'#dc2626':val>0.25?'#ea580c':'#16a34a'}}>
+                  <p className="text-2xl font-black tabular-nums" style={{color: val>0.5?'var(--crimson)':val>0.25?'var(--copper)':'var(--sage-brand)'}}>
                     {(val*100).toFixed(0)}%
                   </p>
                 </div>
@@ -389,7 +389,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
             </p>
             {signals.length === 0 && (
               <div className="flex items-center gap-2 text-[13px] text-slate-400">
-                <CheckCircle className="w-4 h-4 text-green-500" />
+                <CheckCircle className="w-4 h-4 text-sage-brand" />
                 No active signals — customer profile is stable.
               </div>
             )}
@@ -410,7 +410,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-[11px] text-slate-400">CUSUM</p>
-                  <p className="text-[16px] font-black text-orange-600">{sig.cusum_value?.toFixed(1)}</p>
+                  <p className="text-[16px] font-black text-copper-dark">{sig.cusum_value?.toFixed(1)}</p>
                   <p className="text-[9px] text-slate-400">h={sig.alarm_threshold}</p>
                 </div>
               </div>
@@ -426,11 +426,11 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
               <ResponsiveContainer width="100%" height={160}>
                 <BarChart data={txns.slice(-30).map(t=>({date:t.date.slice(5),amount:t.amount,type:t.type}))}
                   margin={{top:0,right:0,left:-20,bottom:0}}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="date" tick={{fontSize:9,fill:'#94a3b8'}} axisLine={false} tickLine={false} interval={4} />
-                  <YAxis tick={{fontSize:9,fill:'#94a3b8'}} axisLine={false} tickLine={false} tickFormatter={v=>`₹${(v/1000).toFixed(0)}K`} />
-                  <Tooltip formatter={(v:number)=>[`₹${v.toLocaleString('en-IN')}`,'Amount']} contentStyle={{fontSize:11,borderRadius:8,border:'1px solid #e2e8f0'}} />
-                  <Bar dataKey="amount" fill="#0f2d5c" radius={[3,3,0,0]} maxBarSize={16} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--secondary)" />
+                  <XAxis dataKey="date" tick={{fontSize:9,fill:'var(--gray-400)'}} axisLine={false} tickLine={false} interval={4} />
+                  <YAxis tick={{fontSize:9,fill:'var(--gray-400)'}} axisLine={false} tickLine={false} tickFormatter={v=>`₹${(v/1000).toFixed(0)}K`} />
+                  <Tooltip formatter={(v)=>[`₹${Number(v).toLocaleString('en-IN')}`,'Amount']} contentStyle={{fontSize:11,borderRadius:8,border:'1px solid var(--border-color)'}} />
+                  <Bar dataKey="amount" fill="var(--crimson)" radius={[3,3,0,0]} maxBarSize={16} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -450,7 +450,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                     <tr key={i} className="border-b border-slate-100 hover:bg-slate-50">
                       <td className="py-2 px-3 text-slate-500">{t.date}</td>
                       <td className="py-2 px-3">
-                        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${t.type==='CREDIT'?'bg-green-50 text-green-700':'bg-slate-100 text-slate-600'}`}>{t.type}</span>
+                        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${t.type==='CREDIT'?'bg-sage-soft text-sage-brand':'bg-slate-100 text-slate-600'}`}>{t.type}</span>
                       </td>
                       <td className="py-2 px-3 text-slate-500">{t.channel}</td>
                       <td className="py-2 px-3 text-slate-500">{t.category}</td>
@@ -467,8 +467,8 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
         {tab === 'Action Plan' && plan && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <StatBox label="Action"    value={plan.action.replace(/_/g,' ')}   color="#0f2d5c" />
-              <StatBox label="Urgency"   value={plan.urgency}                     color={plan.urgency==='IMMEDIATE'?'#dc2626':undefined} />
+              <StatBox label="Action"    value={plan.action.replace(/_/g,' ')}   color="var(--crimson)" />
+              <StatBox label="Urgency"   value={plan.urgency}                     color={plan.urgency==='IMMEDIATE'?'var(--crimson)':undefined} />
               <StatBox label="Offer"     value={plan.offer_display || plan.offer_code.replace(/_/g,' ')} />
               <StatBox label="Channel"   value={plan.channel} />
             </div>
@@ -479,24 +479,24 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
             </div>
 
             {plan.life_event && (
-              <div className="p-4 rounded-lg bg-purple-50 border border-purple-200">
-                <p className="text-[11px] font-semibold text-purple-600 uppercase tracking-wider mb-1">Life Event Detected</p>
-                <p className="text-[13px] text-purple-800">{plan.life_event.replace(/_/g,' ')}</p>
+              <div className="p-4 rounded-lg bg-teal-soft border border-soft">
+                <p className="text-[11px] font-semibold text-teal-dark uppercase tracking-wider mb-1">Life Event Detected</p>
+                <p className="text-[13px] text-teal-dark">{plan.life_event.replace(/_/g,' ')}</p>
               </div>
             )}
 
             {plan.tone_modifiers?.length > 0 && (
               <div className="flex gap-2">
                 {plan.tone_modifiers.map(t => (
-                  <span key={t} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 capitalize">{t}</span>
+                  <span key={t} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-soft text-teal-dark border border-soft capitalize">{t}</span>
                 ))}
               </div>
             )}
 
             {plan.suppressed && (
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-50 border border-amber-200">
-                <AlertCircle className="w-4 h-4 text-amber-600" />
-                <p className="text-[12px] text-amber-800 font-medium">Outreach suppressed (contact fatigue / consent rules)</p>
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-copper-soft border border-soft">
+                <AlertCircle className="w-4 h-4 text-copper-dark" />
+                <p className="text-[12px] text-copper-dark font-medium">Outreach suppressed (contact fatigue / consent rules)</p>
               </div>
             )}
           </div>
@@ -520,7 +520,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                     disabled={!langReady}
                     value={targetLang}
                     onChange={(e) => setTargetLang(e.target.value)}
-                    className="text-[12px] font-medium px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:border-[#0f2d5c] focus:border-[#0f2d5c] outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    className="text-[12px] font-medium px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:border-[var(--crimson)] focus:border-[var(--crimson)] outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     aria-label="Target language for translation"
                     title={
                       !langReady
@@ -552,7 +552,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                   <button
                     onClick={() => targetLang && handleTranslate(targetLang)}
                     disabled={!targetLang || translating || generating || !langReady}
-                    className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg border border-[#0f2d5c] text-[#0f2d5c] bg-white hover:bg-[#0f2d5c]/5 disabled:opacity-50 transition-colors"
+                    className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg border border-[var(--crimson)] text-[var(--crimson)] bg-white hover:bg-[var(--crimson)]/5 disabled:opacity-50 transition-colors"
                     title={
                       !langReady
                         ? (langError || 'Waiting for language list')
@@ -579,7 +579,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                 </div>
                 {/* Generate / regenerate */}
                 <button onClick={handleGenerate} disabled={generating}
-                  className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-[#0f2d5c] text-white hover:bg-[#1a3f7a] disabled:opacity-50 transition-colors">
+                  className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-[var(--crimson)] text-white hover:bg-[var(--crimson-dark)] disabled:opacity-50 transition-colors">
                   <Zap className="w-3.5 h-3.5" />
                   {generating ? 'Generating…' : herald ? 'Regenerate' : 'Generate with AI'}
                 </button>
@@ -590,13 +590,13 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
             {(translation || translationErr || langError) && (
               <div className="flex items-center gap-2 flex-wrap text-[11px]">
                 {translation && (
-                  <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+                  <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-teal-soft text-teal-dark border border-soft">
                     <Globe2 className="w-3 h-3" />
                     Translated to {languages.find(l => l.code === targetLang)?.name || targetLang.toUpperCase()}
                   </span>
                 )}
                 {(translationErr || langError) && (
-                  <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-50 text-red-600 border border-red-200">
+                  <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-crimson-soft text-crimson border border-soft">
                     <AlertCircle className="w-3 h-3" />
                     {translationErr || langError}
                   </span>
@@ -607,7 +607,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
             {generating ? (
               <div className="space-y-3 py-2">
                 <div className="flex items-center gap-2 text-[12px] text-slate-400 mb-1">
-                  <div className="w-4 h-4 border-2 border-[#0f2d5c] border-t-transparent rounded-full animate-spin shrink-0" />
+                  <div className="w-4 h-4 border-2 border-[var(--crimson)] border-t-transparent rounded-full animate-spin shrink-0" />
                   NVIDIA DeepSeek V4 Pro is writing personalised email, SMS and push content…
                 </div>
                 {['Email body', 'SMS message', 'Push notification'].map(label => (
@@ -620,12 +620,12 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                 ))}
               </div>
             ) : heraldError ? (
-              <div className="flex items-start gap-3 p-4 rounded-lg bg-red-50 border border-red-200">
-                <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-crimson-soft border border-soft">
+                <AlertCircle className="w-4 h-4 text-crimson shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-[12px] font-semibold text-red-700 mb-0.5">Content generation failed</p>
-                  <p className="text-[12px] text-red-600">{heraldError}</p>
-                  <p className="text-[11px] text-red-400 mt-1">Check that the NVIDIA API key is set in server/.env and the endpoint is reachable.</p>
+                  <p className="text-[12px] font-semibold text-crimson mb-0.5">Content generation failed</p>
+                  <p className="text-[12px] text-crimson">{heraldError}</p>
+                  <p className="text-[11px] text-crimson mt-1">Check that the NVIDIA API key is set in server/.env and the endpoint is reachable.</p>
                 </div>
               </div>
             ) : !activeHerald ? (
@@ -638,11 +638,11 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                       <Mail className="w-4 h-4 text-slate-400" />
                       <span className="text-[12px] font-semibold text-slate-700">Email</span>
                       {translation && (
-                        <span className="text-[10px] font-semibold bg-sky-100 text-sky-700 px-1.5 py-0.5 rounded-full">
+                        <span className="text-[10px] font-semibold bg-teal-soft text-teal-dark px-1.5 py-0.5 rounded-full">
                           {(languages.find(l => l.code === targetLang)?.nativeName) || targetLang}
                         </span>
                       )}
-                      <span className="ml-auto text-[10px] text-green-600 font-semibold bg-green-50 px-1.5 py-0.5 rounded-full">
+                      <span className="ml-auto text-[10px] text-sage-brand font-semibold bg-sage-soft px-1.5 py-0.5 rounded-full">
                         {activeHerald.email.compliance_status}
                       </span>
                       <span className="text-[10px] text-slate-400">{activeHerald.email.word_count} words</span>
@@ -660,11 +660,11 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                       <MessageSquare className="w-4 h-4 text-slate-400" />
                       <span className="text-[12px] font-semibold text-slate-700">SMS</span>
                       {translation && (
-                        <span className="text-[10px] font-semibold bg-sky-100 text-sky-700 px-1.5 py-0.5 rounded-full">
+                        <span className="text-[10px] font-semibold bg-teal-soft text-teal-dark px-1.5 py-0.5 rounded-full">
                           {(languages.find(l => l.code === targetLang)?.nativeName) || targetLang}
                         </span>
                       )}
-                      <span className="ml-auto text-[10px] text-green-600 font-semibold bg-green-50 px-1.5 py-0.5 rounded-full">
+                      <span className="ml-auto text-[10px] text-sage-brand font-semibold bg-sage-soft px-1.5 py-0.5 rounded-full">
                         {activeHerald.sms.compliance_status}
                       </span>
                       <span className="text-[10px] text-slate-400">{activeHerald.sms.char_count} chars</span>
@@ -680,13 +680,13 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                       <Bell className="w-4 h-4 text-slate-400" />
                       <span className="text-[12px] font-semibold text-slate-700">Push Notification</span>
                       {translation && (
-                        <span className="text-[10px] font-semibold bg-sky-100 text-sky-700 px-1.5 py-0.5 rounded-full">
+                        <span className="text-[10px] font-semibold bg-teal-soft text-teal-dark px-1.5 py-0.5 rounded-full">
                           {(languages.find(l => l.code === targetLang)?.nativeName) || targetLang}
                         </span>
                       )}
                     </div>
                     <div className="p-4 flex gap-4 items-start">
-                      <div className="w-10 h-10 rounded-xl bg-[#0f2d5c] flex items-center justify-center text-white text-[10px] font-black shrink-0">UB</div>
+                      <div className="w-10 h-10 rounded-xl bg-[var(--crimson)] flex items-center justify-center text-white text-[10px] font-black shrink-0">UB</div>
                       <div>
                         <p className="text-[13px] font-semibold text-slate-800 mb-0.5">{activeHerald.push.title}</p>
                         <p className="text-[12px] text-slate-600">{activeHerald.push.body}</p>
@@ -714,9 +714,9 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
           <div className="space-y-6">
             <div className="grid grid-cols-3 gap-4">
               {[
-                { label:'P(churn < 7d)',  val: survival.p7,  color: survival.p7>0.4?'#dc2626':'#16a34a' },
-                { label:'P(churn < 30d)', val: survival.p30, color: survival.p30>0.4?'#dc2626':survival.p30>0.25?'#ea580c':'#16a34a' },
-                { label:'P(churn < 90d)', val: survival.p90, color: survival.p90>0.5?'#dc2626':survival.p90>0.3?'#ea580c':'#16a34a' },
+                { label:'P(churn < 7d)',  val: survival.p7,  color: survival.p7>0.4?'var(--crimson)':'var(--sage-brand)' },
+                { label:'P(churn < 30d)', val: survival.p30, color: survival.p30>0.4?'var(--crimson)':survival.p30>0.25?'var(--copper)':'var(--sage-brand)' },
+                { label:'P(churn < 90d)', val: survival.p90, color: survival.p90>0.5?'var(--crimson)':survival.p90>0.3?'var(--copper)':'var(--sage-brand)' },
               ].map(({label,val,color}) => (
                 <div key={label} className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-center">
                   <p className="text-[10px] text-slate-400 mb-1">{label}</p>
@@ -733,15 +733,15 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                   margin={{top:4,right:8,left:-20,bottom:0}}>
                   <defs>
                     <linearGradient id="survGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%"   stopColor="#0f2d5c" stopOpacity={0.15} />
-                      <stop offset="100%" stopColor="#0f2d5c" stopOpacity={0.01} />
+                      <stop offset="0%"   stopColor="var(--crimson)" stopOpacity={0.15} />
+                      <stop offset="100%" stopColor="var(--crimson)" stopOpacity={0.01} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="t" tick={{fontSize:10,fill:'#94a3b8'}} tickFormatter={v=>`${v}d`} axisLine={false} tickLine={false} />
-                  <YAxis tick={{fontSize:10,fill:'#94a3b8'}} tickFormatter={v=>`${v.toFixed(0)}%`} axisLine={false} tickLine={false} domain={[0,100]} />
-                  <Tooltip formatter={(v:number) => [`${v.toFixed(1)}%`, 'Survival']} contentStyle={{fontSize:11,borderRadius:8,border:'1px solid #e2e8f0'}} labelFormatter={v=>`Day ${v}`} />
-                  <Area type="monotone" dataKey="s" stroke="#0f2d5c" strokeWidth={2.5} fill="url(#survGrad)" dot={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--secondary)" />
+                  <XAxis dataKey="t" tick={{fontSize:10,fill:'var(--gray-400)'}} tickFormatter={v=>`${v}d`} axisLine={false} tickLine={false} />
+                  <YAxis tick={{fontSize:10,fill:'var(--gray-400)'}} tickFormatter={v=>`${Number(v).toFixed(0)}%`} axisLine={false} tickLine={false} domain={[0,100]} />
+                  <Tooltip formatter={(v) => [`${Number(v).toFixed(1)}%`, 'Survival']} contentStyle={{fontSize:11,borderRadius:8,border:'1px solid var(--border-color)'}} labelFormatter={v=>`Day ${v}`} />
+                  <Area type="monotone" dataKey="s" stroke="var(--crimson)" strokeWidth={2.5} fill="url(#survGrad)" dot={false} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

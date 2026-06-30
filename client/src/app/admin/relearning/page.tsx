@@ -7,7 +7,7 @@ import { CheckCircle2, XCircle, Clock, TrendingUp, BarChart3 } from 'lucide-reac
 const CYCLES = [
   {
     id: 'retrain', name: 'RETRAIN', schedule: 'Weekly · Sunday 2am',
-    border: 'border-l-purple-500', bg: 'bg-purple-50', badge: 'bg-purple-100 text-purple-700',
+    border: 'border-l-purple-500', bg: 'bg-teal-soft', badge: 'bg-teal-soft text-teal-dark',
     desc: 'Re-trains TARE (2 epochs), HABITAT (incremental), CAUSAL-NET. AEGIS gate blocks if new AUC < prod AUC.',
     lastRun: '2026-06-22 02:00', nextRun: '2026-06-29 02:00',
     metrics: [
@@ -18,7 +18,7 @@ const CYCLES = [
   },
   {
     id: 'refine', name: 'REFINE', schedule: 'Daily · 1am',
-    border: 'border-l-amber-500', bg: 'bg-amber-50', badge: 'bg-amber-100 text-amber-700',
+    border: 'border-l-amber-500', bg: 'bg-copper-soft', badge: 'bg-copper-soft text-copper-dark',
     desc: 'Measures prompt performance (open/click/conversion). Promotes top 3, deprecates bottom 3, generates new variant.',
     lastRun: '2026-06-30 01:00', nextRun: '2026-07-01 01:00',
     metrics: [
@@ -29,7 +29,7 @@ const CYCLES = [
   },
   {
     id: 'route', name: 'ROUTE', schedule: 'Real-time · per outreach',
-    border: 'border-l-sky-500', bg: 'bg-sky-50', badge: 'bg-sky-100 text-sky-700',
+    border: 'border-l-sky-500', bg: 'bg-teal-soft', badge: 'bg-teal-soft text-teal-dark',
     desc: 'Updates channel policy P(engagement|channel, customer) from recent events. No human trigger needed.',
     lastRun: 'Continuous', nextRun: 'Continuous',
     metrics: [
@@ -40,7 +40,7 @@ const CYCLES = [
   },
   {
     id: 'narrate', name: 'NARRATE', schedule: 'Nightly · 11pm',
-    border: 'border-l-emerald-500', bg: 'bg-emerald-50', badge: 'bg-emerald-100 text-emerald-700',
+    border: 'border-l-emerald-500', bg: 'bg-sage-soft', badge: 'bg-sage-soft text-sage-brand',
     desc: 'LLM reads uplift/prompt/channel metrics → Markdown narrative for stakeholders. Published to dashboard.',
     lastRun: '2026-06-29 23:00', nextRun: '2026-06-30 23:00',
     metrics: [
@@ -59,8 +59,8 @@ const CHANNEL_POLICY = [
 ];
 
 const CHANNEL_STYLE: Record<string, string> = {
-  Phone: 'bg-amber-100 text-amber-700', Email: 'bg-blue-100 text-blue-700',
-  SMS:   'bg-green-100 text-green-700', Push:  'bg-purple-100 text-purple-700',
+  Phone: 'bg-copper-soft text-copper-dark', Email: 'bg-teal-soft text-teal-dark',
+  SMS:   'bg-sage-soft text-sage-brand', Push:  'bg-teal-soft text-teal-dark',
 };
 
 export default function RelearningPage() {
@@ -78,10 +78,10 @@ export default function RelearningPage() {
       </div>
 
       {/* Retraining gate */}
-      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
+      <div className="bg-sage-soft border border-soft rounded-xl p-5">
         <div className="flex items-center gap-3 mb-3">
-          <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-          <p className="font-bold text-slate-900 text-sm">Retraining Gate — <span className="text-emerald-600">DEPLOY ALLOWED</span></p>
+          <CheckCircle2 className="w-5 h-5 text-sage-brand" />
+          <p className="font-bold text-slate-900 text-sm">Retraining Gate — <span className="text-sage-brand">DEPLOY ALLOWED</span></p>
           <span className="ml-auto text-[10px] text-slate-400">RBI AI Governance 2024 §8</span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -92,10 +92,10 @@ export default function RelearningPage() {
             { label: 'Consent Check',   status: 'PASS',     ok: true },
           ].map(g => (
             <div key={g.label} className="bg-white rounded-lg border border-slate-200 p-3 flex items-center gap-2">
-              {g.ok ? <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> : <XCircle className="w-4 h-4 text-red-500 shrink-0" />}
+              {g.ok ? <CheckCircle2 className="w-4 h-4 text-sage-brand shrink-0" /> : <XCircle className="w-4 h-4 text-crimson shrink-0" />}
               <div>
                 <p className="text-[10px] text-slate-400">{g.label}</p>
-                <p className={`text-[11px] font-bold ${g.ok ? 'text-emerald-600' : 'text-red-600'}`}>{g.status}</p>
+                <p className={`text-[11px] font-bold ${g.ok ? 'text-sage-brand' : 'text-crimson'}`}>{g.status}</p>
               </div>
             </div>
           ))}
@@ -121,7 +121,7 @@ export default function RelearningPage() {
                 <div key={m.label} className="bg-slate-50 rounded-lg p-2.5">
                   <p className="text-[9px] text-slate-400 uppercase tracking-widest mb-1">{m.label}</p>
                   <p className="text-sm font-bold text-slate-900">{m.after}</p>
-                  <p className={`text-[10px] font-semibold ${m.up ? 'text-emerald-600' : 'text-red-500'}`}>{m.delta}</p>
+                  <p className={`text-[10px] font-semibold ${m.up ? 'text-sage-brand' : 'text-crimson'}`}>{m.delta}</p>
                 </div>
               ))}
             </div>

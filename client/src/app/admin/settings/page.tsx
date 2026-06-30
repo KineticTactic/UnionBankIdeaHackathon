@@ -12,18 +12,18 @@ const VALID_ROLES = ['admin', 'manager', 'risk', 'rm', 'analyst'] as const;
 type Role = typeof VALID_ROLES[number];
 
 const ROLE_META: Record<Role, { color: string; desc: string }> = {
-  admin:   { color: 'bg-red-100 text-red-700 border-red-200',          desc: 'Full access to all admin sections' },
-  manager: { color: 'bg-amber-100 text-amber-700 border-amber-200',    desc: 'Branch oversight, escalations, reports' },
-  risk:    { color: 'bg-orange-100 text-orange-700 border-orange-200', desc: 'Risk model settings, bias audit' },
-  rm:      { color: 'bg-sky-100 text-sky-700 border-sky-200',          desc: 'Customer portal, outreach, consent' },
-  analyst: { color: 'bg-purple-100 text-purple-700 border-purple-200', desc: 'Read-only analytics and reports' },
+  admin:   { color: 'bg-crimson-soft text-crimson border-soft',          desc: 'Full access to all admin sections' },
+  manager: { color: 'bg-copper-soft text-copper-dark border-soft',    desc: 'Branch oversight, escalations, reports' },
+  risk:    { color: 'bg-copper-soft text-copper-dark border-soft', desc: 'Risk model settings, bias audit' },
+  rm:      { color: 'bg-teal-soft text-teal-dark border-soft',          desc: 'Customer portal, outreach, consent' },
+  analyst: { color: 'bg-teal-soft text-teal-dark border-soft', desc: 'Read-only analytics and reports' },
 };
 
 const TIER_CONFIG = [
-  { key: 'PRIORITY', color: '#ef4444', dot: 'bg-red-500',    label: 'PRIORITY', desc: 'Immediate — COMPASS triggers RM call within 24h' },
-  { key: 'ESCALATE', color: '#f97316', dot: 'bg-orange-500', label: 'ESCALATE', desc: 'Urgent — email/SMS outreach within 48h' },
-  { key: 'STANDARD', color: '#f59e0b', dot: 'bg-amber-500',  label: 'STANDARD', desc: 'Watch — standard outreach cycle, 7-day cadence' },
-  { key: 'MONITOR',  color: '#3b82f6', dot: 'bg-blue-500',   label: 'MONITOR',  desc: 'Low risk — monthly check-in only' },
+  { key: 'PRIORITY', color: 'var(--crimson)', dot: 'bg-crimson',    label: 'PRIORITY', desc: 'Immediate — COMPASS triggers RM call within 24h' },
+  { key: 'ESCALATE', color: 'var(--copper)', dot: 'bg-copper', label: 'ESCALATE', desc: 'Urgent — email/SMS outreach within 48h' },
+  { key: 'STANDARD', color: 'var(--copper)', dot: 'bg-copper',  label: 'STANDARD', desc: 'Watch — standard outreach cycle, 7-day cadence' },
+  { key: 'MONITOR',  color: 'var(--teal)', dot: 'bg-teal',   label: 'MONITOR',  desc: 'Low risk — monthly check-in only' },
 ] as const;
 
 const CHANNEL_CONFIG = [
@@ -37,7 +37,7 @@ const CHANNEL_CONFIG = [
 function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
   return (
     <button onClick={() => onChange(!value)}
-      className={`relative w-11 h-6 rounded-full transition-colors ${value ? 'bg-emerald-500' : 'bg-slate-300'}`}>
+      className={`relative w-11 h-6 rounded-full transition-colors ${value ? 'bg-sage-brand' : 'bg-slate-300'}`}>
       <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${value ? 'left-6' : 'left-1'}`} />
     </button>
   );
@@ -156,7 +156,7 @@ export default function AdminSettingsPage() {
         </div>
         <div className="flex items-center gap-3">
           {flash && (
-            <span className={`flex items-center gap-1.5 text-sm font-semibold ${flashOk ? 'text-emerald-600' : 'text-red-600'}`}>
+            <span className={`flex items-center gap-1.5 text-sm font-semibold ${flashOk ? 'text-sage-brand' : 'text-crimson'}`}>
               {flashOk ? <CheckCircle2 className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}{flash}
             </span>
           )}
@@ -173,7 +173,7 @@ export default function AdminSettingsPage() {
           <button key={key} onClick={() => setTab(key)}
             className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold transition-all border-b-2 -mb-px ${
               tab === key
-                ? 'border-[#0f2d5c] text-[#0f2d5c]'
+                ? 'border-[var(--crimson)] text-[var(--crimson)]'
                 : 'border-transparent text-slate-400 hover:text-slate-600'
             }`}>
             <Icon className="w-3.5 h-3.5" />{label}
@@ -202,7 +202,7 @@ export default function AdminSettingsPage() {
                       <input type="range" min={0.01} max={0.99} step={0.01}
                         value={(thresholds as any)[key]}
                         onChange={e => setThresh(p => ({ ...p, [key]: parseFloat(e.target.value) }))}
-                        className="flex-1 accent-[#0f2d5c] h-1.5 cursor-pointer" />
+                        className="flex-1 accent-[var(--crimson)] h-1.5 cursor-pointer" />
                       <span className="text-base font-bold text-slate-900 tabular-nums w-12 text-right">
                         {Math.round((thresholds as any)[key] * 100)}%
                       </span>
@@ -214,7 +214,7 @@ export default function AdminSettingsPage() {
             )}
 
             {!threshValid && (
-              <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg p-2.5 flex items-center gap-2">
+              <p className="text-xs text-crimson bg-crimson-soft border border-soft rounded-lg p-2.5 flex items-center gap-2">
                 <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                 Thresholds must be strictly descending (PRIORITY &gt; ESCALATE &gt; STANDARD &gt; MONITOR)
               </p>
@@ -225,11 +225,11 @@ export default function AdminSettingsPage() {
           <SectionCard title="Tier Distribution Preview" desc="How the 0–100% score axis is divided at current thresholds.">
             <div className="relative h-9 rounded-xl overflow-hidden flex">
               {[
-                { label: 'NONE',     pct: thresholds.MONITOR * 100,                                        bg: 'bg-emerald-100' },
-                { label: 'MONITOR',  pct: (thresholds.STANDARD - thresholds.MONITOR) * 100,                bg: 'bg-blue-200' },
+                { label: 'NONE',     pct: thresholds.MONITOR * 100,                                        bg: 'bg-sage-soft' },
+                { label: 'MONITOR',  pct: (thresholds.STANDARD - thresholds.MONITOR) * 100,                bg: 'border-soft' },
                 { label: 'STANDARD', pct: (thresholds.ESCALATE - thresholds.STANDARD) * 100,               bg: 'bg-amber-300' },
                 { label: 'ESCALATE', pct: (thresholds.PRIORITY - thresholds.ESCALATE) * 100,               bg: 'bg-orange-400' },
-                { label: 'PRIORITY', pct: (1 - thresholds.PRIORITY) * 100,                                 bg: 'bg-red-500' },
+                { label: 'PRIORITY', pct: (1 - thresholds.PRIORITY) * 100,                                 bg: 'bg-crimson' },
               ].map(s => (
                 <div key={s.label} className={`${s.bg} flex items-center justify-center overflow-hidden transition-all`}
                   style={{ width: `${s.pct}%` }}>
@@ -243,7 +243,7 @@ export default function AdminSettingsPage() {
           </SectionCard>
 
           <button onClick={saveThresholds} disabled={saving === 'thresholds' || !threshValid}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0f2d5c] text-white font-semibold text-sm hover:bg-[#0f2d5c]/90 disabled:opacity-50 transition-all">
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--crimson)] text-white font-semibold text-sm hover:bg-[var(--crimson)]/90 disabled:opacity-50 transition-all">
             <Save className="w-4 h-4" />
             {saving === 'thresholds' ? 'Saving…' : 'Save Thresholds'}
           </button>
@@ -276,7 +276,7 @@ export default function AdminSettingsPage() {
                         <input type="range" min={min} max={max} step={1}
                           value={(fatigue as any)[key]}
                           onChange={e => setFatigue(p => ({ ...p, [key]: parseInt(e.target.value) }))}
-                          className="w-36 accent-[#0f2d5c] h-1.5 cursor-pointer" />
+                          className="w-36 accent-[var(--crimson)] h-1.5 cursor-pointer" />
                         <span className="text-sm font-bold text-slate-900 tabular-nums w-24 text-right">
                           {(fatigue as any)[key]}&nbsp;<span className="text-slate-400 font-normal text-xs">{unit}</span>
                         </span>
@@ -295,10 +295,10 @@ export default function AdminSettingsPage() {
                 { label: 'TRAI TCCCPR 2025', value: 'Max 3 commercial msgs/day per DND registry', ok: fatigue.max_per_day <= 3 },
                 { label: 'RBI AI Guidelines', value: '2+ day cooling period post-contact',         ok: fatigue.min_days_between >= 2 },
               ].map(r => (
-                <div key={r.label} className={`rounded-xl p-3 border ${r.ok ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50'}`}>
+                <div key={r.label} className={`rounded-xl p-3 border ${r.ok ? 'border-soft bg-sage-soft' : 'border-soft bg-copper-soft'}`}>
                   <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1">{r.label}</p>
                   <p className="text-xs font-medium text-slate-700 mb-1.5">{r.value}</p>
-                  <p className={`text-[10px] font-bold ${r.ok ? 'text-emerald-600' : 'text-amber-600'}`}>
+                  <p className={`text-[10px] font-bold ${r.ok ? 'text-sage-brand' : 'text-copper-dark'}`}>
                     {r.ok ? '✓ Compliant' : '⚠ Review recommended'}
                   </p>
                 </div>
@@ -307,7 +307,7 @@ export default function AdminSettingsPage() {
           </SectionCard>
 
           <button onClick={saveFatigue} disabled={saving === 'fatigue'}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0f2d5c] text-white font-semibold text-sm hover:bg-[#0f2d5c]/90 disabled:opacity-50 transition-all">
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--crimson)] text-white font-semibold text-sm hover:bg-[var(--crimson)]/90 disabled:opacity-50 transition-all">
             <Save className="w-4 h-4" />
             {saving === 'fatigue' ? 'Saving…' : 'Save Fatigue Rules'}
           </button>
@@ -329,9 +329,9 @@ export default function AdminSettingsPage() {
                   const active = (channels as any)[key];
                   return (
                     <div key={key}
-                      className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${active ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-slate-50/50'}`}>
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-emerald-100' : 'bg-slate-100'}`}>
-                        <Icon className={`w-5 h-5 ${active ? 'text-emerald-600' : 'text-slate-400'}`} />
+                      className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${active ? 'border-soft bg-sage-soft/30' : 'border-slate-200 bg-slate-50/50'}`}>
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-sage-soft' : 'bg-slate-100'}`}>
+                        <Icon className={`w-5 h-5 ${active ? 'text-sage-brand' : 'text-slate-400'}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
@@ -341,7 +341,7 @@ export default function AdminSettingsPage() {
                         <p className="text-[11px] text-slate-400">{desc}</p>
                       </div>
                       <div className="flex items-center gap-3 shrink-0">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${active ? 'bg-sage-soft text-sage-brand' : 'bg-slate-100 text-slate-500'}`}>
                           {active ? 'ENABLED' : 'DISABLED'}
                         </span>
                         <Toggle value={active} onChange={v => setChannels(p => ({ ...p, [key]: v }))} />
@@ -353,16 +353,16 @@ export default function AdminSettingsPage() {
             )}
           </SectionCard>
 
-          <div className="bg-sky-50 border border-sky-200 rounded-xl p-4 flex items-start gap-3">
-            <Shield className="w-4 h-4 text-sky-600 mt-0.5 shrink-0" />
-            <p className="text-sm text-sky-700">
+          <div className="bg-teal-soft border border-soft rounded-xl p-4 flex items-start gap-3">
+            <Shield className="w-4 h-4 text-teal-dark mt-0.5 shrink-0" />
+            <p className="text-sm text-teal-dark">
               Per-customer channel opt-outs are managed in <strong>Compliance Hub → Consent Ledger</strong>.
               These global toggles override all individual preferences — disabling a channel here blocks it for everyone.
             </p>
           </div>
 
           <button onClick={saveChannels} disabled={saving === 'channels'}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0f2d5c] text-white font-semibold text-sm hover:bg-[#0f2d5c]/90 disabled:opacity-50 transition-all">
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--crimson)] text-white font-semibold text-sm hover:bg-[var(--crimson)]/90 disabled:opacity-50 transition-all">
             <Save className="w-4 h-4" />
             {saving === 'channels' ? 'Saving…' : 'Save Channel Settings'}
           </button>
@@ -375,14 +375,14 @@ export default function AdminSettingsPage() {
           <div className="flex items-center justify-between">
             <p className="text-sm text-slate-500">{users.length} users · Role changes take effect on next login</p>
             <button onClick={() => setShowAddUser(p => !p)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0f2d5c] text-white text-sm font-semibold hover:bg-[#0f2d5c]/90 transition-all">
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--crimson)] text-white text-sm font-semibold hover:bg-[var(--crimson)]/90 transition-all">
               {showAddUser ? <><X className="w-3.5 h-3.5" /> Cancel</> : <><Plus className="w-3.5 h-3.5" /> Add User</>}
             </button>
           </div>
 
           {/* add user form */}
           {showAddUser && (
-            <div className="bg-white rounded-xl border border-[#0f2d5c]/20 shadow-sm p-5 space-y-4">
+            <div className="bg-white rounded-xl border border-[var(--crimson)]/20 shadow-sm p-5 space-y-4">
               <h3 className="text-sm font-bold text-slate-800">Create New User</h3>
               <div className="grid grid-cols-2 gap-3">
                 {([
@@ -395,14 +395,14 @@ export default function AdminSettingsPage() {
                     <input type={type} value={(newUser as any)[field]}
                       onChange={e => setNewUser(p => ({ ...p, [field]: e.target.value }))}
                       placeholder={placeholder}
-                      className="w-full rounded-lg border border-slate-200 text-sm text-slate-800 px-3 py-2 focus:outline-none focus:border-[#0f2d5c]/40 bg-white" />
+                      className="w-full rounded-lg border border-slate-200 text-sm text-slate-800 px-3 py-2 focus:outline-none focus:border-[var(--crimson)]/40 bg-white" />
                   </div>
                 ))}
                 <div>
                   <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1 block">Role</label>
                   <select value={newUser.role}
                     onChange={e => setNewUser(p => ({ ...p, role: e.target.value as Role }))}
-                    className="w-full rounded-lg border border-slate-200 text-sm text-slate-800 px-3 py-2 focus:outline-none focus:border-[#0f2d5c]/40 bg-white">
+                    className="w-full rounded-lg border border-slate-200 text-sm text-slate-800 px-3 py-2 focus:outline-none focus:border-[var(--crimson)]/40 bg-white">
                     {VALID_ROLES.map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
                 </div>
@@ -414,7 +414,7 @@ export default function AdminSettingsPage() {
               )}
               <button onClick={addUser}
                 disabled={addingUser || !newUser.username || !newUser.name || !newUser.password}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0f2d5c] text-white font-semibold text-sm hover:bg-[#0f2d5c]/90 disabled:opacity-40 transition-all">
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--crimson)] text-white font-semibold text-sm hover:bg-[var(--crimson)]/90 disabled:opacity-40 transition-all">
                 <Plus className="w-4 h-4" />{addingUser ? 'Creating…' : 'Create User'}
               </button>
             </div>
@@ -447,7 +447,7 @@ export default function AdminSettingsPage() {
                 <div key={u.username}
                   className="grid grid-cols-[1fr_110px_170px] items-center px-5 py-4 border-b border-slate-50 last:border-0 hover:bg-slate-50/60 transition-colors">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#0f2d5c]/10 flex items-center justify-center text-[11px] font-bold text-[#0f2d5c] shrink-0">
+                    <div className="w-9 h-9 rounded-full bg-[var(--crimson)]/10 flex items-center justify-center text-[11px] font-bold text-[var(--crimson)] shrink-0">
                       {initials}
                     </div>
                     <div>
@@ -462,7 +462,7 @@ export default function AdminSettingsPage() {
                   </div>
                   <div className="flex justify-center">
                     <select value={u.role} onChange={e => changeRole(u.username, e.target.value)}
-                      className="rounded-lg border border-slate-200 text-sm text-slate-700 px-3 py-1.5 focus:outline-none focus:border-[#0f2d5c]/40 bg-white w-full">
+                      className="rounded-lg border border-slate-200 text-sm text-slate-700 px-3 py-1.5 focus:outline-none focus:border-[var(--crimson)]/40 bg-white w-full">
                       {VALID_ROLES.map(r => <option key={r} value={r}>{r}</option>)}
                     </select>
                   </div>

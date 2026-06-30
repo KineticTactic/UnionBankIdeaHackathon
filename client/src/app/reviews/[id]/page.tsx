@@ -29,11 +29,11 @@ const TYPE_LABEL: Record<string, string> = {
 };
 
 const STATUS_STYLE: Record<string, string> = {
-    pending: "bg-amber-50 text-amber-700 border-amber-200",
-    in_review: "bg-blue-50 text-blue-700 border-blue-200",
-    approved: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    rejected: "bg-red-50 text-red-700 border-red-200",
-    escalated: "bg-violet-50 text-violet-700 border-violet-200",
+    pending: "bg-copper-soft text-copper-dark border-soft",
+    in_review: "bg-teal-soft text-teal-dark border-soft",
+    approved: "bg-sage-soft text-sage-brand border-soft",
+    rejected: "bg-crimson-soft text-crimson border-soft",
+    escalated: "bg-teal-soft text-teal-dark border-soft",
 };
 
 export default function ReviewDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -66,7 +66,7 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
     if (error || !review) {
         return (
             <div className="p-6 max-w-7xl mx-auto">
-                <Link href="/reviews" className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline mb-4">
+                <Link href="/reviews" className="inline-flex items-center gap-1.5 text-sm text-teal-dark hover:underline mb-4">
                     <ArrowLeft className="w-3.5 h-3.5" />
                     Back to reviews
                 </Link>
@@ -79,15 +79,15 @@ export default function ReviewDetailPage({ params }: { params: Promise<{ id: str
 
     return (
         <div className="p-6 max-w-7xl mx-auto space-y-6">
-            <Link href="/reviews" className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:underline">
+            <Link href="/reviews" className="inline-flex items-center gap-1.5 text-sm text-teal-dark hover:underline">
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Back to reviews
             </Link>
 
             <div className="bg-white border border-slate-200 rounded-lg p-5">
                 <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 rounded-lg bg-teal-soft flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-5 h-5 text-teal-dark" />
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">

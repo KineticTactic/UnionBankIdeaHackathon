@@ -206,5 +206,45 @@
     },
     "errors": [],
     "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+  },
+  {
+    "checkedAt": "2026-06-30T18:11:03.690Z",
+    "archived": {
+      "approvals": 0
+    },
+    "errors": [],
+    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+  },
+  {
+    "checkedAt": "2026-06-30T18:26:20.830Z",
+    "archived": {
+      "approvals": 0
+    },
+    "errors": [],
+    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+  },
+  {
+    "checkedAt": "2026-06-30T18:40:39.950Z",
+    "archived": {
+      "approvals": 0
+    },
+    "errors": [],
+    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+  },
+  {
+    "checkedAt": "2026-06-30T18:59:20.751Z",
+    "archived": {
+      "approvals": 0
+    },
+    "errors": [],
+    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+  },
+  {
+    "checkedAt": "2026-06-30T19:11:41.492Z",
+    "archived": {
+      "approvals": 0
+    },
+    "errors": [],
+    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
   }
 ]

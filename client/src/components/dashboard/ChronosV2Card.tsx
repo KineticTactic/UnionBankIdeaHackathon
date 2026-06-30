@@ -1,7 +1,26 @@
 "use client";
 
-import { V2ModelHealth, PortfolioSurvival } from "@/types";
 import { Activity, Network, Brain, GitBranch, Layers, AlertTriangle, CheckCircle2 } from "lucide-react";
+
+interface V2ModelHealth {
+    ensemble?: {
+        last_calibrated?: string;
+        [key: string]: unknown;
+    };
+    models?: Array<{
+        name: string;
+        auc: number;
+        precision: number;
+        recall: number;
+        status: string;
+        [key: string]: any;
+    }>;
+    [key: string]: any;
+}
+
+interface PortfolioSurvival {
+    [key: string]: any;
+}
 
 interface ChronosV2CardProps {
     modelHealth: V2ModelHealth | null;
@@ -10,10 +29,10 @@ interface ChronosV2CardProps {
 }
 
 const URGENCY_CONFIG = {
-    "7d":  { label: "7-Day Alert",  bg: "bg-red-500",    text: "text-red-700" },
-    "30d": { label: "30-Day Risk",  bg: "bg-amber-500",  text: "text-amber-700" },
-    "90d": { label: "90-Day Watch", bg: "bg-yellow-500", text: "text-yellow-700" },
-    "safe":{ label: "Stable",       bg: "bg-emerald-500",text: "text-emerald-700" },
+    "7d":  { label: "7-Day Alert",  bg: "bg-crimson",    text: "text-crimson" },
+    "30d": { label: "30-Day Risk",  bg: "bg-copper",  text: "text-copper-dark" },
+    "90d": { label: "90-Day Watch", bg: "bg-yellow-500", text: "text-copper-dark" },
+    "safe":{ label: "Stable",       bg: "bg-sage-brand",text: "text-sage-brand" },
 } as const;
 
 const MODEL_ICONS: Record<string, React.ReactNode> = {
@@ -25,7 +44,7 @@ const MODEL_ICONS: Record<string, React.ReactNode> = {
 
 function MetricPill({ label, value, sub }: { label: string; value: string; sub?: string }) {
     return (
-        <div className="bg-indigo-50/70 rounded-lg p-3 border border-indigo-100/60 flex flex-col">
+        <div className="bg-teal-soft/70 rounded-lg p-3 border border-indigo-100/60 flex flex-col">
             <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">{label}</span>
             <span className="text-lg font-bold text-slate-900 leading-none">{value}</span>
             {sub && <span className="text-[10px] text-slate-400 mt-0.5">{sub}</span>}
@@ -36,9 +55,9 @@ function MetricPill({ label, value, sub }: { label: string; value: string; sub?:
 export function ChronosV2Card({ modelHealth, portfolioSurvival, loading }: ChronosV2CardProps) {
     if (loading) {
         return (
-            <div className="rounded-xl border border-indigo-200 bg-white overflow-hidden animate-pulse">
-                <div className="px-5 py-4 bg-indigo-50 border-b border-indigo-200">
-                    <div className="h-4 bg-indigo-200 rounded w-64" />
+            <div className="rounded-xl border border-soft bg-white overflow-hidden animate-pulse">
+                <div className="px-5 py-4 bg-teal-soft border-b border-soft">
+                    <div className="h-4 border-soft rounded w-64" />
                 </div>
                 <div className="p-5 space-y-4">
                     <div className="grid grid-cols-4 gap-3">
@@ -56,13 +75,13 @@ export function ChronosV2Card({ modelHealth, portfolioSurvival, loading }: Chron
     const urgencyKeys = ["7d", "30d", "90d", "safe"] as const;
 
     return (
-        <div className="rounded-xl border border-indigo-200/80 bg-white overflow-hidden">
+        <div className="rounded-xl border border-soft/80 bg-white overflow-hidden">
             {/* Header */}
-            <div className="px-5 py-3 bg-gradient-to-r from-indigo-50 to-violet-50 border-b border-indigo-200/80 flex items-center justify-between">
+            <div className="px-5 py-3 bg-gradient-to-r from-indigo-50 to-violet-50 border-b border-soft/80 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                    <GitBranch className="w-4 h-4 text-indigo-600" />
+                    <GitBranch className="w-4 h-4 text-teal-dark" />
                     <span className="text-sm font-bold text-slate-800">Retention Intelligence · Precision Ensemble</span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200 uppercase tracking-wider">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-soft text-teal-dark border border-soft uppercase tracking-wider">
                         Network Intelligence + Survival Analytics + Temporal Patterns
                     </span>
                 </div>
@@ -93,28 +112,28 @@ export function ChronosV2Card({ modelHealth, portfolioSurvival, loading }: Chron
                                             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider truncate max-w-[80px]">{m.name}</span>
                                         </div>
                                         {m.status === "active" ? (
-                                            <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                                            <CheckCircle2 className="w-3 h-3 text-sage-brand" />
                                         ) : (
-                                            <AlertTriangle className="w-3 h-3 text-amber-500" />
+                                            <AlertTriangle className="w-3 h-3 text-copper" />
                                         )}
                                     </div>
                                     {m.auc && (
                                         <div className="mb-1">
                                             <span className="text-xs text-slate-400">AUC </span>
-                                            <span className="text-sm font-bold text-indigo-700">{m.auc.toFixed(3)}</span>
+                                            <span className="text-sm font-bold text-teal-dark">{m.auc.toFixed(3)}</span>
                                         </div>
                                     )}
                                     {m.val_loss && (
                                         <div className="mb-1">
                                             <span className="text-xs text-slate-400">val_loss </span>
-                                            <span className="text-sm font-bold text-violet-700">{m.val_loss.toFixed(3)}</span>
+                                            <span className="text-sm font-bold text-teal-dark">{m.val_loss.toFixed(3)}</span>
                                         </div>
                                     )}
                                     {m.weights && (
                                         <div className="flex flex-wrap gap-1 mt-1">
                                             {Object.entries(m.weights).map(([k, v]) => (
-                                                <span key={k} className="text-[9px] font-mono bg-indigo-50 text-indigo-600 px-1 rounded">
-                                                    {k} {Math.round(v * 100)}%
+                                                <span key={k} className="text-[9px] font-mono bg-teal-soft text-teal-dark px-1 rounded">
+                                                    {k} {Math.round(Number(v) * 100)}%
                                                 </span>
                                             ))}
                                         </div>

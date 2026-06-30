@@ -6,32 +6,32 @@ import { RefreshCw, Radio, Zap, Activity, Send, AlertTriangle, BarChart2, Cpu } 
 
 /* ── topic metadata ──────────────────────────────────────────────────────────── */
 const TOPIC_META: Record<string, { layer: string; color: string; label: string }> = {
-  'cbs.transactions':       { layer: 'L1 CBS',     color: '#64748b', label: 'Transactions' },
-  'cbs.account_updates':    { layer: 'L1 CBS',     color: '#64748b', label: 'Account Updates' },
-  'crm.customer_events':    { layer: 'L1 CRM',     color: '#64748b', label: 'CRM Events' },
-  'risk.signal_detections': { layer: 'L2 ARGUS',   color: '#dc2626', label: 'Signal Detections' },
-  'risk.score_updates':     { layer: 'L3 CHRONOS', color: '#0f2d5c', label: 'Score Updates' },
-  'engagement.activity':    { layer: 'L5 HERALD',  color: '#1d4ed8', label: 'Engagement' },
-  'pcop.alarms.v1':         { layer: 'L2 ARGUS',   color: '#dc2626', label: 'PCOP Alarms' },
-  'pcop.action_plans.v1':   { layer: 'L4 COMPASS', color: '#7c3aed', label: 'Action Plans' },
-  'pcop.dispatched.v1':     { layer: 'L5 HERALD',  color: '#1d4ed8', label: 'Dispatched' },
-  'pcop.measurements.v1':   { layer: 'L6 VERDICT', color: '#059669', label: 'Measurements' },
+  'cbs.transactions':       { layer: 'L1 CBS',     color: 'var(--gray-500)', label: 'Transactions' },
+  'cbs.account_updates':    { layer: 'L1 CBS',     color: 'var(--gray-500)', label: 'Account Updates' },
+  'crm.customer_events':    { layer: 'L1 CRM',     color: 'var(--gray-500)', label: 'CRM Events' },
+  'risk.signal_detections': { layer: 'L2 ARGUS',   color: 'var(--crimson)', label: 'Signal Detections' },
+  'risk.score_updates':     { layer: 'L3 CHRONOS', color: 'var(--crimson)', label: 'Score Updates' },
+  'engagement.activity':    { layer: 'L5 HERALD',  color: 'var(--crimson)', label: 'Engagement' },
+  'pcop.alarms.v1':         { layer: 'L2 ARGUS',   color: 'var(--crimson)', label: 'PCOP Alarms' },
+  'pcop.action_plans.v1':   { layer: 'L4 COMPASS', color: 'var(--teal-dark)', label: 'Action Plans' },
+  'pcop.dispatched.v1':     { layer: 'L5 HERALD',  color: 'var(--crimson)', label: 'Dispatched' },
+  'pcop.measurements.v1':   { layer: 'L6 VERDICT', color: 'var(--sage-brand)', label: 'Measurements' },
 };
 
 const TOPICS = Object.entries(TOPIC_META).map(([key, m]) => ({ key, ...m }));
 
 /* derive a short event-type label from the topic */
 function evtLabel(topic: string): { text: string; bg: string; fg: string } {
-  if (topic.includes('signal'))     return { text: 'SIGNAL',      bg: 'bg-red-100',     fg: 'text-red-700' };
-  if (topic.includes('score'))      return { text: 'SCORE',       bg: 'bg-blue-100',    fg: 'text-blue-700' };
-  if (topic.includes('action'))     return { text: 'ACTION PLAN', bg: 'bg-purple-100',  fg: 'text-purple-700' };
-  if (topic.includes('dispatch'))   return { text: 'DISPATCH',    bg: 'bg-indigo-100',  fg: 'text-indigo-700' };
-  if (topic.includes('measure'))    return { text: 'MEASUREMENT', bg: 'bg-emerald-100', fg: 'text-emerald-700' };
-  if (topic.includes('alarm'))      return { text: 'ALARM',       bg: 'bg-red-100',     fg: 'text-red-700' };
+  if (topic.includes('signal'))     return { text: 'SIGNAL',      bg: 'bg-crimson-soft',     fg: 'text-crimson' };
+  if (topic.includes('score'))      return { text: 'SCORE',       bg: 'bg-teal-soft',    fg: 'text-teal-dark' };
+  if (topic.includes('action'))     return { text: 'ACTION PLAN', bg: 'bg-teal-soft',  fg: 'text-teal-dark' };
+  if (topic.includes('dispatch'))   return { text: 'DISPATCH',    bg: 'bg-teal-soft',  fg: 'text-teal-dark' };
+  if (topic.includes('measure'))    return { text: 'MEASUREMENT', bg: 'bg-sage-soft', fg: 'text-sage-brand' };
+  if (topic.includes('alarm'))      return { text: 'ALARM',       bg: 'bg-crimson-soft',     fg: 'text-crimson' };
   if (topic.includes('transaction'))return { text: 'TXN',         bg: 'bg-slate-100',   fg: 'text-slate-600' };
   if (topic.includes('account'))    return { text: 'ACCOUNT',     bg: 'bg-slate-100',   fg: 'text-slate-600' };
-  if (topic.includes('crm'))        return { text: 'CRM',         bg: 'bg-amber-100',   fg: 'text-amber-700' };
-  if (topic.includes('engag'))      return { text: 'ENGAGEMENT',  bg: 'bg-sky-100',     fg: 'text-sky-700' };
+  if (topic.includes('crm'))        return { text: 'CRM',         bg: 'bg-copper-soft',   fg: 'text-copper-dark' };
+  if (topic.includes('engag'))      return { text: 'ENGAGEMENT',  bg: 'bg-teal-soft',     fg: 'text-teal-dark' };
   return { text: 'EVENT', bg: 'bg-slate-100', fg: 'text-slate-600' };
 }
 
@@ -41,7 +41,7 @@ function fmtTime(ts: string) {
 }
 
 function StatusDot({ status }: { status: string }) {
-  const c = status === 'live' ? 'bg-emerald-500' : status === 'warning' ? 'bg-amber-500' : 'bg-red-500';
+  const c = status === 'live' ? 'bg-sage-brand' : status === 'warning' ? 'bg-copper' : 'bg-crimson';
   return (
     <span className="relative flex h-2.5 w-2.5 shrink-0">
       <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-50 ${c}`} />
@@ -57,7 +57,7 @@ function Spark({ counts }: { counts: number[] }) {
       {(counts.length ? counts : [0]).map((v, i) => (
         <div key={i} className="flex-1 rounded-sm transition-all" style={{
           height: `${Math.max(2, (v / max) * 20)}px`,
-          background: '#0f2d5c',
+          background: 'var(--crimson)',
           opacity: 0.25 + (i / Math.max(counts.length - 1, 1)) * 0.75,
         }} />
       ))}
@@ -190,15 +190,15 @@ export default function PipelinePage() {
 
       {/* SSE status banner */}
       <div className={`rounded-xl border p-4 flex items-center gap-4 ${
-        connState === 'connected' ? 'bg-emerald-50 border-emerald-200' :
-        connState === 'error'     ? 'bg-red-50 border-red-200' : 'bg-amber-50 border-amber-200'
+        connState === 'connected' ? 'bg-sage-soft border-soft' :
+        connState === 'error'     ? 'bg-crimson-soft border-soft' : 'bg-copper-soft border-soft'
       }`}>
-        <Radio className={`w-5 h-5 shrink-0 ${connState === 'connected' ? 'text-emerald-600' : connState === 'error' ? 'text-red-600' : 'text-amber-500'}`} />
+        <Radio className={`w-5 h-5 shrink-0 ${connState === 'connected' ? 'text-sage-brand' : connState === 'error' ? 'text-crimson' : 'text-copper'}`} />
         <div className="flex-1">
           <p className="font-bold text-slate-900 text-sm">
             Kafka {sseStatus?.mode === 'kafka' ? 'LIVE' : 'SIMULATION'} — SSE Stream
           </p>
-          <p className={`text-xs ${connState === 'connected' ? 'text-emerald-700' : connState === 'error' ? 'text-red-700' : 'text-amber-700'}`}>
+          <p className={`text-xs ${connState === 'connected' ? 'text-sage-brand' : connState === 'error' ? 'text-crimson' : 'text-copper-dark'}`}>
             {connState === 'connecting' ? 'Connecting to localhost:8000…' :
              connState === 'error'      ? 'Connection error — click Reconnect' :
              `Stream active · ${totalMsgs.toLocaleString()} total messages · ${throughput} events/min`}
@@ -210,7 +210,7 @@ export default function PipelinePage() {
       {/* KPIs */}
       <div className="grid grid-cols-4 gap-4">
         {[
-          { label: 'Total Events',  value: totalMsgs.toLocaleString(), accent: 'border-l-[#0f2d5c]', Icon: Activity },
+          { label: 'Total Events',  value: totalMsgs.toLocaleString(), accent: 'border-l-[var(--crimson)]', Icon: Activity },
           { label: 'Events / Min',  value: throughput,                  accent: 'border-l-emerald-500', Icon: Zap },
           { label: 'Topics',        value: TOPICS.length,               accent: 'border-l-purple-500', Icon: BarChart2 },
           { label: 'Layers Live',   value: `${health.filter(l=>l.status==='live').length}/${health.length || 8}`, accent: 'border-l-amber-500', Icon: Cpu },
@@ -245,13 +245,13 @@ export default function PipelinePage() {
             <div ref={logRef} className="divide-y divide-slate-50 overflow-y-auto" style={{ maxHeight: 440 }}>
               {events.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
-                  <div className="w-10 h-10 border-2 border-slate-200 border-t-[#0f2d5c] rounded-full animate-spin mb-4" />
+                  <div className="w-10 h-10 border-2 border-slate-200 border-t-[var(--crimson)] rounded-full animate-spin mb-4" />
                   <p className="text-slate-400 text-sm">
                     {connState === 'connecting' ? 'Connecting…' : 'Waiting for events (simulation fires every 8s)'}
                   </p>
                 </div>
               ) : events.map((evt, i) => {
-                const meta = TOPIC_META[evt.topic] || { layer: '', color: '#94a3b8', label: evt.topic };
+                const meta = TOPIC_META[evt.topic] || { layer: '', color: 'var(--gray-400)', label: evt.topic };
                 const lbl  = evtLabel(evt.topic || '');
                 return (
                   <div key={evt._rid ?? i} className="flex items-start gap-3 px-5 py-2.5 hover:bg-slate-50/60 transition-colors">
@@ -313,8 +313,8 @@ export default function PipelinePage() {
                   <p className="text-sm font-medium text-slate-800 flex-1">{l.name}</p>
                   <span className="text-sm font-bold text-slate-700 tabular-nums">{l.latency_ms}<span className="text-slate-400 text-[10px]">ms</span></span>
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded w-14 text-center ${
-                    l.status === 'live' ? 'bg-emerald-100 text-emerald-700' :
-                    l.status === 'warning' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
+                    l.status === 'live' ? 'bg-sage-soft text-sage-brand' :
+                    l.status === 'warning' ? 'bg-copper-soft text-copper-dark' : 'bg-crimson-soft text-crimson'
                   }`}>{l.status?.toUpperCase()}</span>
                 </div>
               ))}
@@ -324,14 +324,14 @@ export default function PipelinePage() {
           {/* inject test event */}
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-500" />
+              <AlertTriangle className="w-4 h-4 text-copper" />
               <h2 className="text-sm font-semibold text-slate-700">Inject Test Event</h2>
             </div>
             <div className="space-y-3">
               <div>
                 <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1 block">Topic</label>
                 <select value={inject.topic} onChange={e => setInject(p => ({ ...p, topic: e.target.value }))}
-                  className="w-full rounded-lg border border-slate-200 text-xs text-slate-800 px-3 py-2 focus:outline-none focus:border-[#0f2d5c]/40 bg-white">
+                  className="w-full rounded-lg border border-slate-200 text-xs text-slate-800 px-3 py-2 focus:outline-none focus:border-[var(--crimson)]/40 bg-white">
                   {TOPICS.map(t => <option key={t.key} value={t.key}>{t.key}</option>)}
                 </select>
               </div>
@@ -339,7 +339,7 @@ export default function PipelinePage() {
                 <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1 block">Customer Key</label>
                 <input value={inject.key} onChange={e => setInject(p => ({ ...p, key: e.target.value }))}
                   placeholder="CUST-0001"
-                  className="w-full rounded-lg border border-slate-200 text-xs text-slate-800 px-3 py-2 focus:outline-none focus:border-[#0f2d5c]/40" />
+                  className="w-full rounded-lg border border-slate-200 text-xs text-slate-800 px-3 py-2 focus:outline-none focus:border-[var(--crimson)]/40" />
               </div>
               <div>
                 <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1 block">
@@ -347,17 +347,17 @@ export default function PipelinePage() {
                 </label>
                 <textarea value={inject.value} onChange={e => setInject(p => ({ ...p, value: e.target.value }))}
                   rows={3} placeholder={'{\n  "signal_type": "inactivity",\n  "confidence": 0.92\n}'}
-                  className="w-full rounded-lg border border-slate-200 text-[11px] font-mono text-slate-800 px-3 py-2 resize-none focus:outline-none focus:border-[#0f2d5c]/40" />
+                  className="w-full rounded-lg border border-slate-200 text-[11px] font-mono text-slate-800 px-3 py-2 resize-none focus:outline-none focus:border-[var(--crimson)]/40" />
               </div>
             </div>
             <button onClick={doInject} disabled={injecting || !inject.key}
-              className="w-full py-2.5 rounded-xl bg-[#0f2d5c] text-white text-sm font-bold hover:bg-[#0f2d5c]/90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
+              className="w-full py-2.5 rounded-xl bg-[var(--crimson)] text-white text-sm font-bold hover:bg-[var(--crimson)]/90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
               {injecting
                 ? <><span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />Injecting…</>
                 : <><Send className="w-3.5 h-3.5" />Inject Event</>}
             </button>
             {injectMsg && (
-              <p className={`text-xs text-center font-semibold ${injectMsg.startsWith('Error') ? 'text-red-600' : 'text-emerald-600'}`}>{injectMsg}</p>
+              <p className={`text-xs text-center font-semibold ${injectMsg.startsWith('Error') ? 'text-crimson' : 'text-sage-brand'}`}>{injectMsg}</p>
             )}
           </div>
 

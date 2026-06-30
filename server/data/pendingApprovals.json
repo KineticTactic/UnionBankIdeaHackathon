@@ -2012,5 +2012,40 @@
     "reviewedAt": null,
     "rejectionReason": null,
     "expiresAt": "2026-07-02T21:30:10.967Z"
+  },
+  {
+    "approvalId": "5e35e1d8-b944-4967-be55-2409878ab0fd",
+    "customerId": "CUST-034",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-06-30T22:12:02.287Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Fee Waiver",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "4 active ARGUS signals detected. Life event: COMPLAINT_DRIVEN. Ensemble score 0.637 → ESCALATE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Komal, we’ve missed having you with us in Nagpur",
+        "body": "Hi Komal, it’s been too long since we last saw you actively using your Union Bank account in Nagpur. We truly value your loyalty over the past 26 months and want to ensure your banking continues to work seamlessly for you. That’s why we’re reaching out—your account has been eligible for a special fee waiver, and we’d love to reconnect so we can share the details personally. Your banking relationship matters to us, and we’re here to make it as smooth as ever for you. Warm regards, Union Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 89
+      },
+      "sms": {
+        "body": "Hi Komal, we noticed you’ve been away from your Union Bank account in Nagpur. We’d love to welcome you back with a fee waiver on your account. Reply YES to reconnect and we’ll take care of the rest for you. Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 217
+      },
+      "push": {
+        "title": "Welcome back, Komal",
+        "body": "Tap to reactivate your fee waiver and enjoy seamless banking again",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-06-30T22:12:33.849Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T22:12:02.287Z"
   }
 ]

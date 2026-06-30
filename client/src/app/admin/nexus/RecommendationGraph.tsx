@@ -47,14 +47,16 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
   const [pulseT, setPulseT] = useState(0);     // 0..1 animation clock for message passing
   const svgRef = useRef<SVGSVGElement>(null);
 
-  // Anchor products in a horizontal arc across the middle
+  // Anchor products in an ellipse around the perimeter so they surround customers
   const layoutProducts = useCallback((products: any[]) => {
     const m = new Map<string, PNode>();
     const n = products.length;
+    const cx = W / 2, cy = H / 2;
+    const rx = 370, ry = 200;
     products.forEach((p, i) => {
-      const t = n > 1 ? i / (n - 1) : 0.5;
-      const x = 110 + t * (W - 220);
-      const y = H / 2 + Math.sin(t * Math.PI) * -70 + (i % 2 ? 40 : -40); // gentle arc + zigzag
+      const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
+      const x = cx + rx * Math.cos(angle);
+      const y = cy + ry * Math.sin(angle);
       m.set(p.id, { id: p.id, x, y, d: p });
     });
     return m;
@@ -66,8 +68,8 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
     pnodes.current = layoutProducts(graph.products);
     cnodes.current = graph.customers.map((c: any) => ({
       id: c.id,
-      x: W / 2 + (Math.random() - 0.5) * 400,
-      y: H / 2 + (Math.random() - 0.5) * 300,
+      x: W / 2 + (Math.random() - 0.5) * 120,
+      y: H / 2 + (Math.random() - 0.5) * 80,
       vx: 0, vy: 0, fx: 0, fy: 0, pinned: false, d: c,
     }));
     setRnodes([...cnodes.current]);
@@ -84,14 +86,14 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
 
     cs.forEach(n => { n.fx = 0; n.fy = 0; });
 
-    // weak centering
+    // strong centering — keep customers clustered in the middle
     cs.forEach(n => {
       if (n.pinned) return;
-      n.fx += (W / 2 - n.x) * 0.002;
-      n.fy += (H / 2 - n.y) * 0.002;
+      n.fx += (W / 2 - n.x) * 0.006;
+      n.fy += (H / 2 - n.y) * 0.006;
     });
 
-    // holds-edge springs: pull customer toward products they hold
+    // holds-edge springs: pull customer toward products they hold (weaker, so they stay centered)
     cs.forEach(n => {
       if (n.pinned) return;
       const held = holdsByCust[n.id] || [];
@@ -100,7 +102,7 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
         if (!p) return;
         const dx = p.x - n.x, dy = p.y - n.y;
         const d = Math.sqrt(dx * dx + dy * dy) || 1;
-        const f = (d - 60) * 0.010;
+        const f = (d - 80) * 0.006;
         n.fx += (dx / d) * f; n.fy += (dy / d) * f;
       });
     });
@@ -111,9 +113,9 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
         const a = cs[i], b = cs[j];
         const dx = b.x - a.x, dy = b.y - a.y;
         const d2 = dx * dx + dy * dy;
-        if (d2 > 9000) continue;
+        if (d2 > 20000) continue;
         const d = Math.sqrt(d2) || 0.1;
-        const f = 260 / Math.max(d2, 100);
+        const f = 180 / Math.max(d2, 100);
         const fx = (dx / d) * f, fy = (dy / d) * f;
         if (!a.pinned) { a.fx -= fx; a.fy -= fy; }
         if (!b.pinned) { b.fx += fx; b.fy += fy; }
@@ -146,8 +148,8 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
   const togglePause = () => { pausedRef.current = !pausedRef.current; setPaused(p => !p); };
   const reset = () => {
     cnodes.current.forEach(n => {
-      n.x = W / 2 + (Math.random() - 0.5) * 400;
-      n.y = H / 2 + (Math.random() - 0.5) * 300;
+      n.x = W / 2 + (Math.random() - 0.5) * 120;
+      n.y = H / 2 + (Math.random() - 0.5) * 80;
       n.vx = 0; n.vy = 0; n.pinned = false;
     });
   };

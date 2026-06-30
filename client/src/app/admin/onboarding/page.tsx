@@ -73,28 +73,28 @@ const CHANNEL = {
 const SEGMENTS = ['HNW', 'Mass Affluent', 'SME', 'Mass Market'] as const;
 
 const SEG_PILL: Record<string, string> = {
-  HNW:            'bg-purple-100 text-purple-700',
-  'Mass Affluent':'bg-sky-100 text-sky-700',
-  SME:            'bg-emerald-100 text-emerald-700',
+  HNW:            'bg-[#6B132B]/[0.08] text-[#6B132B]',
+  'Mass Affluent':'bg-[#B46B3E]/[0.10] text-[#B46B3E]',
+  SME:            'bg-[#FAF0E6] text-[#B46B3E]',
   'Mass Market':  'bg-[#F5F4F2] text-[#4A4644]',
 };
 const SEG_SELECTED: Record<string, string> = {
-  HNW:            'bg-purple-600 border-purple-600 text-white',
-  'Mass Affluent':'bg-sky-600 border-sky-600 text-white',
-  SME:            'bg-emerald-600 border-emerald-600 text-white',
+  HNW:            'bg-[#6B132B] border-[#6B132B] text-white',
+  'Mass Affluent':'bg-[#B46B3E] border-[#B46B3E] text-white',
+  SME:            'bg-[#2A161B] border-[#2A161B] text-white',
   'Mass Market':  'bg-[#4A4644] border-[#4A4644] text-white',
 };
 const TIER: Record<string, { badge: string; dot: string }> = {
-  PRIORITY: { badge: 'bg-red-50 text-red-700 border-red-200',       dot: 'bg-red-500' },
-  ESCALATE: { badge: 'bg-orange-50 text-orange-700 border-orange-200', dot: 'bg-orange-500' },
-  STANDARD: { badge: 'bg-amber-50 text-amber-700 border-amber-200',  dot: 'bg-amber-500' },
-  MONITOR:  { badge: 'bg-blue-50 text-blue-700 border-blue-200',     dot: 'bg-blue-500' },
-  NONE:     { badge: 'bg-emerald-50 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500' },
+  PRIORITY: { badge: 'bg-[#B46B3E]/[0.10] text-[#B46B3E] border-[#B46B3E]/20',       dot: 'bg-[#B46B3E]' },
+  ESCALATE: { badge: 'bg-[#6B132B]/[0.08] text-[#6B132B] border-[#6B132B]/20', dot: 'bg-[#6B132B]' },
+  STANDARD: { badge: 'bg-[#FAF0E6] text-[#B46B3E] border-[#F4D9C0]',  dot: 'bg-[#F4D9C0]' },
+  MONITOR:  { badge: 'bg-[#6B132B]/[0.08] text-[#6B132B] border-[#6B132B]/20',     dot: 'bg-[#6B132B]' },
+  NONE:     { badge: 'bg-[#F5F4F2] text-[#6B6562] border-[#E5E0DF]', dot: 'bg-[#C9C3C0]' },
 };
 
 // ── Reusable bars ─────────────────────────────────────────────────────────────
 function ScoreBar({ label, value, dark }: { label: string; value: number; dark?: boolean }) {
-  const COLOR: Record<string, string> = { Fit: 'bg-purple-400', Capacity: 'bg-sky-400', Fairness: 'bg-emerald-400' };
+  const COLOR: Record<string, string> = { Fit: 'bg-[#6B132B]', Capacity: 'bg-[#B46B3E]', Fairness: 'bg-[#2A161B]' };
   return (
     <div className="flex items-center gap-2">
       <span className={`text-[11px] w-16 shrink-0 ${dark ? 'text-white/50' : 'text-[#8B8481]'}`}>{label}</span>
@@ -111,15 +111,15 @@ function RankRow({ rm, w, maxT, rank, top }: { rm: any; w: any; maxT: number; ra
   const f = rm.breakdown.fit * wn.fit, c = rm.breakdown.capacity * wn.capacity, fa = rm.breakdown.fairness * wn.fairness;
   const tot = f + c + fa, sc = maxT > 0 ? 100 / maxT : 100;
   return (
-    <div className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${top ? 'bg-[#6B132B]/5 ring-1 ring-[#6B132B]/10' : 'hover:bg-[#FAFAF9]'}`}>
-      <span className="text-[11px] text-[#C9C3C0] w-3 font-mono shrink-0">{rank}</span>
+    <div className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${top ? 'bg-[#6B132B]/5 ring-1 ring-[#6B132B]/10' : 'hover:bg-[#FAFAF9]'}`}>
+      <span className="text-[11px] text-[#C9C3C0] w-3 shrink-0">{rank}</span>
       <span className={`text-[12px] w-24 truncate shrink-0 ${top ? 'font-bold text-[#6B132B]' : 'text-[#6B6562] font-medium'}`}>
-        {rm.rmName}{top && <Award className="w-3 h-3 inline ml-1 text-amber-500" />}
+        {rm.rmName}{top && <Award className="w-3 h-3 inline ml-1 text-[#B46B3E]" />}
       </span>
       <div className="flex-1 h-3 bg-[#F5F4F2] rounded-full overflow-hidden flex min-w-0">
-        <div className="h-full bg-purple-400 transition-all duration-500 shrink-0" style={{ width: `${f * sc}%` }} />
-        <div className="h-full bg-sky-400 transition-all duration-500 shrink-0"    style={{ width: `${c * sc}%` }} />
-        <div className="h-full bg-emerald-400 transition-all duration-500 shrink-0" style={{ width: `${fa * sc}%` }} />
+        <div className="h-full bg-[#6B132B] transition-all duration-500 shrink-0" style={{ width: `${f * sc}%` }} />
+        <div className="h-full bg-[#B46B3E] transition-all duration-500 shrink-0"    style={{ width: `${c * sc}%` }} />
+        <div className="h-full bg-[#2A161B] transition-all duration-500 shrink-0" style={{ width: `${fa * sc}%` }} />
       </div>
       <span className={`text-[12px] font-bold w-9 text-right shrink-0 tabular-nums ${top ? 'text-[#6B132B]' : 'text-[#8B8481]'}`}>{Math.round(tot * 100)}%</span>
     </div>
@@ -220,8 +220,8 @@ export default function OnboardingPage() {
         <div>
           <h1 className="text-2xl font-bold text-[#2A161B] flex items-center gap-2.5">
             New Account Onboarding
-            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-bold text-emerald-600 uppercase tracking-widest">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Kafka Live
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#B46B3E]/[0.10] border border-[#B46B3E]/20 text-[10px] font-bold text-[#B46B3E] uppercase tracking-widest">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#B46B3E] animate-pulse" /> Kafka Live
             </span>
           </h1>
           <p className="text-[#8B8481] text-sm mt-0.5">
@@ -230,12 +230,12 @@ export default function OnboardingPage() {
         </div>
         <div className="flex items-center gap-3">
           {toast && (
-            <span className="flex items-center gap-1.5 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg text-[12px] font-semibold text-emerald-700 shadow-sm">
+            <span className="flex items-center gap-1.5 px-3 py-2 bg-[#B46B3E]/[0.10] border border-[#B46B3E]/20 rounded-md text-[12px] font-semibold text-[#B46B3E]">
               <CheckCircle className="w-3.5 h-3.5" /> {toast}
             </span>
           )}
           <button onClick={simulate} disabled={simIdx >= SIM_QUEUE.length}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[#E5E0DF] bg-white text-[#6B6562] hover:text-[#2A161B] text-xs shadow-sm transition-all disabled:opacity-40">
+            className="flex items-center gap-2 px-3 py-2 rounded-md border border-[#E5E0DF] bg-white text-[#6B6562] hover:text-[#2A161B] text-xs transition-all disabled:opacity-40">
             <Plus className="w-3.5 h-3.5" /> Simulate Arrival
           </button>
         </div>
@@ -244,16 +244,16 @@ export default function OnboardingPage() {
       {/* ── KPI row ────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Pending Review',  value: pending,   icon: Inbox,        accent: 'border-l-amber-500' },
-          { label: 'Assigned',        value: assignedN, icon: UserCheck,    accent: 'border-l-emerald-500' },
-          { label: 'Topic',           value: 'core-banking-events', icon: Activity, accent: 'border-l-[#6B132B]', mono: true },
-          { label: 'RMs Available',   value: 8,         icon: TrendingUp,   accent: 'border-l-sky-500' },
+          { label: 'Pending Review',  value: pending,   icon: Inbox,        accent: 'border-l-[#B46B3E]' },
+          { label: 'Assigned',        value: assignedN, icon: UserCheck,    accent: 'border-l-[#6B132B]' },
+          { label: 'Topic',           value: 'core-banking-events', icon: Activity, accent: 'border-l-[#6B132B]' },
+          { label: 'RMs Available',   value: 8,         icon: TrendingUp,   accent: 'border-l-[#B46B3E]' },
         ].map(c => (
-          <div key={c.label} className={`bg-white rounded-xl border border-[#E5E0DF] shadow-sm p-5 border-l-4 ${c.accent}`}>
+          <div key={c.label} className={`bg-white rounded-md border border-[#E5E0DF] p-5 border-l-4 ${c.accent}`}>
             <div className="flex items-start justify-between">
               <div className="min-w-0">
                 <p className="text-[11px] font-semibold text-[#8B8481] uppercase tracking-wide mb-1">{c.label}</p>
-                <p className={`font-bold text-[#2A161B] ${c.mono ? 'text-[13px] font-mono truncate' : 'text-2xl tabular-nums'}`}>{c.value}</p>
+                <p className="font-bold text-[#2A161B] text-2xl tabular-nums">{c.value}</p>
               </div>
               <c.icon className="w-5 h-5 text-[#C9C3C0] mt-1 shrink-0" />
             </div>
@@ -265,10 +265,10 @@ export default function OnboardingPage() {
       <div className="grid grid-cols-1 xl:grid-cols-[340px_1fr] gap-5 items-start">
 
         {/* LEFT — Feed */}
-        <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm overflow-hidden">
+        <div className="bg-white rounded-md border border-[#E5E0DF] overflow-hidden">
           <div className="px-4 py-3 border-b border-[#E5E0DF] flex items-center justify-between">
             <p className="text-[12px] font-bold text-[#2A161B] uppercase tracking-wide">Application Queue</p>
-            <span className="text-[11px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">{pending} pending</span>
+            <span className="text-[11px] font-semibold text-[#B46B3E] bg-[#FAF0E6] px-2 py-0.5 rounded-full">{pending} pending</span>
           </div>
           <div className="divide-y divide-[#E5E0DF] max-h-[640px] overflow-y-auto">
             {feed.map(app => {
@@ -279,7 +279,7 @@ export default function OnboardingPage() {
                   className={`w-full text-left px-4 py-3.5 transition-all relative ${active ? 'bg-[#6B132B]/[0.04]' : 'hover:bg-[#FAFAF9]'}`}>
                   {active && <span className="absolute left-0 top-0 bottom-0 w-1 bg-[#6B132B]" />}
                   <div className="flex items-center gap-3">
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 ${app.status === 'assigned' ? 'bg-emerald-100 text-emerald-700' : 'bg-[#6B132B] text-white'}`}>
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 ${app.status === 'assigned' ? 'bg-[#B46B3E]/[0.10] text-[#B46B3E]' : 'bg-[#6B132B] text-white'}`}>
                       {initials(app.full_name)}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -291,7 +291,7 @@ export default function OnboardingPage() {
                       </div>
                       <div className="flex items-center gap-1.5 text-[11px] text-[#8B8481] mt-0.5">
                         <C.icon className="w-3 h-3 shrink-0" />
-                        <span className="font-mono text-[10px]">{app.id}</span>
+                        <span className="text-[10px]">{app.id}</span>
                         <span>·</span>
                         <span className="font-semibold text-[#6B6562]">{fmtBal(app.balance)}</span>
                       </div>
@@ -302,8 +302,8 @@ export default function OnboardingPage() {
                       {app.suggested_segment}
                     </span>
                     {app.status === 'assigned'
-                      ? <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600"><UserCheck className="w-3 h-3" /> {app.assigned_rm?.split(' ')[0]}</span>
-                      : <span className="flex items-center gap-1 text-[10px] font-bold text-amber-500"><span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" /> Pending</span>
+                      ? <span className="flex items-center gap-1 text-[10px] font-bold text-[#B46B3E]"><UserCheck className="w-3 h-3" /> {app.assigned_rm?.split(' ')[0]}</span>
+                      : <span className="flex items-center gap-1 text-[10px] font-bold text-[#B46B3E]"><span className="w-1.5 h-1.5 rounded-full bg-[#B46B3E] animate-pulse" /> Pending</span>
                     }
                   </div>
                 </button>
@@ -314,7 +314,7 @@ export default function OnboardingPage() {
 
         {/* RIGHT — Detail */}
         {!sel ? (
-          <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm flex flex-col items-center justify-center py-24 text-[#C9C3C0] gap-3">
+          <div className="bg-white rounded-md border border-[#E5E0DF] flex flex-col items-center justify-center py-24 text-[#C9C3C0] gap-3">
             <Inbox className="w-14 h-14" />
             <p className="text-[15px] font-semibold text-[#8B8481]">Select an application to review</p>
             <p className="text-[12px] text-[#8B8481]">GENESIS scores cold-start risk · RM ranking follows instantly</p>
@@ -323,7 +323,7 @@ export default function OnboardingPage() {
           <div className="space-y-5">
 
             {/* Customer header card */}
-            <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm p-6">
+            <div className="bg-white rounded-md border border-[#E5E0DF] p-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4 min-w-0">
                   <div className="w-14 h-14 rounded-full bg-[#6B132B] flex items-center justify-center text-white text-base font-bold shrink-0">
@@ -332,19 +332,19 @@ export default function OnboardingPage() {
                   <div className="min-w-0">
                     <h2 className="text-[22px] font-bold text-[#2A161B] leading-tight">{sel.full_name}</h2>
                     <div className="flex items-center flex-wrap gap-x-2 gap-y-1 text-[12px] text-[#8B8481] mt-1">
-                      <span className="font-mono">{sel.id}</span><span>·</span>
+                      <span>{sel.id}</span><span>·</span>
                       <span className="capitalize flex items-center gap-1">{(() => { const I = CHANNEL[sel.channel].icon; return <I className="w-3 h-3" />; })()}{CHANNEL[sel.channel].label}</span><span>·</span>
                       <span>{timeAgo(sel.arrived_at)}</span>
                     </div>
                   </div>
                 </div>
                 {sel.status === 'assigned' && (
-                  <div className="shrink-0 flex items-center gap-2.5 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-xl">
-                    <UserCheck className="w-5 h-5 text-emerald-600" />
+                  <div className="shrink-0 flex items-center gap-2.5 px-3 py-2 bg-[#B46B3E]/[0.10] border border-[#B46B3E]/20 rounded-md">
+                    <UserCheck className="w-5 h-5 text-[#B46B3E]" />
                     <div>
-                      <p className="text-[9px] text-emerald-500 font-bold uppercase tracking-wide">Assigned</p>
-                      <p className="text-[13px] font-bold text-emerald-800 leading-tight">{sel.assigned_rm}</p>
-                      {sel.customer_id && <p className="text-[10px] text-emerald-500 font-mono">{sel.customer_id}</p>}
+                      <p className="text-[9px] text-[#B46B3E] font-bold uppercase tracking-wide">Assigned</p>
+                      <p className="text-[13px] font-bold text-[#2A161B] leading-tight">{sel.assigned_rm}</p>
+                      {sel.customer_id && <p className="text-[10px] text-[#B46B3E]">{sel.customer_id}</p>}
                     </div>
                   </div>
                 )}
@@ -367,10 +367,10 @@ export default function OnboardingPage() {
             </div>
 
             {/* Classify segment */}
-            <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm p-6">
+            <div className="bg-white rounded-md border border-[#E5E0DF] p-6">
               <div className="flex items-center justify-between mb-4">
                 <p className="text-[13px] font-bold text-[#2A161B]">Classify Customer Segment</p>
-                <span className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-600 font-semibold">
+                <span className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-[#FAF0E6] border border-[#F4D9C0] text-[#B46B3E] font-semibold">
                   <Sparkles className="w-3 h-3" /> AI suggests {sel.suggested_segment}
                 </span>
               </div>
@@ -379,8 +379,8 @@ export default function OnboardingPage() {
                   const active = segment === seg;
                   return (
                     <button key={seg} onClick={() => handleSegChange(seg)} disabled={sel.status === 'assigned'}
-                      className={`py-3 px-2 rounded-xl border-2 text-[13px] font-bold transition-all disabled:opacity-60 disabled:cursor-not-allowed ${
-                        active ? `${SEG_SELECTED[seg]} shadow-md` : 'bg-white border-[#E5E0DF] text-[#6B6562] hover:border-[#C9C3C0] hover:bg-[#FAFAF9]'
+                      className={`py-3 px-2 rounded-md border-2 text-[13px] font-bold transition-all disabled:opacity-60 disabled:cursor-not-allowed ${
+                        active ? `${SEG_SELECTED[seg]}` : 'bg-white border-[#E5E0DF] text-[#6B6562] hover:border-[#C9C3C0] hover:bg-[#FAFAF9]'
                       }`}>
                       {seg}
                     </button>
@@ -388,7 +388,7 @@ export default function OnboardingPage() {
                 })}
               </div>
               {segDirty && (
-                <p className="text-[11px] text-amber-600 mt-3 flex items-center gap-1.5">
+                <p className="text-[11px] text-[#B46B3E] mt-3 flex items-center gap-1.5">
                   <AlertTriangle className="w-3.5 h-3.5" /> Overriding AI suggestion ({sel.suggested_segment} → {segment}) — recommendation updated.
                 </p>
               )}
@@ -396,7 +396,7 @@ export default function OnboardingPage() {
 
             {/* Loading */}
             {loading && (
-              <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm flex items-center justify-center gap-3 py-12 text-[#8B8481]">
+              <div className="bg-white rounded-md border border-[#E5E0DF] flex items-center justify-center gap-3 py-12 text-[#8B8481]">
                 <RefreshCw className="w-5 h-5 animate-spin text-[#6B132B]" />
                 <span className="text-[13px] font-medium">GENESIS scoring · ranking 8 RMs…</span>
               </div>
@@ -406,7 +406,7 @@ export default function OnboardingPage() {
             {result && !loading && (
               <>
                 {/* Cold-start + ranking card */}
-                <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm p-6 space-y-5">
+                <div className="bg-white rounded-md border border-[#E5E0DF] p-6 space-y-5">
                   {/* Cold-start */}
                   {result.customer && (() => {
                     const t = TIER[result.customer.risk_tier] || TIER.NONE;
@@ -438,7 +438,7 @@ export default function OnboardingPage() {
                     <div className="flex items-center justify-between mb-3">
                       <p className="text-[13px] font-bold text-[#2A161B]">RM Ranking — all 8 relationship managers</p>
                       <div className="flex gap-3 text-[10px] font-semibold">
-                        {[['bg-purple-400', 'text-purple-600', 'Fit'], ['bg-sky-400', 'text-sky-600', 'Capacity'], ['bg-emerald-400', 'text-emerald-600', 'Fairness']].map(([bg, tc, l]) => (
+                        {[['bg-[#6B132B]', 'text-[#6B132B]', 'Fit'], ['bg-[#B46B3E]', 'text-[#B46B3E]', 'Capacity'], ['bg-[#2A161B]', 'text-[#2A161B]', 'Fairness']].map(([bg, tc, l]) => (
                           <span key={l} className={`flex items-center gap-1 ${tc}`}><span className={`w-2.5 h-2.5 rounded-sm ${bg}`} />{l}</span>
                         ))}
                       </div>
@@ -455,9 +455,9 @@ export default function OnboardingPage() {
                     </p>
                     <div className="grid grid-cols-3 gap-5">
                       {([
-                        { key: 'fit' as const,      label: 'Fit',      pct: wPct.fit,      acc: 'accent-purple-500' },
-                        { key: 'capacity' as const, label: 'Capacity', pct: wPct.capacity, acc: 'accent-sky-500' },
-                        { key: 'fairness' as const, label: 'Fairness', pct: wPct.fairness, acc: 'accent-emerald-500' },
+                        { key: 'fit' as const,      label: 'Fit',      pct: wPct.fit,      acc: 'accent-[#6B132B]' },
+                        { key: 'capacity' as const, label: 'Capacity', pct: wPct.capacity, acc: 'accent-[#B46B3E]' },
+                        { key: 'fairness' as const, label: 'Fairness', pct: wPct.fairness, acc: 'accent-[#2A161B]' },
                       ]).map(({ key, label, pct, acc }) => (
                         <div key={key}>
                           <div className="flex items-center justify-between mb-1.5">
@@ -475,14 +475,14 @@ export default function OnboardingPage() {
 
                 {/* Recommended RM */}
                 {top1 && sel.status === 'pending' && (
-                  <div className="bg-[#6B132B] rounded-xl shadow-lg text-white p-6">
+                  <div className="bg-[#6B132B] rounded-md text-white p-6">
                     <div className="flex items-start justify-between gap-4 mb-5">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-12 h-12 rounded-full bg-white/15 flex items-center justify-center text-[14px] font-bold shrink-0">
                           {initials(top1.rmName)}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[10px] font-bold text-amber-300 uppercase tracking-widest flex items-center gap-1"><Award className="w-3 h-3" /> Recommended</p>
+                          <p className="text-[10px] font-bold text-[#F4D9C0] uppercase tracking-widest flex items-center gap-1"><Award className="w-3 h-3" /> Recommended</p>
                           <p className="text-[19px] font-bold leading-tight truncate">{top1.rmName}</p>
                           <p className="text-[11px] text-white/40">{top1.dominantSegment} specialist · {top1.bookSize} clients · {top1.atRiskPct}% at-risk</p>
                         </div>
@@ -502,7 +502,7 @@ export default function OnboardingPage() {
                     <p className="text-[12px] text-white/60 italic border-t border-white/10 pt-4 mb-5 leading-relaxed">{top1.rationale}</p>
 
                     <button onClick={() => handleAssign(top1.rmName, false)} disabled={assigning}
-                      className="w-full py-3 rounded-lg bg-white text-[#6B132B] text-[13px] font-bold hover:bg-white/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2">
+                      className="w-full py-3 rounded-md bg-white text-[#6B132B] text-[13px] font-bold hover:bg-white/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2">
                       {assigning && !overrideRM ? <><RefreshCw className="w-4 h-4 animate-spin" /> Assigning…</> : <><CheckCircle className="w-4 h-4" /> Confirm — Assign to {top1.rmName}</>}
                     </button>
                   </div>
@@ -512,7 +512,7 @@ export default function OnboardingPage() {
                 {sel.status === 'pending' && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[top2, top3].filter(Boolean).map((rm: any, idx: number) => (
-                      <div key={rm.rmName} className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm p-5">
+                      <div key={rm.rmName} className="bg-white rounded-md border border-[#E5E0DF] p-5">
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="flex items-center gap-2.5 min-w-0">
                             <div className="w-9 h-9 rounded-full bg-[#F5F4F2] text-[#6B6562] flex items-center justify-center text-[11px] font-bold shrink-0">{initials(rm.rmName)}</div>
@@ -534,19 +534,19 @@ export default function OnboardingPage() {
                           <div className="space-y-2">
                             <textarea value={overrideReason} onChange={e => setOverrideReason(e.target.value)} rows={2}
                               placeholder="Override reason (required for audit log)…"
-                              className="w-full px-3 py-2 border border-[#E5E0DF] rounded-lg text-[12px] focus:outline-none focus:ring-2 focus:ring-amber-400/30 resize-none" />
+                              className="w-full px-3 py-2 border border-[#E5E0DF] rounded-md text-[12px] focus:outline-none focus:ring-2 focus:ring-[#B46B3E]/30 resize-none" />
                             <div className="flex gap-2">
                               <button onClick={() => handleAssign(rm.rmName, true)} disabled={assigning || !overrideReason.trim()}
-                                className="flex-1 py-2 rounded-lg bg-amber-500 text-white text-[12px] font-bold hover:bg-amber-600 disabled:opacity-50 transition-colors">
+                                className="flex-1 py-2 rounded-md bg-[#6B132B] text-white text-[12px] font-bold hover:bg-[#6B132B]/90 disabled:opacity-50 transition-colors">
                                 {assigning ? 'Assigning…' : 'Confirm Override'}
                               </button>
                               <button onClick={() => { setOverrideRM(null); setOverrideReason(''); }}
-                                className="px-3 py-2 rounded-lg border border-[#E5E0DF] text-[12px] text-[#6B6562] hover:bg-[#FAFAF9]">Cancel</button>
+                                className="px-3 py-2 rounded-md border border-[#E5E0DF] text-[12px] text-[#6B6562] hover:bg-[#FAFAF9]">Cancel</button>
                             </div>
                           </div>
                         ) : (
                           <button onClick={() => { setOverrideRM(rm.rmName); setOverrideReason(''); }}
-                            className="w-full py-2 rounded-lg border border-[#E5E0DF] text-[12px] font-semibold text-[#6B6562] hover:bg-[#FAFAF9] transition-colors flex items-center justify-center gap-1">
+                            className="w-full py-2 rounded-md border border-[#E5E0DF] text-[12px] font-semibold text-[#6B6562] hover:bg-[#FAFAF9] transition-colors flex items-center justify-center gap-1">
                             <ChevronRight className="w-3.5 h-3.5" /> Assign instead (override)
                           </button>
                         )}

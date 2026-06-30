@@ -86,13 +86,16 @@ export default function DashboardPage() {
 
   return (
     <div className="p-6 space-y-6 bg-[#F9F9F7] min-h-screen">
+
       {/* Page header */}
       <div className="flex items-center justify-between">
-        <div>
+        <div className="pl-4 relative">
+          <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-brand rounded-full" />
           <h1 className="text-[22px] font-black text-[#2A161B] font-heading">Executive Overview</h1>
           <p className="text-[13px] text-[#6B6562] mt-0.5">Portfolio risk summary · all 50 customers</p>
         </div>
-        <div className="text-[11px] text-[#6B6562] bg-white border border-soft rounded-md px-3 py-1.5">
+        <div className="flex-1 self-stretch flex items-center justify-end rounded-md ml-6 px-4 text-[11px] text-white font-semibold"
+             style={{ background: 'repeating-linear-gradient(-45deg, transparent 0px, transparent 6px, rgba(255,255,255,0.12) 6px, rgba(255,255,255,0.12) 12px), linear-gradient(135deg, #6B132B, #B46B3E)' }}>
           Last updated: {now || '—'}
         </div>
       </div>

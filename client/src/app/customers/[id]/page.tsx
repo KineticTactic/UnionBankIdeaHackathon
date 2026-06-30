@@ -82,13 +82,19 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
     setHeraldError('');
     try {
       const r = await api.generateOutreach(id);
-      setHerald(r.herald || null);
+      // Server returns the live LLM content in `heraldContent` (camelCase).
+      // The polling path also returns {status, ...poll.result} with the
+      // same field.  Always prefer the freshly-generated content over
+      // the static `snap.herald` snapshot.
+      setHerald(r.heraldContent || r.herald || null);
     } catch (e: unknown) {
       setHeraldError(e instanceof Error ? e.message : 'NVIDIA DeepSeek V4 Pro did not respond. Check the API key or network connection.');
     } finally { setGenerating(false); }
   };
 
-  const activeHerald = herald ?? snap?.herald;
+  // The freshly generated content (from a Generate with AI click) takes
+  // precedence over the static snapshot.  `null` means "nothing yet".
+  const activeHerald = herald ?? snap?.herald ?? null;
 
   if (loading) return (
     <div className="p-6 space-y-4">

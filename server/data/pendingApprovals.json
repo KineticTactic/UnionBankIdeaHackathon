@@ -697,5 +697,492 @@
     "reviewedAt": null,
     "rejectionReason": null,
     "expiresAt": "2026-07-02T04:23:17.003Z"
+  },
+  {
+    "approvalId": "e70f9e45-5849-4350-ba1a-c3b784b57c97",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:39:45.051Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Geeta, your Union Bank family misses you",
+        "body": "Hi Geeta, I hope this note finds you well. I’m reaching out because we’ve noticed a small gap in our connection and want to make sure we’re still your trusted partner for all things banking. It’s been 23 months since you joined us, and we’d love to welcome you back home with a little extra care. Can we schedule a quick call or meet over coffee to understand how we can better support you and your financial journey? Your presence means a lot to us, and we’re here to make things easier for you. Reply to this email or call us at 1800-XXXX-XXXX—we’d be thrilled to hear from you.",
+        "compliance_status": "APPROVED",
+        "word_count": 109
+      },
+      "sms": {
+        "body": "Hi Geeta! It’s been a while since we last connected. We miss having you as part of our Union Bank family. Would you like to catch up over a quick call or meet for coffee? We’d love to hear from you. Call 1800-XXXX-XXXX or reply YES. Warmly, Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 251
+      },
+      "push": {
+        "title": "Geeta, we’d love to reconnect",
+        "body": "Tap to schedule a quick call or meet for coffee. We miss having you with us!",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:39:45.051Z"
+  },
+  {
+    "approvalId": "e1979886-085a-468c-bd5d-f9b06d282574",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:50:13.376Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Geeta, let’s keep the momentum going together",
+        "body": "Hi Geeta, I hope you’re doing well. I wanted to reach out because I noticed that your salary credits haven’t been active lately, and I know how important it is to have your finances aligned with your goals. It’s been 23 months since you joined us, and I’d love to help ensure you’re making the most of every transaction. Would you like me to share some convenient ways to manage your funds or even set up a quick call to explore how we can make things smoother for you? Let me know—I’m here to help. Warmly, Geeta from Union Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 100
+      },
+      "sms": {
+        "body": "Geeta, it’s been a while since we’ve seen your salary credits. We’d love to help make managing your money easier—let us know how we can support you! Reply YES or call us at 1800-XXX-XXXX. Union Bank cares.",
+        "compliance_status": "APPROVED",
+        "char_count": 205
+      },
+      "push": {
+        "title": "Let’s keep your finances on track, Geeta",
+        "body": "Tap to see how we can make managing your funds even simpler. Union Bank is here for you.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:50:13.376Z"
+  },
+  {
+    "approvalId": "0a5fc31b-186c-4e09-98e3-965cc0e07732",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:50:31.735Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Geeta, let’s make your banking easier than ever",
+        "body": "Hi Geeta, I noticed you’ve been juggling multiple accounts lately—it can get overwhelming, can’t it? At Union Bank, we want your finances to feel effortless, so we’re here to simplify things for you. Your everyday banking should reward you, not complicate your day. Let’s make sure you’re getting the most from your account without the hassle. Would you like me to connect you with a dedicated relationship manager who can tailor your banking to fit your life? Just reply to this email or call our priority line at 1800-XXX-XXXX. We’re proud to be your trusted partner in Jaipur and beyond.",
+        "compliance_status": "APPROVED",
+        "word_count": 100
+      },
+      "sms": {
+        "body": "Hi Geeta! We miss your energy at Union Bank. Let’s make your banking smoother—your dedicated RM Neha is just a call away at 1800-XXX-XXXX. Let’s chat today!",
+        "compliance_status": "APPROVED",
+        "char_count": 156
+      },
+      "push": {
+        "title": "Geeta, your banking just got simpler",
+        "body": "Hi Geeta! Let Neha, your dedicated RM, simplify your finances—tap to call her now.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:50:31.735Z"
+  },
+  {
+    "approvalId": "5bb66a18-5112-4699-8d7f-745be93358df",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:50:38.847Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Geeta, let’s make your banking smoother together",
+        "body": "Hi Geeta, I noticed you’ve been exploring ways to manage your finances more seamlessly, and I wanted to reach out personally. At Union Bank, we’re here to ensure your banking experience feels effortless and rewarding—just like it should be. Your 23 months with us mean we’ve had the pleasure of serving you, and I’d love to make sure you’re getting the most out of every transaction and interaction. Could we set aside a few minutes this week to explore how we can tailor your banking to fit your life even better? It’s my priority to ensure your Union Bank experience feels as smooth and supportive as ever. Let me know a time that works for you, and I’ll make it happen. Warm regards, Your Union Bank Team",
+        "compliance_status": "APPROVED",
+        "word_count": 127
+      },
+      "sms": {
+        "body": "Geeta, we’ve missed having you with us lately. Let’s chat about how Union Bank can make your banking simpler and more rewarding. Reply YES to schedule a quick call at your convenience. We’re here to help!",
+        "compliance_status": "APPROVED",
+        "char_count": 204
+      },
+      "push": {
+        "title": "Welcome back, Geeta! Let’s chat",
+        "body": "We’ve missed your energy! Tap to schedule a quick call and let’s make your banking smoother together. Union Bank is here for you.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:50:38.847Z"
+  },
+  {
+    "approvalId": "7ba6e4cc-b3b2-420b-b0b5-890ebbaa1ed1",
+    "customerId": "CUST-001",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:51:23.488Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.144 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Arjun, let’s celebrate your 141-month banking journey with Union Bank",
+        "body": "Dear Arjun, 141 months is a remarkable milestone, and we want to take a moment to sincerely thank you for trusting Union Bank with your financial journey. Over the years, your trust has been our greatest privilege, and we remain committed to making your banking experience seamless, secure, and deeply personal.  Your ₹55,12,914 balance reflects not just numbers but years of thoughtful decisions, and we’re grateful to be part of that story. Let’s continue growing together—whether it’s optimizing your savings, exploring investment opportunities, or simply ensuring your money works smarter for you, we’re here to listen first. Warm regards, Your Union Bank Team",
+        "word_count": 103
+      },
+      "sms": {
+        "body": "Arjun, happy 141 months with Union Bank! Your trust means everything to us. Let us know how we can make your banking even smoother—just reply ‘hello’ or call our dedicated support. Thank you for being with us!",
+        "char_count": 209
+      },
+      "push": {
+        "title": "Celebrating 141 months with you, Arjun",
+        "body": "Thank you for trusting us all these years. Tap to explore ways we can serve you better today."
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:51:23.488Z"
+  },
+  {
+    "approvalId": "5cfdc989-7563-43e8-9ffe-de720af5d584",
+    "customerId": "CUST-001",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:51:26.157Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.144 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Arjun, we’d love to reconnect and celebrate your 141 months with us",
+        "body": "Arjun, it’s been 141 months since you chose Union Bank as your partner, and we’re truly grateful for your trust. Your ₹55,12,914 balance reflects the strong foundation we’ve built together, and we’d love to hear how we can make your banking even smoother.\n\nWe’re here whenever you need us—whether it’s a quick chat, a tailored solution, or just a thank you for choosing us. Let’s catch up soon and ensure Union Bank continues to serve you effortlessly. Warm regards, Union Bank.",
+        "compliance_status": "APPROVED",
+        "word_count": 81
+      },
+      "sms": {
+        "body": "Hi Arjun! 141 months with Union Bank—thank you for trusting us with your banking. We’d love to hear how we can make your experience even better. Just reply ‘HELP’ and we’ll call you. Warmly, Union Bank.",
+        "compliance_status": "APPROVED",
+        "char_count": 202
+      },
+      "push": {
+        "title": "Celebrating 141 months with you, Arjun!",
+        "body": "141 months of seamless banking—thank you! Let’s schedule a quick call to ensure Union Bank keeps serving you effortlessly.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:51:26.157Z"
+  },
+  {
+    "approvalId": "69f5c80e-f4e2-4aeb-8139-c157b1ca608f",
+    "customerId": "CUST-001",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:51:34.298Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.144 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Arjun, let’s keep Kochi’s warmth close to your heart",
+        "body": "Arjun, it’s been 141 months since we first welcomed you to Union Bank, and in all this time, your trust in our relationship has meant the world to us. We love how you’ve woven Kochi’s spirit—its energy, its care—into your financial journey with us. Your NPS score of 9/10 tells us we’re doing something right, and we’re so grateful for the trust you’ve placed in us.\n\nOver the years, your balance of ₹55,12,914 has grown steadily, and we want to ensure it continues to do so in ways that feel effortless and aligned with your dreams. Whether it’s the home you’re nurturing, the family you’re building, or the adventures you’re planning, we’re here to make sure your money works as hard as you do. Let’s catch up soon and explore how we can make your financial life even smoother.",
+        "compliance_status": "APPROVED",
+        "word_count": 139
+      },
+      "sms": {
+        "body": "Hi Arjun! 141 months of trust with Union Bank and you’ve given us a stellar 9/10—thank you! We’d love to keep that warmth flowing. How about we schedule a quick chat to see how we can make your money work even harder for you? Let us know!",
+        "compliance_status": "APPROVED",
+        "char_count": 238
+      },
+      "push": {
+        "title": "Let’s keep Kochi’s warmth close to your heart",
+        "body": "Arjun, your 9/10 trust score inspires us. Let’s chat about making your money work even harder for Kochi’s warmth.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:51:34.298Z"
+  },
+  {
+    "approvalId": "5e60e155-0ec0-4f01-90a6-9fa039815eb5",
+    "customerId": "CUST-001",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:53:38.163Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.144 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Arjun, we’ve missed staying in touch",
+        "body": "Dear Arjun, We wanted to reach out simply to say how much we value having you as part of Union Bank’s family. It’s been over 141 months since your first interaction with us, and your trust in our services continues to inspire us. We know your life in Kochi is busy, but we’d love to make sure we’re always adding value to your banking journey. Whether it’s seamless transactions, personalised insights, or just being a reliable partner, we’re here for you. Let’s catch up soon—perhaps over a virtual coffee—to explore how we can simplify your financial life even further.",
+        "compliance_status": "APPROVED",
+        "word_count": 99
+      },
+      "sms": {
+        "body": "Hi Arjun! 141 months of banking together is something we cherish. We’d love to reconnect and ensure we’re making your money work as hard as you do. Could we schedule a quick call this week? Warm regards, Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 214
+      },
+      "push": {
+        "title": "Let's reconnect, Arjun",
+        "body": "We cherish 141 months with you. Would you like a quick call to explore ways we can simplify your banking?",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:53:38.163Z"
+  },
+  {
+    "approvalId": "5bd20fbf-2587-4867-82c8-edb6496940b2",
+    "customerId": "CUST-001",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:53:42.347Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.144 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Arjun, here’s how we’re making banking simpler for you",
+        "body": "Hi Arjun, it’s been a pleasure serving you as a loyal Union Bank customer for over 11 years—thank you for trusting us with your financial journey. We see your consistently high NPS score of 9, and it tells us you value the relationship as much as we do.\n\nOver the past few months, we’ve quietly upgraded several digital features to make your everyday banking smoother—like instant balance updates, faster bill payments, and a dedicated relationship manager just a call away. We’d love to hear what you’d like to see next so we can keep aligning our services with your needs.",
+        "compliance_status": "APPROVED",
+        "word_count": 100
+      },
+      "sms": {
+        "body": "Hi Arjun! Over 11 years with Union Bank and your NPS is still 9—thanks for keeping us on your trusted list. We’ve recently added instant balance updates & faster bill payments. What feature would make your banking even smoother? Let us know!",
+        "compliance_status": "APPROVED",
+        "char_count": 241
+      },
+      "push": {
+        "title": "Welcome to smoother banking, Arjun",
+        "body": "Tap to explore new ways Union Bank is making your everyday banking simpler and faster. Your feedback matters!",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:53:42.347Z"
+  },
+  {
+    "approvalId": "baa9f236-5b1a-4bbb-a271-4910875b2d11",
+    "customerId": "CUST-007",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:54:42.901Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.110 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Rohit, a few exclusive updates tailored just for you",
+        "body": "Dear Rohit, we wanted to share a small collection of insights we know you’ll find valuable, curated from conversations with fellow Ahmedabad investors like yourself. Over the past quarter, we’ve noticed how you’ve been seamlessly blending traditional wisdom with modern opportunities—exactly the balance our best clients swear by. Your account continues to reflect the steady confidence we admire, and we’re always here to help it grow even further.\n\nAs seasons change, so do the ways we can add a little more convenience to your banking. Your relationship with us is one of trust built over 13 wonderful years, and we’d love to make the next phase just as effortless. Whenever you’re ready, let’s explore how we can align our solutions even more closely with your evolving goals—no pressure, just an open door.",
+        "compliance_status": "APPROVED",
+        "word_count": 132
+      },
+      "sms": {
+        "body": "Hi Rohit! We’ve put together a few tailored updates just for you—simple ways to make your banking even smoother. Your 13 years with us matter, and we’re always here to help it grow. Whenever you’re ready, just reply and we’ll chat.",
+        "compliance_status": "APPROVED",
+        "char_count": 231
+      },
+      "push": {
+        "title": "Your insights await, Rohit",
+        "body": "Tap to see hand-picked updates designed just for you—no jargon, just value.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:54:42.901Z"
+  },
+  {
+    "approvalId": "5d371c66-aabb-44a2-b052-a58e65f4dffa",
+    "customerId": "CUST-007",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:54:48.811Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.110 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Rohit, your journey with us matters – let’s make it even better",
+        "body": "Dear Rohit, I hope this message finds you well. Over the past 13 years, your trust in Union Bank has been a cornerstone of our relationship, and we’re truly grateful to be part of your financial journey. We’ve watched your balance grow to ₹65,74,586, a testament to the strong foundation we’ve built together. At 61, this is a phase of life where your wealth deserves thoughtful attention, and we’re here to ensure every rupee works as hard as you do. \n\nYour insights matter to us. In your recent interactions, you’ve shared how seamless banking should feel—not just functional, but deeply aligned with your goals. Whether it’s optimizing returns or simplifying everyday transactions, we’re committed to making your experience effortless. Let’s schedule a quick call this week to explore how we can tailor our services to your evolving needs. You deserve nothing less than banking that feels personal, reliable, and rewarding.",
+        "compliance_status": "APPROVED",
+        "word_count": 150
+      },
+      "sms": {
+        "body": "Hi Rohit! 13 years of banking with us is something we cherish deeply. Your balance of ₹65,74,586 reflects the trust you’ve placed in Union Bank. We’d love to hear how we can make your banking experience even smoother. Could we set up a quick call this week? Warm regards.",
+        "compliance_status": "APPROVED",
+        "char_count": 271
+      },
+      "push": {
+        "title": "Let’s make your banking even smoother, Rohit",
+        "body": "Join us for a quick call to explore how we can tailor your banking to your goals. Your insights help us serve you better.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:54:48.811Z"
+  },
+  {
+    "approvalId": "acbf8eb0-ad0d-4cc6-b6fc-53e4f6ad5d05",
+    "customerId": "CUST-025",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:54:53.262Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Product Upgrade",
+      "channel": "phone",
+      "timing": "immediate",
+      "rationale": "3 active ARGUS signals detected. Life event: SALARY_CHANGE. Ensemble score 0.472 → STANDARD tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Deepak, we noticed your salary pattern shifted — let’s align your banking",
+        "body": "Hi Deepak, we’ve noticed your salary credits have adjusted over the past few weeks, and we want to make sure your Union Bank account keeps working as smoothly as possible for this new phase. Your daily life is evolving — whether it’s the new salary level or a shift in responsibilities — and we’re here to help your banking evolve with you. We’d love to understand your current goals so we can offer support that truly fits your needs right now.\n\nWith your steady presence on our platform for nearly five years, we’d also like to explore ways to make your money work a little harder for you. Let’s set up a quick chat to review your account and see if there’s a product upgrade that better matches your current lifestyle. You can reply to this email or call us anytime at 1800-xxx-xxxx — we’re happy to meet you where you are.\n\nThank you, Deepak, for trusting Union Bank all this time. We’re grateful to be part of your journey.",
+        "compliance_status": "APPROVED",
+        "word_count": 170
+      },
+      "sms": {
+        "body": "Deepak, we noticed your salary has changed recently. We’d love to help your banking match your new rhythm. Text YES to chat or call 1800-xxx-xxxx. Union Bank is here for you.",
+        "compliance_status": "APPROVED",
+        "char_count": 174
+      },
+      "push": {
+        "title": "Let’s align your account with your new salary",
+        "body": "Hi Deepak, we noticed your salary has adjusted. Tap to set up a quick review — we’ll make sure your Union Bank account supports you perfectly.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:54:53.262Z"
+  },
+  {
+    "approvalId": "f11c5f06-8346-49c1-9283-1226e9ad84eb",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:55:12.573Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Geeta, we’ve missed you — let’s reconnect today",
+        "body": "Hi Geeta, I wanted to reach out personally because we’ve noticed your account has been quiet for a while, and that’s not the Union Bank experience we want for you. As a valued customer, your engagement matters deeply to us, and today I’d love to make things easier for you. Could we set aside just 5 minutes to understand what’s working well for you and where we can do better? Simply reply to this email or call our dedicated line at 1800-123-4567 to schedule a quick chat. Your banking should always feel seamless and supportive, especially when life gets busy. We’re here to help whenever you’re ready.",
+        "compliance_status": "APPROVED",
+        "word_count": 107
+      },
+      "sms": {
+        "body": "Geeta, we’ve missed your presence. Quick 5-min call to make banking easier for you? Reply YES or call 1800-123-4567. Union Bank is here.",
+        "compliance_status": "APPROVED",
+        "char_count": 136
+      },
+      "push": {
+        "title": "Geeta, let’s reconnect — 5 mins today?",
+        "body": "Hi Geeta! We’ve noticed your account has been quiet. Your time matters — let’s make banking effortless again. Tap to schedule a quick call today.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:55:12.573Z"
+  },
+  {
+    "approvalId": "77d5961d-47c2-42e1-870f-e667abf8665d",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:55:27.966Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Geeta, your Union Bank family misses you",
+        "body": "Hi Geeta, We noticed your last transaction was a little while ago, and we simply wanted to check in. Is everything okay with you and your family in Jaipur? We’re here to make banking feel effortless for you, whenever you need us. A quick video call, a branch visit, or even just a chat over WhatsApp—whichever works best for you. Your comfort and trust mean the world to us. We’d love to hear how you’re doing and how we can help. With warmest regards, Union Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 86
+      },
+      "sms": {
+        "body": "Hi Geeta! We’ve missed having you with us. If you’re facing any banking hiccups or just need a quick chat, we’re just a call away. Let’s make things smooth again for you. Warmly, Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 189
+      },
+      "push": {
+        "title": "Geeta, we miss you",
+        "body": "Tap to reconnect with Union Bank. We’re here to make banking easy again for you",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:55:27.966Z"
   }
 ]

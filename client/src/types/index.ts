@@ -100,24 +100,29 @@ export interface ActionPlan {
 }
 
 export interface HeraldContent {
-  customer_id: string;
-  risk_tier:   RiskTier;
+  // Static snapshot fields (populated when reading from server/data).
+  customer_id?: string;
+  risk_tier?:   RiskTier;
+  // Live LLM output may include just {email, sms, push}; the static
+  // snapshot in server/data/*.json may add compliance_status,
+  // word_count, etc.  All fields are optional so the type accepts
+  // both shapes.
   email?: {
-    subject:            string;
+    subject?:            string;
     body:               string;
-    compliance_status:  string;
-    variant:            string;
-    word_count:         number;
+    compliance_status?:  string;
+    variant?:           string;
+    word_count?:        number;
   };
   sms?: {
     body:               string;
-    compliance_status:  string;
-    char_count:         number;
+    compliance_status?: string;
+    char_count?:        number;
   };
   push?: {
-    title:              string;
+    title?:             string;
     body:               string;
-    compliance_status:  string;
+    compliance_status?: string;
   };
 }
 

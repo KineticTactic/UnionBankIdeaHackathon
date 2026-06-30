@@ -1,10 +1,6 @@
 [
   {
-<<<<<<< HEAD
-    "checkedAt": "2026-06-29T10:41:27.716Z",
-=======
-    "checkedAt": "2026-06-29T10:44:42.365Z",
->>>>>>> c2a8118 (Fix HERALD generation)
+    "checkedAt": "2026-06-30T04:39:29.243Z",
     "archived": {
       "approvals": 0
     },
@@ -12,11 +8,7 @@
     "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
   },
   {
-<<<<<<< HEAD
-    "checkedAt": "2026-06-29T23:57:22.096Z",
-=======
-    "checkedAt": "2026-06-29T15:23:21.012Z",
->>>>>>> c2a8118 (Fix HERALD generation)
+    "checkedAt": "2026-06-30T04:42:13.380Z",
     "archived": {
       "approvals": 0
     },
@@ -24,11 +16,7 @@
     "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
   },
   {
-<<<<<<< HEAD
-    "checkedAt": "2026-06-30T00:00:43.835Z",
-=======
-    "checkedAt": "2026-06-29T15:25:01.061Z",
->>>>>>> c2a8118 (Fix HERALD generation)
+    "checkedAt": "2026-06-30T04:51:26.280Z",
     "archived": {
       "approvals": 0
     },
@@ -36,10 +24,7 @@
     "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
   },
   {
-<<<<<<< HEAD
-    "checkedAt": "2026-06-30T00:12:26.506Z",
-=======
-    "checkedAt": "2026-06-29T15:31:04.688Z",
+    "checkedAt": "2026-06-30T04:53:41.046Z",
     "archived": {
       "approvals": 0
     },
@@ -47,7 +32,7 @@
     "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
   },
   {
-    "checkedAt": "2026-06-29T16:08:53.902Z",
+    "checkedAt": "2026-06-30T04:54:44.952Z",
     "archived": {
       "approvals": 0
     },
@@ -55,88 +40,7 @@
     "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
   },
   {
-    "checkedAt": "2026-06-29T16:14:24.124Z",
-    "archived": {
-      "approvals": 0
-    },
-    "errors": [],
-    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
-  },
-  {
-    "checkedAt": "2026-06-29T16:29:39.158Z",
-    "archived": {
-      "approvals": 0
-    },
-    "errors": [],
-    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
-  },
-  {
-    "checkedAt": "2026-06-29T16:30:20.800Z",
-    "archived": {
-      "approvals": 0
-    },
-    "errors": [],
-    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
-  },
-  {
-    "checkedAt": "2026-06-29T16:37:31.430Z",
-    "archived": {
-      "approvals": 0
-    },
-    "errors": [],
-    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
-  },
-  {
-    "checkedAt": "2026-06-29T16:40:42.515Z",
-    "archived": {
-      "approvals": 0
-    },
-    "errors": [],
-    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
-  },
-  {
-    "checkedAt": "2026-06-29T16:50:08.391Z",
-    "archived": {
-      "approvals": 0
-    },
-    "errors": [],
-    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
-  },
-  {
-    "checkedAt": "2026-06-30T04:21:28.217Z",
-    "archived": {
-      "approvals": 0
-    },
-    "errors": [],
-    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
-  },
-  {
-    "checkedAt": "2026-06-30T04:23:05.702Z",
-    "archived": {
-      "approvals": 0
-    },
-    "errors": [],
-    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
-  },
-  {
-    "checkedAt": "2026-06-30T04:28:31.935Z",
-    "archived": {
-      "approvals": 0
-    },
-    "errors": [],
-    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
-  },
-  {
-    "checkedAt": "2026-06-30T04:28:53.893Z",
-    "archived": {
-      "approvals": 0
-    },
-    "errors": [],
-    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
-  },
-  {
-    "checkedAt": "2026-06-30T04:29:16.299Z",
->>>>>>> c2a8118 (Fix HERALD generation)
+    "checkedAt": "2026-06-30T04:55:15.628Z",
     "archived": {
       "approvals": 0
     },

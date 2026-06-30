@@ -196,6 +196,74 @@ router.post('/send-to-compass/:id', (req, res) => {
     }
 });
 
+// ── POST /api/nexus/pitch/:id ─────────────────────────────────────────────────
+// Generate a HERALD cross-sell pitch for a SPECIFIC product. Tries the live LLM
+// (NVIDIA DeepSeek) with a cross-sell prompt; falls back to a templated,
+// product-specific draft so the demo always returns content.
+function templatedPitch(customer, label, reason) {
+    const first = customer.first_name || (customer.full_name || 'there').split(' ')[0];
+    const rm    = customer.relationship_manager || 'your relationship manager';
+    return {
+        email: {
+            subject: `${first}, a ${label} picked for your profile`,
+            body: `Dear ${first},\n\nBased on your banking profile with us, you could be a strong fit for our ${label}. ${reason ? reason.charAt(0).toUpperCase() + reason.slice(1) + '.' : ''}\n\nThere's no obligation — ${rm} would be glad to walk you through the details and see if it suits your goals.\n\nWarm regards,\nUnion Bank`,
+        },
+        sms: { body: `Hi ${first}, you may be a great fit for our ${label}. ${rm} can share details at your convenience. — Union Bank` },
+        push: { title: `${label} for you`, body: `${first}, explore our ${label} — selected for your profile.` },
+    };
+}
+
+router.post('/pitch/:id', async (req, res) => {
+    try {
+        const customer = ds.CUSTOMERS_MAP[req.params.id];
+        if (!customer) return res.status(404).json({ status: 'error', message: 'Customer not found' });
+        const { product } = req.body || {};
+        if (!product) return res.status(400).json({ status: 'error', message: 'product required' });
+
+        const scored = nexus.scoreCustomer(customer);
+        const rec = (scored.recommendations || []).find(r => r.product === product);
+        const label  = rec?.label || PRODUCT_META[product]?.label || product;
+        const reason = rec?.reason_codes?.[0]?.detail || '';
+
+        let content, source;
+        try {
+            const llm = require('../services/llmClient');
+            const { parseHeraldResponse } = require('../services/heraldPrompt');
+            const systemPrompt =
+                'You are HERALD, Union Bank\'s AI personalisation engine. Write a warm, compliant CROSS-SELL ' +
+                'pitch introducing ONE banking product the customer is a good fit for. Address them by first name, ' +
+                'be concise and benefit-led, no pushy language, RBI-compliant (never promise guaranteed returns). ' +
+                'Return ONLY JSON: {"email":{"subject":"","body":""},"sms":{"body":""},"push":{"title":"","body":""}}.';
+            const userPrompt =
+                `Customer: ${customer.full_name} (${customer.customer_id}) | Age ${customer.age} | ${customer.city} | ${customer.segment}\n` +
+                `Product to pitch: ${label}\nWhy it fits: ${reason || 'strong profile match'}\n` +
+                `Channels: email (subject + body <=120 words), sms (<=160 chars), push (title <=40 chars, body <=100 chars).`;
+            const resp = await llm.callNvidia(
+                [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }], 1000);
+            const raw = resp?.choices?.[0]?.message?.content || '';
+            content = parseHeraldResponse(raw);
+            if (!content?.email?.body) throw new Error('empty LLM content');
+            source = 'llm-live';
+        } catch (e) {
+            content = templatedPitch(customer, label, reason);
+            source = 'template-fallback';
+        }
+
+        auditLog.logEvent({
+            eventType:  'NEXUS_PITCH_GENERATED',
+            customerId: customer.customer_id,
+            actor:      req.user?.username || 'system',
+            layer:      'HERALD',
+            payload:    { product, label, source },
+            modelVersion: 'nexus-demo-v1',
+        }).catch(() => {});
+
+        res.json({ status: 'ok', source, product, label, reason, content });
+    } catch (e) {
+        res.status(500).json({ status: 'error', message: e.message });
+    }
+});
+
 // ── GET /api/nexus/handoffs ───────────────────────────────────────────────────
 router.get('/handoffs', (req, res) => {
     try { res.json({ status: 'ok', handoffs: readJson(HANDOFF_FILE, {}) || {} }); }

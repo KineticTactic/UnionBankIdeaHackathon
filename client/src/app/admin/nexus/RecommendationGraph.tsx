@@ -22,7 +22,7 @@ const CAT_COLOR: Record<string, string> = {
   investment: '#0ea5e9', insurance: '#f59e0b',
 };
 const SEG_COLOR: Record<string, string> = {
-  HNW: '#7c3aed', 'Mass Affluent': '#0ea5e9', SME: '#10b981', 'Mass Market': '#64748b',
+  HNW: '#7c3aed', 'Mass Affluent': '#0ea5e9', SME: '#10b981', 'Mass Market': '#8B8481',
 };
 
 interface CNode { id: string; x: number; y: number; vx: number; vy: number; fx: number; fy: number; pinned: boolean; d: any; }
@@ -171,25 +171,25 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
   const cmap = new Map(rnodes.map(n => [n.id, n]));
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm overflow-hidden">
       {/* toolbar */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-100">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#E5E0DF]">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-[#0f2d5c]" />
-          <span className="text-[12px] font-bold text-slate-700">Recommendation Graph</span>
-          <span className="text-[10px] text-slate-400">· bipartite customer ↔ product · live force simulation</span>
+          <Sparkles className="w-4 h-4 text-[#6B132B]" />
+          <span className="text-[12px] font-bold text-[#2A161B]">Recommendation Graph</span>
+          <span className="text-[10px] text-[#8B8481]">· bipartite customer ↔ product · live force simulation</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <button onClick={togglePause} className="flex items-center gap-1 px-2 py-1 rounded-md border border-slate-200 text-[11px] text-slate-500 hover:bg-slate-50">
+          <button onClick={togglePause} className="flex items-center gap-1 px-2 py-1 rounded-md border border-[#E5E0DF] text-[11px] text-[#6B6562] hover:bg-[#FAFAF9]">
             {paused ? <><Play className="w-3 h-3" /> Resume</> : <><Pause className="w-3 h-3" /> Pause</>}
           </button>
-          <button onClick={reset} className="flex items-center gap-1 px-2 py-1 rounded-md border border-slate-200 text-[11px] text-slate-500 hover:bg-slate-50">
+          <button onClick={reset} className="flex items-center gap-1 px-2 py-1 rounded-md border border-[#E5E0DF] text-[11px] text-[#6B6562] hover:bg-[#FAFAF9]">
             <RotateCcw className="w-3 h-3" /> Reshuffle
           </button>
         </div>
       </div>
 
-      <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 560, background: 'radial-gradient(circle at 50% 40%, #f8fafc, #eef2f7)' }}>
+      <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 560, background: 'radial-gradient(circle at 50% 40%, #FAFAF9, #F5F4F2)' }}>
         <defs>
           <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
@@ -291,22 +291,22 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
           const isPeer = peerIds.has(n.id);
           const isEvidence = evidencePeers.some(p => p.id === n.id);
           const dim = selectedId && !isSel && !isPeer;
-          const col = SEG_COLOR[n.d.segment] || '#64748b';
+          const col = SEG_COLOR[n.d.segment] || '#8B8481';
           const r = isSel ? CUST_R + 4 : isEvidence ? CUST_R + 2 : CUST_R;
           return (
             <g key={n.id} opacity={dim ? 0.18 : 1} style={{ cursor: 'pointer' }}
               onClick={() => onSelect(n.id)}>
               {isSel && (
-                <circle cx={n.x} cy={n.y} r={r + 6} fill="none" stroke="#0f2d5c" strokeWidth={2} strokeDasharray="4 3">
+                <circle cx={n.x} cy={n.y} r={r + 6} fill="none" stroke="#6B132B" strokeWidth={2} strokeDasharray="4 3">
                   <animate attributeName="stroke-dashoffset" from="0" to="14" dur="1s" repeatCount="indefinite" />
                 </circle>
               )}
               {isEvidence && <circle cx={n.x} cy={n.y} r={r + 4} fill="#0ea5e9" opacity={0.18} />}
-              <circle cx={n.x} cy={n.y} r={r} fill={isSel ? '#0f2d5c' : '#fff'} stroke={col} strokeWidth={isSel ? 0 : 2} />
+              <circle cx={n.x} cy={n.y} r={r} fill={isSel ? '#6B132B' : '#fff'} stroke={col} strokeWidth={isSel ? 0 : 2} />
               <circle cx={n.x} cy={n.y} r={r * 0.45} fill={col} opacity={isSel ? 0.4 : 0.55} />
               {(isSel || isEvidence) && (
                 <text x={n.x} y={n.y - r - 4} textAnchor="middle" fontSize="8.5" fontWeight="700"
-                  fill={isSel ? '#0f2d5c' : '#0369a1'} style={{ pointerEvents: 'none' }}>
+                  fill={isSel ? '#6B132B' : '#0369a1'} style={{ pointerEvents: 'none' }}>
                   {n.d.first_name}
                 </text>
               )}
@@ -316,16 +316,16 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
       </svg>
 
       {/* caption / legend */}
-      <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">
+      <div className="px-4 py-3 border-t border-[#E5E0DF] flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-3 flex-wrap">
           {Object.entries(SEG_COLOR).map(([s, c]) => (
-            <span key={s} className="flex items-center gap-1 text-[10px] text-slate-500">
+            <span key={s} className="flex items-center gap-1 text-[10px] text-[#6B6562]">
               <span className="w-2.5 h-2.5 rounded-full" style={{ background: c }} /> {s}
             </span>
           ))}
-          <span className="text-slate-300">|</span>
-          <span className="text-[10px] text-slate-500 flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-sm bg-slate-400" /> product (sized by adoption)
+          <span className="text-[#C9C3C0]">|</span>
+          <span className="text-[10px] text-[#6B6562] flex items-center gap-1">
+            <span className="w-2.5 h-2.5 rounded-sm bg-[#8B8481]" /> product (sized by adoption)
           </span>
         </div>
         {sel && recProduct ? (
@@ -334,7 +334,7 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
             {evidencePeers.length} similar customers hold {recommendation?.label || recProduct} → recommended to {sel.d.first_name}
           </span>
         ) : (
-          <span className="text-[11px] text-slate-400">Click any customer node to trace its recommendation</span>
+          <span className="text-[11px] text-[#8B8481]">Click any customer node to trace its recommendation</span>
         )}
       </div>
     </div>

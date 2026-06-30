@@ -12,6 +12,7 @@ import {
   Activity, BarChart3, FileText, Shield, X, Loader2,
   CheckCircle, AlertTriangle, TrendingUp, Calendar,
   MapPin, Briefcase, CreditCard, Smartphone, MessageCircle,
+  Package, Sparkles, Ban, ShieldCheck,
 } from 'lucide-react';
 
 interface Snapshot {
@@ -26,6 +27,7 @@ const TABS = [
   { id: 'overview',  label: 'Overview',    icon: BarChart3    },
   { id: 'signals',   label: 'Signals',     icon: Activity     },
   { id: 'plan',      label: 'Action Plan', icon: Brain        },
+  { id: 'crosssell', label: 'Cross-Sell',  icon: Package      },
   { id: 'outreach',  label: 'Outreach',    icon: Send         },
   { id: 'calls',     label: 'Calls',       icon: Phone        },
   { id: 'outcomes',  label: 'Outcomes',    icon: ClipboardList},
@@ -187,6 +189,166 @@ function PlanTab({ snap }: { snap: Snapshot }) {
           <p className="text-[12px] text-copper-dark font-medium">Outreach suppressed (contact fatigue / consent rules)</p>
         </div>
       )}
+    </div>
+  );
+}
+
+// ── Cross-Sell Tab (NEXUS) ────────────────────────────────────────────────────
+const CAT_BADGE: Record<string, string> = {
+  card: 'bg-purple-100 text-purple-700', loan: 'bg-red-100 text-red-700',
+  deposit: 'bg-emerald-100 text-emerald-700', investment: 'bg-sky-100 text-sky-700',
+  insurance: 'bg-amber-100 text-amber-700',
+};
+
+function PitchView({ pitch, customerId }: { pitch: any; customerId: string }) {
+  const c = pitch?.content;
+  if (!c?.email) return null;
+  return (
+    <div className="mt-2 rounded-lg border border-[var(--crimson)]/20 bg-[var(--crimson)]/[0.02] p-3 space-y-2">
+      <p className="text-[9px] font-bold text-[var(--crimson)] uppercase tracking-wide flex items-center gap-1.5">
+        <Send className="w-3 h-3" /> HERALD draft for {pitch.label} · {pitch.source === 'llm-live' ? 'NVIDIA DeepSeek' : 'template'}
+      </p>
+      <div>
+        <p className="text-[12px] font-semibold text-slate-800">Subject: {c.email.subject}</p>
+        <p className="text-[12px] text-slate-600 leading-relaxed whitespace-pre-wrap mt-1">{c.email.body}</p>
+      </div>
+      {c.sms?.body && (
+        <p className="text-[11px] text-slate-500 border-t border-slate-100 pt-2">
+          <span className="font-bold uppercase text-[9px] text-slate-400">SMS · </span>{c.sms.body}
+        </p>
+      )}
+      <Link href={`/rm/compose/${customerId}`}
+        className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[var(--crimson)] hover:underline">
+        <Send className="w-3 h-3" /> Refine in Composer
+      </Link>
+    </div>
+  );
+}
+
+function CrossSellTab({ snap, customerId }: { snap: Snapshot; customerId: string }) {
+  const [nexus,   setNexus]   = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [pitches, setPitches] = useState<Record<string, any>>({});
+  const [pitchLoading, setPitchLoading] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true); setPitches({});
+    api.getNexusForCustomer(customerId).then(setNexus).catch(() => setNexus(null)).finally(() => setLoading(false));
+  }, [customerId]);
+
+  const generatePitch = async (product: string) => {
+    setPitchLoading(product);
+    try { const r = await api.generateNexusPitch(customerId, product); setPitches(p => ({ ...p, [product]: r })); }
+    catch { /* */ } finally { setPitchLoading(null); }
+  };
+
+  if (loading) return (
+    <div className="flex items-center justify-center py-16 text-slate-400 gap-2">
+      <Loader2 className="w-5 h-5 animate-spin text-[var(--crimson)]" /> Scoring cross-sell fit…
+    </div>
+  );
+  if (!nexus) return <div className="py-16 text-center text-slate-400 text-[13px]">No cross-sell data available.</div>;
+
+  const top        = nexus.top_offer;
+  const recs       = nexus.recommendations || [];
+  const suppressed = nexus.suppressed || [];
+  const deferral   = nexus.churn_deferral_active;
+
+  return (
+    <div className="space-y-4">
+      {/* header line */}
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <p className="text-[13px] font-bold text-slate-900 flex items-center gap-1.5">
+            <Sparkles className="w-4 h-4 text-[var(--crimson)]" /> NEXUS Cross-Sell Recommendations
+          </p>
+          <p className="text-[11px] text-slate-400 mt-0.5">
+            Model-backed (XGBoost · PKDD'99) · compliance-gated · pitch HERALD content per product
+          </p>
+        </div>
+        {deferral && (
+          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-crimson-soft text-crimson text-[11px] font-bold">
+            <AlertTriangle className="w-3.5 h-3.5" /> Churn-deferral active
+          </span>
+        )}
+      </div>
+
+      {deferral && (
+        <div className="bg-crimson-soft border border-red-100 rounded-xl px-4 py-3 text-[12px] text-crimson">
+          This customer is high churn-risk — NEXUS has suppressed new-credit cross-sell. Retention takes priority;
+          only safe products (deposits / insurance) are offered below.
+        </div>
+      )}
+
+      {!top && (
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-center text-[13px] text-slate-500">
+          No eligible cross-sell for this customer right now.
+        </div>
+      )}
+
+      {/* eligible recommendations — each with its own HERALD pitch generator */}
+      {recs.length > 0 && (
+        <div>
+          <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Eligible Products — generate a pitch per product
+          </p>
+          <div className="space-y-2">
+            {recs.map((rec: any, i: number) => {
+              const isTop = i === 0;
+              const busy  = pitchLoading === rec.product;
+              const pitch = pitches[rec.product];
+              return (
+                <div key={rec.product}
+                  className={`rounded-lg border bg-white px-3 py-2.5 ${isTop ? 'border-[var(--crimson)]/30' : 'border-slate-200'}`}>
+                  <div className="flex items-center gap-3">
+                    <Package className="w-4 h-4 text-slate-400 shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[13px] font-semibold text-slate-800 truncate">{rec.label}</span>
+                        <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-semibold ${CAT_BADGE[rec.category] || 'bg-slate-100 text-slate-500'}`}>{rec.category}</span>
+                        {isTop && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-crimson-soft text-crimson font-bold uppercase tracking-wide">Best fit</span>}
+                      </div>
+                      {rec.reason_codes?.[0] && <p className="text-[11px] text-slate-400 truncate">{rec.reason_codes[0].detail}</p>}
+                    </div>
+                    <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden shrink-0">
+                      <div className="h-full bg-[var(--crimson)] rounded-full" style={{ width: `${Math.round(rec.score * 100)}%` }} />
+                    </div>
+                    <span className="text-[12px] font-bold text-[var(--crimson)] tabular-nums w-9 text-right shrink-0">{Math.round(rec.score * 100)}%</span>
+                    <button onClick={() => generatePitch(rec.product)} disabled={busy}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--crimson)] text-white text-[11px] font-semibold hover:bg-[var(--crimson-dark)] disabled:opacity-50 transition-colors shrink-0">
+                      {busy ? <Loader2 className="w-3 h-3 animate-spin" /> : <Brain className="w-3 h-3" />}
+                      {busy ? 'Drafting…' : pitch ? 'Regenerate' : 'Generate'}
+                    </button>
+                  </div>
+                  {pitch && <PitchView pitch={pitch} customerId={customerId} />}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* suppressed (compliance) */}
+      {suppressed.length > 0 && (
+        <div>
+          <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+            <Ban className="w-3.5 h-3.5 text-red-500" /> Suppressed by Compliance ({suppressed.length})
+          </p>
+          <div className="space-y-1.5">
+            {suppressed.map((rec: any) => (
+              <div key={rec.product} className="flex items-center justify-between gap-3 rounded-lg bg-red-50/50 border border-red-100 px-3 py-2">
+                <span className="text-[12px] font-medium text-slate-600 truncate">{rec.label}</span>
+                <span className="text-[11px] text-red-600 italic text-right shrink-0 max-w-[60%] truncate" title={rec.filtered_reason}>{rec.filtered_reason}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <p className="text-[10px] text-slate-400 leading-relaxed pt-1">
+        Recommendations are advisory and audit-logged. NEXUS defers to the churn model — new-credit offers are
+        withheld from high-risk customers so retention messaging wins first.
+      </p>
     </div>
   );
 }
@@ -1102,6 +1264,7 @@ export default function RmCustomer360Page() {
                 {activeTab === 'overview'  && <OverviewTab snap={snap} />}
                 {activeTab === 'signals'   && <SignalsTab snap={snap} />}
                 {activeTab === 'plan'      && <PlanTab snap={snap} />}
+                {activeTab === 'crosssell' && <CrossSellTab snap={snap} customerId={id} />}
                 {activeTab === 'outreach'  && <OutreachTab snap={snap} customerId={id} />}
                 {activeTab === 'calls'     && <CallsTab customerId={id} />}
                 {activeTab === 'outcomes'  && <OutcomesTab customerId={id} />}

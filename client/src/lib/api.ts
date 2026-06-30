@@ -190,6 +190,7 @@ export const api = {
   getNexusForCustomer: (customerId: string) => fetchApi(`/api/nexus/customer/${encodeURIComponent(customerId)}`),
   getNexusGraph:       () => fetchApi('/api/nexus/graph'),
   sendNexusToCompass:  (customerId: string) => fetchApi(`/api/nexus/send-to-compass/${encodeURIComponent(customerId)}`, { method: 'POST' }),
+  generateNexusPitch:  (customerId: string, product: string) => fetchApi(`/api/nexus/pitch/${encodeURIComponent(customerId)}`, { method: 'POST', body: JSON.stringify({ product }) }),
 
   // ── RM Assignment Engine ─────────────────────────────────────────────────────
   recommendRM: (profile: Record<string, any>) =>

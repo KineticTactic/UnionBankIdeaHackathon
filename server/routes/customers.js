@@ -26,9 +26,62 @@ router.get('/:id', verifyToken, async (req, res) => {
 
 // GET /api/customers/:id/signals
 router.get('/:id/signals', verifyToken, async (req, res) => {
-    if (!await ds.getCustomerById(req.params.id))
-        return res.status(404).json({ status: 'error', message: 'Not found' });
-    const signals = await ds.getSignals(req.params.id);
+    // Customer may live in either the orchestrator store (CUST-001) or
+    // the Bank API (C-00000001).  Soft-check both: if either returns
+    // a record, return signals.  This lets the Signals tab work for
+    // both ID formats.
+    const inOrch = await ds.getCustomerById(req.params.id);
+    if (!inOrch) {
+        // Bank API quick-check (only one HTTP call, cheap)
+        try {
+            const http = require('http');
+            const bankResp = await new Promise((resolve) => {
+                const r = http.get({
+                    host: '127.0.0.1', port: 3001,
+                    path: `/api/customers/${encodeURIComponent(req.params.id)}/snapshot`,
+                    timeout: 1500,
+                }, (resp) => {
+                    let body = ''; resp.on('data', (c) => body += c);
+                    resp.on('end', () => resolve({ status: resp.statusCode, body }));
+                });
+                r.on('error',   () => resolve({ status: 0 }));
+                r.on('timeout', () => { r.destroy(); resolve({ status: 0 }); });
+            });
+            if (bankResp.status !== 200) {
+                return res.status(404).json({ status: 'error', message: 'Not found' });
+            }
+        } catch (_) {
+            return res.status(404).json({ status: 'error', message: 'Not found' });
+        }
+    }
+
+    // Prefer the most recent ARGUS evaluation when present — it's the
+    // source of truth (9 HERALD agents, NEXUS+ORACLE+WARDEN, fresh
+    // confidence/CUSUM values).  The legacy signals.json entries are
+    // pre-seeded demo data and would otherwise clutter the live view.
+    let signals = [];
+    let wasReset = false;
+    try {
+        const argusRoute = require('./argus');
+        if (argusRoute.isReset && argusRoute.isReset(req.params.id)) {
+            // The user explicitly reset this customer — return an
+            // empty list so the demo flow shows a clean "0 signals"
+            // state instead of the pre-seeded demo data.
+            wasReset = true;
+        } else {
+            const cached = argusRoute.getLastEvaluation && argusRoute.getLastEvaluation(req.params.id);
+            if (cached && Array.isArray(cached.signals) && cached.signals.length) {
+                signals = cached.signals;
+            }
+        }
+    } catch (_) { /* argus module not mounted (tests, etc.) */ }
+
+    // Fall back to the live signal overrides (ARGUS writes them) or
+    // the static signals.json for a customer that hasn't been
+    // evaluated yet.
+    if (!signals.length && !wasReset) {
+        signals = await ds.getSignals(req.params.id);
+    }
     res.set('Cache-Control', 'private, max-age=10');
     res.json({ status: 'ok', customer_id: req.params.id, signals, alarm_count: signals.length });
 });

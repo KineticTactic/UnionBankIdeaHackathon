@@ -24,6 +24,25 @@ Banks lose customers silently — churn typically takes 60–90 days to manifest
 
 **Bubbletea Dev Console:** see [tui/README.md](tui/README.md).
 
+### 5-Minute TUI-Driven Demo (ARGUS layer)
+
+The whole ARGUS demo runs from the TUI command palette — no manual scripting.
+
+```
+1.  Start services:        in the TUI, press S (or type /open client dashboard)
+2.  Open the client:       in the TUI, type: open client dashboard
+3.  Bulk-evaluate ARGUS:   in the TUI, type: DEMO · bulk-eval + open critical customer
+4.  Watch the client:      browser opens /dashboard and /customers/CUST-043
+                           Signals tab shows 10 detected signals, refreshes every 5s
+5.  Add a single signal:   in the TUI, type: argus evaluate CUST-001 (orchestrator bridge)
+6.  Open that customer:    in the TUI, type: open client customer CUST-001
+7.  Browse to Signals:     click the Signals tab — see live ARGUS output
+```
+
+All commands are in the TUI's command palette (key `3`) and the dashboard
+command input (`/`). The client auto-polls every 5 seconds, so a fresh
+ARGUS evaluation appears in the UI within ~5 seconds of triggering.
+
 **Demo credentials:**
 
 | Role | Username | Password |
@@ -167,6 +186,42 @@ python3 scripts/simulate_events.py --rate 2 --duration 60
 
 # Pre-built demo scenario: 3 signals + score spike + complaint on one customer
 python3 scripts/simulate_events.py --scenario critical_cascade --customer CUST-001
+
+# Live ARGUS evaluation: fetch Bank data, run 9 HERALD agents, write
+# detected signals back to the orchestrator's in-memory store
+python3 scripts/simulate_events.py --argus CUST-001
+```
+
+#### Step 7b (optional) — Live ARGUS evaluation
+
+ARGUS (Layer 2) runs 9 HERALD agents + NEXUS + ORACLE + WARDEN for a
+single customer. The orchestrator exposes a bridge route that fetches
+Bank data, transforms it into the `herald_data` shape ARGUS expects,
+calls the Python service, persists the updated agent state, and
+writes the detected signals back into the customer's profile so they
+appear in the client's Signals tab.
+
+```bash
+# From the TUI: type `argus evaluate CUST-001 (orchestrator bridge)`
+# or run the TUI command palette (`/`) and search "argus".
+
+# From the shell:
+TOKEN=$(curl -s -X POST http://localhost:8000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}' \
+  | python3 -c "import json,sys; print(json.load(sys.stdin)['token'])")
+
+curl -s -X POST http://localhost:8000/api/argus/evaluate-customer/CUST-001 \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{}' | python3 -m json.tool
+```
+
+The response includes a `signals` array (one entry per agent) with
+`signal_type`, `detected`, `confidence`, `cusum_value`, `alarm_threshold`,
+`method`, and `days_active` — the exact shape the client's Signals
+tab expects. The WARDEN severity (CRITICAL/HIGH/MEDIUM/LOW/NONE) is
+included in `warden.severity`.
 ```
 
 Events flow through `POST /api/kafka/publish` → orchestrator SSE

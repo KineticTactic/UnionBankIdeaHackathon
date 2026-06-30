@@ -103,23 +103,31 @@ func (m AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds = append(cmds, tickCmd())
 		return m, tea.Batch(cmds...)
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c", "q":
-			_ = m.History.Close()
-			m.Mgr.StopPolling()
-			ctx := m.Cron.Stop()
-			<-ctx.Done()
-			m.Mgr.StopAll()
-			return m, tea.Quit
-		case "1":
-			m.Page = 0
-			return m, nil
-		case "2":
-			m.Page = 1
-			return m, nil
-		case "3":
-			m.Page = 2
-			return m, nil
+		// Page-switch shortcuts (1/2/3) only fire when the dashboard's
+		// command input is NOT active.  When the user has typed `/`
+		// to enter a command, every keystroke (including digits) must
+		// reach the text input — otherwise typing "argus reset 43"
+		// would tab-switch on the 4 and 3 keys.
+		inputActive := m.Page == 0 && m.Dashboard.InputOn
+		if !inputActive {
+			switch msg.String() {
+			case "ctrl+c", "q":
+				_ = m.History.Close()
+				m.Mgr.StopPolling()
+				ctx := m.Cron.Stop()
+				<-ctx.Done()
+				m.Mgr.StopAll()
+				return m, tea.Quit
+			case "1":
+				m.Page = 0
+				return m, nil
+			case "2":
+				m.Page = 1
+				return m, nil
+			case "3":
+				m.Page = 2
+				return m, nil
+			}
 		}
 	}
 	// Forward to active page.

@@ -8,7 +8,7 @@ relocations (high-value rent/grocery/utility transactions).
 from __future__ import annotations
 
 import logging
-from datetime import date
+from datetime import date, datetime
 from typing import Any
 
 from services.detection.agents.base_agent import BaseHeraldAgent, SignalResult
@@ -22,6 +22,29 @@ _MCC_REMITTANCE = 6099
 
 # MCC 6099 (remittance) alongside new domestic city boosts confidence
 _REMITTANCE_BOOST = 0.15
+
+
+def _coerce_date(value):
+    """Coerce a string/date/datetime value to a ``datetime.date``.
+
+    Accepts ISO-8601 strings, plain 'YYYY-MM-DD' dates, ``date``, or
+    ``datetime``.  Returns ``date.today()`` for anything that can't be
+    parsed, so the agent can continue without crashing on a single
+    malformed row (graceful degradation rather than hard fail).
+    """
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    if isinstance(value, str):
+        try:
+            return datetime.fromisoformat(value.replace('Z', '+00:00')).date()
+        except (ValueError, AttributeError):
+            try:
+                return datetime.strptime(value[:10], '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                return date.today()
+    return date.today()
 
 
 class HeraldLocationAgent(BaseHeraldAgent):
@@ -48,8 +71,8 @@ class HeraldLocationAgent(BaseHeraldAgent):
         new_city_amount = sum(t["amount"] for t in txns if t.get("is_new_city", False))
         city_score = new_city_amount / total_amount
 
-        # Days sustained in new city
-        new_city_dates: set = {t["date"] for t in txns if t.get("is_new_city", False)}
+        # Days sustained in new city (coerce string dates to date objects)
+        new_city_dates = [_coerce_date(t.get("date")) for t in txns if t.get("is_new_city", False)]
         if new_city_dates:
             span = (max(new_city_dates) - min(new_city_dates)).days + 1
         else:

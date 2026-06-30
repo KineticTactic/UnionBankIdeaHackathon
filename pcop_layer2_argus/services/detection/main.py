@@ -42,6 +42,57 @@ _HERALD_AGENTS = [
 ]
 
 
+def _normalise_state(agent_data: dict) -> None:
+    """In-place: convert dict-typed state objects to SimpleNamespace
+    so the agents can read typed attributes (.mu, .sigma, .r_pos, .lam_customer, …).
+
+    The orchestrator's bridge sends these as plain JSON because it lives
+    in a different process; this adapter is the boundary.  We use
+    SimpleNamespace (a duck-typed object) rather than the actual
+    dataclass types so the boundary stays loose — agents mutate state
+    via attribute assignment, and the same SimpleNamespace survives a
+    round trip back to the orchestrator on the next evaluation.
+    """
+    from types import SimpleNamespace
+
+    for key in (
+        "tempo_state", "sr_state", "cusum_state", "sa_state",
+        "beta_cusum_state", "sprt_state", "ewma_state", "components",
+    ):
+        v = agent_data.get(key)
+        if isinstance(v, dict):
+            agent_data[key] = SimpleNamespace(**v)
+
+
+def _snapshot_state(agent_data: dict) -> dict[str, Any]:
+    """Serialise a (mutated) agent_data dict back to JSON-compatible
+    form, so the orchestrator can persist it across evaluation calls.
+    All values are coerced to plain Python types so they round-trip
+    cleanly through JSON (no numpy scalars, no numpy arrays).
+    """
+    import math
+    def _to_plain(v):
+        if v is None or isinstance(v, (str, bool)):
+            return v
+        if isinstance(v, (int, float)):
+            if isinstance(v, float) and (math.isnan(v) or math.isinf(v)):
+                return 0.0
+            return v
+        if isinstance(v, (list, tuple)):
+            return [_to_plain(x) for x in v]
+        if isinstance(v, dict):
+            return {k: _to_plain(x) for k, x in v.items()}
+        if hasattr(v, "__dict__"):
+            return {k: _to_plain(x) for k, x in vars(v).items()}
+        return v
+    out: dict[str, Any] = {}
+    for k, v in agent_data.items():
+        if k == "today":
+            continue
+        out[k] = _to_plain(v)
+    return out
+
+
 @dataclass
 class ARGUSInput:
     """All data needed to evaluate one customer in one ARGUS run."""
@@ -50,6 +101,9 @@ class ARGUSInput:
     today: date
     # Per-agent data dictionaries (keyed by signal_type)
     herald_data: dict[str, dict[str, Any]] = field(default_factory=dict)
+    # Post-evaluation state snapshots, keyed by signal_type, populated
+    # by the engine so the orchestrator's bridge can persist them.
+    updated_state: dict[str, dict[str, Any]] = field(default_factory=dict)
     # Joint detector inputs
     signal_matrix: Any = None         # np.ndarray (n_days, 8) for NEXUS + ORACLE
     signal_dates: list[date] = field(default_factory=list)
@@ -98,9 +152,22 @@ class ARGUSEngine:
                 continue
             try:
                 agent_data["today"] = inp.today
+                # Normalise dict-typed state objects to proper dataclass
+                # instances so the agents can read typed attributes
+                # (.mu, .sigma, .r_pos, .lam_customer, etc.) instead of
+                # having to use dict lookup.  The orchestrator's bridge
+                # sends these as plain JSON because it lives in a
+                # different process; this adapter is the boundary.
+                _normalise_state(agent_data)
                 result = agent.evaluate(inp.customer_id, agent_data)
                 herald_results[agent.signal_type] = result
                 p_values[agent.signal_type] = result.p_value
+                # Capture the post-evaluation state for this agent so
+                # the orchestrator's bridge can persist it across calls.
+                # Without this, every evaluation would start from the
+                # initial state and the CUSUM/SR/EWMA statistics would
+                # never accumulate.
+                inp.updated_state[agent.signal_type] = _snapshot_state(agent_data)
             except Exception as exc:
                 logger.error(
                     "ARGUS: HERALD agent %s failed for %s: %s",

@@ -1184,5 +1184,110 @@
     "reviewedAt": null,
     "rejectionReason": null,
     "expiresAt": "2026-07-02T04:55:27.966Z"
+  },
+  {
+    "approvalId": "f5ee1e6c-3b18-4502-a643-1ee7ca383503",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T05:59:16.104Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Geeta, we’ve missed you! Let’s reconnect over a quick chat",
+        "body": "Dear Geeta, it’s been far too long since we last connected—and that’s on us. We noticed you’ve been away from your Union Bank family for a little while, and we’d love to bring you back with open arms. Jaipur is buzzing with new offers, and we’d hate for you to miss out on something special just because life got in the way. How about we schedule a quick call this week to catch up? Simply reply to this email with a time that works for you, and we’ll handle the rest. Your Union Bank family misses you, Geeta. Warm regards, The Union Bank Team",
+        "compliance_status": "APPROVED",
+        "word_count": 104
+      },
+      "sms": {
+        "body": "Geeta, we’ve missed having you with us! How about a quick coffee chat this week to catch up? Reply YES to schedule. Union Bank loves having you back.",
+        "compliance_status": "APPROVED",
+        "char_count": 149
+      },
+      "push": {
+        "title": "Geeta, welcome back to Union Bank!",
+        "body": "Missed you! Tap to schedule a quick catch-up—we’ve got a little something to celebrate your return.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T05:59:16.104Z"
+  },
+  {
+    "approvalId": "ad97a716-6fdd-4ef0-af54-cf74cb46136a",
+    "customerId": "CUST-002",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T06:06:29.369Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "phone",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.125 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Priya, your Surat community shines—let’s keep it bright together",
+        "body": "Hi Priya, we hope this note finds you well in Surat, where the city’s energy is as vibrant as ever. It’s been a genuine pleasure serving you for the last 142 months, and we so appreciate the trust you place in us. Your NPS of 9 tells us we’re on the right track, and we’d love to keep that momentum going by making sure every interaction with Union Bank feels valuable and seamless for you.",
+        "compliance_status": "APPROVED",
+        "word_count": 75
+      },
+      "sms": {
+        "body": "Hi Priya! Surat’s Diwali lights couldn’t outshine your relationship with us—142 months and counting. We’d love to make your Union Bank experience even smoother. Could we schedule a quick call at your convenience? Reply YES to set a time.",
+        "compliance_status": "APPROVED",
+        "char_count": 237
+      },
+      "push": {
+        "title": "Let’s keep Surat shining together, Priya",
+        "body": "Your Union Bank family is here to make banking effortless for you. Tap to share how we can brighten your Surat days ahead.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T06:06:29.369Z"
+  },
+  {
+    "approvalId": "03514d3f-b01e-48ff-baad-886f5f1b88d7",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T06:07:01.835Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Geeta, we miss you — here’s a little something to welcome you home",
+        "body": "Hi Geeta, I’m really glad we got to connect recently, and I wanted to reach out because I’ve noticed your banking habits have shifted a bit over the past few weeks. I completely understand how life gets busy, especially in Jaipur, and I want you to know we’re here to make your banking as smooth and rewarding as possible. Your relationship with Union Bank matters deeply to us, and I’d love to help you rediscover how we can support your goals together. Would you like to explore some tailored solutions that could simplify your finances even further? This is my personal way of saying thank you for choosing us—let’s make your next visit to the bank or app feel effortless and valuable. Warm regards, Your Union Bank Team",
+        "compliance_status": "APPROVED",
+        "word_count": 128
+      },
+      "sms": {
+        "body": "Geeta, it’s been a while since we last saw you in action! 🌟 We’d love to welcome you back with a token of appreciation for staying with us. Reply YES to chat about how we can make your banking even smoother. Union Bank – your trusted partner.",
+        "compliance_status": "APPROVED",
+        "char_count": 243
+      },
+      "push": {
+        "title": "Welcome back, Geeta — here’s a little something for you",
+        "body": "Tap to accept a warm welcome-back gift and explore tailored ways to make your banking seamless again.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T06:07:01.835Z"
   }
 ]

@@ -362,7 +362,16 @@ function getLiveSignalCount(customerId) {
     return (liveState.signalOverrides[customerId] || []).length;
 }
 
+// Clear all live signal overrides for a customer — used by the
+// ARGUS reset endpoint so a fresh evaluation starts from zero.  In
+// production this would be scoped to the agent_id or signal_type;
+// for the demo we wipe the whole bag.
+function clearLiveSignals(customerId) {
+    delete liveState.signalOverrides[customerId];
+    return true;
+}
+
 module.exports = {
     init, publish, shutdown, getStatus, TOPICS,
-    getLiveScoreOverride, getLiveSignalCount,
+    getLiveScoreOverride, getLiveSignalCount, clearLiveSignals,
 };

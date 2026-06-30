@@ -15,6 +15,7 @@ import {
 import {
   ArrowLeft, Building2, MapPin, Clock, User, TrendingUp,
   AlertCircle, CheckCircle, Mail, MessageSquare, Bell, Phone, ChevronRight, Zap,
+  Languages, Globe2, RotateCcw,
 } from 'lucide-react';
 import { ExplainabilityPanel } from '@/components/compliance/ExplainabilityPanel';
 import { DataRightsPanel } from '@/components/compliance/DataRightsPanel';
@@ -54,15 +55,103 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
   const [generating,    setGenerating]    = useState(false);
   const [heraldError,   setHeraldError]   = useState('');
 
+  // ── Translation state (GCP) ─────────────────────────────────────────────
+  // `translation` is the post-translation herald; if set, the UI
+  // renders it instead of `herald` so the user can flip back to the
+  // English source via the "Show original" button.
+  const [languages,     setLanguages]     = useState<{ code: string; name: string; nativeName: string; region: string }[]>([]);
+  const [langReady,      setLangReady]      = useState<boolean>(false);
+  const [langError,      setLangError]      = useState<string>('');
+  const [targetLang,     setTargetLang]     = useState<string>('');
+  const [translation,    setTranslation]    = useState<HeraldContent | null>(null);
+  const [translating,    setTranslating]    = useState(false);
+  const [translationErr, setTranslationErr] = useState('');
+  // Load the language dropdown once on mount.  If GCP isn't
+  // configured we surface a single error message in the UI.
+  useEffect(() => {
+    api.listLanguages()
+      .then((r: any) => {
+        if (r?.languages) {
+          setLanguages(r.languages);
+          setLangReady(true);
+        }
+      })
+      .catch((e: any) => {
+        setLangError(e?.message || 'Failed to load translation languages');
+      });
+  }, []);
+  // Core: generate (or re-generate) the live LLM content.  Returns
+  // the herald on success or null on failure.  Used by both the
+  // "Generate with AI" button and the smart "Translate" button.
+  const generateHerald = async (): Promise<any | null> => {
+    setGenerating(true);
+    setHeraldError('');
+    try {
+      const r = await api.generateOutreach(id);
+      // Server returns the live LLM content in `heraldContent`
+      // (camelCase).  The polling path also returns
+      // {status, ...poll.result} with the same field.
+      const h = r.heraldContent || r.herald || null;
+      setHerald(h);
+      return h;
+    } catch (e: unknown) {
+      setHeraldError(e instanceof Error ? e.message : 'NVIDIA DeepSeek V4 Pro did not respond. Check the API key or network connection.');
+      return null;
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  // Translate: if no live content yet, generate first, then translate.
+  // This makes the language dropdown the single primary action.
+  const handleTranslate = async (target: string) => {
+    setTranslating(true);
+    setTranslationErr('');
+    try {
+      let source = herald;
+      if (!source) {
+        // No live content yet — generate it first.
+        const generated = await generateHerald();
+        if (!generated) {
+          setTranslationErr('Could not generate content for translation. ' +
+                             'Check the NVIDIA API key and try again.');
+          return;
+        }
+        source = generated;
+      }
+      const r = await api.translateHerald(source, target);
+      if (r?.herald) {
+        setTranslation(r.herald);
+        setTargetLang(target);
+      }
+    } catch (e) {
+      setTranslationErr(e instanceof Error ? e.message : 'Translation failed');
+    } finally {
+      setTranslating(false);
+    }
+  };
+  const handleResetTranslation = () => {
+    setTranslation(null);
+    setTargetLang('');
+    setTranslationErr('');
+  };
+
   useEffect(() => {
     if (!getToken()) { router.push('/login'); return; }
-    Promise.all([
+    const load = () => Promise.all([
       api.getCustomerById(id),
       api.getCustomerTransactions(id),
     ]).then(([snapRes, txnRes]) => {
       setSnap(snapRes as CustomerSnapshot);
       setTxns(txnRes.transactions || []);
     }).catch(() => {}).finally(() => setLoading(false));
+    load();
+    // Poll every 5s so live ARGUS evaluations and Kafka events appear
+    // without a manual refresh — the demo runs end-to-end from the
+    // TUI: user fires `argus evaluate CUST-XXX` and the Signals tab
+    // lights up within ~5 seconds.
+    const interval = setInterval(load, 5_000);
+    return () => clearInterval(interval);
   }, [id, router]);
 
   const handleAnalyze = async () => {
@@ -77,24 +166,15 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
     } finally { setAnalyzing(false); }
   };
 
-  const handleGenerate = async () => {
-    setGenerating(true);
-    setHeraldError('');
-    try {
-      const r = await api.generateOutreach(id);
-      // Server returns the live LLM content in `heraldContent` (camelCase).
-      // The polling path also returns {status, ...poll.result} with the
-      // same field.  Always prefer the freshly-generated content over
-      // the static `snap.herald` snapshot.
-      setHerald(r.heraldContent || r.herald || null);
-    } catch (e: unknown) {
-      setHeraldError(e instanceof Error ? e.message : 'NVIDIA DeepSeek V4 Pro did not respond. Check the API key or network connection.');
-    } finally { setGenerating(false); }
-  };
+  const handleGenerate = () => generateHerald();
 
-  // The freshly generated content (from a Generate with AI click) takes
-  // precedence over the static snapshot.  `null` means "nothing yet".
-  const activeHerald = herald ?? snap?.herald ?? null;
+  // The displayed herald.  `herald` is the freshly LLM-generated
+  // content; `translation` (if set) overrides it so the user can flip
+  // back to the original via the "Original" button.  There is NO
+  // fallback to a static snapshot — for the demo, content only appears
+  // once the user clicks Generate with AI (or Translate, which also
+  // generates if needed).
+  const activeHerald = translation ?? herald;
 
   if (loading) return (
     <div className="p-6 space-y-4">
@@ -425,20 +505,104 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
         {/* ── Outreach ─────────────────────────────────────────────────────── */}
         {tab === 'Outreach' && (
           <div className="space-y-4">
-            {/* Header + generate button */}
-            <div className="flex items-center justify-between">
+            {/* Header + generate button + language selector */}
+            <div className="flex items-center justify-between gap-3 flex-wrap">
               <div>
                 <p className="text-[13px] font-semibold text-slate-700">HERALD Content</p>
                 <p className="text-[11px] text-slate-400">
-                  {herald ? 'Live — generated via NVIDIA DeepSeek V4 Pro' : activeHerald ? 'Pre-computed · click Regenerate for a live version' : 'No content yet'}
+                  {herald ? 'Live — generated via NVIDIA DeepSeek V4 Pro' : 'No content yet — click Generate with AI or pick a language and Translate'}
                 </p>
               </div>
-              <button onClick={handleGenerate} disabled={generating}
-                className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-[#0f2d5c] text-white hover:bg-[#1a3f7a] disabled:opacity-50 transition-colors">
-                <Zap className="w-3.5 h-3.5" />
-                {generating ? 'Generating…' : herald ? 'Regenerate' : 'Generate with AI'}
-              </button>
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Language selector (GCP translate) */}
+                <div className="flex items-center gap-1.5">
+                  <select
+                    disabled={!langReady}
+                    value={targetLang}
+                    onChange={(e) => setTargetLang(e.target.value)}
+                    className="text-[12px] font-medium px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:border-[#0f2d5c] focus:border-[#0f2d5c] outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    aria-label="Target language for translation"
+                    title={
+                      !langReady
+                        ? (langError || 'Loading language list…')
+                        : !herald
+                            ? 'Generate content first'
+                            : 'Translate to a language'
+                    }
+                  >
+                    <option value="">
+                      {!langReady
+                        ? (langError ? '⚠ translation unavailable' : 'Loading…')
+                        : 'Translate to…'}
+                    </option>
+                    {['India', 'Global'].map(region => {
+                      const langs = languages.filter(l => l.region === region);
+                      if (langs.length === 0) return null;
+                      return (
+                        <optgroup key={region} label={region}>
+                          {langs.map(l => (
+                            <option key={l.code} value={l.code}>
+                              {l.nativeName ? `${l.nativeName} (${l.name})` : l.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                      );
+                    })}
+                  </select>
+                  <button
+                    onClick={() => targetLang && handleTranslate(targetLang)}
+                    disabled={!targetLang || translating || generating || !langReady}
+                    className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg border border-[#0f2d5c] text-[#0f2d5c] bg-white hover:bg-[#0f2d5c]/5 disabled:opacity-50 transition-colors"
+                    title={
+                      !langReady
+                        ? (langError || 'Waiting for language list')
+                        : !targetLang
+                            ? 'Pick a target language'
+                            : 'Generate + translate via NVIDIA DeepSeek V4 Pro & Google Cloud Translation'
+                    }
+                  >
+                    <Languages className="w-3.5 h-3.5" />
+                    {translating || generating
+                      ? (generating ? 'Generating…' : 'Translating…')
+                      : (herald ? 'Translate' : 'Generate & Translate')}
+                  </button>
+                  {translation && (
+                    <button
+                      onClick={handleResetTranslation}
+                      className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg border border-slate-200 text-slate-500 bg-white hover:border-slate-300 transition-colors"
+                      title="Show the original English content"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      Original
+                    </button>
+                  )}
+                </div>
+                {/* Generate / regenerate */}
+                <button onClick={handleGenerate} disabled={generating}
+                  className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-[#0f2d5c] text-white hover:bg-[#1a3f7a] disabled:opacity-50 transition-colors">
+                  <Zap className="w-3.5 h-3.5" />
+                  {generating ? 'Generating…' : herald ? 'Regenerate' : 'Generate with AI'}
+                </button>
+              </div>
             </div>
+
+            {/* Translation status row */}
+            {(translation || translationErr || langError) && (
+              <div className="flex items-center gap-2 flex-wrap text-[11px]">
+                {translation && (
+                  <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+                    <Globe2 className="w-3 h-3" />
+                    Translated to {languages.find(l => l.code === targetLang)?.name || targetLang.toUpperCase()}
+                  </span>
+                )}
+                {(translationErr || langError) && (
+                  <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-50 text-red-600 border border-red-200">
+                    <AlertCircle className="w-3 h-3" />
+                    {translationErr || langError}
+                  </span>
+                )}
+              </div>
+            )}
 
             {generating ? (
               <div className="space-y-3 py-2">
@@ -465,7 +629,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                 </div>
               </div>
             ) : !activeHerald ? (
-              <p className="text-[13px] text-slate-400 italic py-8 text-center">Click "Generate with AI" to produce live personalised content via NVIDIA DeepSeek V4 Pro.</p>
+              <p className="text-[13px] text-slate-400 italic py-8 text-center">Pick a language above and click <strong>Translate</strong> to generate + translate live content via NVIDIA DeepSeek V4 Pro &amp; Google Cloud Translation — or click <strong>Generate with AI</strong> for English-only.</p>
             ) : (
               <>
                 {activeHerald.email && (
@@ -473,6 +637,11 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border-b border-slate-200">
                       <Mail className="w-4 h-4 text-slate-400" />
                       <span className="text-[12px] font-semibold text-slate-700">Email</span>
+                      {translation && (
+                        <span className="text-[10px] font-semibold bg-sky-100 text-sky-700 px-1.5 py-0.5 rounded-full">
+                          {(languages.find(l => l.code === targetLang)?.nativeName) || targetLang}
+                        </span>
+                      )}
                       <span className="ml-auto text-[10px] text-green-600 font-semibold bg-green-50 px-1.5 py-0.5 rounded-full">
                         {activeHerald.email.compliance_status}
                       </span>
@@ -490,6 +659,11 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border-b border-slate-200">
                       <MessageSquare className="w-4 h-4 text-slate-400" />
                       <span className="text-[12px] font-semibold text-slate-700">SMS</span>
+                      {translation && (
+                        <span className="text-[10px] font-semibold bg-sky-100 text-sky-700 px-1.5 py-0.5 rounded-full">
+                          {(languages.find(l => l.code === targetLang)?.nativeName) || targetLang}
+                        </span>
+                      )}
                       <span className="ml-auto text-[10px] text-green-600 font-semibold bg-green-50 px-1.5 py-0.5 rounded-full">
                         {activeHerald.sms.compliance_status}
                       </span>
@@ -505,6 +679,11 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border-b border-slate-200">
                       <Bell className="w-4 h-4 text-slate-400" />
                       <span className="text-[12px] font-semibold text-slate-700">Push Notification</span>
+                      {translation && (
+                        <span className="text-[10px] font-semibold bg-sky-100 text-sky-700 px-1.5 py-0.5 rounded-full">
+                          {(languages.find(l => l.code === targetLang)?.nativeName) || targetLang}
+                        </span>
+                      )}
                     </div>
                     <div className="p-4 flex gap-4 items-start">
                       <div className="w-10 h-10 rounded-xl bg-[#0f2d5c] flex items-center justify-center text-white text-[10px] font-black shrink-0">UB</div>

@@ -355,6 +355,168 @@ commands:
     cmd: "curl -s -X POST http://localhost:8002/evaluate -H 'Content-Type: application/json' -d '{\"customer_id\": \"C-00000001\"}'"
     dir: .
 
+  - name: "argus evaluate CUST-001 (orchestrator bridge)"
+    description: "Run ARGUS via orchestrator bridge for CUST-001 — fetches Bank data + state-persistent, pretty-prints in TUI log"
+    service: orchestrator
+    cmd: "bash scripts/argus_eval_one.sh CUST-001"
+    dir: .
+
+  - name: "argus evaluate CUST-001 (fresh state)"
+    description: "Reset ARGUS state for CUST-001, then evaluate — clean baseline for the demo"
+    service: orchestrator
+    cmd: "bash scripts/argus_eval_one.sh CUST-001 --reset"
+    dir: .
+
+  - name: "argus evaluate CUST-005 (orchestrator bridge)"
+    description: "Run ARGUS via orchestrator bridge for CUST-005 (high-risk archetype)"
+    service: orchestrator
+    cmd: "bash scripts/argus_eval_one.sh CUST-005"
+    dir: .
+
+  - name: "argus evaluate CUST-043 (critical)"
+    description: "Run ARGUS for CUST-043 (critical archetype — most likely to alarm)"
+    service: orchestrator
+    cmd: "bash scripts/argus_eval_one.sh CUST-043"
+    dir: .
+
+  - name: "argus evaluate C-00000001 (bank format)"
+    description: "Run ARGUS via bank API for C-00000001 (different ID format)"
+    service: orchestrator
+    cmd: "bash scripts/argus_eval_one.sh C-00000001"
+    dir: .
+
+  - name: "argus state summary"
+    description: "Get ARGUS state-store summary (customers tracked, agent states)"
+    service: orchestrator
+    cmd: "curl -s http://localhost:8000/api/argus/state-summary"
+    dir: .
+
+  - name: "argus reset CUST-001"
+    description: "Reset ARGUS state for CUST-001 (fresh evaluation baseline)"
+    service: orchestrator
+    cmd: "bash scripts/argus_reset.sh CUST-001"
+    dir: .
+
+  - name: "argus reset CUST-043"
+    description: "Reset ARGUS state for CUST-043 (critical customer — clears client Signals tab)"
+    service: orchestrator
+    cmd: "bash scripts/argus_reset.sh CUST-043"
+    dir: .
+
+  - name: "argus reset + eval CUST-043"
+    description: "Reset state for CUST-043, then re-evaluate (clean demo baseline → 9 fresh signals)"
+    service: orchestrator
+    cmd: "bash scripts/argus_reset.sh CUST-043 && bash scripts/argus_eval_one.sh CUST-043"
+    dir: .
+
+  - name: "argus signals CUST-001"
+    description: "Get last ARGUS evaluation for CUST-001 (HERALD + WARDEN results)"
+    service: orchestrator
+    cmd: "curl -s http://localhost:8000/api/argus/signals/CUST-001"
+    dir: .
+
+  - name: "argus evaluate all 50 customers"
+    description: "Pre-populate signals for ALL 50 customers via the orchestrator bridge — populates client's Signals tabs"
+    service: orchestrator
+    cmd: "bash scripts/argus_bulk_eval.sh"
+    dir: .
+
+  - name: "argus evaluate critical archetype (10 customers)"
+    description: "Evaluate only customers with the 'critical' archetype — quickest impactful demo"
+    service: orchestrator
+    cmd: "bash scripts/argus_bulk_eval.sh --archetype critical"
+    dir: .
+
+  - name: "argus evaluate high_risk archetype"
+    description: "Evaluate only customers with the 'high_risk' archetype"
+    service: orchestrator
+    cmd: "bash scripts/argus_bulk_eval.sh --archetype high_risk"
+    dir: .
+
+  - name: "argus evaluate drifting archetype"
+    description: "Evaluate only customers with the 'drifting' archetype"
+    service: orchestrator
+    cmd: "bash scripts/argus_bulk_eval.sh --archetype drifting"
+    dir: .
+
+  - name: "argus evaluate vip_loyal archetype"
+    description: "Evaluate only customers with the 'vip_loyal' archetype"
+    service: orchestrator
+    cmd: "bash scripts/argus_bulk_eval.sh --archetype vip_loyal"
+    dir: .
+
+  - name: "argus evaluate critical tier (10 customers)"
+    description: "Evaluate the 10 highest-churn customers only"
+    service: orchestrator
+    cmd: "bash scripts/argus_bulk_eval.sh --orch http://localhost:8000 --user admin --pass admin123 2>&1 | head -20"
+    dir: .
+
+  - name: "open client dashboard"
+    description: "Open the client dashboard in your default browser"
+    service: client
+    cmd: "open http://localhost:3000/dashboard"
+    dir: .
+
+  - name: "open client customer CUST-001"
+    description: "Open the customer detail page for CUST-001 in your default browser"
+    service: client
+    cmd: "open http://localhost:3000/customers/CUST-001"
+    dir: .
+
+  - name: "open client customer CUST-005"
+    description: "Open the customer detail page for CUST-005 (high-risk archetype) in your default browser"
+    service: client
+    cmd: "open http://localhost:3000/customers/CUST-005"
+    dir: .
+
+  - name: "open client customer CUST-043"
+    description: "Open the customer detail page for CUST-043 (critical archetype) in your default browser"
+    service: client
+    cmd: "open http://localhost:3000/customers/CUST-043"
+    dir: .
+
+  - name: "open client customers list"
+    description: "Open the customers list in your default browser"
+    service: client
+    cmd: "open http://localhost:3000/customers"
+    dir: .
+
+  - name: "open client signals page"
+    description: "Open the signals dashboard in your default browser"
+    service: client
+    cmd: "open http://localhost:3000/signals"
+    dir: .
+
+  - name: "open client pipeline page"
+    description: "Open the pipeline page in your default browser"
+    service: client
+    cmd: "open http://localhost:3000/pipeline"
+    dir: .
+
+  - name: "open client admin portal"
+    description: "Open the admin portal in your default browser"
+    service: client
+    cmd: "open http://localhost:3000/admin"
+    dir: .
+
+  - name: "─── DEMO ───────────────────────────────────────────"
+    description: "ARGUS demo launcher: bulk-eval all 50 customers, open the dashboard, then a customer detail page"
+    service: orchestrator
+    cmd: "bash scripts/argus_bulk_eval.sh && open http://localhost:3000/dashboard && open http://localhost:3000/customers/CUST-043"
+    dir: .
+
+  - name: "DEMO · bulk-eval + open dashboard + open critical customer"
+    description: "Run ARGUS for every customer, then open the dashboard and the highest-churn customer (CUST-043) in the browser — single click start"
+    service: orchestrator
+    cmd: "bash scripts/argus_bulk_eval.sh && open http://localhost:3000/dashboard && open http://localhost:3000/customers/CUST-043"
+    dir: .
+
+  - name: "DEMO · bulk-eval + open signals page"
+    description: "Run ARGUS for every customer, then open the signals dashboard in the browser"
+    service: orchestrator
+    cmd: "bash scripts/argus_bulk_eval.sh && open http://localhost:3000/signals"
+    dir: .
+
   # ── COMPASS ─────────────────────────────────────────────────────────────
   - name: "compass orchestrate C-00000001"
     description: "Run COMPASS action planning for customer C-00000001"
@@ -425,6 +587,12 @@ scheduled_tasks:
     schedule: "0 4 * * *"
     enabled: true
     description: "Run a daily bias audit at 04:00 UTC"
+
+  - name: "argus refresh all customers (5min)"
+    command_ref: "argus evaluate all 50 customers"
+    schedule: "*/5 * * * *"
+    enabled: true
+    description: "Re-run ARGUS for all 50 customers every 5 minutes — keeps client's Signals tab fresh"
 
   - name: "pipeline run"
     command_ref: "pipeline run"

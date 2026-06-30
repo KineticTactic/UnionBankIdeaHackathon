@@ -64,9 +64,16 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!getToken()) { router.push('/login'); return; }
-    api.getPortfolioFull()
-      .then(r => setData(r.data))
+    const load = () => api.getPortfolioFull()
+      .then(r => { setData(r.data); setNow(new Date().toLocaleTimeString()); })
       .catch(() => setError('Failed to load portfolio data.'));
+    load();
+    // Poll every 5s so live ARGUS evaluations and Kafka events appear
+    // without a manual refresh — the demo runs end-to-end from the
+    // TUI: user fires `argus evaluate CUST-XXX` and the dashboard
+    // updates within ~5 seconds.
+    const interval = setInterval(load, 5_000);
+    return () => clearInterval(interval);
   }, [router]);
 
   if (error) return (

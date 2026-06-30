@@ -65,6 +65,7 @@ class EvaluateResponse(BaseModel):
     oracle_detected: bool
     herald_results: dict[str, Any]
     alarm_payload: dict[str, Any] | None
+    updated_state: dict[str, dict[str, Any]] = Field(default_factory=dict)
 
 
 class HealthResponse(BaseModel):
@@ -145,26 +146,48 @@ async def evaluate(req: EvaluateRequest) -> EvaluateResponse:
             },
         ) from exc
 
+    # Coerce numpy scalars to native Python types so the response
+    # serialises cleanly (Pydantic v2 + numpy has a known
+    # PydanticSerializationError for numpy.bool_ / numpy.float64).
+    def _py(v):
+        if v is None:
+            return None
+        if isinstance(v, bool):
+            return v
+        if isinstance(v, (int, float, str)):
+            return v
+        if isinstance(v, (list, tuple)):
+            return [_py(x) for x in v]
+        if isinstance(v, dict):
+            return {k: _py(x) for k, x in v.items()}
+        # numpy scalar
+        if hasattr(v, "item"):
+            try:
+                return v.item()
+            except Exception:
+                return str(v)
+        return v
+
     return EvaluateResponse(
         customer_id=out.customer_id,
         evaluated_at=out.evaluated_at,
-        warden_alarm=out.warden.alarm,
+        warden_alarm=bool(out.warden.alarm),
         warden_severity=out.warden.severity,
-        rejected_tests=out.warden.rejected_tests,
-        nexus_detected=out.nexus.nexus_detected,
-        oracle_detected=out.oracle.oracle_detected,
+        rejected_tests=list(out.warden.rejected_tests),
+        nexus_detected=bool(out.nexus.nexus_detected),
+        oracle_detected=bool(out.oracle.oracle_detected),
         herald_results={
             name: {
-                "signal_type": r.signal_type,
-                "detected":    r.detected,
-                "p_value":     r.p_value,
-                "confidence":  r.confidence,
-                "method_used": r.method_used,
-                "statistic":   r.statistic,
-                "threshold":   r.threshold,
-                "direction":   r.direction,
-                "onset_estimate": r.onset_estimate.isoformat() if r.onset_estimate else None,
-                "evidence":    r.evidence,
+                "signal_type":     r.signal_type,
+                "detected":        bool(r.detected),
+                "p_value":         _py(r.p_value),
+                "confidence":      _py(r.confidence),
+                "method_used":     r.method_used,
+                "statistic":       _py(r.statistic),
+                "threshold":       _py(r.threshold),
+                "direction":       r.direction,
+                "onset_estimate":  r.onset_estimate.isoformat() if r.onset_estimate else None,
+                "evidence":        list(r.evidence),
             }
             for name, r in out.herald_results.items()
         },
@@ -173,13 +196,14 @@ async def evaluate(req: EvaluateRequest) -> EvaluateResponse:
                 "customer_id":         out.alarm_payload.customer_id,
                 "alarm_timestamp":     out.alarm_payload.alarm_timestamp,
                 "alarm_severity":      out.alarm_payload.alarm_severity,
-                "rejected_tests":      out.alarm_payload.rejected_tests,
-                "active_signal_count": out.alarm_payload.active_signal_count,
+                "rejected_tests":      list(out.alarm_payload.rejected_tests),
+                "active_signal_count": int(out.alarm_payload.active_signal_count),
                 "expires_at":          out.alarm_payload.expires_at,
             }
             if out.alarm_payload
             else None
         ),
+        updated_state={k: _py(v) for k, v in inp.updated_state.items()},
     )
 
 

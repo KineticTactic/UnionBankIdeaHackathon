@@ -41,7 +41,7 @@ export default function SignalsPage() {
 
   useEffect(() => {
     if (!getToken()) { router.push('/login'); return; }
-    Promise.all([api.getV2Signals(), api.getCustomers({ limit: 100 })])
+    const load = () => Promise.all([api.getV2Signals(), api.getCustomers({ limit: 100 })])
       .then(([sigRes, custRes]) => {
         setData(sigRes.data || []);
         const map: Record<string,{full_name:string;risk_tier:RiskTier}> = {};
@@ -52,6 +52,11 @@ export default function SignalsPage() {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
+    load();
+    // Poll every 5s so live ARGUS evaluations and Kafka events appear
+    // without a manual refresh — the demo runs end-to-end from the TUI.
+    const interval = setInterval(load, 5_000);
+    return () => clearInterval(interval);
   }, [router]);
 
   // Flatten all signals with customer info

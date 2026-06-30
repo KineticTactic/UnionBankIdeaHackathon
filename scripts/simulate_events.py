@@ -261,11 +261,24 @@ SCENARIOS = {
 
 
 # ── CLI ─────────────────────────────────────────────────────────────────────
-def fetch_customers(token: str, limit: int = 50) -> list[dict]:
+def fetch_customers(token: str, limit: int = 50, prefer: str = "orchestrator") -> list[dict]:
+    """Pull a customer pool.  Prefers the orchestrator's customer list
+    (CUST-001 IDs) so events flow to the same customers the client UI
+    is displaying.  Falls back to the Bank API (C-00000001 IDs) if the
+    orchestrator is unreachable."""
+    if prefer == "orchestrator":
+        # /api/customers → orchestrator (format CUST-001, matches client list)
+        code, body = _http_json("GET", f"{ORCHESTRATOR}/api/customers?limit={limit}",
+                                headers={"Authorization": f"Bearer {token}"})
+        if code == 200 and isinstance(body, dict):
+            custs = body.get("customers") or []
+            if custs:
+                return custs
+    # Fallback: bank API (format C-00000001)
     code, body = _http_json("GET", f"{BANK}/api/core-banking/customers?limit={limit}")
     if code == 200 and isinstance(body, dict):
         return body.get("data") or []
-    print(f"  ✗ bank API returned HTTP {code}", file=sys.stderr)
+    print(f"  ✗ no customer source returned data", file=sys.stderr)
     return []
 
 
@@ -290,50 +303,86 @@ def publish(token: str, topic: str, key: str, value: dict) -> tuple[int, dict | 
     return code, body if isinstance(body, dict) else None
 
 
+def evaluate_argus(token: str, customer_id: str) -> tuple[int, dict | None]:
+    """Trigger a live ARGUS evaluation for ``customer_id``.
+
+    Calls ``POST /api/argus/evaluate-customer/:id`` on the orchestrator,
+    which fetches the customer's data from the Bank API, transforms it
+    into the herald_data shape ARGUS expects, runs the 9 HERALD agents
+    + NEXUS + ORACLE + WARDEN, then writes the detected signals back
+    into the orchestrator's in-memory store so they appear in the
+    client's Signals tab on the next poll.
+    """
+    code, body = _http_json(
+        "POST",
+        f"{ORCHESTRATOR}/api/argus/evaluate-customer/{customer_id}",
+        headers={"Authorization": f"Bearer {token}"},
+        body={},
+    )
+    if isinstance(body, dict) and "signals" in body:
+        n = len(body.get("signals", []))
+        sev = (body.get("warden") or {}).get("severity") or "none"
+        return code, {"detected": n, "severity": sev, "raw": body}
+    return code, body
+
+
 def run_rate(token: str, customers: list[dict], rate: float, duration: float) -> int:
     interval = 1.0 / max(rate, 0.01)
     deadline = time.time() + duration if duration > 0 else float("inf")
-    sent, failed, started = 0, 0, time.time()
+    sent, failed, argus_runs, started = 0, 0, 0, time.time()
     topic_names = [name for name, _, _ in GENERATORS]
     weights = [w for _, w, _ in GENERATORS]
     print(f"  rate={rate:.2f} evt/s   duration={'∞' if duration <= 0 else f'{duration:.0f}s'}")
     print(f"  customers={len(customers)}   topics={topic_names}")
+    print(f"  ARGUS live-eval: every 5th event triggers a real /api/argus/evaluate-customer")
     print()
     try:
         while time.time() < deadline:
             _, _, gen = random.choices(GENERATORS, weights=weights, k=1)[0]
             evt = gen(customers)
+            cust_id = evt["value"].get("customer_id", "")
             code, _ = publish(token, evt["topic"], evt["key"], evt["value"])
             if code == 200:
                 sent += 1
             else:
                 failed += 1
+            # Live ARGUS evaluation: every 5th event
+            if cust_id and (sent % 5 == 0):
+                ac, ab = evaluate_argus(token, cust_id)
+                if ac == 200:
+                    argus_runs += 1
             elapsed = time.time() - started
             rate_actual = sent / elapsed if elapsed > 0 else 0
-            print(f"  [{elapsed:6.1f}s] {evt['topic']:<26} {evt['value'].get('customer_id','?'):<12} "
-                  f"sent={sent:>5}  failed={failed:>3}  rate={rate_actual:.2f}/s", end="\r")
+            print(f"  [{elapsed:6.1f}s] {evt['topic']:<26} {cust_id:<12} "
+                  f"sent={sent:>5}  failed={failed:>3}  argus={argus_runs:>3}  rate={rate_actual:.2f}/s", end="\r")
             sys.stdout.flush()
             time.sleep(interval)
     except KeyboardInterrupt:
         print()
     print()
-    print(f"  total sent={sent}  failed={failed}")
+    print(f"  total sent={sent}  failed={failed}  argus_evaluations={argus_runs}")
     return 0 if failed == 0 else 1
 
 
 def run_burst(token: str, customers: list[dict], n: int) -> int:
     print(f"  burst mode: firing {n} events as fast as possible")
-    sent, failed = 0, 0
+    sent, failed, argus_runs = 0, 0, 0
     weights = [w for _, w, _ in GENERATORS]
-    for _ in range(n):
+    for i in range(n):
         _, _, gen = random.choices(GENERATORS, weights=weights, k=1)[0]
         evt = gen(customers)
+        cust_id = evt["value"].get("customer_id", "")
         code, _ = publish(token, evt["topic"], evt["key"], evt["value"])
         if code == 200:
             sent += 1
         else:
             failed += 1
-    print(f"  sent={sent}  failed={failed}")
+        # Live ARGUS evaluation: every 3rd event
+        if cust_id and (i % 3 == 0):
+            ac, ab = evaluate_argus(token, cust_id)
+            if ac == 200:
+                argus_runs += 1
+    print(f"  sent={sent}  failed={failed}  argus_evaluations={argus_runs}")
     return 0 if failed == 0 else 1
 
 
@@ -343,7 +392,8 @@ def run_scenario(token: str, customers: list[dict], name: str, target: str | Non
         return 2
     events = SCENARIOS[name](customers, target)
     print(f"  scenario '{name}': {len(events)} events targeting {target or 'random customer'}")
-    sent, failed = 0, 0
+    sent, failed, argus_runs = 0, 0, 0
+    cust_id = target or (events[0]['value'].get('customer_id') if events else '')
     for evt in events:
         code, _ = publish(token, evt["topic"], evt["key"], evt["value"])
         if code == 200:
@@ -353,7 +403,16 @@ def run_scenario(token: str, customers: list[dict], name: str, target: str | Non
             failed += 1
             print(f"    ✗ {evt['topic']:<26} HTTP {code}")
         time.sleep(0.4)
-    print(f"  sent={sent}  failed={failed}")
+    # Final live ARGUS evaluation on the target customer
+    if cust_id:
+        print(f"  → triggering live ARGUS evaluation for {cust_id}…")
+        ac, ab = evaluate_argus(token, cust_id)
+        if ac == 200 and isinstance(ab, dict):
+            argus_runs = 1
+            print(f"    ✓ ARGUS detected {ab.get('detected', 0)} signals · warden severity: {ab.get('severity', '?')}")
+        else:
+            print(f"    ✗ ARGUS eval failed: HTTP {ac}")
+    print(f"  sent={sent}  failed={failed}  argus_evaluations={argus_runs}")
     return 0 if failed == 0 else 1
 
 
@@ -368,6 +427,8 @@ def main() -> int:
                    help="fire N events as fast as possible and exit")
     p.add_argument("--scenario", choices=list(SCENARIOS),
                    help="fire a pre-built demo scenario and exit")
+    p.add_argument("--argus", metavar="CUSTOMER_ID",
+                   help="run a single live ARGUS evaluation for CUSTOMER_ID and exit")
     p.add_argument("--customer", help="scenario target customer (default: random)")
     p.add_argument("--user", default="admin", help="login username")
     p.add_argument("--password", default="admin123", help="login password")
@@ -400,6 +461,21 @@ def main() -> int:
     print(f"  ✓ {len(customers)} customers loaded")
 
     print()
+    if args.argus:
+        print(f"  → running live ARGUS evaluation for {args.argus}…")
+        ac, ab = evaluate_argus(token, args.argus)
+        if ac == 200 and isinstance(ab, dict):
+            n = ab.get("detected", 0)
+            sev = ab.get("severity", "?")
+            print(f"    ✓ ARGUS detected {n} signals · warden severity: {sev}")
+            signals = (ab.get("raw") or {}).get("signals", [])
+            for s in signals:
+                marker = "🔥" if s.get("detected") else "  "
+                print(f"    {marker} {s.get('signal_type'):<22} conf={s.get('confidence', 0):.2f} "
+                      f"stat={s.get('cusum_value', 0):.2f} method={s.get('method')}")
+            return 0
+        print(f"    ✗ ARGUS eval failed: HTTP {ac}  body={ab}", file=sys.stderr)
+        return 1
     if args.scenario:
         return run_scenario(token, customers, args.scenario, args.customer)
     if args.burst > 0:

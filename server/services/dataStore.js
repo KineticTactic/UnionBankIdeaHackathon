@@ -185,7 +185,23 @@ async function getHerald(id) { return HERALD_MAP[id] || null; }
 async function getHeraldAll() { return HERALD; }
 
 async function getPortfolio() { return PORTFOLIO; }
-async function getPortfolioSummary() { return PORTFOLIO.summary || {}; }
+async function getPortfolioSummary() {
+    // Live-aware summary: count active signals from in-memory overrides
+    // plus the static baseline so the dashboard's KPI cards reflect
+    // real-time ARGUS activity as well as the seeded demo data.
+    const base = PORTFOLIO.summary || {};
+    let liveSignals = 0;
+    for (const arr of Object.values(liveSignalOverrides)) {
+        if (Array.isArray(arr)) liveSignals += arr.filter(s => s && s.detected).length;
+    }
+    return {
+        ...base,
+        active_signals: (Number(base.active_signals) || 0) + liveSignals,
+        // _live_signals returned alongside so the client can show
+        // "X live / Y baseline" if it wants.
+        _live_signals:  liveSignals,
+    };
+}
 
 // ── Live state mutators (DEMO_MODE only; prod uses scoreRepo.applyScoreOverride) ──
 

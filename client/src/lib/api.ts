@@ -92,6 +92,16 @@ export const api = {
   getOutreachById:    (id: string) => fetchApi(`/api/outreach/${id}`),
   getOutreachJob:     (jobId: string) => fetchApi(`/api/outreach/job/${jobId}`),
 
+  // Translation (GCP).  listLanguages() returns the dropdown options;
+  // translateHerald() calls /api/outreach/translate-herald and returns
+  // the translated content with metadata (mode, source, target).
+  listLanguages:     ()      => fetchApi('/api/outreach/languages'),
+  translateHerald:   (herald: any, target: string) =>
+    fetchApi('/api/outreach/translate-herald', {
+      method: 'POST',
+      body:   JSON.stringify({ herald, target }),
+    }),
+
   // generateOutreach: POST /generate → if 202+jobId, poll until complete (max 30s).
   // Falls back transparently when the queue is unavailable (sync 200 response).
   generateOutreach: async (customer_id: string) => {

@@ -189,7 +189,36 @@ func SetCommands(cmds []config.Command) {
 	registry.cmds = cmds
 }
 
+// Short aliases for the dashboard's `/` input.  These let users type
+// terse commands like `/argus demo` instead of the full
+// "DEMO · bulk-eval + open dashboard + open critical customer" name.
+// Lookup tries the alias first, then falls back to the exact name.
+var commandAliases = map[string]string{
+	"argus demo":        "DEMO · bulk-eval + open dashboard + open critical customer",
+	"argus demo signals": "DEMO · bulk-eval + open signals page",
+	"argus eval all":    "argus evaluate all 50 customers",
+	"argus eval":        "argus evaluate CUST-001 (orchestrator bridge)",
+	"argus eval reset":  "argus evaluate CUST-001 (fresh state)",
+	"argus demo customer": "argus reset + eval CUST-043",
+	"argus state":       "argus state summary",
+	"argus reset":       "argus reset CUST-001",
+	"argus reset 43":    "argus reset CUST-043",
+	"open dashboard":    "open client dashboard",
+	"open customer":     "open client customer CUST-001",
+	"open 43":           "open client customer CUST-043",
+	"open signals":      "open client signals page",
+	"open admin":        "open client admin portal",
+	"simulate burst":    "simulator burst 50",
+	"simulate critical": "simulator scenario critical-cascade",
+	"pipeline":          "pipeline run",
+}
+
 func findCommand(name string) (CommandEntry, bool) {
+	// Try alias first (case-insensitive, trimmed).
+	key := strings.ToLower(strings.TrimSpace(name))
+	if real, ok := commandAliases[key]; ok {
+		name = real
+	}
 	for _, c := range registry.cmds {
 		if c.Name == name {
 			return CommandEntry{Name: c.Name, Service: c.Service, Cmd: c.Cmd, Dir: c.Dir}, true

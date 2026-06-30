@@ -77,17 +77,6 @@ router.get('/job/:jobId', verifyToken, async (req, res) => {
     }
 });
 
-// ── GET /:id (must come after named routes) ────────────────────────────────────
-
-router.get('/:id', verifyToken, async (req, res) => {
-    if (['campaigns', 'pending', 'job'].includes(req.params.id))
-        return res.status(404).json({ status: 'error', message: 'Not found' });
-    const record = outreachLog.find(o => o.id === req.params.id);
-    if (!record) return res.status(404).json({ status: 'error', message: 'Not found' });
-    const herald = await ds.getHerald(record.customer_id);
-    res.json({ status: 'ok', data: { ...record, full_content: herald } });
-});
-
 // ── POST /generate — enqueue async HERALD job (202) ──────────────────────────
 
 router.post('/generate', verifyToken, async (req, res) => {
@@ -267,7 +256,34 @@ router.post('/approve/:approvalId', verifyToken, async (req, res) => {
     }
 });
 
-// ── POST /translate — NVIDIA transcreation ───────────────────────────────────
+// ── GET /languages — list supported target languages for the UI ──────
+router.get('/languages', verifyToken, async (req, res) => {
+  try {
+    const { listLanguages } = require('../services/translationService');
+    const result = await listLanguages();
+    res.json({ status: 'ok', ...result });
+  } catch (err) {
+    const code = err.httpStatus || 500;
+    res.status(code).json({
+      status: 'error',
+      stage: 5, stage_name: 'translation',
+      message: err.message,
+    });
+  }
+});
+
+// ── GET /:id (must come after named routes like /languages /campaigns) ───
+
+router.get('/:id', verifyToken, async (req, res) => {
+    if (['campaigns', 'pending', 'job', 'languages', 'approval'].includes(req.params.id))
+        return res.status(404).json({ status: 'error', message: 'Not found' });
+    const record = outreachLog.find(o => o.id === req.params.id);
+    if (!record) return res.status(404).json({ status: 'error', message: 'Not found' });
+    const herald = await ds.getHerald(record.customer_id);
+    res.json({ status: 'ok', data: { ...record, full_content: herald } });
+});
+
+// ── POST /translate — generic GCP translation (legacy API) ───────────────
 router.post('/translate', verifyToken, async (req, res) => {
   const { customer_id, content, target_language } = req.body;
   if (!customer_id || !content || !target_language)
@@ -295,7 +311,44 @@ router.post('/translate', verifyToken, async (req, res) => {
 
     res.json({ status: 'ok', ...result });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    const code = err.httpStatus || 500;
+    res.status(code).json({
+      status: 'error',
+      stage: 5, stage_name: 'translation',
+      message: err.message,
+    });
+  }
+});
+
+// ── POST /translate-herald — convenience for the dashboard UI ────────────
+//   Body: { herald, target }  →  same shape as translateContent().
+router.post('/translate-herald', verifyToken, async (req, res) => {
+  const { herald, target } = req.body;
+  if (!herald || !target)
+    return res.status(400).json({ status: 'error', message: 'herald and target are required' });
+  try {
+    const { translateContent } = require('../services/translationService');
+    const result = await translateContent({ herald, target });
+    await auditLog.logEvent({
+      eventType:    'OUTREACH_TRANSLATED',
+      customerId:   null,
+      actor:        req.user?.username || 'rm_user',
+      layer:        'HERALD',
+      payload:      {
+        target_language: target,
+        mode:            result.mode,
+        content_hash:    require('crypto').createHash('sha256').update(JSON.stringify(herald)).digest('hex'),
+      },
+      modelVersion: 'HERALD-v1.0',
+    }).catch(() => {});
+    res.json({ status: 'ok', ...result });
+  } catch (err) {
+    const code = err.httpStatus || 500;
+    res.status(code).json({
+      status: 'error',
+      stage: 5, stage_name: 'translation',
+      message: err.message,
+    });
   }
 });
 

@@ -33,8 +33,8 @@ function fmtDate(d?: string) {
 
 /* ── consent action modal ──────────────────────────────────────────────────── */
 function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () => void; onSaved: () => void }) {
-  const [dpdpa,    setDpdpa]    = useState<boolean>(record.dpdpa_consent);
-  const [trai,     setTrai]     = useState<boolean>(record.trai_consent);
+  const [dpdpa,    setDpdpa]    = useState<boolean>(record.dpdpa_consent === true);
+  const [trai,     setTrai]     = useState<boolean>(record.trai_consent === true);
   const [optOuts,  setOptOuts]  = useState<string[]>(record.opt_out_channels || []);
   const [erasure,  setErasure]  = useState(false);
   const [reason,   setReason]   = useState('');
@@ -251,8 +251,8 @@ export default function CompliancePage() {
       const q = search.toLowerCase();
       r = r.filter((x: any) => x.full_name?.toLowerCase().includes(q) || x.customer_id?.toLowerCase().includes(q) || x.city?.toLowerCase().includes(q));
     }
-    if (filter === 'no_dpdpa')   r = r.filter((x: any) => !x.dpdpa_consent);
-    if (filter === 'no_trai')    r = r.filter((x: any) => !x.trai_consent);
+    if (filter === 'no_dpdpa')   r = r.filter((x: any) => x.dpdpa_consent !== true);
+    if (filter === 'no_trai')    r = r.filter((x: any) => x.trai_consent !== true);
     if (filter === 'opted_out')  r = r.filter((x: any) => x.opted_out);
     return r;
   }, [allRecords, search, filter]);
@@ -260,8 +260,8 @@ export default function CompliancePage() {
   const matrix: any[]  = bias?.matrix || [];
   const flags: string[] = bias?.disparate_impact_flags || [];
   const optedOut  = allRecords.filter(r => r.opted_out).length;
-  const noDpdpa   = allRecords.filter(r => !r.dpdpa_consent).length;
-  const dpdpaOk   = allRecords.length - noDpdpa;
+  const noDpdpa   = allRecords.filter(r => r.dpdpa_consent !== true).length;
+  const dpdpaOk   = allRecords.filter(r => r.dpdpa_consent === true).length;
 
   return (
     <div className="p-6 space-y-6">
@@ -386,14 +386,14 @@ export default function CompliancePage() {
                             </div>
                           </td>
                           <td className="py-3 px-3 text-center">
-                            {r.dpdpa_consent
-                              ? <CheckCircle2 className="w-4 h-4 text-emerald-500 mx-auto" />
-                              : <XCircle className="w-4 h-4 text-red-500 mx-auto" />}
+                            {r.dpdpa_consent === true  ? <CheckCircle2 className="w-4 h-4 text-emerald-500 mx-auto" />
+                           : r.dpdpa_consent === false ? <XCircle className="w-4 h-4 text-red-500 mx-auto" />
+                           : <span className="text-slate-300 text-xs mx-auto block text-center">—</span>}
                           </td>
                           <td className="py-3 px-3 text-center">
-                            {r.trai_consent
-                              ? <CheckCircle2 className="w-4 h-4 text-emerald-500 mx-auto" />
-                              : <XCircle className="w-4 h-4 text-red-500 mx-auto" />}
+                            {r.trai_consent === true  ? <CheckCircle2 className="w-4 h-4 text-emerald-500 mx-auto" />
+                           : r.trai_consent === false ? <XCircle className="w-4 h-4 text-red-500 mx-auto" />
+                           : <span className="text-slate-300 text-xs mx-auto block text-center">—</span>}
                           </td>
                           <td className="py-3 px-3">
                             <div className="flex items-center gap-1.5 justify-center">

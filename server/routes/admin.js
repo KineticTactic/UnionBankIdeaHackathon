@@ -27,7 +27,8 @@ const { adminOnly, opsAccess, complianceAccess, anyAuthenticated } = require('..
 const ds        = require('../services/dataStore');
 const stats     = require('../services/adminStats');
 const config    = require('../config');
-const auditLog  = require('../services/auditLogService');
+const auditLog      = require('../services/auditLogService');
+const consentSvc    = require('../services/consentService');
 
 // ──────────────────────────────────────────────────────────────────────
 // CMD CENTER + SYSTEM HEALTH
@@ -249,29 +250,32 @@ router.patch('/users/:id/role', adminOnly, async (req, res) => {
 router.get('/consent/ledger', complianceAccess, (req, res) => {
     try {
         const customers = ds.getAllCustomers();
-        const consents  = ds.getAllConsents();
         const rows = customers.map(c => {
-            const k = consents[c.customer_id] || {};
-            // consent store uses camelCase: dpdpaConsent.granted, traiConsent.granted, optOutChannels[]
-            const dpdpaGranted = k.dpdpaConsent != null ? k.dpdpaConsent.granted : (k.dpdpa_consent ?? true);
-            const traiGranted  = k.traiConsent  != null ? k.traiConsent.granted  : (k.trai_consent  ?? true);
-            const optOutChs    = k.optOutChannels || k.opt_out_channels || [];
+            // Use consentSvc directly — the only correct source of truth.
+            // ds.getAllConsents() indexes by c.customer_id but the consent
+            // store uses customerId (camelCase) with a different ID format,
+            // so that map always returns undefined. Call per-customer instead.
+            const k = consentSvc.getConsent(c.customer_id) || {};
+            const dpdpaGranted = k.dpdpaConsent != null ? k.dpdpaConsent.granted : null;
+            const traiGranted  = k.traiConsent  != null ? k.traiConsent.granted  : null;
+            const optOutChs    = k.optOutChannels || [];
             return {
-                customer_id:      c.customer_id,
-                full_name:        c.full_name,
-                segment:          c.segment          || null,
-                risk_tier:        c.risk_tier         || 'NONE',
-                city:             c.city              || null,
+                customer_id:          c.customer_id,
+                full_name:            c.full_name,
+                segment:              c.segment              || null,
+                risk_tier:            c.risk_tier            || 'NONE',
+                city:                 c.city                 || null,
                 relationship_manager: c.relationship_manager || null,
-                preferred_channel: c.preferred_channel || null,
-                email_opt_in:     c.email_opt_in      ?? true,
-                sms_opt_in:       c.sms_opt_in        ?? true,
-                dpdpa_consent:    dpdpaGranted,
-                trai_consent:     traiGranted,
-                trai_channels:    k.traiConsent?.channel || ['SMS','EMAIL','PUSH'],
-                opt_out_channels: optOutChs,
-                opted_out:        optOutChs.length > 0,
-                last_updated:     k.lastUpdated || k.last_updated || null,
+                preferred_channel:    c.preferred_channel    || null,
+                email_opt_in:         c.email_opt_in         ?? true,
+                sms_opt_in:           c.sms_opt_in           ?? true,
+                dpdpa_consent:        dpdpaGranted,
+                trai_consent:         traiGranted,
+                trai_channels:        k.traiConsent?.channel || ['SMS','EMAIL','PUSH'],
+                opt_out_channels:     optOutChs,
+                opted_out:            optOutChs.length > 0,
+                last_updated:         k.lastUpdated || null,
+                no_consent_record:    Object.keys(k).length === 0,
             };
         });
         res.json({ status: 'ok', total: rows.length, records: rows });

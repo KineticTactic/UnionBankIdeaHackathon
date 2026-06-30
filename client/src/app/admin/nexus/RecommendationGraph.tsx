@@ -18,11 +18,11 @@ const W = 900, H = 560;
 const CUST_R = 9, PROD_R = 26;
 
 const CAT_COLOR: Record<string, string> = {
-  card: '#a855f7', loan: '#ef4444', deposit: '#10b981',
-  investment: '#0ea5e9', insurance: '#f59e0b',
+  card: '#6B132B', loan: '#6B132B', deposit: '#B46B3E',
+  investment: '#B46B3E', insurance: '#2A161B',
 };
 const SEG_COLOR: Record<string, string> = {
-  HNW: '#7c3aed', 'Mass Affluent': '#0ea5e9', SME: '#10b981', 'Mass Market': '#8B8481',
+  HNW: '#6B132B', 'Mass Affluent': '#B46B3E', SME: '#2A161B', 'Mass Market': '#8B8481',
 };
 
 interface CNode { id: string; x: number; y: number; vx: number; vy: number; fx: number; fy: number; pinned: boolean; d: any; }
@@ -171,7 +171,7 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
   const cmap = new Map(rnodes.map(n => [n.id, n]));
 
   return (
-    <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm overflow-hidden">
+    <div className="bg-white rounded-md border border-[#E5E0DF] overflow-hidden">
       {/* toolbar */}
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#E5E0DF]">
         <div className="flex items-center gap-2">
@@ -202,11 +202,11 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
           if (!c || !p) return null;
           const focus = selectedId && e.c === selectedId;
           if (selectedId && !focus) return (
-            <line key={i} x1={c.x} y1={c.y} x2={p.x} y2={p.y} stroke="#cbd5e1" strokeWidth={0.4} opacity={0.06} />
+            <line key={i} x1={c.x} y1={c.y} x2={p.x} y2={p.y} stroke="#E5E0DF" strokeWidth={0.4} opacity={0.06} />
           );
           return (
             <line key={i} x1={c.x} y1={c.y} x2={p.x} y2={p.y}
-              stroke={focus ? CAT_COLOR[p.d.category] : '#cbd5e1'}
+              stroke={focus ? CAT_COLOR[p.d.category] : '#E5E0DF'}
               strokeWidth={focus ? 2 : 0.5} opacity={focus ? 0.7 : 0.10} strokeLinecap="round" />
           );
         })}
@@ -224,8 +224,8 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
                 const py = peer.y + (p.y - peer.y) * t;
                 return (
                   <g key={'pp' + peer.id}>
-                    <line x1={peer.x} y1={peer.y} x2={p.x} y2={p.y} stroke="#0ea5e9" strokeWidth={1.5} opacity={0.35} strokeDasharray="3 4" />
-                    <circle cx={px} cy={py} r={3} fill="#0ea5e9" opacity={0.9} />
+                    <line x1={peer.x} y1={peer.y} x2={p.x} y2={p.y} stroke="#B46B3E" strokeWidth={1.5} opacity={0.35} strokeDasharray="3 4" />
+                    <circle cx={px} cy={py} r={3} fill="#B46B3E" opacity={0.9} />
                   </g>
                 );
               })}
@@ -270,7 +270,7 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
               <text x={p.x} y={p.y + 9} textAnchor="middle" fontSize="7" fill="#fff" opacity={0.85} style={{ pointerEvents: 'none' }}>
                 {prod.adoption}
               </text>
-              <text x={p.x} y={p.y + size + 12} textAnchor="middle" fontSize="8.5" fontWeight="600" fill="#475569" style={{ pointerEvents: 'none' }}>
+                <text x={p.x} y={p.y + size + 12} textAnchor="middle" fontSize="8.5" fontWeight="600" fill="#6B6562" style={{ pointerEvents: 'none' }}>
                 {prod.label}
               </text>
               {isRec && recommendation?.score != null && (
@@ -301,12 +301,12 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
                   <animate attributeName="stroke-dashoffset" from="0" to="14" dur="1s" repeatCount="indefinite" />
                 </circle>
               )}
-              {isEvidence && <circle cx={n.x} cy={n.y} r={r + 4} fill="#0ea5e9" opacity={0.18} />}
+              {isEvidence && <circle cx={n.x} cy={n.y} r={r + 4} fill="#B46B3E" opacity={0.18} />}
               <circle cx={n.x} cy={n.y} r={r} fill={isSel ? '#6B132B' : '#fff'} stroke={col} strokeWidth={isSel ? 0 : 2} />
               <circle cx={n.x} cy={n.y} r={r * 0.45} fill={col} opacity={isSel ? 0.4 : 0.55} />
               {(isSel || isEvidence) && (
                 <text x={n.x} y={n.y - r - 4} textAnchor="middle" fontSize="8.5" fontWeight="700"
-                  fill={isSel ? '#6B132B' : '#0369a1'} style={{ pointerEvents: 'none' }}>
+                  fill={isSel ? '#6B132B' : '#B46B3E'} style={{ pointerEvents: 'none' }}>
                   {n.d.first_name}
                 </text>
               )}
@@ -329,7 +329,7 @@ export default function RecommendationGraph({ graph, recommendation, recommendat
           </span>
         </div>
         {sel && recProduct ? (
-          <span className="text-[11px] text-sky-600 font-semibold flex items-center gap-1.5">
+          <span className="text-[11px] text-[#B46B3E] font-semibold flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             {evidencePeers.length} similar customers hold {recommendation?.label || recProduct} → recommended to {sel.d.first_name}
           </span>

@@ -10,17 +10,17 @@ import RecommendationGraph from './RecommendationGraph';
 
 // ── Styling maps ──────────────────────────────────────────────────────────────
 const CAT_COLOR: Record<string, string> = {
-  card: 'bg-purple-100 text-purple-700', loan: 'bg-red-100 text-red-700',
-  deposit: 'bg-emerald-100 text-emerald-700', investment: 'bg-sky-100 text-sky-700',
-  insurance: 'bg-amber-100 text-amber-700',
+  card: 'bg-[#6B132B]/[0.08] text-[#6B132B]', loan: 'bg-[#6B132B]/[0.08] text-[#6B132B]',
+  deposit: 'bg-[#B46B3E]/[0.10] text-[#B46B3E]', investment: 'bg-[#B46B3E]/[0.10] text-[#B46B3E]',
+  insurance: 'bg-[#FAF0E6] text-[#B46B3E]',
 };
 const SEG_PILL: Record<string, string> = {
-  HNW: 'bg-purple-100 text-purple-700', 'Mass Affluent': 'bg-sky-100 text-sky-700',
-  SME: 'bg-emerald-100 text-emerald-700', 'Mass Market': 'bg-[#F5F4F2] text-[#4A4644]',
+  HNW: 'bg-[#6B132B]/[0.08] text-[#6B132B]', 'Mass Affluent': 'bg-[#B46B3E]/[0.10] text-[#B46B3E]',
+  SME: 'bg-[#FAF0E6] text-[#B46B3E]', 'Mass Market': 'bg-[#F5F4F2] text-[#4A4644]',
 };
 const TIER_DOT: Record<string, string> = {
-  PRIORITY: 'bg-red-500', ESCALATE: 'bg-orange-500', STANDARD: 'bg-amber-500',
-  MONITOR: 'bg-blue-500', NONE: 'bg-emerald-500',
+  PRIORITY: 'bg-[#B46B3E]', ESCALATE: 'bg-[#6B132B]', STANDARD: 'bg-[#F4D9C0]',
+  MONITOR: 'bg-[#B46B3E]', NONE: 'bg-[#E5E0DF]',
 };
 const initials = (n: string) => n.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase();
 
@@ -31,8 +31,8 @@ function FitBar({ b }: { b: { segment: number; peer: number; event: number } }) 
   return (
     <div className="h-2.5 bg-[#F5F4F2] rounded-full overflow-hidden flex w-full">
       <div className="h-full bg-[#B46B3E]" style={{ width: `${b.segment * sc}%` }} title="segment affinity" />
-      <div className="h-full bg-sky-400"    style={{ width: `${b.peer * sc}%` }}    title="peer adoption" />
-      <div className="h-full bg-amber-400"  style={{ width: `${b.event * sc}%` }}   title="life event" />
+      <div className="h-full bg-[#B46B3E]/60"    style={{ width: `${b.peer * sc}%` }}    title="peer adoption" />
+      <div className="h-full bg-[#F4D9C0]"  style={{ width: `${b.event * sc}%` }}   title="life event" />
     </div>
   );
 }
@@ -108,7 +108,7 @@ export default function NexusPage() {
             Graph-based product recommendation · "customers like you also hold X" · compliance-gated → COMPASS → HERALD
           </p>
         </div>
-        <button onClick={load} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[#E5E0DF] bg-white text-[#6B6562] hover:text-[#2A161B] text-xs shadow-sm transition-all">
+        <button onClick={load} className="flex items-center gap-2 px-3 py-2 rounded-md border border-[#E5E0DF] bg-white text-[#6B6562] hover:text-[#2A161B] text-xs transition-all">
           <RefreshCw className="w-3.5 h-3.5" /> Refresh
         </button>
       </div>
@@ -116,12 +116,12 @@ export default function NexusPage() {
       {/* KPI row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Eligible Opportunities', value: s?.total_eligible_opportunities, icon: TrendingUp, accent: 'border-l-emerald-500' },
-          { label: 'Compliance-Suppressed',  value: s?.total_suppressed,             icon: Ban,        accent: 'border-l-red-500' },
-          { label: 'Churn-Deferral Customers', value: s?.churn_deferral_customers,   icon: ShieldAlert,accent: 'border-l-amber-500' },
+          { label: 'Eligible Opportunities', value: s?.total_eligible_opportunities, icon: TrendingUp, accent: 'border-l-[#B46B3E]' },
+          { label: 'Compliance-Suppressed',  value: s?.total_suppressed,             icon: Ban,        accent: 'border-l-[#6B132B]' },
+          { label: 'Churn-Deferral Customers', value: s?.churn_deferral_customers,   icon: ShieldAlert,accent: 'border-l-[#2A161B]' },
           { label: 'Avg Offers / Customer',  value: s?.avg_opportunities_per_customer, icon: Layers,   accent: 'border-l-[#6B132B]' },
         ].map(c => (
-          <div key={c.label} className={`bg-white rounded-xl border border-[#E5E0DF] shadow-sm p-5 border-l-4 ${c.accent}`}>
+          <div key={c.label} className={`bg-white rounded-md border border-[#E5E0DF] p-5 border-l-4 ${c.accent}`}>
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-[11px] font-semibold text-[#8B8481] uppercase tracking-wide mb-1">{c.label}</p>
@@ -148,12 +148,12 @@ export default function NexusPage() {
       <div className="grid grid-cols-1 xl:grid-cols-[320px_1fr] gap-5 items-start">
 
         {/* LEFT — customer list */}
-        <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm overflow-hidden">
+        <div className="bg-white rounded-md border border-[#E5E0DF] overflow-hidden">
           <div className="p-3 border-b border-[#E5E0DF]">
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#8B8481]" />
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search customer / segment…"
-                className="w-full pl-8 pr-3 py-2 rounded-lg border border-[#E5E0DF] text-[12px] focus:outline-none focus:border-[#6B132B]/40" />
+                className="w-full pl-8 pr-3 py-2 rounded-md border border-[#E5E0DF] text-[12px] focus:outline-none focus:border-[#6B132B]/40" />
             </div>
           </div>
           <div className="divide-y divide-[#E5E0DF] max-h-[620px] overflow-y-auto">
@@ -187,7 +187,7 @@ export default function NexusPage() {
         {/* RIGHT — recommendation detail */}
         <div className="space-y-5">
           {loadingDetail && (
-            <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm flex items-center justify-center gap-3 py-16 text-[#8B8481]">
+            <div className="bg-white rounded-md border border-[#E5E0DF] flex items-center justify-center gap-3 py-16 text-[#8B8481]">
               <RefreshCw className="w-5 h-5 animate-spin text-[#6B132B]" /> Scoring cross-sell fit…
             </div>
           )}
@@ -195,7 +195,7 @@ export default function NexusPage() {
           {!loadingDetail && detail && (
             <>
               {/* Customer + current holdings */}
-              <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm p-6">
+              <div className="bg-white rounded-md border border-[#E5E0DF] p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-12 h-12 rounded-full bg-[#6B132B] flex items-center justify-center text-white text-sm font-bold shrink-0">{initials(detail.full_name)}</div>
@@ -209,9 +209,9 @@ export default function NexusPage() {
                     </div>
                   </div>
                   {detail.churn_deferral_active && (
-                    <div className="shrink-0 flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg">
-                      <ShieldAlert className="w-4 h-4 text-amber-600" />
-                      <span className="text-[11px] font-bold text-amber-700">Churn-deferral active</span>
+                    <div className="shrink-0 flex items-center gap-2 px-3 py-1.5 bg-[#FAF0E6] border border-[#F4D9C0] rounded-md">
+                      <ShieldAlert className="w-4 h-4 text-[#B46B3E]" />
+                      <span className="text-[11px] font-bold text-[#B46B3E]">Churn-deferral active</span>
                     </div>
                   )}
                 </div>
@@ -228,7 +228,7 @@ export default function NexusPage() {
 
               {/* COMPASS offer banner */}
               {detail.top_offer && (
-                <div className="bg-[#6B132B] rounded-xl shadow-lg text-white p-5">
+                  <div className="bg-[#6B132B] rounded-md text-white p-5">
                   <div className="flex items-center justify-between gap-4">
                     <div className="min-w-0">
                       <p className="text-[10px] font-bold text-[#F4D9C0] uppercase tracking-widest flex items-center gap-1">
@@ -244,16 +244,16 @@ export default function NexusPage() {
                   </div>
                   <div className="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-white/10">
                     <span className="flex items-center gap-1.5 text-[11px] text-white/50">
-                      NEXUS <ArrowRight className="w-3 h-3" /> COMPASS (<span className="font-mono text-white/70">{detail.top_offer.product}</span>) <ArrowRight className="w-3 h-3" /> HERALD
+                      NEXUS <ArrowRight className="w-3 h-3" /> COMPASS (<span className="text-white/70">{detail.top_offer.product}</span>) <ArrowRight className="w-3 h-3" /> HERALD
                     </span>
                     {!handoff?.sent ? (
                       <button onClick={sendToCompass} disabled={sending}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-[#6B132B] text-[11px] font-bold hover:bg-white/90 disabled:opacity-50 transition-colors shrink-0">
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white text-[#6B132B] text-[11px] font-bold hover:bg-white/90 disabled:opacity-50 transition-colors shrink-0">
                         {sending ? <RefreshCw className="w-3 h-3 animate-spin" /> : <ArrowRight className="w-3 h-3" />}
                         Send to COMPASS
                       </button>
                     ) : (
-                      <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-400/20 text-emerald-200 text-[11px] font-bold shrink-0">
+                      <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#B46B3E]/20 text-[#B46B3E] text-[11px] font-bold shrink-0">
                         <CheckCircle className="w-3 h-3" /> Handed to COMPASS
                       </span>
                     )}
@@ -262,13 +262,13 @@ export default function NexusPage() {
                   {handoff?.sent && handoff.action_plan && (
                     <div className="mt-3 p-3 rounded-lg bg-white/5 border border-white/10 text-[11px] space-y-1">
                       <p className="text-white/40 uppercase tracking-widest text-[9px] font-bold">COMPASS Action Plan</p>
-                      <p className="text-white/70"><span className="text-white/40">offer_code:</span> <span className="font-mono">{handoff.action_plan.offer_code}</span></p>
+                      <p className="text-white/70"><span className="text-white/40">offer_code:</span> {handoff.action_plan.offer_code}</p>
                       <p className="text-white/70"><span className="text-white/40">channel:</span> {handoff.action_plan.channel} · <span className="text-white/40">model:</span> {handoff.action_plan.model}</p>
                       <p className="text-white/50 italic">{handoff.compass_note}</p>
                     </div>
                   )}
                   {handoff && !handoff.sent && (
-                    <div className="mt-3 p-3 rounded-lg bg-amber-400/10 border border-amber-400/20 text-[11px] text-amber-200">
+                    <div className="mt-3 p-3 rounded-md bg-[#F4D9C0]/20 border border-[#F4D9C0]/30 text-[11px] text-[#F4D9C0]">
                       {handoff.reason}
                     </div>
                   )}
@@ -276,25 +276,25 @@ export default function NexusPage() {
               )}
 
               {/* Ranked recommendations */}
-              <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm p-6">
+              <div className="bg-white rounded-md border border-[#E5E0DF] p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-[13px] font-bold text-[#2A161B] flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-emerald-600" /> Eligible Recommendations</h3>
+                  <h3 className="text-[13px] font-bold text-[#2A161B] flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-[#B46B3E]" /> Eligible Recommendations</h3>
                   <div className="flex gap-3 text-[10px] font-semibold">
                     <span className="flex items-center gap-1 text-[#B46B3E]"><span className="w-2.5 h-2.5 rounded-sm bg-[#B46B3E]" />Segment</span>
-                    <span className="flex items-center gap-1 text-sky-600"><span className="w-2.5 h-2.5 rounded-sm bg-sky-400" />Peer</span>
-                    <span className="flex items-center gap-1 text-amber-600"><span className="w-2.5 h-2.5 rounded-sm bg-amber-400" />Life-event</span>
+                    <span className="flex items-center gap-1 text-[#B46B3E]/70"><span className="w-2.5 h-2.5 rounded-sm bg-[#B46B3E]/60" />Peer</span>
+                    <span className="flex items-center gap-1 text-[#6B6562]"><span className="w-2.5 h-2.5 rounded-sm bg-[#F4D9C0]" />Life-event</span>
                   </div>
                 </div>
                 <div className="space-y-3">
                   {detail.recommendations.map((rec: any, i: number) => (
-                    <div key={rec.product} className={`rounded-xl border p-4 ${i === 0 ? 'border-[#6B132B]/20 bg-[#6B132B]/[0.02]' : 'border-[#E5E0DF]'}`}>
+                    <div key={rec.product} className={`rounded-md border p-4 ${i === 0 ? 'border-[#6B132B]/20 bg-[#6B132B]/[0.02]' : 'border-[#E5E0DF]'}`}>
                       <div className="flex items-center justify-between gap-3 mb-2">
                         <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-[11px] text-[#C9C3C0] font-mono w-4">{i + 1}</span>
+                          <span className="text-[11px] text-[#C9C3C0] w-4">{i + 1}</span>
                           <Package className="w-3.5 h-3.5 text-[#8B8481] shrink-0" />
                           <span className="text-[13px] font-bold text-[#2A161B] truncate">{rec.label}</span>
                           <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-semibold ${CAT_COLOR[rec.category]}`}>{rec.category}</span>
-                          {rec.is_credit && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-red-50 text-red-600 font-semibold">credit</span>}
+                          {rec.is_credit && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#6B132B]/[0.08] text-[#6B132B] font-semibold">credit</span>}
                         </div>
                         <span className="text-[14px] font-bold text-[#6B132B] tabular-nums shrink-0">{Math.round(rec.score * 100)}%</span>
                       </div>
@@ -302,7 +302,7 @@ export default function NexusPage() {
                       <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2.5">
                         {rec.reason_codes.map((rc: any, j: number) => (
                           <span key={j} className="text-[11px] text-[#6B6562] flex items-center gap-1">
-                            <CheckCircle className="w-3 h-3 text-emerald-500 shrink-0" /> {rc.detail}
+                            <CheckCircle className="w-3 h-3 text-[#B46B3E] shrink-0" /> {rc.detail}
                           </span>
                         ))}
                       </div>
@@ -316,19 +316,19 @@ export default function NexusPage() {
 
               {/* Suppressed (compliance story) */}
               {detail.suppressed?.length > 0 && (
-                <div className="bg-white rounded-xl border border-red-100 shadow-sm p-6">
+                <div className="bg-white rounded-md border border-[#6B132B]/20 p-6">
                   <h3 className="text-[13px] font-bold text-[#2A161B] flex items-center gap-1.5 mb-1">
-                    <Ban className="w-4 h-4 text-red-500" /> Suppressed by Compliance ({detail.suppressed.length})
+                    <Ban className="w-4 h-4 text-[#6B132B]" /> Suppressed by Compliance ({detail.suppressed.length})
                   </h3>
                   <p className="text-[11px] text-[#8B8481] mb-3">Dropped before reaching COMPASS — every suppression is audit-logged (DPDPA Rule 4).</p>
                   <div className="space-y-2">
                     {detail.suppressed.map((rec: any) => (
-                      <div key={rec.product} className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg bg-red-50/50 border border-red-100">
+                      <div key={rec.product} className="flex items-center justify-between gap-3 px-3 py-2 rounded-md bg-[#6B132B]/[0.03] border border-[#6B132B]/10">
                         <div className="flex items-center gap-2 min-w-0">
                           <span className="text-[12px] font-semibold text-[#4A4644] truncate">{rec.label}</span>
-                          {rec.is_credit && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-red-100 text-red-600 font-semibold shrink-0">credit</span>}
+                          {rec.is_credit && <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#6B132B]/[0.08] text-[#6B132B] font-semibold shrink-0">credit</span>}
                         </div>
-                        <span className="text-[11px] text-red-600 italic text-right shrink-0 max-w-[60%] truncate" title={rec.filtered_reason}>{rec.filtered_reason}</span>
+                        <span className="text-[11px] text-[#6B132B] italic text-right shrink-0 max-w-[60%] truncate" title={rec.filtered_reason}>{rec.filtered_reason}</span>
                       </div>
                     ))}
                   </div>
@@ -341,7 +341,7 @@ export default function NexusPage() {
 
       {/* Portfolio product opportunities */}
       {overview?.product_opportunities && (
-        <div className="bg-white rounded-xl border border-[#E5E0DF] shadow-sm p-6">
+        <div className="bg-white rounded-md border border-[#E5E0DF] p-6">
           <h3 className="text-[13px] font-bold text-[#2A161B] flex items-center gap-1.5 mb-4">
             <Users className="w-4 h-4 text-[#6B132B]" /> Portfolio Cross-Sell Opportunities — across all {s?.customers} customers
           </h3>
@@ -350,7 +350,7 @@ export default function NexusPage() {
               <div key={p.product} className="flex items-center gap-3">
                 <span className="text-[12px] text-[#4A4644] w-36 shrink-0 truncate">{p.label}</span>
                 <div className="flex-1 h-4 bg-[#F5F4F2] rounded-full overflow-hidden relative">
-                  <div className="h-full bg-emerald-400/80 rounded-full" style={{ width: `${Math.min(p.top_offer_count * 7, 100)}%` }} />
+                  <div className="h-full bg-[#B46B3E]/60 rounded-full" style={{ width: `${Math.min(p.top_offer_count * 7, 100)}%` }} />
                 </div>
                 <span className="text-[11px] text-[#6B6562] w-28 shrink-0 text-right">
                   <span className="font-bold text-[#6B132B]">{p.top_offer_count}</span> best-fit · {p.held_pct}% held

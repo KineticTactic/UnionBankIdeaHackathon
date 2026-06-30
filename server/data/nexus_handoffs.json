@@ -56,5 +56,40 @@
     "rationale": "Cross-sell fit 40% for Fixed Deposit. 7 of 17 similar Mass Affluent customers hold this; typical for the Mass Affluent segment. Source: nexus-heuristic.",
     "churn_deferral_checked": true,
     "created_at": "2026-06-30T20:46:15.878Z"
+  },
+  "CUST-026": {
+    "customer_id": "CUST-026",
+    "source": "NEXUS",
+    "action": "CROSS_SELL",
+    "offer_code": "CROSS_SELL_HEALTH_INSURANCE",
+    "offer_display": "Health Insurance",
+    "content_strategy": "cross_sell",
+    "channel": "branch",
+    "fit_score": 0.453,
+    "model": "nexus-heuristic",
+    "model_version": "nexus-baseline-v1",
+    "reason_codes": [
+      {
+        "feature": "peer_adoption",
+        "value": 0.31,
+        "direction": "increases_fit",
+        "detail": "4 of 13 similar SME customers hold this"
+      },
+      {
+        "feature": "segment_affinity",
+        "value": 0.5,
+        "direction": "increases_fit",
+        "detail": "typical for the SME segment"
+      },
+      {
+        "feature": "life_event",
+        "value": 0.7,
+        "direction": "increases_fit",
+        "detail": "triggered by recent life milestone"
+      }
+    ],
+    "rationale": "Cross-sell fit 45% for Health Insurance. 4 of 13 similar SME customers hold this; typical for the SME segment. Source: nexus-heuristic.",
+    "churn_deferral_checked": true,
+    "created_at": "2026-06-30T21:43:19.830Z"
   }
 }

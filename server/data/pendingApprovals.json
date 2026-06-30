@@ -1977,5 +1977,40 @@
     "reviewedAt": "2026-06-30T21:18:19.256Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T21:17:56.919Z"
+  },
+  {
+    "approvalId": "754a459e-ad59-40ac-b083-d1f573994175",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-06-30T21:30:10.967Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let’s make banking work for you every day",
+        "body": "Hi Naveen, I noticed a few recent transactions that didn’t go as smoothly as you deserved. I’m truly sorry for any frustration these may have caused you. We’re reaching out personally because we want to make sure your Union Bank experience feels effortless again. Would you like to share what happened so we can fix it right away? \n\nI’ll also arrange a call with our team to review how we can better support you as you step into this important new phase. Whatever you need—whether it’s smoother transactions, clearer guidance, or just a quick chat—we’re here to help. Let me know a time that works for you, or simply reply to this message and I’ll take it from there. Thank you for trusting us, Naveen. We’ll make this right together.",
+        "compliance_status": "APPROVED",
+        "word_count": 130
+      },
+      "sms": {
+        "body": "Hi Naveen, we’re sorry recent transactions didn’t go smoothly. Please reply ‘FIX’ and we’ll call you within 30 mins to sort everything out. Thank you for banking with Union Bank.",
+        "compliance_status": "APPROVED",
+        "char_count": 178
+      },
+      "push": {
+        "title": "Let us make it right",
+        "body": "Naveen, we’re sorry recent transactions didn’t go smoothly. Tap to let us fix it now.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T21:30:10.967Z"
   }
 ]

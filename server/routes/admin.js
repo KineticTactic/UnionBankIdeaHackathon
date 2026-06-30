@@ -256,8 +256,11 @@ router.get('/consent/ledger', complianceAccess, (req, res) => {
             // store uses customerId (camelCase) with a different ID format,
             // so that map always returns undefined. Call per-customer instead.
             const k = consentSvc.getConsent(c.customer_id) || {};
-            const dpdpaGranted = k.dpdpaConsent != null ? k.dpdpaConsent.granted : null;
-            const traiGranted  = k.traiConsent  != null ? k.traiConsent.granted  : null;
+            // Default is GRANTED — customers consent at account opening.
+            // Only an explicit admin revoke in the Compliance Hub creates a
+            // record with granted:false. No record = still consented.
+            const dpdpaGranted = k.dpdpaConsent != null ? k.dpdpaConsent.granted : true;
+            const traiGranted  = k.traiConsent  != null ? k.traiConsent.granted  : true;
             const optOutChs    = k.optOutChannels || [];
             return {
                 customer_id:          c.customer_id,
@@ -275,7 +278,6 @@ router.get('/consent/ledger', complianceAccess, (req, res) => {
                 opt_out_channels:     optOutChs,
                 opted_out:            optOutChs.length > 0,
                 last_updated:         k.lastUpdated || null,
-                no_consent_record:    Object.keys(k).length === 0,
             };
         });
         res.json({ status: 'ok', total: rows.length, records: rows });

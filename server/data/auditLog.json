@@ -1195,5 +1195,38 @@
     },
     "modelVersion": "ADMIN-v1.0",
     "timestamp": "2026-06-30T05:20:24.318Z"
+  },
+  {
+    "eventId": "eeb41196-4eb4-4902-9082-c30676fde4c9",
+    "eventType": "SIGNAL_FIRED",
+    "customerId": "CUST-043",
+    "actor": "ARGUS",
+    "layer": "ARGUS",
+    "payload": {
+      "signal_type": "lifecycle_mcc",
+      "confidence": 0.65,
+      "cusum_value": 4.13,
+      "alarm_threshold": 3,
+      "method": "CUSUM"
+    },
+    "modelVersion": "ARGUS-v1.0",
+    "timestamp": "2026-06-30T05:21:49.251Z"
+  },
+  {
+    "eventId": "5f269049-dfff-4401-8b00-ed9efa6ac3dd",
+    "eventType": "RETENTION_CHECK",
+    "customerId": null,
+    "actor": "system",
+    "layer": "SYSTEM",
+    "payload": {
+      "checkedAt": "2026-06-30T05:21:56.251Z",
+      "archived": {
+        "approvals": 0
+      },
+      "errors": [],
+      "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+    },
+    "modelVersion": "N/A",
+    "timestamp": "2026-06-30T05:21:56.255Z"
   }
 ]

@@ -4,7 +4,8 @@ import { useEffect, useState, useMemo } from 'react';
 import { api } from '@/lib/api';
 import {
   RefreshCw, Shield, CheckCircle2, AlertTriangle, Users, XCircle,
-  Search, ChevronDown, Mail, MessageSquare, Bell, Phone, Trash2, FileDown, X, History
+  Search, ChevronDown, Mail, MessageSquare, Bell, Trash2, FileDown, X, History,
+  PenLine,
 } from 'lucide-react';
 
 /* ── constants ─────────────────────────────────────────────────────────────── */
@@ -32,6 +33,69 @@ function fmtDate(d?: string) {
 }
 
 /* ── consent action modal ──────────────────────────────────────────────────── */
+const CORRECTABLE_FIELDS = ['full_name', 'city', 'email', 'phone', 'segment', 'age'];
+
+function downloadPdf(record: any, exportData: any) {
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<title>Data Package — ${record.full_name}</title>
+<style>
+  body{font-family:Arial,sans-serif;padding:32px;color:#1e293b;font-size:12px}
+  h1{font-size:20px;font-weight:800;margin:0 0 4px}
+  h2{font-size:13px;font-weight:700;margin:20px 0 6px;border-bottom:1px solid #e2e8f0;padding-bottom:4px}
+  .meta{color:#64748b;font-size:11px;margin-bottom:24px}
+  .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;background:#e0f2fe;color:#0369a1}
+  table{width:100%;border-collapse:collapse;margin-bottom:8px}
+  td,th{padding:6px 8px;text-align:left;font-size:11px}
+  th{background:#f8fafc;font-weight:700;color:#475569}
+  tr:nth-child(even) td{background:#f8fafc}
+  .green{color:#16a34a;font-weight:700} .red{color:#dc2626;font-weight:700}
+  .footer{margin-top:32px;font-size:10px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:12px}
+  @media print{body{padding:16px}}
+</style></head><body>
+<h1>Data Package — ${record.full_name}</h1>
+<p class="meta">DPDPA 2023 §12 · Right to Access · Generated: ${new Date().toLocaleString('en-IN')} · By: Admin</p>
+
+<h2>Customer Profile</h2>
+<table><tr><th>Field</th><th>Value</th></tr>
+  <tr><td>Customer ID</td><td>${record.customer_id}</td></tr>
+  <tr><td>Name</td><td>${record.full_name}</td></tr>
+  <tr><td>City</td><td>${record.city || '—'}</td></tr>
+  <tr><td>Segment</td><td>${record.segment || '—'}</td></tr>
+  <tr><td>Risk Tier</td><td>${record.risk_tier || '—'}</td></tr>
+  <tr><td>Relationship Manager</td><td>${record.relationship_manager || '—'}</td></tr>
+</table>
+
+<h2>Consent Status</h2>
+<table><tr><th>Consent Type</th><th>Status</th><th>Last Updated</th></tr>
+  <tr><td>DPDPA 2023</td><td class="${record.dpdpa_consent !== false ? 'green' : 'red'}">${record.dpdpa_consent !== false ? 'GRANTED' : 'REVOKED'}</td><td>${record.last_updated || '—'}</td></tr>
+  <tr><td>TRAI TCCCPR 2025</td><td class="${record.trai_consent !== false ? 'green' : 'red'}">${record.trai_consent !== false ? 'GRANTED' : 'REVOKED'}</td><td>${record.last_updated || '—'}</td></tr>
+  <tr><td>Channel Opt-Outs</td><td colspan="2">${(record.opt_out_channels || []).join(', ') || 'None'}</td></tr>
+</table>
+
+<h2>Data Categories Held</h2>
+<p>Profile · Behavioural Signals · Churn Score · Outreach History · Consent Log</p>
+
+<h2>Retention Policy</h2>
+<p>Audit logs: 7 years (DPDPA Rule 4) · Signals &amp; Scores: 2 years · Approvals: 1 year</p>
+
+${exportData?.data?.auditLog?.length ? `
+<h2>Recent Audit Events (last 20)</h2>
+<table><tr><th>Event</th><th>Actor</th><th>Timestamp</th></tr>
+${exportData.data.auditLog.slice(0,20).map((e: any) => `<tr><td>${e.eventType}</td><td>${e.actor}</td><td>${e.timestamp?.slice(0,19).replace('T',' ')}</td></tr>`).join('')}
+</table>` : ''}
+
+<div class="footer">
+  Union Bank · PCOP · DPDPA 2023 Compliant · This document was generated automatically. For queries contact dpo@unionbank.in
+</div>
+</body></html>`;
+  const win = window.open('', '_blank');
+  if (!win) return;
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  setTimeout(() => { win.print(); }, 400);
+}
+
 function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () => void; onSaved: () => void }) {
   const [dpdpa,    setDpdpa]    = useState<boolean>(record.dpdpa_consent !== false);
   const [trai,     setTrai]     = useState<boolean>(record.trai_consent !== false);
@@ -43,6 +107,12 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
   const [history,  setHistory]  = useState<any[]>([]);
   const [loadingH, setLoadingH] = useState(false);
   const [showHist, setShowHist] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  // §13 correction state
+  const [showCorrect,  setShowCorrect]  = useState(false);
+  const [correctField, setCorrectField] = useState('city');
+  const [correctValue, setCorrectValue] = useState('');
+  const [correctReason,setCorrectReason]= useState('');
 
   const loadHistory = async () => {
     if (showHist) { setShowHist(false); return; }
@@ -53,6 +123,24 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
     } catch {}
     setLoadingH(false);
     setShowHist(true);
+  };
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const data = await api.exportCustomerData(record.customer_id);
+      downloadPdf(record, data);
+    } catch { setMsg('Export failed'); }
+    setExporting(false);
+  };
+
+  const handleCorrect = async () => {
+    if (!correctValue.trim() || !correctReason.trim()) return;
+    try {
+      await api.correctCustomerData(record.customer_id, correctField, correctValue, correctReason);
+      setMsg('Correction request logged (DPDPA §13)');
+      setShowCorrect(false); setCorrectValue(''); setCorrectReason('');
+    } catch (e: any) { setMsg('Error: ' + e.message); }
   };
 
   const toggleOptOut = (ch: string) =>
@@ -157,6 +245,55 @@ function ConsentModal({ record, onClose, onSaved }: { record: any; onClose: () =
                 );
               })}
             </div>
+          </div>
+
+          {/* §12 — Data Export */}
+          <div className="bg-slate-50 rounded-xl p-4 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+                <FileDown className="w-4 h-4 text-slate-400" /> Data Package Export
+              </p>
+              <p className="text-[11px] text-slate-400 mt-0.5">DPDPA 2023 §12 — Right to Access. Opens print dialog for PDF download.</p>
+            </div>
+            <button onClick={handleExport} disabled={exporting}
+              className="shrink-0 px-3 py-1.5 rounded-lg bg-[#0f2d5c] text-white text-xs font-bold hover:bg-[#0f2d5c]/90 disabled:opacity-50 transition-all">
+              {exporting ? 'Loading…' : 'Export PDF'}
+            </button>
+          </div>
+
+          {/* §13 — Right to Correction */}
+          <div className={`rounded-xl p-4 border-2 transition-all ${showCorrect ? 'border-blue-300 bg-blue-50' : 'border-slate-200 bg-slate-50'}`}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <PenLine className={`w-4 h-4 ${showCorrect ? 'text-blue-500' : 'text-slate-400'}`} />
+                <p className={`text-sm font-semibold ${showCorrect ? 'text-blue-700' : 'text-slate-800'}`}>Request Data Correction</p>
+              </div>
+              <button onClick={() => setShowCorrect(p => !p)}
+                className={`relative w-11 h-6 rounded-full transition-colors ${showCorrect ? 'bg-blue-500' : 'bg-slate-200'}`}>
+                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${showCorrect ? 'left-6' : 'left-1'}`} />
+              </button>
+            </div>
+            <p className="text-[11px] text-slate-400 mb-2">DPDPA 2023 §13 — right to correction. Logged for DBA review; no immediate data change.</p>
+            {showCorrect && (
+              <div className="space-y-2 mt-3">
+                <div className="flex gap-2">
+                  <select value={correctField} onChange={e => setCorrectField(e.target.value)}
+                    className="flex-1 rounded-lg border border-blue-200 text-xs text-slate-800 p-2 bg-white focus:outline-none focus:border-blue-400">
+                    {CORRECTABLE_FIELDS.map(f => <option key={f} value={f}>{f.replace('_',' ')}</option>)}
+                  </select>
+                  <input value={correctValue} onChange={e => setCorrectValue(e.target.value)}
+                    placeholder="New value…"
+                    className="flex-1 rounded-lg border border-blue-200 text-xs text-slate-800 p-2 bg-white focus:outline-none focus:border-blue-400" />
+                </div>
+                <input value={correctReason} onChange={e => setCorrectReason(e.target.value)}
+                  placeholder="Reason for correction (required)…"
+                  className="w-full rounded-lg border border-blue-200 text-xs text-slate-800 p-2 bg-white focus:outline-none focus:border-blue-400" />
+                <button onClick={handleCorrect} disabled={!correctValue.trim() || !correctReason.trim()}
+                  className="px-4 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 disabled:opacity-50 transition-all">
+                  Submit Correction Request
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Erasure request */}

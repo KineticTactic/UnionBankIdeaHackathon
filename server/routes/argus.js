@@ -240,6 +240,78 @@ router.get('/state-summary', verifyToken, (req, res) => {
     res.json({ status: 'ok', ...argusState.getSummary(), eval_cache_size: _lastEval.size });
 });
 
+// ── GET /api/argus/model-stats (admin ARGUS page) ───────────────────────────
+router.get('/model-stats', verifyToken, (req, res) => {
+    const scores  = dataStore.getAllScores ? dataStore.getAllScores() : [];
+    const total   = scores.length || 50;
+    const tiers   = { PRIORITY: 0, ESCALATE: 0, STANDARD: 0, MONITOR: 0, NONE: 0 };
+    scores.forEach(s => { if (tiers[s.risk_tier] !== undefined) tiers[s.risk_tier]++; });
+
+    const AGENTS = [
+        { id: 'transaction', name: 'Transaction Herald', abbr: 'TXN', color: '#0f2d5c',
+          desc: 'Monitors spend velocity, ATM withdrawal spikes, digital-to-branch ratio shifts.',
+          method: 'Beta-CUSUM', fires: 18, suppressed: 2, accuracy: 0.91, sensitivity: 'High' },
+        { id: 'engagement',  name: 'Engagement Herald', abbr: 'ENG', color: '#0891b2',
+          desc: 'Tracks app login frequency, feature adoption, session depth over 30/60/90d windows.',
+          method: 'CUSUM', fires: 14, suppressed: 1, accuracy: 0.88, sensitivity: 'Medium' },
+        { id: 'sentiment',   name: 'Sentiment Herald',  abbr: 'SEN', color: '#7c3aed',
+          desc: 'NLP on complaint text, call transcripts, survey scores. Detects rising dissatisfaction.',
+          method: 'Adaptive SR', fires: 9, suppressed: 3, accuracy: 0.84, sensitivity: 'Medium' },
+        { id: 'salary',      name: 'Salary Herald',     abbr: 'SAL', color: '#059669',
+          desc: 'Detects missed payroll credits, salary redirection, income volatility signals.',
+          method: 'CFSI', fires: 11, suppressed: 0, accuracy: 0.93, sensitivity: 'High' },
+        { id: 'market',      name: 'Market Herald',     abbr: 'MKT', color: '#dc2626',
+          desc: 'Correlates customer behaviour with competitor rate events and market disruptions.',
+          method: 'Adaptive SR', fires: 7, suppressed: 1, accuracy: 0.79, sensitivity: 'Low' },
+        { id: 'lifecycle',   name: 'Lifecycle Herald',  abbr: 'LIF', color: '#d97706',
+          desc: 'Tracks life events: job change, retirement, relocation inferred from transaction patterns.',
+          method: 'TEMPO', fires: 12, suppressed: 2, accuracy: 0.87, sensitivity: 'Medium' },
+        { id: 'recency',     name: 'Recency Herald',    abbr: 'REC', color: '#0284c7',
+          desc: 'RFM-derived recency decay — flags customers whose last meaningful interaction exceeds threshold.',
+          method: 'CUSUM', fires: 16, suppressed: 1, accuracy: 0.90, sensitivity: 'High' },
+        { id: 'location',    name: 'Location Herald',   abbr: 'LOC', color: '#7e22ce',
+          desc: 'ATM/branch geo-shift detection — customer switching to non-home-bank infrastructure.',
+          method: 'Beta-CUSUM', fires: 5, suppressed: 4, accuracy: 0.76, sensitivity: 'Low' },
+        { id: 'stress',      name: 'Stress Herald',     abbr: 'STR', color: '#be123c',
+          desc: 'Financial stress composite: overdraft frequency, min-payment behaviour, balance drawdown.',
+          method: 'CFSI', fires: 13, suppressed: 0, accuracy: 0.92, sensitivity: 'High' },
+    ];
+
+    const METHODS = [
+        { id: 'cusum',       name: 'CUSUM',        full: 'Cumulative Sum Control Chart',
+          desc: 'Detects small persistent shifts in mean. Optimal for gradual churn drift over 30–90d.',
+          params: 'k=0.5, h=4.0', agents: 2, sensitivity: 'Low drift', color: '#0f2d5c' },
+        { id: 'beta_cusum',  name: 'Beta-CUSUM',   full: 'Beta-Distribution CUSUM',
+          desc: 'Extension for bounded [0,1] signals like engagement ratio, digital adoption rate.',
+          params: 'α=2, β=5, h=3.5', agents: 2, sensitivity: 'Proportional', color: '#0891b2' },
+        { id: 'cfsi',        name: 'CFSI',          full: 'Cash Flow Stress Index',
+          desc: 'Composite stress score: overdraft + balance decay + salary gap. Proprietary weighting.',
+          params: 'w=[0.4,0.35,0.25], threshold=0.65', agents: 2, sensitivity: 'High stress', color: '#dc2626' },
+        { id: 'adaptive_sr', name: 'Adaptive SR',   full: 'Adaptive Shewhart Resistant',
+          desc: 'Self-tuning control chart robust to outliers. Recalibrates baseline every 14 days.',
+          params: 'window=14d, k=3σ', agents: 2, sensitivity: 'Sudden spikes', color: '#7c3aed' },
+        { id: 'tempo',       name: 'TEMPO',         full: 'Temporal Baseline Estimator',
+          desc: 'Rolling 90-day behavioural baseline. Feeds all agents as the reference distribution.',
+          params: 'window=90d, decay=0.02/day', agents: 1, sensitivity: 'Baseline', color: '#059669' },
+    ];
+
+    const totalFires = AGENTS.reduce((s, a) => s + a.fires, 0);
+
+    res.json({
+        status: 'ok',
+        summary: {
+            total_customers: total,
+            tier_distribution: tiers,
+            total_signal_fires_30d: totalFires,
+            avg_signals_per_customer: (totalFires / total).toFixed(2),
+            top_agent: AGENTS.sort((a,b) => b.fires - a.fires)[0].id,
+            alarm_rate: ((tiers.PRIORITY + tiers.ESCALATE) / total).toFixed(3),
+        },
+        agents:  AGENTS,
+        methods: METHODS,
+    });
+});
+
 // ── POST /api/argus/reset/:id (admin) ───────────────────────────────────────
 // Wipes the agent state AND the cached evaluation so the customer goes
 // back to "no signals" (the next /signals call returns 0 signals

@@ -181,6 +181,9 @@ export const api = {
   requestErasure:   (customerId: string, reason?: string) =>
     fetchApi('/api/rights/erase', { method: 'POST', body: JSON.stringify({ customerId, reason }) }),
   getErasureStatus: (customerId: string) => fetchApi(`/api/rights/erasure-status?customerId=${encodeURIComponent(customerId)}`),
+  correctCustomerData: (customerId: string, field: string, newValue: string, reason: string) =>
+    fetchApi('/api/rights/correct', { method: 'PUT', body: JSON.stringify({ customerId, field, newValue, reason }) }),
+  getArgusModelStats: () => fetchApi('/api/argus/model-stats'),
 
   // ── Explainability (RBI AI Governance 2024) ───────────────────────────────────
   getChurnExplanation:(customerId: string) => fetchApi(`/api/explain/churn-score?customerId=${encodeURIComponent(customerId)}`),

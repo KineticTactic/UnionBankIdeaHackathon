@@ -1,14 +1,25 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
+import { useAuth } from '@/hooks/useAuth';
 
 const PUBLIC_ROUTES = ['/', '/login'];
 
 export default function ConditionalShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+  const pathname  = usePathname();
+  const router    = useRouter();
+  const { user }  = useAuth();
   const isPublic  = PUBLIC_ROUTES.includes(pathname);
-  const isAdmin   = pathname.startsWith('/admin');
+
+  // RM users are confined to /rm/* — redirect any other route to My Day.
+  useEffect(() => {
+    if (!user || isPublic) return;
+    if (user.role === 'rm' && !pathname.startsWith('/rm')) {
+      router.replace('/rm/today');
+    }
+  }, [user, pathname, isPublic, router]);
 
   if (isPublic) return <>{children}</>;
 

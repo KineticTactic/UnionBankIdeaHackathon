@@ -5,10 +5,10 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Users, Activity, BrainCircuit,
   Send, BarChart3, Workflow, Shield, LogOut,
-  CalendarDays, BookOpen, PhoneCall, ClipboardList,
+  CalendarDays, BookOpen, ClipboardList,
   TrendingUp, CheckSquare, FileText, Mic,
   Command, UserCog, Scale, AlertTriangle, Settings,
-  Network, GitBranch, Cpu, Zap, Map,
+  Network, Cpu, Zap, Map,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -68,6 +68,7 @@ const ADMIN_NAV_GROUPS = [
     label: 'Models & AI',
     roles: ['admin', 'manager', 'risk'] as const,
     items: [
+      { href: '/admin/argus',         label: 'ARGUS Models',    icon: Activity,      roles: ['admin', 'manager', 'risk'] as const },
       { href: '/admin/graphsage',     label: 'GraphSAGE',       icon: Network,       roles: ['admin', 'manager', 'risk'] as const },
       { href: '/admin/relearning',    label: 'ORACLE Relearning',icon: Cpu,          roles: ['admin', 'manager', 'risk'] as const },
     ],
@@ -138,6 +139,7 @@ export default function Sidebar() {
     );
   };
 
+  const isPureRm    = userRole === 'rm';
   const isRmUser    = ['rm', 'manager', 'admin'].includes(userRole);
   const isAdminUser = ['admin', 'manager', 'risk'].includes(userRole);
 
@@ -158,8 +160,8 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto py-3 px-2">
-        {/* Standard nav groups */}
-        {NAV_GROUPS.map((group) => {
+        {/* Standard nav groups — hidden for pure RM users */}
+        {!isPureRm && NAV_GROUPS.map((group) => {
           const visibleItems = group.items.filter(item => {
             if (!('roles' in item) || !item.roles) return true;
             return user && (item.roles as readonly string[]).includes(user.role);
@@ -177,11 +179,11 @@ export default function Sidebar() {
           );
         })}
 
-        {/* Admin Portal section — divider */}
-        {isAdminUser && (
+        {/* Admin Portal section — divider, hidden for pure RM */}
+        {isAdminUser && !isPureRm && (
           <div className="my-2 mx-3 border-t border-white/10" />
         )}
-        {isAdminUser && ADMIN_NAV_GROUPS.map((group) => {
+        {isAdminUser && !isPureRm && ADMIN_NAV_GROUPS.map((group) => {
           const visible = group.items.filter(item => (item.roles as readonly string[]).includes(userRole));
           if (!visible.length) return null;
           return (

@@ -22,8 +22,14 @@ import { DataRightsPanel } from '@/components/compliance/DataRightsPanel';
 import { ConsentStatusBadge } from '@/components/compliance/ConsentStatusBadge';
 import { RMCopilotPanel } from '@/components/copilot/RMCopilotPanel';
 
-const TABS = ['Overview','Risk Score','Signals','Transactions','Action Plan','Outreach','Survival','Explain','Data Rights'] as const;
+const TABS = ['Overview','Risk Score','Signals','Transactions','Action Plan','Cross-Sell','Outreach','Survival','Explain','Data Rights'] as const;
 type Tab = typeof TABS[number];
+
+const NEXUS_CAT_BADGE: Record<string, string> = {
+  card: 'bg-purple-100 text-purple-700', loan: 'bg-red-100 text-red-700',
+  deposit: 'bg-emerald-100 text-emerald-700', investment: 'bg-sky-100 text-sky-700',
+  insurance: 'bg-amber-100 text-amber-700',
+};
 
 const METHOD_COLORS: Record<string, string> = {
   SR:    'bg-teal-soft text-teal-dark',
@@ -54,6 +60,12 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
   const [herald,        setHerald]        = useState<HeraldContent | null>(null);
   const [generating,    setGenerating]    = useState(false);
   const [heraldError,   setHeraldError]   = useState('');
+  const [nexus,         setNexus]         = useState<any>(null);
+
+  // NEXUS cross-sell recommendations for this customer
+  useEffect(() => {
+    api.getNexusForCustomer(id).then(setNexus).catch(() => setNexus(null));
+  }, [id]);
 
   // ── Translation state (GCP) ─────────────────────────────────────────────
   // `translation` is the post-translation herald; if set, the UI
@@ -498,6 +510,90 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                 <AlertCircle className="w-4 h-4 text-copper-dark" />
                 <p className="text-[12px] text-copper-dark font-medium">Outreach suppressed (contact fatigue / consent rules)</p>
               </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Cross-Sell ───────────────────────────────────────────────────── */}
+        {tab === 'Cross-Sell' && (
+          <div className="space-y-5">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <p className="text-[13px] font-semibold text-slate-700">NEXUS Cross-Sell Recommendations</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">Model-backed (XGBoost · PKDD'99) · compliance-gated · {nexus?.model_version || '—'}</p>
+              </div>
+              {nexus?.churn_deferral_active && (
+                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-crimson-soft text-crimson text-[11px] font-bold">
+                  <AlertCircle className="w-3.5 h-3.5" /> Churn-deferral active
+                </span>
+              )}
+            </div>
+
+            {!nexus && <div className="flex items-center gap-2 text-slate-400 text-[13px] py-8 justify-center"><span className="animate-spin text-crimson">⟳</span> Loading…</div>}
+
+            {nexus?.churn_deferral_active && (
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-crimson-soft border border-red-100">
+                <AlertCircle className="w-4 h-4 text-crimson shrink-0 mt-0.5" />
+                <p className="text-[12px] text-crimson">High churn-risk — new-credit cross-sell suppressed. Retention takes priority; only safe products (deposits / insurance) shown.</p>
+              </div>
+            )}
+
+            {nexus?.top_offer && (
+              <div className="rounded-xl bg-[var(--crimson)] text-white p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/50">Best Cross-Sell Fit</p>
+                    <p className="text-[20px] font-black mt-0.5 truncate">{nexus.top_offer.label}</p>
+                    <p className="text-[12px] text-white/60 italic mt-1">{nexus.top_offer.reason_codes?.[0]?.detail}</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-[30px] font-black leading-none tabular-nums">{Math.round(nexus.top_offer.score * 100)}<span className="text-[14px] text-white/50">%</span></p>
+                    <p className="text-[10px] text-white/40">fit score</p>
+                  </div>
+                </div>
+                <p className="text-[10px] font-mono text-white/40 mt-3 pt-3 border-t border-white/10">{nexus.top_offer.source_model}</p>
+              </div>
+            )}
+
+            {nexus?.recommendations?.length > 0 && (
+              <div>
+                <p className="text-[13px] font-semibold text-slate-700 mb-3">Eligible Products</p>
+                <div className="space-y-2">
+                  {nexus.recommendations.map((rec: any) => (
+                    <div key={rec.product} className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[13px] font-semibold text-slate-800 truncate">{rec.label}</span>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-semibold ${NEXUS_CAT_BADGE[rec.category] || 'bg-slate-100 text-slate-500'}`}>{rec.category}</span>
+                        </div>
+                        {rec.reason_codes?.[0] && <p className="text-[11px] text-slate-400 truncate">{rec.reason_codes[0].detail}</p>}
+                      </div>
+                      <div className="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden shrink-0">
+                        <div className="h-full bg-[var(--crimson)] rounded-full" style={{ width: `${Math.round(rec.score * 100)}%` }} />
+                      </div>
+                      <span className="text-[12px] font-bold text-[var(--crimson)] tabular-nums w-9 text-right shrink-0">{Math.round(rec.score * 100)}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {nexus?.suppressed?.length > 0 && (
+              <div>
+                <p className="text-[13px] font-semibold text-slate-700 mb-3">Suppressed by Compliance ({nexus.suppressed.length})</p>
+                <div className="space-y-1.5">
+                  {nexus.suppressed.map((rec: any) => (
+                    <div key={rec.product} className="flex items-center justify-between gap-3 rounded-lg bg-crimson-soft border border-red-100 px-3 py-2">
+                      <span className="text-[12px] font-medium text-slate-600 truncate">{rec.label}</span>
+                      <span className="text-[11px] text-crimson italic text-right shrink-0 max-w-[55%] truncate">{rec.filtered_reason}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {nexus && !nexus.top_offer && !nexus.recommendations?.length && (
+              <div className="text-center py-10 text-slate-400 text-[13px]">No eligible cross-sell products for this customer right now.</div>
             )}
           </div>
         )}

@@ -7,7 +7,7 @@ import { CheckCircle2, XCircle, Clock, TrendingUp, BarChart3 } from 'lucide-reac
 const CYCLES = [
   {
     id: 'retrain', name: 'RETRAIN', schedule: 'Weekly · Sunday 2am',
-    border: 'border-l-purple-500', bg: 'bg-teal-soft', badge: 'bg-teal-soft text-teal-dark',
+    borderC: '#6B132B', badge: 'bg-[#6B132B] text-white',
     desc: 'Re-trains TARE (2 epochs), HABITAT (incremental), CAUSAL-NET. AEGIS gate blocks if new AUC < prod AUC.',
     lastRun: '2026-06-22 02:00', nextRun: '2026-06-29 02:00',
     metrics: [
@@ -18,7 +18,7 @@ const CYCLES = [
   },
   {
     id: 'refine', name: 'REFINE', schedule: 'Daily · 1am',
-    border: 'border-l-amber-500', bg: 'bg-copper-soft', badge: 'bg-copper-soft text-copper-dark',
+    borderC: '#B46B3E', badge: 'bg-[#B46B3E] text-white',
     desc: 'Measures prompt performance (open/click/conversion). Promotes top 3, deprecates bottom 3, generates new variant.',
     lastRun: '2026-06-30 01:00', nextRun: '2026-07-01 01:00',
     metrics: [
@@ -29,7 +29,7 @@ const CYCLES = [
   },
   {
     id: 'route', name: 'ROUTE', schedule: 'Real-time · per outreach',
-    border: 'border-l-sky-500', bg: 'bg-teal-soft', badge: 'bg-teal-soft text-teal-dark',
+    borderC: '#6B132B', badge: 'bg-[#6B132B] text-white',
     desc: 'Updates channel policy P(engagement|channel, customer) from recent events. No human trigger needed.',
     lastRun: 'Continuous', nextRun: 'Continuous',
     metrics: [
@@ -40,7 +40,7 @@ const CYCLES = [
   },
   {
     id: 'narrate', name: 'NARRATE', schedule: 'Nightly · 11pm',
-    border: 'border-l-emerald-500', bg: 'bg-sage-soft', badge: 'bg-sage-soft text-sage-brand',
+    borderC: '#B46B3E', badge: 'bg-[#B46B3E] text-white',
     desc: 'LLM reads uplift/prompt/channel metrics → Markdown narrative for stakeholders. Published to dashboard.',
     lastRun: '2026-06-29 23:00', nextRun: '2026-06-30 23:00',
     metrics: [
@@ -59,8 +59,10 @@ const CHANNEL_POLICY = [
 ];
 
 const CHANNEL_STYLE: Record<string, string> = {
-  Phone: 'bg-copper-soft text-copper-dark', Email: 'bg-teal-soft text-teal-dark',
-  SMS:   'bg-sage-soft text-sage-brand', Push:  'bg-teal-soft text-teal-dark',
+  Phone: 'bg-[#B46B3E] text-white',
+  Email: 'bg-[#6B132B] text-white',
+  SMS:   'bg-[#2A161B] text-white',
+  Push:  'bg-[#F4D9C0] text-[#2A161B]',
 };
 
 export default function RelearningPage() {
@@ -71,18 +73,18 @@ export default function RelearningPage() {
   }, []);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#F9F9F7] min-h-screen">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">ORACLE — Relearning Engine</h1>
-        <p className="text-slate-400 text-sm mt-0.5">4 learning cycles that improve models, prompts, and routing every day</p>
+        <h1 className="text-[22px] font-black text-[#2A161B] font-heading">ORACLE — Relearning Engine</h1>
+        <p className="text-[13px] text-[#6B6562] mt-0.5">4 learning cycles that improve models, prompts, and routing every day</p>
       </div>
 
       {/* Retraining gate */}
-      <div className="bg-sage-soft border border-soft rounded-xl p-5">
+      <div className="bg-white rounded-md border border-soft p-5">
         <div className="flex items-center gap-3 mb-3">
-          <CheckCircle2 className="w-5 h-5 text-sage-brand" />
-          <p className="font-bold text-slate-900 text-sm">Retraining Gate — <span className="text-sage-brand">DEPLOY ALLOWED</span></p>
-          <span className="ml-auto text-[10px] text-slate-400">RBI AI Governance 2024 §8</span>
+          <CheckCircle2 className="w-5 h-5 text-[#6B132B]" />
+          <p className="font-bold text-[#2A161B] text-sm">Retraining Gate — <span className="text-[#6B132B]">DEPLOY ALLOWED</span></p>
+          <span className="ml-auto text-[10px] text-[#8B8481]">RBI AI Governance 2024 §8</span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
@@ -91,11 +93,11 @@ export default function RelearningPage() {
             { label: 'Committee Appr.', status: 'APPROVED', ok: true },
             { label: 'Consent Check',   status: 'PASS',     ok: true },
           ].map(g => (
-            <div key={g.label} className="bg-white rounded-lg border border-slate-200 p-3 flex items-center gap-2">
-              {g.ok ? <CheckCircle2 className="w-4 h-4 text-sage-brand shrink-0" /> : <XCircle className="w-4 h-4 text-crimson shrink-0" />}
+            <div key={g.label} className="bg-[#F9F9F7] rounded-md border border-soft p-3 flex items-center gap-2">
+              {g.ok ? <CheckCircle2 className="w-4 h-4 text-[#6B132B] shrink-0" /> : <XCircle className="w-4 h-4 text-[#6B132B] shrink-0" />}
               <div>
-                <p className="text-[10px] text-slate-400">{g.label}</p>
-                <p className={`text-[11px] font-bold ${g.ok ? 'text-sage-brand' : 'text-crimson'}`}>{g.status}</p>
+                <p className="text-[10px] text-[#6B6562]">{g.label}</p>
+                <p className={`text-[11px] font-bold ${g.ok ? 'text-[#6B132B]' : 'text-[#B46B3E]'}`}>{g.status}</p>
               </div>
             </div>
           ))}
@@ -105,27 +107,27 @@ export default function RelearningPage() {
       {/* 4 Cycles */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {CYCLES.map(cycle => (
-          <div key={cycle.id} className={`bg-white rounded-xl border border-slate-200 shadow-sm border-l-4 ${cycle.border} p-5 space-y-4`}>
+          <div key={cycle.id} className="bg-white rounded-md border border-soft p-5 space-y-4" style={{borderLeftWidth: 4, borderLeftColor: cycle.borderC}}>
             <div className="flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-bold text-slate-900">{cycle.name}</h3>
+                  <h3 className="font-bold text-[#2A161B]">{cycle.name}</h3>
                   <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${cycle.badge}`}>ACTIVE</span>
                 </div>
-                <p className="text-[11px] text-slate-400 flex items-center gap-1"><Clock className="w-3 h-3" />{cycle.schedule}</p>
+                <p className="text-[11px] text-[#6B6562] flex items-center gap-1"><Clock className="w-3 h-3" />{cycle.schedule}</p>
               </div>
             </div>
-            <p className="text-xs text-slate-500 leading-relaxed">{cycle.desc}</p>
+            <p className="text-[12px] text-[#6B6562] leading-relaxed">{cycle.desc}</p>
             <div className="grid grid-cols-3 gap-2">
               {cycle.metrics.map(m => (
-                <div key={m.label} className="bg-slate-50 rounded-lg p-2.5">
-                  <p className="text-[9px] text-slate-400 uppercase tracking-widest mb-1">{m.label}</p>
-                  <p className="text-sm font-bold text-slate-900">{m.after}</p>
-                  <p className={`text-[10px] font-semibold ${m.up ? 'text-sage-brand' : 'text-crimson'}`}>{m.delta}</p>
+                <div key={m.label} className="bg-[#F9F9F7] rounded-md p-2.5">
+                  <p className="text-[9px] text-[#6B6562] uppercase tracking-widest mb-1">{m.label}</p>
+                  <p className="text-sm font-bold text-[#2A161B]">{m.after}</p>
+                  <p className={`text-[10px] font-semibold ${m.up ? 'text-[#6B132B]' : 'text-[#B46B3E]'}`}>{m.delta}</p>
                 </div>
               ))}
             </div>
-            <div className="flex items-center justify-between text-[10px] text-slate-400">
+            <div className="flex items-center justify-between text-[10px] text-[#8B8481]">
               <span>Last: {cycle.lastRun}</span>
               <span>Next: {cycle.nextRun}</span>
             </div>
@@ -134,28 +136,28 @@ export default function RelearningPage() {
       </div>
 
       {/* Channel policy */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+      <div className="bg-white rounded-md border border-soft p-5">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold text-slate-700">Channel Routing Policy (ROUTE cycle)</h2>
-          <BarChart3 className="w-4 h-4 text-slate-300" />
+          <h2 className="text-sm font-bold text-[#2A161B]">Channel Routing Policy (ROUTE cycle)</h2>
+          <BarChart3 className="w-4 h-4 text-[#8B8481]" />
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-100">
-                <th className="text-left py-2 pr-4 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Segment</th>
+              <tr className="border-b border-soft">
+                <th className="text-left py-2 pr-4 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">Segment</th>
                 {(['PRIORITY','ESCALATE','STANDARD','MONITOR'] as const).map(t => (
-                  <th key={t} className="text-center py-2 px-3 text-[10px] font-semibold text-slate-400 uppercase tracking-wide">{t}</th>
+                  <th key={t} className="text-center py-2 px-3 text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">{t}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-soft">
               {CHANNEL_POLICY.map(row => (
-                <tr key={row.segment} className="hover:bg-slate-50 transition-colors">
-                  <td className="py-3 pr-4 font-medium text-slate-700">{row.segment}</td>
+                <tr key={row.segment} className="hover:bg-[#F9F9F7] transition-colors">
+                  <td className="py-3 pr-4 font-semibold text-[#2A161B]">{row.segment}</td>
                   {(['PRIORITY','ESCALATE','STANDARD','MONITOR'] as const).map(tier => (
                     <td key={tier} className="py-3 px-3 text-center">
-                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded ${CHANNEL_STYLE[row[tier]] || 'bg-slate-100 text-slate-600'}`}>{row[tier]}</span>
+                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded ${CHANNEL_STYLE[row[tier]] || 'bg-[#F9F9F7] text-[#6B6562]'}`}>{row[tier]}</span>
                     </td>
                   ))}
                 </tr>
@@ -166,10 +168,10 @@ export default function RelearningPage() {
       </div>
 
       {/* DR Uplift */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+      <div className="bg-white rounded-md border border-soft p-5">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold text-slate-700">DR Uplift — VERDICT Attribution</h2>
-          <TrendingUp className="w-4 h-4 text-slate-300" />
+          <h2 className="text-sm font-bold text-[#2A161B]">DR Uplift — VERDICT Attribution</h2>
+          <TrendingUp className="w-4 h-4 text-[#8B8481]" />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
@@ -178,13 +180,13 @@ export default function RelearningPage() {
             { label: 'Counterfactual',  value: uplift?.counterfactual  || '44%' },
             { label: 'True lift',       value: uplift?.true_lift       || '+18pp' },
           ].map(m => (
-            <div key={m.label} className="bg-slate-50 rounded-xl border border-slate-100 p-4">
-              <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-1">{m.label}</p>
-              <p className="text-2xl font-bold text-slate-900">{m.value}</p>
+            <div key={m.label} className="bg-[#F9F9F7] rounded-md border border-soft p-4">
+              <p className="text-[10px] text-[#6B6562] uppercase tracking-wider font-bold mb-1">{m.label}</p>
+              <p className="text-2xl font-black text-[#2A161B]">{m.value}</p>
             </div>
           ))}
         </div>
-        <p className="text-[11px] text-slate-400 mt-3">Doubly Robust estimation removes selection bias — "would they have stayed anyway?" is accounted for.</p>
+        <p className="text-[11px] text-[#6B6562] mt-3">Doubly Robust estimation removes selection bias — "would they have stayed anyway?" is accounted for.</p>
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Legend,
 } from 'recharts';
-import { BrainCircuit, TrendingUp, Target, Layers } from 'lucide-react';
+import { BrainCircuit, TrendingUp, Target, Layers, X } from 'lucide-react';
 
 const MODELS = [
   {
@@ -42,10 +42,185 @@ const MODELS = [
   },
 ];
 
+type ArchModelKey = 'tare' | 'habitat' | 'fusion-x' | 'prism' | 'causal-net' | 'genesis' | 'sentinel' | 'aegis';
+
+interface ArchModel {
+  key: ArchModelKey;
+  name: string;
+  subtitle: string;
+  purpose: string;
+  architecture: string;
+  input: string;
+  output: string;
+  layer: string;
+}
+
+const ARCH_MODELS: ArchModel[] = [
+  {
+    key: 'tare',
+    name: 'TARE',
+    subtitle: 'Temporal Transformer Encoder',
+    purpose: 'Detect rhythm changes in customer transaction sequences that signal churn.',
+    architecture: '2-layer Transformer, 4 attention heads, d_model=128. Pre-trained on 180-token sequences via masked reconstruction, then fine-tuned on churn labels.',
+    input: '180-token transaction sequences (encoded action history)',
+    output: 'Sequence-level embedding + churn logit',
+    layer: 'Layer 3 — Ensemble Fusion & Explain',
+  },
+  {
+    key: 'habitat',
+    name: 'HABITAT',
+    subtitle: 'XGBoost Tabular Scorer (Pass 1)',
+    purpose: 'Score churn risk from structured behavioural features.',
+    architecture: 'Gradient-boosted trees, 300–400 rounds, focal loss for class imbalance. All 14 features pass through SHAP-based feature selection.',
+    input: '14 behavioural features: recency, frequency, monetary, complaints, digital ratio, tenure',
+    output: 'Risk score (probability)',
+    layer: 'Layer 3 — Ensemble Fusion & Explain',
+  },
+  {
+    key: 'fusion-x',
+    name: 'FUSION-X',
+    subtitle: 'Bayesian Adaptive Fusion',
+    purpose: 'Optimally combine TARE and HABITAT outputs into a single calibrated score.',
+    architecture: 'Bayesian weight optimisation with Platt-scaled calibration. Weights adapt per-customer based on feature completeness. ECE monitored continuously.',
+    input: 'TARE output logit + HABITAT score (both float)',
+    output: 'Calibrated probability (0–1) with confidence interval',
+    layer: 'Layer 3 — Ensemble Fusion & Explain',
+  },
+  {
+    key: 'prism',
+    name: 'PRISM',
+    subtitle: '9-Category Merge & Reason Codes',
+    purpose: 'Discretise the fused score into actionable risk tiers and explain why.',
+    architecture: 'Rule-based binning with 9 ordinal categories. Top-3 SHAP-based reason codes extracted per customer from HABITAT and TARE feature attributions.',
+    input: 'Fused probability score',
+    output: 'Risk tier (1–9) + top-3 reason codes',
+    layer: 'Layer 3 — Ensemble Fusion & Explain',
+  },
+  {
+    key: 'causal-net',
+    name: 'CAUSAL-NET',
+    subtitle: 'Two-Tower Uplift Model',
+    purpose: 'Estimate the causal effect of outreach interventions.',
+    architecture: 'Two-tower neural network: one tower for treatment (contacted), one for control (not contacted). S-learner meta-learner framework.',
+    input: 'Customer feature vector + fused score',
+    output: 'Treatability score + optimal action score',
+    layer: 'Layer 3 — Ensemble Fusion & Explain',
+  },
+  {
+    key: 'genesis',
+    name: 'GENESIS',
+    subtitle: 'Logistic Regression Cold-Start',
+    purpose: 'Score new customers with insufficient history for TARE/HABITAT.',
+    architecture: 'L2-regularised logistic regression on 7 onboarding features (age, income, channel, product mix, etc.) with Platt scaling for calibration.',
+    input: '7 onboarding features — customers with < 90 days tenure or < 30 tokens',
+    output: 'Cold-start churn probability',
+    layer: 'Layer 2 — Cold Start & Guardrails',
+  },
+  {
+    key: 'sentinel',
+    name: 'SENTINEL',
+    subtitle: 'Real-Time Re-Scoring',
+    purpose: 'Re-evaluate risk scores in real time as new events arrive.',
+    architecture: 'Lightweight scorer that listens to Kafka event stream. On each new transaction or profile change, re-runs applicable model and pushes updated score.',
+    input: 'Kafka event stream (transactions, profile updates)',
+    output: 'Updated risk score + delta flag',
+    layer: 'Layer 2 — Cold Start & Guardrails',
+  },
+  {
+    key: 'aegis',
+    name: 'AEGIS',
+    subtitle: 'Drift Detection Guard',
+    purpose: 'Detect data distribution drift and alert when model confidence degrades.',
+    architecture: 'Statistical distribution comparison (Kolmogorov–Smirnov test) on rolling window of feature distributions vs reference. Triggers alert when p < 0.05.',
+    input: 'Live feature distribution window',
+    output: 'Drift alert + degraded feature names',
+    layer: 'Layer 2 — Cold Start & Guardrails',
+  },
+];
+
+const ARCH_INFO = ARCH_MODELS.reduce((acc, m) => {
+  acc[m.key] = m;
+  return acc;
+}, {} as Record<ArchModelKey, ArchModel>);
+
+function Arrow() {
+  return (
+    <svg width="20" height="12" viewBox="0 0 20 12" fill="none" className="shrink-0">
+      <line x1="0" y1="6" x2="17" y2="6" stroke="#B46B3E" strokeWidth="1.5" />
+      <polyline points="12,1 18,6 12,11" stroke="#B46B3E" strokeWidth="1.5" fill="none" />
+    </svg>
+  );
+}
+
+function ArchNode({ model, onClick, selected }: { model: ArchModel; onClick: () => void; selected: boolean }) {
+  const isCrimson = model.key === 'fusion-x' || model.key === 'aegis';
+  const bg = selected
+    ? (isCrimson ? 'bg-[#6B132B]' : 'bg-[#B46B3E]')
+    : (isCrimson ? 'bg-[#6B132B]' : 'bg-[#F9F9F7] border border-soft');
+  const text = isCrimson ? 'text-white' : (selected ? 'text-white' : 'text-[#2A161B]');
+  const sub = isCrimson ? 'text-[#E5E0DF]' : (selected ? 'text-white/70' : 'text-[#6B6562]');
+  return (
+    <button
+      onClick={onClick}
+      className={`${bg} rounded-md px-3 py-2.5 text-center min-w-[120px] cursor-pointer transition-colors`}
+    >
+      <div className={`text-[12px] font-black font-heading ${text}`}>{model.name}</div>
+      <div className={`text-[9px] leading-tight ${sub}`}>
+        {model.subtitle.split(' ')[0]}<br/>{model.subtitle.split(' ').slice(1).join(' ')}
+      </div>
+    </button>
+  );
+}
+
+function DetailPanel({ model, health, onClose }: { model: ArchModel; health: ModelHealth | null; onClose: () => void }) {
+  const statLine = (label: string, value: string) => (
+    <div className="flex justify-between text-[11px] py-1.5 border-b border-soft last:border-0">
+      <span className="text-[#6B6562]">{label}</span>
+      <span className="font-bold text-[#2A161B]">{value}</span>
+    </div>
+  );
+
+  return (
+    <div className="p-5">
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <div className="text-[10px] text-[#6B6562] font-bold uppercase tracking-wider">{model.layer}</div>
+          <h3 className="text-[16px] font-black text-[#2A161B] font-heading mt-0.5">{model.name}</h3>
+          <p className="text-[11px] text-[#6B6562]">{model.subtitle}</p>
+        </div>
+        <button onClick={onClose} className="p-1 rounded hover:bg-[#F9F9F7] cursor-pointer">
+          <X className="w-4 h-4 text-[#8B8481]" />
+        </button>
+      </div>
+
+      <div className="space-y-2.5 mb-4">
+        <p className="text-[11px] text-[#2A161B] leading-relaxed">{model.purpose}</p>
+      </div>
+
+      <div className="bg-[#F9F9F7] rounded-md p-3 mb-3">
+        <p className="text-[9px] font-bold text-[#6B6562] uppercase tracking-wider mb-1">Architecture</p>
+        <p className="text-[11px] text-[#2A161B] leading-relaxed">{model.architecture}</p>
+      </div>
+
+      <div className="space-y-1 mb-4">
+        {statLine('Input', model.input.length > 30 ? model.input.slice(0, 30) + '…' : model.input)}
+        {statLine('Output', model.output)}
+        {health && model.key in health.model_aucs && (
+          statLine('AUC', (health.model_aucs[model.key] || 0).toFixed(3))
+        )}
+        {health && model.key in health.ensemble_weights && (
+          statLine('Ensemble Weight', `${((health.ensemble_weights[model.key] || 0) * 100).toFixed(0)}%`)
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function ModelsPage() {
   const router  = useRouter();
   const [health, setHealth] = useState<ModelHealth | null>(null);
   const [loading,setLoading]= useState(true);
+  const [selected, setSelected] = useState<ArchModelKey | null>(null);
 
   useEffect(() => {
     if (!getToken()) { router.push('/login'); return; }
@@ -127,6 +302,65 @@ export default function ModelsPage() {
                 </div>
               );
             })}
+          </div>
+
+          {/* Architecture diagram */}
+          <div className="bg-white rounded-md border border-soft p-5">
+            <h2 className="text-[14px] font-bold text-[#2A161B] mb-1 font-heading">CHRONOS Architecture</h2>
+            <p className="text-[11px] text-[#6B6562] mb-4">Three-layer ensemble pipeline with adaptive fusion and drift guards — click any node for details</p>
+            <div className={`flex ${selected ? 'justify-between gap-6' : 'justify-center'}`}>
+              <div className="flex flex-col items-center gap-4">
+                {/* Layer 3 label */}
+                <div className="text-[10px] font-bold text-[#6B6562] uppercase tracking-wider mb-1">Layer 3 — Ensemble Fusion &amp; Explain</div>
+
+                {/* Layer 3 content */}
+                <div className="flex items-center gap-2 md:gap-4 flex-wrap justify-center">
+                  <ArchNode model={ARCH_INFO.tare} selected={selected==='tare'} onClick={() => setSelected(selected==='tare' ? null : 'tare')} />
+                  <Arrow />
+                  <ArchNode model={ARCH_INFO.habitat} selected={selected==='habitat'} onClick={() => setSelected(selected==='habitat' ? null : 'habitat')} />
+                </div>
+
+                {/* Arrow down to FUSION-X */}
+                <div className="flex flex-col items-center -my-1">
+                  <svg width="12" height="16" viewBox="0 0 12 16" fill="none"><path d="M6 0v12M1 7l5 5 5-5" stroke="#B46B3E" strokeWidth="2"/></svg>
+                </div>
+
+                {/* FUSION-X */}
+                <ArchNode model={ARCH_INFO['fusion-x']} selected={selected==='fusion-x'} onClick={() => setSelected(selected==='fusion-x' ? null : 'fusion-x')} />
+
+                {/* Arrow down to PRISM */}
+                <div className="flex flex-col items-center -my-1">
+                  <svg width="12" height="16" viewBox="0 0 12 16" fill="none"><path d="M6 0v12M1 7l5 5 5-5" stroke="#B46B3E" strokeWidth="2"/></svg>
+                </div>
+
+                {/* PRISM + CAUSAL-NET row */}
+                <div className="flex items-center gap-2 md:gap-6 flex-wrap justify-center">
+                  <ArchNode model={ARCH_INFO.prism} selected={selected==='prism'} onClick={() => setSelected(selected==='prism' ? null : 'prism')} />
+                  <Arrow />
+                  <ArchNode model={ARCH_INFO['causal-net']} selected={selected==='causal-net'} onClick={() => setSelected(selected==='causal-net' ? null : 'causal-net')} />
+                </div>
+
+                {/* Divider */}
+                <div className="w-full border-t border-soft my-1" />
+
+                {/* Layer 2 label */}
+                <div className="text-[10px] font-bold text-[#6B6562] uppercase tracking-wider">Layer 2 — Cold Start &amp; Guardrails</div>
+
+                <div className="flex items-center gap-2 md:gap-6 flex-wrap justify-center">
+                  <ArchNode model={ARCH_INFO.genesis} selected={selected==='genesis'} onClick={() => setSelected(selected==='genesis' ? null : 'genesis')} />
+                  <div className="text-[11px] text-[#8B8481]">→ scored via</div>
+                  <ArchNode model={ARCH_INFO.sentinel} selected={selected==='sentinel'} onClick={() => setSelected(selected==='sentinel' ? null : 'sentinel')} />
+                  <ArchNode model={ARCH_INFO.aegis} selected={selected==='aegis'} onClick={() => setSelected(selected==='aegis' ? null : 'aegis')} />
+                </div>
+              </div>
+
+              {/* Detail panel */}
+              {selected && ARCH_INFO[selected] && (
+                <div className="w-[300px] shrink-0 border-l border-soft">
+                  <DetailPanel model={ARCH_INFO[selected]} health={health} onClose={() => setSelected(null)} />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Charts row */}

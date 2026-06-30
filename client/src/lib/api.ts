@@ -148,6 +148,8 @@ export const api = {
 
   // ── Kafka ────────────────────────────────────────────────────────────────────
   getKafkaStatus:     () => fetchApi('/api/kafka/status'),
+  publishKafkaEvent:  (topic: string, key: string, value: object) =>
+    fetchApi('/api/kafka/publish', { method: 'POST', body: JSON.stringify({ topic, key, value }) }),
 
   // ── Approval Queue (HERALD human-in-the-loop) ────────────────────────────────
   getPendingApprovals: (params: Record<string, string | undefined> = {}) => {
@@ -253,6 +255,8 @@ export const api = {
   getAdminSettings:    () => fetchApi('/api/admin/settings'),
   updateThresholds:    (data: Record<string, number>) =>
     fetchApi('/api/admin/settings/thresholds', { method: 'PATCH', body: JSON.stringify(data) }),
+  updateChannels:      (data: Record<string, boolean>) =>
+    fetchApi('/api/admin/settings/channels', { method: 'PATCH', body: JSON.stringify(data) }),
   updateFatigue:       (data: Record<string, number>) =>
     fetchApi('/api/admin/settings/fatigue', { method: 'PATCH', body: JSON.stringify(data) }),
 };

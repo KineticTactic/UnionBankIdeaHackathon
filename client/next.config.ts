@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: process.cwd(),
   },
+  experimental: {
+    proxyTimeout: 60000,
+  },
   async rewrites() {
     return [
       {

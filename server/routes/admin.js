@@ -252,13 +252,26 @@ router.get('/consent/ledger', complianceAccess, (req, res) => {
         const consents  = ds.getAllConsents();
         const rows = customers.map(c => {
             const k = consents[c.customer_id] || {};
+            // consent store uses camelCase: dpdpaConsent.granted, traiConsent.granted, optOutChannels[]
+            const dpdpaGranted = k.dpdpaConsent != null ? k.dpdpaConsent.granted : (k.dpdpa_consent ?? true);
+            const traiGranted  = k.traiConsent  != null ? k.traiConsent.granted  : (k.trai_consent  ?? true);
+            const optOutChs    = k.optOutChannels || k.opt_out_channels || [];
             return {
-                customer_id:    c.customer_id,
-                full_name:      c.full_name,
-                dpdpa_consent:  k.dpdpa_consent ?? true,
-                trai_consent:   k.trai_consent  ?? true,
-                opted_out:      k.opted_out     ?? false,
-                last_updated:   k.last_updated  ?? null,
+                customer_id:      c.customer_id,
+                full_name:        c.full_name,
+                segment:          c.segment          || null,
+                risk_tier:        c.risk_tier         || 'NONE',
+                city:             c.city              || null,
+                relationship_manager: c.relationship_manager || null,
+                preferred_channel: c.preferred_channel || null,
+                email_opt_in:     c.email_opt_in      ?? true,
+                sms_opt_in:       c.sms_opt_in        ?? true,
+                dpdpa_consent:    dpdpaGranted,
+                trai_consent:     traiGranted,
+                trai_channels:    k.traiConsent?.channel || ['SMS','EMAIL','PUSH'],
+                opt_out_channels: optOutChs,
+                opted_out:        optOutChs.length > 0,
+                last_updated:     k.lastUpdated || k.last_updated || null,
             };
         });
         res.json({ status: 'ok', total: rows.length, records: rows });
@@ -529,6 +542,31 @@ router.patch('/settings/fatigue', adminOnly, async (req, res) => {
             modelVersion: 'ADMIN-v1.0',
         }).catch(() => {});
         res.json({ status: 'ok', fatigue: _settings.fatigue });
+    } catch (e) {
+        res.status(500).json({ status: 'error', message: e.message });
+    }
+});
+
+router.patch('/settings/channels', adminOnly, async (req, res) => {
+    try {
+        const { sms, email, push, phone, rm_visit } = req.body;
+        const before = { ..._settings.channels };
+        _settings.channels = {
+            sms:      typeof sms      === 'boolean' ? sms      : _settings.channels.sms,
+            email:    typeof email    === 'boolean' ? email    : _settings.channels.email,
+            push:     typeof push     === 'boolean' ? push     : _settings.channels.push,
+            phone:    typeof phone    === 'boolean' ? phone    : _settings.channels.phone,
+            rm_visit: typeof rm_visit === 'boolean' ? rm_visit : _settings.channels.rm_visit,
+        };
+        await auditLog.logEvent({
+            eventType: 'POLICY_CHANGED',
+            customerId: null,
+            actor: req.user.username,
+            layer: 'ADMIN',
+            payload: { kind: 'channels', before, after: _settings.channels },
+            modelVersion: 'ADMIN-v1.0',
+        }).catch(() => {});
+        res.json({ status: 'ok', channels: _settings.channels });
     } catch (e) {
         res.status(500).json({ status: 'error', message: e.message });
     }

@@ -8,7 +8,7 @@ import {
   CalendarDays, BookOpen, PhoneCall, ClipboardList,
   TrendingUp, CheckSquare, FileText, Mic,
   Command, UserCog, Scale, AlertTriangle, Settings,
-  Network, GitBranch, CheckSquare2, Cpu, Zap, Map,
+  Network, GitBranch, Cpu, Zap, Map,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -60,8 +60,7 @@ const ADMIN_NAV_GROUPS = [
     roles: ['admin', 'manager'] as const,
     items: [
       { href: '/admin/rms',           label: 'RM Management',   icon: UserCog,       roles: ['admin', 'manager'] as const },
-      { href: '/admin/approvals',     label: 'Approvals',       icon: CheckSquare2,  roles: ['admin', 'manager'] as const },
-      { href: '/admin/escalations',   label: 'Escalations',     icon: AlertTriangle, roles: ['admin', 'manager'] as const },
+{ href: '/admin/escalations',   label: 'Escalations',     icon: AlertTriangle, roles: ['admin', 'manager'] as const },
       { href: '/admin/pipeline',      label: 'Live Pipeline',   icon: Zap,           roles: ['admin', 'manager'] as const },
     ],
   },

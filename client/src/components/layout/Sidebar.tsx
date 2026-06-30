@@ -27,7 +27,8 @@ const NAV_GROUPS = [
   {
     label: 'Models',
     items: [
-      { href: '/models', label: 'CHRONOS Models', icon: BrainCircuit },
+      { href: '/models',       label: 'CHRONOS Models', icon: BrainCircuit },
+      { href: '/admin/argus',  label: 'ARGUS Models',   icon: Activity     },
     ],
   },
   {
@@ -68,7 +69,6 @@ const ADMIN_NAV_GROUPS = [
     label: 'Models & AI',
     roles: ['admin', 'manager', 'risk'] as const,
     items: [
-      { href: '/admin/argus',         label: 'ARGUS Models',    icon: Activity,      roles: ['admin', 'manager', 'risk'] as const },
       { href: '/admin/graphsage',     label: 'GraphSAGE',       icon: Network,       roles: ['admin', 'manager', 'risk'] as const },
       { href: '/admin/relearning',    label: 'ORACLE Relearning',icon: Cpu,          roles: ['admin', 'manager', 'risk'] as const },
     ],
@@ -140,7 +140,7 @@ export default function Sidebar() {
   };
 
   const isPureRm    = userRole === 'rm';
-  const isRmUser    = ['rm', 'manager', 'admin'].includes(userRole);
+  const isRmUser    = ['rm', 'manager'].includes(userRole);   // admin does NOT get RM portal
   const isAdminUser = ['admin', 'manager', 'risk'].includes(userRole);
 
   return (

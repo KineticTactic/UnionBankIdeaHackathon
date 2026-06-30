@@ -13,11 +13,15 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
   const { user }  = useAuth();
   const isPublic  = PUBLIC_ROUTES.includes(pathname);
 
-  // RM users are confined to /rm/* — redirect any other route to My Day.
   useEffect(() => {
     if (!user || isPublic) return;
+    // RM users confined to /rm/*
     if (user.role === 'rm' && !pathname.startsWith('/rm')) {
       router.replace('/rm/today');
+    }
+    // Admin users must NOT enter /rm/* — send to dashboard
+    if (user.role === 'admin' && pathname.startsWith('/rm')) {
+      router.replace('/dashboard');
     }
   }, [user, pathname, isPublic, router]);
 

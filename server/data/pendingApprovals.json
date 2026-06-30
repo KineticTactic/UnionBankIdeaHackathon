@@ -1,1 +1,701 @@
-[]
+[
+  {
+    "approvalId": "dcd71a26-0269-4566-9cd6-9ceb41e03b62",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T15:29:38.895Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "customer_id": "CUST-046",
+      "risk_tier": "PRIORITY",
+      "email": {
+        "subject": "A personal note from your Relationship Manager",
+        "body": "Dear Geeta,\n\nI wanted to reach out personally as your Relationship Manager at Union Bank. I've noticed some changes in your account over the past few weeks and would love the opportunity to speak with you directly.\n\nAs a valued customer, I've arranged a Retention Offer for your account — no paperwork needed on your end. I'd also love to understand if there's anything we can do better.\n\nCould we find 15 minutes this week? My direct line is 1800-XXX-XXXX.\n\nWarm regards,\nSunita Nair\nSenior Relationship Manager, Union Bank",
+        "compliance_status": "PASSED",
+        "variant": "A",
+        "word_count": 89
+      },
+      "sms": {
+        "body": "Union Bank: Geeta, your RM Sunita Nair will call you today regarding your account. Ref: CUST-046. Call 1800-XXX-XXXX. Reply STOP to opt out.",
+        "compliance_status": "PASSED",
+        "char_count": 140
+      },
+      "push": {
+        "title": "Union Bank",
+        "body": "Your Retention Offer from Union Bank is ready. Tap to view.",
+        "compliance_status": "PASSED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T15:29:38.895Z"
+  },
+  {
+    "approvalId": "0105c699-8a5d-4ba9-8e26-d9f13292782d",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T15:29:40.679Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "customer_id": "CUST-046",
+      "risk_tier": "PRIORITY",
+      "email": {
+        "subject": "A personal note from your Relationship Manager",
+        "body": "Dear Geeta,\n\nI wanted to reach out personally as your Relationship Manager at Union Bank. I've noticed some changes in your account over the past few weeks and would love the opportunity to speak with you directly.\n\nAs a valued customer, I've arranged a Retention Offer for your account — no paperwork needed on your end. I'd also love to understand if there's anything we can do better.\n\nCould we find 15 minutes this week? My direct line is 1800-XXX-XXXX.\n\nWarm regards,\nSunita Nair\nSenior Relationship Manager, Union Bank",
+        "compliance_status": "PASSED",
+        "variant": "A",
+        "word_count": 89
+      },
+      "sms": {
+        "body": "Union Bank: Geeta, your RM Sunita Nair will call you today regarding your account. Ref: CUST-046. Call 1800-XXX-XXXX. Reply STOP to opt out.",
+        "compliance_status": "PASSED",
+        "char_count": 140
+      },
+      "push": {
+        "title": "Union Bank",
+        "body": "Your Retention Offer from Union Bank is ready. Tap to view.",
+        "compliance_status": "PASSED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T15:29:40.679Z"
+  },
+  {
+    "approvalId": "35c0714f-bc34-4740-8545-2fdc60264d55",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T15:29:41.258Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "customer_id": "CUST-046",
+      "risk_tier": "PRIORITY",
+      "email": {
+        "subject": "A personal note from your Relationship Manager",
+        "body": "Dear Geeta,\n\nI wanted to reach out personally as your Relationship Manager at Union Bank. I've noticed some changes in your account over the past few weeks and would love the opportunity to speak with you directly.\n\nAs a valued customer, I've arranged a Retention Offer for your account — no paperwork needed on your end. I'd also love to understand if there's anything we can do better.\n\nCould we find 15 minutes this week? My direct line is 1800-XXX-XXXX.\n\nWarm regards,\nSunita Nair\nSenior Relationship Manager, Union Bank",
+        "compliance_status": "PASSED",
+        "variant": "A",
+        "word_count": 89
+      },
+      "sms": {
+        "body": "Union Bank: Geeta, your RM Sunita Nair will call you today regarding your account. Ref: CUST-046. Call 1800-XXX-XXXX. Reply STOP to opt out.",
+        "compliance_status": "PASSED",
+        "char_count": 140
+      },
+      "push": {
+        "title": "Union Bank",
+        "body": "Your Retention Offer from Union Bank is ready. Tap to view.",
+        "compliance_status": "PASSED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T15:29:41.258Z"
+  },
+  {
+    "approvalId": "74d6d66c-9edd-487d-bea7-9f065ddf6449",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T15:29:41.577Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "customer_id": "CUST-046",
+      "risk_tier": "PRIORITY",
+      "email": {
+        "subject": "A personal note from your Relationship Manager",
+        "body": "Dear Geeta,\n\nI wanted to reach out personally as your Relationship Manager at Union Bank. I've noticed some changes in your account over the past few weeks and would love the opportunity to speak with you directly.\n\nAs a valued customer, I've arranged a Retention Offer for your account — no paperwork needed on your end. I'd also love to understand if there's anything we can do better.\n\nCould we find 15 minutes this week? My direct line is 1800-XXX-XXXX.\n\nWarm regards,\nSunita Nair\nSenior Relationship Manager, Union Bank",
+        "compliance_status": "PASSED",
+        "variant": "A",
+        "word_count": 89
+      },
+      "sms": {
+        "body": "Union Bank: Geeta, your RM Sunita Nair will call you today regarding your account. Ref: CUST-046. Call 1800-XXX-XXXX. Reply STOP to opt out.",
+        "compliance_status": "PASSED",
+        "char_count": 140
+      },
+      "push": {
+        "title": "Union Bank",
+        "body": "Your Retention Offer from Union Bank is ready. Tap to view.",
+        "compliance_status": "PASSED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T15:29:41.577Z"
+  },
+  {
+    "approvalId": "58b96749-ae92-44b0-ad0b-77567f5e3d07",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T15:29:41.748Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "customer_id": "CUST-046",
+      "risk_tier": "PRIORITY",
+      "email": {
+        "subject": "A personal note from your Relationship Manager",
+        "body": "Dear Geeta,\n\nI wanted to reach out personally as your Relationship Manager at Union Bank. I've noticed some changes in your account over the past few weeks and would love the opportunity to speak with you directly.\n\nAs a valued customer, I've arranged a Retention Offer for your account — no paperwork needed on your end. I'd also love to understand if there's anything we can do better.\n\nCould we find 15 minutes this week? My direct line is 1800-XXX-XXXX.\n\nWarm regards,\nSunita Nair\nSenior Relationship Manager, Union Bank",
+        "compliance_status": "PASSED",
+        "variant": "A",
+        "word_count": 89
+      },
+      "sms": {
+        "body": "Union Bank: Geeta, your RM Sunita Nair will call you today regarding your account. Ref: CUST-046. Call 1800-XXX-XXXX. Reply STOP to opt out.",
+        "compliance_status": "PASSED",
+        "char_count": 140
+      },
+      "push": {
+        "title": "Union Bank",
+        "body": "Your Retention Offer from Union Bank is ready. Tap to view.",
+        "compliance_status": "PASSED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T15:29:41.748Z"
+  },
+  {
+    "approvalId": "d982f8ff-f87b-4d25-813a-e634c6951592",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T15:29:41.965Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "customer_id": "CUST-046",
+      "risk_tier": "PRIORITY",
+      "email": {
+        "subject": "A personal note from your Relationship Manager",
+        "body": "Dear Geeta,\n\nI wanted to reach out personally as your Relationship Manager at Union Bank. I've noticed some changes in your account over the past few weeks and would love the opportunity to speak with you directly.\n\nAs a valued customer, I've arranged a Retention Offer for your account — no paperwork needed on your end. I'd also love to understand if there's anything we can do better.\n\nCould we find 15 minutes this week? My direct line is 1800-XXX-XXXX.\n\nWarm regards,\nSunita Nair\nSenior Relationship Manager, Union Bank",
+        "compliance_status": "PASSED",
+        "variant": "A",
+        "word_count": 89
+      },
+      "sms": {
+        "body": "Union Bank: Geeta, your RM Sunita Nair will call you today regarding your account. Ref: CUST-046. Call 1800-XXX-XXXX. Reply STOP to opt out.",
+        "compliance_status": "PASSED",
+        "char_count": 140
+      },
+      "push": {
+        "title": "Union Bank",
+        "body": "Your Retention Offer from Union Bank is ready. Tap to view.",
+        "compliance_status": "PASSED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T15:29:41.965Z"
+  },
+  {
+    "approvalId": "5857b48d-e3ce-445c-9f02-54599c0aca66",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T15:29:42.210Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "customer_id": "CUST-046",
+      "risk_tier": "PRIORITY",
+      "email": {
+        "subject": "A personal note from your Relationship Manager",
+        "body": "Dear Geeta,\n\nI wanted to reach out personally as your Relationship Manager at Union Bank. I've noticed some changes in your account over the past few weeks and would love the opportunity to speak with you directly.\n\nAs a valued customer, I've arranged a Retention Offer for your account — no paperwork needed on your end. I'd also love to understand if there's anything we can do better.\n\nCould we find 15 minutes this week? My direct line is 1800-XXX-XXXX.\n\nWarm regards,\nSunita Nair\nSenior Relationship Manager, Union Bank",
+        "compliance_status": "PASSED",
+        "variant": "A",
+        "word_count": 89
+      },
+      "sms": {
+        "body": "Union Bank: Geeta, your RM Sunita Nair will call you today regarding your account. Ref: CUST-046. Call 1800-XXX-XXXX. Reply STOP to opt out.",
+        "compliance_status": "PASSED",
+        "char_count": 140
+      },
+      "push": {
+        "title": "Union Bank",
+        "body": "Your Retention Offer from Union Bank is ready. Tap to view.",
+        "compliance_status": "PASSED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T15:29:42.210Z"
+  },
+  {
+    "approvalId": "2c98eb15-c075-4de7-b394-717810e561a1",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T15:29:58.478Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "customer_id": "CUST-046",
+      "risk_tier": "PRIORITY",
+      "email": {
+        "subject": "A personal note from your Relationship Manager",
+        "body": "Dear Geeta,\n\nI wanted to reach out personally as your Relationship Manager at Union Bank. I've noticed some changes in your account over the past few weeks and would love the opportunity to speak with you directly.\n\nAs a valued customer, I've arranged a Retention Offer for your account — no paperwork needed on your end. I'd also love to understand if there's anything we can do better.\n\nCould we find 15 minutes this week? My direct line is 1800-XXX-XXXX.\n\nWarm regards,\nSunita Nair\nSenior Relationship Manager, Union Bank",
+        "compliance_status": "PASSED",
+        "variant": "A",
+        "word_count": 89
+      },
+      "sms": {
+        "body": "Union Bank: Geeta, your RM Sunita Nair will call you today regarding your account. Ref: CUST-046. Call 1800-XXX-XXXX. Reply STOP to opt out.",
+        "compliance_status": "PASSED",
+        "char_count": 140
+      },
+      "push": {
+        "title": "Union Bank",
+        "body": "Your Retention Offer from Union Bank is ready. Tap to view.",
+        "compliance_status": "PASSED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T15:29:58.478Z"
+  },
+  {
+    "approvalId": "8623574b-7a6b-4a25-a4ac-70c6453be882",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T15:29:59.374Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "customer_id": "CUST-046",
+      "risk_tier": "PRIORITY",
+      "email": {
+        "subject": "A personal note from your Relationship Manager",
+        "body": "Dear Geeta,\n\nI wanted to reach out personally as your Relationship Manager at Union Bank. I've noticed some changes in your account over the past few weeks and would love the opportunity to speak with you directly.\n\nAs a valued customer, I've arranged a Retention Offer for your account — no paperwork needed on your end. I'd also love to understand if there's anything we can do better.\n\nCould we find 15 minutes this week? My direct line is 1800-XXX-XXXX.\n\nWarm regards,\nSunita Nair\nSenior Relationship Manager, Union Bank",
+        "compliance_status": "PASSED",
+        "variant": "A",
+        "word_count": 89
+      },
+      "sms": {
+        "body": "Union Bank: Geeta, your RM Sunita Nair will call you today regarding your account. Ref: CUST-046. Call 1800-XXX-XXXX. Reply STOP to opt out.",
+        "compliance_status": "PASSED",
+        "char_count": 140
+      },
+      "push": {
+        "title": "Union Bank",
+        "body": "Your Retention Offer from Union Bank is ready. Tap to view.",
+        "compliance_status": "PASSED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T15:29:59.374Z"
+  },
+  {
+    "approvalId": "33e8556c-99a4-4b21-8355-5b6529af6c3f",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T16:39:21.144Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "customer_id": "CUST-046",
+      "risk_tier": "PRIORITY",
+      "email": {
+        "subject": "A personal note from your Relationship Manager",
+        "body": "Dear Geeta,\n\nI wanted to reach out personally as your Relationship Manager at Union Bank. I've noticed some changes in your account over the past few weeks and would love the opportunity to speak with you directly.\n\nAs a valued customer, I've arranged a Retention Offer for your account — no paperwork needed on your end. I'd also love to understand if there's anything we can do better.\n\nCould we find 15 minutes this week? My direct line is 1800-XXX-XXXX.\n\nWarm regards,\nSunita Nair\nSenior Relationship Manager, Union Bank",
+        "compliance_status": "PASSED",
+        "variant": "A",
+        "word_count": 89
+      },
+      "sms": {
+        "body": "Union Bank: Geeta, your RM Sunita Nair will call you today regarding your account. Ref: CUST-046. Call 1800-XXX-XXXX. Reply STOP to opt out.",
+        "compliance_status": "PASSED",
+        "char_count": 140
+      },
+      "push": {
+        "title": "Union Bank",
+        "body": "Your Retention Offer from Union Bank is ready. Tap to view.",
+        "compliance_status": "PASSED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T16:39:21.144Z"
+  },
+  {
+    "approvalId": "d26fa72d-c53a-42c6-93a0-574cbbb08e59",
+    "customerId": "CUST-001",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T16:43:18.947Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.144 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "body": ""
+      },
+      "sms": {
+        "body": ""
+      },
+      "push": {
+        "body": ""
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T16:43:18.947Z"
+  },
+  {
+    "approvalId": "e4ddd99d-3ecc-4e4f-80c1-963c3cb23922",
+    "customerId": "CUST-001",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T16:47:44.423Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.144 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "body": ""
+      },
+      "sms": {
+        "body": ""
+      },
+      "push": {
+        "body": ""
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T16:47:44.423Z"
+  },
+  {
+    "approvalId": "28c890d5-42da-465a-8382-c172b3cf734d",
+    "customerId": "CUST-001",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T16:48:18.554Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.144 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "body": ""
+      },
+      "sms": {
+        "body": ""
+      },
+      "push": {
+        "body": ""
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T16:48:18.554Z"
+  },
+  {
+    "approvalId": "dad9ecbb-b2bd-4eb2-927a-56db0ae9c4cf",
+    "customerId": "CUST-001",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-29T16:48:55.158Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.144 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "body": ""
+      },
+      "sms": {
+        "body": ""
+      },
+      "push": {
+        "body": ""
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-01T16:48:55.158Z"
+  },
+  {
+    "approvalId": "578c3a06-47dc-4322-9150-13d7e1a8f2d8",
+    "customerId": "CUST-001",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:20:16.470Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.144 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "A special note for you, Arjun",
+        "body": "Dear Arjun,Warm greetings from Union Bank. It’s been a pleasure serving you as your trusted financial partner for the last 141 months. Your loyalty means the world to us, and we deeply value the trust you’ve placed in us with your banking needs.I wanted to personally reach out to see if there’s anything more we can do to make your banking experience even smoother and more rewarding. Whether it’s exploring tailored solutions, offering insights, or simply being a listening ear, we’re here for you.Your NPS of 9/10 inspires us to keep raising the bar. We’d love to hear your thoughts or suggestions—feel free to reply to this email or connect with your relationship manager directly.Thank you for being such an important part of Union Bank’s journey. Looking forward to continuing to serve you with the care and excellence you deserve.Warm regards,Union Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 142
+      },
+      "sms": {
+        "body": "Hi Arjun! It’s been a joy serving you as your trusted financial partner for 141 months. Your loyalty means the world to us. We’d love to hear how we can make your banking even smoother. Reply anytime—we’re here for you. Warmly, Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 238
+      },
+      "push": {
+        "title": "Thank you, Arjun!",
+        "body": "We’re grateful to serve you for 141 months. Your trust inspires us daily. Let us know how we can make banking even smoother for you. Union Bank",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:20:16.470Z"
+  },
+  {
+    "approvalId": "c11a8dcd-3e75-4e0f-8cf2-394d47f1a53d",
+    "customerId": "CUST-001",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:21:00.017Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.144 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Arjun, let’s make this festive season even brighter together",
+        "body": "Arjun, as the year winds down, I wanted to take a moment to personally thank you for trusting Union Bank with your banking needs. Your loyalty over the past 141 months speaks volumes about the relationship you value, and we’re honored to be part of your journey. \n\nWith the festive season around the corner, we’ve curated a few exclusive offers and services tailored to simplify your celebrations—whether it’s seamless fund transfers for your loved ones or personalized financial insights to help you make the most of this time. Let’s connect soon to explore how we can make this season truly special for you.",
+        "compliance_status": "APPROVED",
+        "word_count": 103
+      },
+      "sms": {
+        "body": "Hi Arjun! We’re grateful you’ve been with us for 141 months. This festive season, enjoy hassle-free banking with us—just reply ‘YES’ and we’ll share how we can make your celebrations smoother. Union Bank cares about you!",
+        "compliance_status": "APPROVED",
+        "char_count": 220
+      },
+      "push": {
+        "title": "Celebrate this season with us, Arjun",
+        "body": "Tap to see how Union Bank can make your festive season seamless and joyful. Your trust means the world to us!",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:21:00.017Z"
+  },
+  {
+    "approvalId": "e042dfef-b1dc-4734-9157-9e720cae54ff",
+    "customerId": "CUST-005",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:21:25.239Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "None",
+      "channel": "sms",
+      "timing": "immediate",
+      "rationale": "0 active ARGUS signals detected. Ensemble score 0.117 → NONE tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Hi Vikram, let's plan your year-end wealth moves together",
+        "body": "Hi Vikram, hope this finds you in great spirits. It's been a pleasure having you with Union Bank for over seven years now, nearly seven and a half to be exact. I truly value the trust you've placed in us. Your NPS score of 9 tells me we're doing something right, and I want to keep that momentum going. \n\nAs we approach the year-end, there are a few smart moves we can explore together to make your money work even harder for you. Whether it's optimizing your existing holdings or exploring new avenues, I'm here to help. Let's catch up at your convenience, perhaps over a quick call or a coffee in Koramangala. Looking forward to hearing your thoughts, Vikram.",
+        "word_count": 120
+      },
+      "sms": {
+        "body": "Hi Vikram, it's been 86 months with us and I truly value your trust. As we approach year-end, let's chat about making your money work even smarter. Reply YES to set up a quick call. Warm regards, Union Bank",
+        "char_count": 206
+      },
+      "push": {
+        "title": "Let's plan your year-end wealth moves, Vikram",
+        "body": "Hi Vikram, let's catch up before year-end to explore smarter ways to grow your money. Tap to schedule a quick call."
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:21:25.239Z"
+  },
+  {
+    "approvalId": "3e8d853d-4985-423c-9989-9950e73255b9",
+    "customerId": "CUST-010",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:21:27.283Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Engagement Reward",
+      "channel": "phone",
+      "timing": "immediate",
+      "rationale": "1 active ARGUS signal detected. Ensemble score 0.266 → MONITOR tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Meera, we miss seeing you in-app!",
+        "body": "Hi Meera, it’s been a while since we last connected, and we wanted to check in to see how things are going for you in Jaipur. We know life gets busy, but we truly value having you as part of the Union Bank family and would love to welcome you back whenever you’re ready. Your presence means a lot to us, and we’re always here to make your banking smoother and more rewarding. Let us know if there’s anything we can do to brighten your day!",
+        "compliance_status": "APPROVED",
+        "word_count": 86
+      },
+      "sms": {
+        "body": "Hi Meera! It’s been a while since we last chatted—we’d love to have you back on the app whenever you’re free. Your banking should feel effortless, and we’re here to help. Just reply ‘Hello’ and we’ll take it from there. Miss you!",
+        "compliance_status": "APPROVED",
+        "char_count": 229
+      },
+      "push": {
+        "title": "Welcome back, Meera! We’ve got you.",
+        "body": "Your Union Bank family misses you! Tap to re-engage and enjoy seamless banking anytime, anywhere. We’re just a tap away.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:21:27.283Z"
+  },
+  {
+    "approvalId": "cdf66290-0029-49fc-adee-2180695603bd",
+    "customerId": "CUST-015",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:21:29.902Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Engagement Reward",
+      "channel": "push",
+      "timing": "immediate",
+      "rationale": "1 active ARGUS signal detected. Ensemble score 0.295 → MONITOR tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Amit, here’s a little appreciation for being with us 90 months",
+        "body": "Dear Amit, we noticed your business account has been steadily growing over the past few months, and we just wanted to take a moment to say thank you for trusting Union Bank all this time. Your loyalty means the world to us, especially during Surat’s vibrant business climate. We’re here to support your every step forward, whether it’s seamless transactions or tailored solutions that fit your unique rhythm. It’s been a pleasure watching your journey, and we’d love to make it even smoother for you. Let us know if there’s anything we can do to brighten your day.",
+        "compliance_status": "APPROVED",
+        "word_count": 98
+      },
+      "sms": {
+        "body": "Amit, thank you for banking with us for 90 months! Your Surat business account balance has been steadily climbing, and we’re always here to support your next move. How can we make your banking even easier today?",
+        "compliance_status": "APPROVED",
+        "char_count": 211
+      },
+      "push": {
+        "title": "90 months with you, Amit!",
+        "body": "Thanks for banking with us all this time. Your Surat business account is thriving—let’s keep it growing together.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:21:29.902Z"
+  },
+  {
+    "approvalId": "00a7ceee-ee77-44aa-9f45-5650adb043bb",
+    "customerId": "CUST-046",
+    "requestedBy": "admin",
+    "requestedAt": "2026-06-30T04:23:17.003Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: COMPETITOR_INQUIRY. Ensemble score 0.921 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Geeta, we miss you at Union Bank",
+        "body": "Hi Geeta, I noticed it’s been a while since we last connected and wanted to check in personally. Your banking relationship with us matters deeply to me, and I’d love to understand how we can make managing your finances smoother for you. Whether it’s about growing your savings, simplifying transactions, or exploring new features, I’m here to help tailor Union Bank to your needs. Please reply to this email or call me directly at 0141-XXXXXXX—I’d be delighted to hear from you. Warm regards, Union Bank Team",
+        "compliance_status": "APPROVED",
+        "word_count": 86
+      },
+      "sms": {
+        "body": "Hi Geeta! It’s been a while since we last heard from you. We’d love to reconnect and understand how we can better support your banking needs. Give me a call at 0141-XXXXXXX or reply to this SMS. Looking forward to hearing from you!",
+        "compliance_status": "APPROVED",
+        "char_count": 231
+      },
+      "push": {
+        "title": "Let’s catch up, Geeta",
+        "body": "Geeta, it’s been a while. We’d love to reconnect and make your banking with us even better. Tap to call our team at 0141-XXXXXXX, or reply here.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T04:23:17.003Z"
+  }
+]

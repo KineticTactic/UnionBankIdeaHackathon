@@ -126,6 +126,25 @@ The cron expression uses the standard 5-field format.  Task history is
 persisted to `tui/data/task_history.db` (SQLite, pure Go via
 `modernc.org/sqlite`).
 
+## Live-event simulator
+
+The TUI ships with a standalone event simulator
+(`scripts/simulate_events.py`) that drives the live demo:
+
+- `simulator burst 50` — fires 50 events as fast as possible
+- `simulator rate 0.5/s` — slow trickle, 30 seconds
+- `simulator rate 2/s (60s)` — lively demo pace
+- `simulator rate 5/s (60s)` — high-throughput demo
+- `simulator scenario critical-cascade` — 3 signals + score spike +
+  complaint on a single customer (churn tier jumps visibly)
+
+Events flow: simulator → `POST /api/kafka/publish` → orchestrator SSE
+(`/api/kafka/stream`) → Next.js `KafkaFeed` component.  The TUI logs
+them under the `orchestrator` tab with timestamps.  The simulator is
+registered as a TUI service with `no_auto_start: true` so it only runs
+when you trigger it from the Commands page or the dashboard's `/`
+input.
+
 ## Architecture
 
 ```

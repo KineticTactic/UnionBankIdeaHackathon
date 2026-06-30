@@ -29,8 +29,11 @@ let startTime = Date.now();
 app.use(cors());
 app.use(express.json());
 
-// Request logging middleware
+// Request logging middleware — skip health-probe paths so the TUI
+// log panel doesn't fill with one line per 2-second poll.
+const BANK_SKIP_LOG_PATHS = /^\/(health|api\/core-banking\/portfolio-stats)$/;
 app.use((req, res, next) => {
+  if (BANK_SKIP_LOG_PATHS.test(req.path)) return next();
   const start = Date.now();
   res.on("finish", () => {
     const duration = Date.now() - start;

@@ -19,14 +19,15 @@ type DockerService struct {
 
 // AppService describes a runnable app service.
 type AppService struct {
-	Name        string `yaml:"name"`
-	Color       string `yaml:"color"`
-	Dir         string `yaml:"dir"`
-	StartCmd    string `yaml:"start_cmd"`
-	HealthURL   string `yaml:"health_url"`
-	Port        int    `yaml:"port"`
-	Kind        string `yaml:"kind"` // node | python | bash
-	Description string `yaml:"description"`
+	Name         string `yaml:"name"`
+	Color        string `yaml:"color"`
+	Dir          string `yaml:"dir"`
+	StartCmd     string `yaml:"start_cmd"`
+	HealthURL    string `yaml:"health_url"`
+	Port         int    `yaml:"port"`
+	Kind         string `yaml:"kind"` // node | python | bash
+	Description  string `yaml:"description"`
+	NoAutoStart  bool   `yaml:"no_auto_start"`
 }
 
 // Command is a runnable command registered in the TUI palette.

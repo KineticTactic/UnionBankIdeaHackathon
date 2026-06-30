@@ -197,5 +197,9 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("ARGUS_PORT", "8002"))
     host = os.getenv("ARGUS_HOST", "0.0.0.0")
+    # access_log=False suppresses the per-request "INFO: 127.0.0.1 - GET /health
+    # HTTP/1.1 200 OK" line that the TUI's 2s health probe would otherwise
+    # flood into the log panel.
     uvicorn.run("services.api.main:app", host=host, port=port,
-                log_level=os.getenv("ARGUS_LOG_LEVEL", "info").lower())
+                log_level=os.getenv("ARGUS_LOG_LEVEL", "info").lower(),
+                access_log=False)

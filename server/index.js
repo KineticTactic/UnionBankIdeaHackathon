@@ -8,10 +8,23 @@ const app = express();
 
 // ── Middleware ────────────────────────────────────────────────────────────────
 
+// Skip health-probe noise in the request log — the orchestrator's
+// /health, /readyz, /health/stages plus every per-service 2-second
+// poll from the TUI would otherwise flood stdout and the TUI log
+// panel with one line per probe (60+ lines/minute per service).
+const SKIP_LOG_PATHS = /^\/(healthz?|readyz|api\/v2\/model-health|api\/chronos\/health|api\/kafka\/status)/;
+
 if (config.demoMode) {
-    app.use(require('morgan')('dev'));
+    app.use(require('morgan')('dev', {
+        skip: (req) => SKIP_LOG_PATHS.test(req.path),
+    }));
 } else {
-    app.use(require('pino-http')({ level: 'info' }));
+    app.use(require('pino-http')({
+        level: 'info',
+        autoLogging: {
+            ignore: (req) => SKIP_LOG_PATHS.test(req.url),
+        },
+    }));
 }
 
 app.use(cors({

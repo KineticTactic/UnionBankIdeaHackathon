@@ -24,6 +24,7 @@ type ServiceState struct {
 	HealthURL   string
 	Kind        string
 	Description string
+	NoAutoStart bool // when true, StartAll() skips this service
 	Status      string // starting | running | crashed | stopped | unknown
 	ExitMsg     string
 	Started     time.Time
@@ -165,9 +166,14 @@ func (m *Manager) Stop(name string) error {
 }
 
 // StartAll starts every registered service that is currently stopped.
+// Services with NoAutoStart=true are skipped — they must be started
+// explicitly via the dashboard's /command input or the Commands page.
 func (m *Manager) StartAll() {
 	for _, s := range m.All() {
 		if s.Status == "running" {
+			continue
+		}
+		if s.NoAutoStart {
 			continue
 		}
 		if err := m.Start(s.Name); err != nil {

@@ -140,4 +140,8 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("CHRONOS_PORT", "8001"))
     host = os.getenv("CHRONOS_HOST", "0.0.0.0")
-    uvicorn.run("api.main:app", host=host, port=port, log_level=os.getenv("CHRONOS_LOG_LEVEL", "info").lower())
+    # access_log=False keeps the TUI's 2s /health probe from flooding
+    # the log panel with one INFO line per service per tick.
+    uvicorn.run("api.main:app", host=host, port=port,
+                log_level=os.getenv("CHRONOS_LOG_LEVEL", "info").lower(),
+                access_log=False)

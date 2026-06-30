@@ -45,7 +45,7 @@ Banks lose customers silently — churn typically takes 60–90 days to manifest
 - Server-Sent Events (SSE) for real-time streaming
 
 **AI / LLM**
-- NVIDIA DeepSeek V4 Pro via `integrate.api.nvidia.com/v1`
+- NVIDIA `mistralai/mistral-small-4-119b-2603` via `integrate.api.nvidia.com/v1` (HERALD outreach generation)
 - LangGraph (agentic orchestration — COMPASS layer)
 
 **ML / Data Science**
@@ -146,12 +146,35 @@ poetry run python ml/training/genesis_train.py
 poetry run python -m ml.training.tare_pretrain --epochs 10
 poetry run python -m ml.training.tare_finetune \
   --pretrain-checkpoint ml/checkpoints/tare_pretrain_final.pt
-poetry run python -m ml.training.export_onnx \
+poetry run python -m ml.training/export_onnx \
   --checkpoint ml/checkpoints/tare_finetune_final.pt \
   --output ml/checkpoints/tare_churn.onnx
 poetry run python ml/training/habitat_train.py
 poetry run python ml/register_all_models.py
 ```
+
+#### Step 7 (optional) — Simulate live events
+
+The server has a built-in 8-second simulation tick, but for a more
+demo-friendly pace, use the standalone simulator:
+
+```bash
+# Burst 50 events as fast as possible (great for screenshots)
+python3 scripts/simulate_events.py --burst 50
+
+# Continuous stream at 2 events/sec for 60s
+python3 scripts/simulate_events.py --rate 2 --duration 60
+
+# Pre-built demo scenario: 3 signals + score spike + complaint on one customer
+python3 scripts/simulate_events.py --scenario critical_cascade --customer CUST-001
+```
+
+Events flow through `POST /api/kafka/publish` → orchestrator SSE
+(`/api/kafka/stream`) → Next.js `KafkaFeed` component → live dashboard.
+The TUI shows them under the `orchestrator` tab and exposes all
+5 simulator commands (`simulator burst 50`, `simulator rate 0.5/s`,
+`simulator rate 2/s (60s)`, `simulator rate 5/s (60s)`,
+`simulator scenario critical-cascade`) on the Commands page.
 
 ---
 

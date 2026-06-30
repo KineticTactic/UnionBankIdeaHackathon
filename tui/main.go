@@ -67,6 +67,7 @@ func main() {
 			HealthURL:   s.HealthURL,
 			Kind:        s.Kind,
 			Description: s.Description,
+			NoAutoStart: s.NoAutoStart,
 		})
 	}
 

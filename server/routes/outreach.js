@@ -9,6 +9,7 @@
  */
 const router      = require('express').Router();
 const crypto      = require('crypto');
+const config      = require('../config');
 const { verifyToken } = require('../middleware/auth');
 const ds          = require('../services/dataStore');
 const consentSvc  = require('../services/consentService');
@@ -115,8 +116,13 @@ router.post('/generate', verifyToken, async (req, res) => {
     });
 });
 
-// Synchronous fallback used when Redis/BullMQ is unavailable (DEMO_MODE)
+// Synchronous HERALD generation — used when BullMQ is unavailable
+// (DEMO_MODE without Redis).  When NVIDIA_API_KEY is set, this path
+// calls DeepSeek live, so the operator still gets a real LLM response
+// without needing the queue.  When the key is missing, the call is
+// skipped and a structured 503 is returned (no templated content).
 async function _syncGenerate(req, res, snap, requestedBy) {
+    console.log('[HERALD] _syncGenerate ENTERED  customer=' + (snap.customer?.customer_id || customer_id));
     const { customer_id } = snap.customer || snap;
     const id = snap.customer?.customer_id || customer_id;
 
@@ -125,33 +131,90 @@ async function _syncGenerate(req, res, snap, requestedBy) {
     for (const ch of channels) consentStatus[ch] = consentSvc.canSendOutreach(id, ch);
     const allowedChannels = channels.filter(ch => consentStatus[ch].allowed);
 
-    const cached = await ds.getHerald(id);
-    const heraldContent = cached || { email: { body: '' }, sms: { body: '' }, push: { body: '' } };
+    let heraldContent  = null;
+    let llmError       = null;
+    const cached       = await ds.getHerald(id);
+    const score        = (snap.score && snap.score.final_score) || (snap.customer && snap.customer.churn_score) || 0.0;
+    const tier         = (snap.score && snap.score.risk_tier)   || (snap.customer && snap.customer.risk_tier) || 'NONE';
+    const signals      = (snap.signals || []).map(s => s.signal_type).filter(Boolean);
+
+    if (!config.nvidia.apiKey) {
+        // Rule A: no key → no content.  Surface a structured error so
+        // the client can show it, and bail before the approval gate.
+        return res.status(503).json({
+            error: true, stage: 5, stage_name: 'herald',
+            message: 'HERALD live generation unavailable: NVIDIA_API_KEY is not set. ' +
+                     'Set it in server/.env (or via the orchestrator env) to enable real LLM content.',
+            detail: 'NVIDIA_API_KEY is empty',
+        });
+    }
+
+    // Call NVIDIA DeepSeek live.
+    try {
+        const llm     = require('../services/llmClient');
+        const { buildHeraldPrompts, parseHeraldResponse } = require('../services/heraldPrompt');
+        const { systemPrompt, userPrompt } = buildHeraldPrompts(snap);
+        console.log(`[HERALD] sync LLM call  customer=${id}  model=${config.nvidia.model}  ` +
+                    `endpoint=${config.nvidia.endpoint}`);
+        const t0     = Date.now();
+        const resp   = await llm.callNvidia([
+            { role: 'system', content: systemPrompt },
+            { role: 'user',   content: userPrompt },
+        ], 1200);
+        const raw    = resp?.choices?.[0]?.message?.content || '';
+        heraldContent = parseHeraldResponse(raw);
+        const ms     = Date.now() - t0;
+        console.log(`[HERALD] sync LLM done   customer=${id}  elapsed=${ms}ms  ` +
+                    `email_chars=${heraldContent?.email?.body?.length || 0}  ` +
+                    `sms_chars=${heraldContent?.sms?.body?.length || 0}`);
+        if (!heraldContent || !heraldContent.email?.body) {
+            throw new Error('LLM returned empty/invalid content');
+        }
+    } catch (err) {
+        llmError = err.message;
+        console.error(`[HERALD] sync LLM FAILED  customer=${id}  err=${err.message}`);
+    }
+
+    // If LLM failed AND we have no cached content, return a clean
+    // structured 502 so the client knows it's a real failure (no
+    // silent fallback to placeholder text).
+    if (!heraldContent) {
+        return res.status(502).json({
+            error: true, stage: 5, stage_name: 'herald',
+            message: `HERALD live generation failed: ${llmError || 'unknown error'}. ` +
+                     'Check NVIDIA_API_KEY, network reachability, and NVIDIA rate limits.',
+            detail: llmError,
+        });
+    }
 
     const plan = snap.plan || {};
     const compassRecommendation = {
         offer:     plan.offer_display || plan.offer_code || 'personalised_offer',
         channel:   plan.channel       || 'email',
         timing:    plan.timing        || 'immediate',
-        rationale: plan.rationale     || 'High churn risk detected by CHRONOS ensemble.',
+        rationale: plan.rationale     || `AI-personalised content via ${config.nvidia.model} for tier=${tier}.`,
     };
 
     const approvalId = await approvalSvc.createApprovalRequest(id, requestedBy, compassRecommendation, heraldContent);
+
+    console.log(`[HERALD] sync generate  customer=${id}  tier=${tier}  score=${(score||0).toFixed(3)}  ` +
+                `offer=${compassRecommendation.offer}  channel=${compassRecommendation.channel}  ` +
+                `source=llm-live  approval=${approvalId}`);
 
     await auditLog.logEvent({
         eventType:    'OUTREACH_QUEUED',
         customerId:   id,
         actor:        requestedBy,
         layer:        'HERALD',
-        payload:      { approvalId, allowedChannels, consentStatus },
-        modelVersion: 'HERALD-v1.0',
+        payload:      { approvalId, allowedChannels, consentStatus, source: 'llm-live' },
+        modelVersion: config.nvidia.model,
     });
 
     res.json({
         status:           'ok',
         approvalId,
         pendingApproval:  true,
-        message:          'Outreach queued for RM review — DPDPA/TRAI compliant approval required before send.',
+        message:          'Outreach generated by HERALD (live LLM) — DPDPA/TRAI compliant approval required before send.',
         compassRecommendation,
         heraldContent,
         consentStatus,

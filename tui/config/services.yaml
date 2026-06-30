@@ -49,7 +49,7 @@ app_services:
   - name: argus
     color: "#DC2626"   # red
     dir: ./pcop_layer2_argus
-    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8002"
+    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8002 --no-access-log"
     health_url: http://localhost:8002/health
     port: 8002
     kind: python
@@ -59,7 +59,7 @@ app_services:
   - name: chronos
     color: "#2563EB"   # blue
     dir: ./chronos
-    start_cmd: "poetry run uvicorn api.main:app --host 0.0.0.0 --port 8001"
+    start_cmd: "poetry run uvicorn api.main:app --host 0.0.0.0 --port 8001 --no-access-log"
     health_url: http://localhost:8001/health
     port: 8001
     kind: python
@@ -69,7 +69,7 @@ app_services:
   - name: compass
     color: "#F59E0B"   # amber
     dir: ./layer4 compass orchestration
-    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8004"
+    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8004 --no-access-log"
     health_url: http://localhost:8004/health
     port: 8004
     kind: python
@@ -79,7 +79,7 @@ app_services:
   - name: herald
     color: "#EC4899"   # pink
     dir: ./layer5 herald content generation
-    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8005"
+    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8005 --no-access-log"
     health_url: http://localhost:8005/health
     port: 8005
     kind: python
@@ -89,7 +89,7 @@ app_services:
   - name: verdict
     color: "#14B8A6"   # teal
     dir: ./layer6 verdict measurement
-    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8006"
+    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8006 --no-access-log"
     health_url: http://localhost:8006/health
     port: 8006
     kind: python
@@ -99,7 +99,7 @@ app_services:
   - name: oracle
     color: "#A855F7"   # purple-light
     dir: ./layer7 oracle analytics
-    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8007"
+    start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8007 --no-access-log"
     health_url: http://localhost:8007/health
     port: 8007
     kind: python
@@ -114,6 +114,20 @@ app_services:
     port: 3000
     kind: node
     description: "Next.js frontend — dashboard, customer detail, signals, outreach"
+
+  # ── Live-event simulator (not a long-lived service — registered so
+  #    the TUI dashboard shows a coloured tab and the rate command
+  #    surfaces here too).  We do NOT auto-spawn it; run via the
+  #    Commands page (key 3) or the /simulator … input on the dashboard.
+  - name: simulator
+    color: "#F97316"   # orange
+    dir: .
+    start_cmd: "python3 scripts/simulate_events.py --rate 1.0"
+    health_url: http://localhost:8000/api/kafka/status
+    port: 0
+    kind: bash
+    no_auto_start: true
+    description: "Live-event simulator — posts synthetic banking events to /api/kafka/publish"
 
 commands:
   # ── Top-level orchestration ─────────────────────────────────────────────
@@ -140,6 +154,37 @@ commands:
     description: "Start Postgres + Redis + Kafka + MLflow via docker compose"
     service: infra
     cmd: "docker compose up -d postgres redis kafka mlflow"
+    dir: .
+
+  # ── Live-event simulator ───────────────────────────────────────────────
+  - name: "simulator burst 50"
+    description: "Fire 50 synthetic banking events as fast as possible (great for demo screenshots)"
+    service: simulator
+    cmd: "python3 scripts/simulate_events.py --burst 50"
+    dir: .
+
+  - name: "simulator rate 0.5/s"
+    description: "Run the simulator at 0.5 events/sec for 30s (slow trickle)"
+    service: simulator
+    cmd: "python3 scripts/simulate_events.py --rate 0.5 --duration 30"
+    dir: .
+
+  - name: "simulator rate 2/s (60s)"
+    description: "Run the simulator at 2 events/sec for 60s (lively demo pace)"
+    service: simulator
+    cmd: "python3 scripts/simulate_events.py --rate 2 --duration 60"
+    dir: .
+
+  - name: "simulator rate 5/s (60s)"
+    description: "Run the simulator at 5 events/sec for 60s (high-throughput demo)"
+    service: simulator
+    cmd: "python3 scripts/simulate_events.py --rate 5 --duration 60"
+    dir: .
+
+  - name: "simulator scenario critical-cascade"
+    description: "Fire 3 signals + 1 score spike + 1 negative CRM on a single customer (churn tier jumps visibly)"
+    service: simulator
+    cmd: "python3 scripts/simulate_events.py --scenario critical_cascade"
     dir: .
 
   - name: "infra down"

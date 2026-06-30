@@ -12,7 +12,15 @@ STRICT RULES:
 3. Every sentence must feel written specifically for this person
 4. Address customer by first name throughout
 5. All content must be complete — no ellipsis as placeholder
-6. Sign off warmly as Union Bank`;
+6. Sign off warmly as Union Bank
+
+OUTPUT FORMAT — return ONLY a single raw JSON object (no markdown, no commentary) with EXACTLY this shape:
+{
+  "email":   {"subject": "<= 80 chars, personal>", "body": "<= 1200 chars, 2-3 short paragraphs>"},
+  "sms":     {"body":   "<= 320 chars, conversational>"},
+  "push":    {"title":  "<= 60 chars>", "body": "<= 180 chars, action-oriented>"}
+}
+All three channels are required for every customer.`;
 
 const SIGNAL_DESCRIPTIONS = {
     balance_decline:    (c) => 'account balance has been steadily declining over the past weeks',

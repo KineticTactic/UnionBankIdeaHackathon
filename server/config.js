@@ -28,8 +28,10 @@ module.exports = {
     nvidia: {
         endpoint:       process.env.NVIDIA_ENDPOINT      || 'https://integrate.api.nvidia.com/v1/chat/completions',
         apiKey:         process.env.NVIDIA_API_KEY        || '',
-        model:          process.env.NVIDIA_MODEL          || 'deepseek-ai/deepseek-v4-pro',
-        timeoutMs:      parseInt(process.env.NVIDIA_TIMEOUT_MS      || '15000'),
+        // mistral-small-4-119b returns in ~2s; deepseek-v4-pro takes
+        // 25-60s on the same prompt and routinely times out.
+        model:          process.env.NVIDIA_MODEL          || 'mistralai/mistral-small-4-119b-2603',
+        timeoutMs:      parseInt(process.env.NVIDIA_TIMEOUT_MS      || '30000'),
         maxConcurrency: parseInt(process.env.NVIDIA_MAX_CONCURRENCY || '5'),
     },
 

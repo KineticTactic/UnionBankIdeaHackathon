@@ -272,5 +272,8 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("VERDICT_PORT", "8006"))
     host = os.getenv("VERDICT_HOST", "0.0.0.0")
+    # access_log=False keeps the TUI's 2s /health probe from
+    # flooding the log panel with one INFO line per service per tick.
     uvicorn.run("services.api.main:app", host=host, port=port,
-                log_level=os.getenv("VERDICT_LOG_LEVEL", "info").lower())
+                log_level=os.getenv("VERDICT_LOG_LEVEL", "info").lower(),
+                access_log=False)

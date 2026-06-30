@@ -352,4 +352,17 @@ function getStatus() {
     };
 }
 
-module.exports = { init, publish, shutdown, getStatus, TOPICS };
+// Live, override-aware accessors used by routes (e.g. portfolio
+// /top-at-risk) that need to reflect the most recent Kafka events.
+function getLiveScoreOverride(customerId) {
+    return liveState.scoreOverrides[customerId] || null;
+}
+
+function getLiveSignalCount(customerId) {
+    return (liveState.signalOverrides[customerId] || []).length;
+}
+
+module.exports = {
+    init, publish, shutdown, getStatus, TOPICS,
+    getLiveScoreOverride, getLiveSignalCount,
+};

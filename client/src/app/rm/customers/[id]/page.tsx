@@ -117,7 +117,7 @@ function OverviewTab({ snap }: { snap: Snapshot }) {
 
 // ── Signals Tab ───────────────────────────────────────────────────────────────
 function SignalsTab({ snap }: { snap: Snapshot }) {
-  const signals = snap.signals?.signals || [];
+  const signals = (Array.isArray(snap.signals) ? snap.signals : snap.signals?.signals) || [];
   if (!signals.length) return (
     <div className="flex flex-col items-center justify-center py-16 text-slate-400">
       <CheckCircle className="w-8 h-8 mb-2 text-emerald-400" />
@@ -632,7 +632,7 @@ function Sidebar({ snap, onCall, onOutcome }: {
 }) {
   const c = snap.customer;
   const s = snap.score;
-  const signals = snap.signals?.signals || [];
+  const signals = (Array.isArray(snap.signals) ? snap.signals : snap.signals?.signals) || [];
   const p = snap.plan;
 
   const models = [

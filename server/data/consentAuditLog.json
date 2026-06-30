@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "action": "OPT_OUT_ADDED",
+    "customerId": "CUST-001",
+    "actor": "system",
+    "channel": "EMAIL",
+    "timestamp": "2026-06-30T10:52:54.606Z"
+  },
+  {
+    "action": "OPT_OUT_ADDED",
+    "customerId": "CUST-001",
+    "actor": "system",
+    "channel": "SMS",
+    "timestamp": "2026-06-30T10:52:54.615Z"
+  }
+]

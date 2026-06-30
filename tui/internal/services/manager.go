@@ -35,24 +35,43 @@ type ServiceState struct {
 	proc *ServiceProc
 }
 
+// DockerState is the live state of a docker-compose container.
+type DockerState struct {
+	Name        string // logical name (postgres, redis, …)
+	Container   string // container name (pcop_postgres, …)
+	Description string
+	Running     bool
+	Health      string // healthy | starting | unhealthy | none
+	State       string // running | exited | restarting | …
+	Image       string
+	ExitCode    int
+	LastCheck   time.Time
+}
+
 // Manager owns the live state of all services.
 type Manager struct {
-	mu       sync.RWMutex
-	states   map[string]*ServiceState
-	broker   *LogBroker
-	httpc    *http.Client
-	polling  bool
-	stopCh   chan struct{}
-	cmdHist  []string
+	mu        sync.RWMutex
+	states    map[string]*ServiceState
+	stateOrd  []string // insertion order for `states` — see All()
+	dockers   map[string]*DockerState
+	dockerOrd []string // insertion order for `dockers` — see AllDocker()
+	broker    *LogBroker
+	httpc     *http.Client
+	polling   bool
+	stopCh    chan struct{}
+	cmdHist   []string
 }
 
 // NewManager builds a manager.
 func NewManager(broker *LogBroker) *Manager {
 	return &Manager{
-		states: make(map[string]*ServiceState),
-		broker: broker,
-		httpc:  &http.Client{Timeout: 2 * time.Second},
-		stopCh: make(chan struct{}),
+		states:    make(map[string]*ServiceState),
+		stateOrd:  make([]string, 0),
+		dockers:   make(map[string]*DockerState),
+		dockerOrd: make([]string, 0),
+		broker:    broker,
+		httpc:     &http.Client{Timeout: 2 * time.Second},
+		stopCh:    make(chan struct{}),
 	}
 }
 
@@ -63,7 +82,66 @@ func (m *Manager) Register(s ServiceState) {
 	if s.Status == "" {
 		s.Status = "stopped"
 	}
+	if _, exists := m.states[s.Name]; !exists {
+		m.stateOrd = append(m.stateOrd, s.Name)
+	}
 	m.states[s.Name] = &s
+}
+
+// RegisterDocker adds a docker-compose container definition for the
+// dashboard bar.  Does NOT start it — the user controls docker via the
+// host's `docker compose` commands.
+func (m *Manager) RegisterDocker(d DockerState) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if _, exists := m.dockers[d.Name]; !exists {
+		m.dockerOrd = append(m.dockerOrd, d.Name)
+	}
+	m.dockers[d.Name] = &d
+}
+
+// AllDocker returns a snapshot of every docker container state, in
+// insertion order.
+func (m *Manager) AllDocker() []DockerState {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	out := make([]DockerState, 0, len(m.dockers))
+	for _, name := range m.dockerOrd {
+		if d, ok := m.dockers[name]; ok {
+			out = append(out, *d)
+		}
+	}
+	return out
+}
+
+// PollDockerOnce runs `docker inspect` against every registered
+// container and updates its state.  Silently no-ops if the docker CLI
+// is not on PATH.
+func (m *Manager) PollDockerOnce() {
+	if !DockerAvailable() {
+		return
+	}
+	m.mu.RLock()
+	dockers := make([]*DockerState, 0, len(m.dockers))
+	for _, d := range m.dockers {
+		dockers = append(dockers, d)
+	}
+	m.mu.RUnlock()
+
+	for _, d := range dockers {
+		st, err := CheckDockerService(d.Container)
+		d.LastCheck = time.Now()
+		if err != nil {
+			d.Running = false
+			d.Health = "unknown"
+			continue
+		}
+		d.Running = st.Running
+		d.Health = st.Health
+		d.State = st.State
+		d.Image = st.Image
+		d.ExitCode = st.ExitCode
+	}
 }
 
 // All returns a snapshot of every service state, in insertion order.
@@ -71,8 +149,10 @@ func (m *Manager) All() []ServiceState {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 	out := make([]ServiceState, 0, len(m.states))
-	for _, s := range m.states {
-		out = append(out, *s)
+	for _, name := range m.stateOrd {
+		if s, ok := m.states[name]; ok {
+			out = append(out, *s)
+		}
 	}
 	return out
 }
@@ -222,6 +302,9 @@ func (m *Manager) PollHealthLoop(ctx context.Context) {
 
 // PollHealthOnce probes all services' health endpoints.
 func (m *Manager) PollHealthOnce() {
+	// Docker container probes run in the same loop to share the 2s tick.
+	m.PollDockerOnce()
+
 	m.mu.RLock()
 	states := make([]*ServiceState, 0, len(m.states))
 	for _, s := range m.states {
@@ -281,6 +364,7 @@ func (m *Manager) PollHealthOnce() {
 // HealthSummary returns a one-line health summary for the dashboard header.
 func (m *Manager) HealthSummary() string {
 	states := m.All()
+	dockers := m.AllDocker()
 	var running, healthy, crashed, starting int
 	for _, s := range states {
 		if s.Status == "running" {
@@ -296,8 +380,15 @@ func (m *Manager) HealthSummary() string {
 			starting++
 		}
 	}
-	return fmt.Sprintf("running=%d healthy=%d starting=%d crashed=%d total=%d",
-		running, healthy, starting, crashed, len(states))
+	dockerUp := 0
+	for _, d := range dockers {
+		if d.Running {
+			dockerUp++
+		}
+	}
+	return fmt.Sprintf("app=%d/%d docker=%d/%d",
+		running, len(states), dockerUp, len(dockers),
+	)
 }
 
 // HasService reports whether a service is registered.

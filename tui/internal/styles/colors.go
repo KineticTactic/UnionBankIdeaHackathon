@@ -17,6 +17,11 @@ var Palette = map[string]lipgloss.Color{
 	"client":       lipgloss.Color("#059669"),
 	"infra":        lipgloss.Color("#6B7280"),
 	"mlflow":       lipgloss.Color("#0891B2"),
+	"postgres":     lipgloss.Color("#336791"), // postgres blue
+	"redis":        lipgloss.Color("#DC382D"), // redis red
+	"kafka":        lipgloss.Color("#231F20"), // kafka near-black
+	"zookeeper":    lipgloss.Color("#7B68EE"), // zookeeper purple
+	"scoring":      lipgloss.Color("#0F766E"), // teal-700
 }
 
 // ResolveColor returns the registered color for a service, or grey
@@ -52,6 +57,38 @@ var (
 	TabSep   = lipgloss.NewStyle().Foreground(lipgloss.Color("#374151"))
 	Box      = lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("#374151")).Padding(0, 1)
 	Footer   = lipgloss.NewStyle().Foreground(lipgloss.Color("#9CA3AF")).Padding(0, 1)
+
+	// Service-tile styles for the new horizontal services bar.
+	// Each tile is a rounded box with a left accent stripe in the
+	// service's color, a status dot, the service name, and a one-line
+	// status badge.
+	TileBase = lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(lipgloss.Color("#374151")).
+			Padding(0, 1)
+	TileHealthy = lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(lipgloss.Color("#22C55E")).
+			Padding(0, 1)
+	TileDegraded = lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(lipgloss.Color("#F59E0B")).
+			Padding(0, 1)
+	TileCrashed = lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(lipgloss.Color("#EF4444")).
+			Padding(0, 1)
+	TileStopped = lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(lipgloss.Color("#4B5563")).
+			Padding(0, 1)
+
+	BarLabel = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#9CA3AF")).
+			Bold(true).
+			MarginRight(1)
+	BarSection = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#6B7280"))
 )
 
 // Colorize renders text in a service's color.

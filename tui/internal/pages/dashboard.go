@@ -1,11 +1,15 @@
 // Package pages — Dashboard view (default page).
 //
 // Layout:
-//   ┌─ top tabs ────────────────────────────────────────────────────────┐
-//   │ DOCKER SERVICES           APP SERVICES                            │
-//   │ ● postgres healthy       ● orchestrator :8000 ● running          │
-//   │ ● redis    healthy       ● chronos      :8001 ● running          │
-//   │ ...                                                              │
+//   ┌─ services bar (horizontal tiles) ─────────────────────────────────┐
+//   │ APP ───────────────────────────────────────────────────────       │
+//   │ ┌─orchestr.─┐ ┌─chronos──┐ ┌─herald──┐ ┌─client──┐ …             │
+//   │ │ ● :8000 ▲ │ │ ● :8001▲ │ │ ● :8005▲ │ │ ● :3000▲ │             │
+//   │ └───────────┘ └──────────┘ └─────────┘ └─────────┘               │
+//   │ DOCKER ─────────────────────────────────────────────────          │
+//   │ ┌─postgres──┐ ┌─redis────┐ ┌─kafka───┐ ┌─mlflow──┐                │
+//   │ │ ●  docker │ │ ●  docker │ │ ●  docker │ │ ●  docker │             │
+//   │ └───────────┘ └──────────┘ └─────────┘ └─────────┘               │
 //   ├─ log panel ───────────────────────────────────────────────────────┤
 //   │ [All] [orchestrator] [chronos] ... [client]   filter: ____       │
 //   │ log lines...                                                     │
@@ -68,8 +72,14 @@ func NewDashboardModel(mgr *services.Manager) DashboardModel {
 func (m *DashboardModel) SetSize(w, h int) {
 	m.Width = w
 	m.Height = h
-	// Reserve space for header rows + tab bar + command input + footer.
-	reserved := 2 + 2 + 2 + 2 + 1
+	// Reserved: services bar (up to 5 lines for 2 sections with labels
+	// and a wrapping row) + tab bar + command input + footer.
+	// We compute the bar height from the actual rendered content.
+	barH := lipgloss.Height(RenderServicesBar(m.Mgr, w))
+	if barH < 1 {
+		barH = 4
+	}
+	reserved := barH + 2 + 2 + 1
 	m.LogVP.Width = w
 	m.LogVP.Height = h - reserved
 	if m.LogVP.Height < 3 {
@@ -189,11 +199,8 @@ func (m DashboardModel) runCommand(input string) tea.Cmd {
 func (m DashboardModel) View() string {
 	var sb strings.Builder
 
-	// Header — services grid.
-	docker, app := renderServiceGrid(m.Mgr)
-	sb.WriteString(docker)
-	sb.WriteString("\n")
-	sb.WriteString(app)
+	// Header — horizontal services bar (app services + docker containers).
+	sb.WriteString(RenderServicesBar(m.Mgr, m.Width))
 	sb.WriteString("\n")
 
 	// Tab bar.
@@ -237,47 +244,8 @@ func (m DashboardModel) renderTabBar() string {
 	return sb.String()
 }
 
-// renderServiceGrid builds the two-column "DOCKER / APP" status panel.
-func renderServiceGrid(mgr *services.Manager) (string, string) {
-	all := mgr.All()
-	// We don't currently know docker services from the manager; the
-	// dashboard focuses on app services.  (Docker health is polled by
-	// the app for status and by the docker helper on demand.)
-	var left, right strings.Builder
-	left.WriteString(styles.Subtitle.Render("  APP SERVICES"))
-	left.WriteString("\n")
-	for _, s := range all {
-		statusText := s.Status
-		if s.Status == "running" {
-			statusText = "running"
-		}
-		line := fmt.Sprintf("  %s %s%s :%-5d  %s",
-			renderDot(s.Health),
-			styles.ServiceStyle(s.Name).Render(fmt.Sprintf("%-13s", s.Name)),
-			styles.Dim.Render(fmt.Sprintf(":%d", s.Port)),
-			0,
-			styles.StatusStyle(s.Health).Render(statusText),
-		)
-		left.WriteString(line + "\n")
-	}
-	right.WriteString(styles.Subtitle.Render("  STATUS SUMMARY"))
-	right.WriteString("\n")
-	right.WriteString("  " + mgr.HealthSummary() + "\n")
-	return right.String(), left.String()
-}
-
-func renderDot(health string) string {
-	switch health {
-	case "healthy":
-		return styles.OK.Render("●")
-	case "degraded":
-		return styles.Warn.Render("●")
-	case "unhealthy":
-		return styles.Error.Render("●")
-	default:
-		return styles.Dim.Render("○")
-	}
-}
+// The old 2-column renderServiceGrid has been replaced by the
+// horizontal services bar in servicesbar.go.  See RenderServicesBar.
 
 // ── helpers shared with commands.go ────────────────────────────────────────
 

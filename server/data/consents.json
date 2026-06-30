@@ -438,5 +438,15 @@
       ]
     },
     "opted_out": false
+  },
+  {
+    "customerId": "CUST-001",
+    "dpdpaConsent": {},
+    "traiConsent": {},
+    "optOutChannels": [
+      "EMAIL",
+      "SMS"
+    ],
+    "lastUpdated": "2026-06-30T10:52:54.614Z"
   }
 ]

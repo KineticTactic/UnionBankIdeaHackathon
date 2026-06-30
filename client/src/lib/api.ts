@@ -250,6 +250,20 @@ export const api = {
   }) =>
     fetchApi('/api/outreach/send-email', { method: 'POST', body: JSON.stringify(data) }),
 
+  // ── Outreach — Twilio-backed WhatsApp send ──────────────────────────────────
+  // Routes through the existing approval gate and dispatches via Twilio.
+  // body is optional; if omitted, the server reuses the cached HERALD
+  // push.body (or sms.body as a fallback) for the customer.
+  sendOutreachWhatsapp: (data: {
+    customer_id: string;
+    body?: string;
+    to?: string;
+    from?: string;
+    approval_id?: string;
+    reviewed_by?: string;
+  }) =>
+    fetchApi('/api/outreach/send-whatsapp', { method: 'POST', body: JSON.stringify(data) }),
+
   // ── Admin Portal ─────────────────────────────────────────────────────────────
   getAdminStats:       () => fetchApi('/api/admin/stats'),
   getAdminHealth:      () => fetchApi('/api/admin/health'),

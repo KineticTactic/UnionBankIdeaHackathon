@@ -18,6 +18,7 @@ const traiSvc     = require('../services/traiComplianceService');
 const auditLog    = require('../services/auditLogService');
 const { enqueueHerald, getJobStatus } = require('../queue/heraldQueue');
 const emailResend = require('../services/emailResendService');
+const waTwilio    = require('../services/whatsappTwilioService');
 
 // Fixed recipient for the Resend sandbox demo.  Resend only delivers
 // to the account owner for the default `onboarding@resend.dev` sender,
@@ -256,23 +257,22 @@ router.post('/send-email', verifyToken, async (req, res) => {
     if (!customer) return res.status(404).json({ status: 'error', message: 'Customer not found' });
 
     // DPDPA + TRAI consent check on EMAIL channel.
-    // TEMP: consent check disabled for the demo — re-enable before production.
-    // const consentCheck = consentSvc.canSendOutreach(customer_id, 'EMAIL');
-    // if (!consentCheck.allowed) {
-    //     await auditLog.logEvent({
-    //         eventType:  'OUTREACH_BLOCKED',
-    //         customerId: customer_id,
-    //         actor,
-    //         layer:      'HERALD',
-    //         payload:    { channel: 'EMAIL', reason: consentCheck.reason, source: 'send-email-resend' },
-    //         modelVersion: 'HERALD-v1.0',
-    //     });
-    //     return res.status(403).json({
-    //         status:  'error',
-    //         message: `EMAIL blocked: ${consentCheck.reason}`,
-    //         reason:  consentCheck.reason,
-    //     });
-    // }
+    const consentCheck = consentSvc.canSendOutreach(customer_id, 'EMAIL');
+    if (!consentCheck.allowed) {
+        await auditLog.logEvent({
+            eventType:  'OUTREACH_BLOCKED',
+            customerId: customer_id,
+            actor,
+            layer:      'HERALD',
+            payload:    { channel: 'EMAIL', reason: consentCheck.reason, source: 'send-email-resend' },
+            modelVersion: 'HERALD-v1.0',
+        });
+        return res.status(403).json({
+            status:  'error',
+            message: `EMAIL blocked: ${consentCheck.reason}`,
+            reason:  consentCheck.reason,
+        });
+    }
 
     // Resolve the heraldContent: prefer the supplied subject/body,
     // otherwise reuse the email subject/body from the cached HERALD
@@ -412,6 +412,184 @@ router.post('/send-email', verifyToken, async (req, res) => {
         customerEmail:    customer.email,
         subject:          heraldContent.email.subject,
         bodyPreview:      heraldContent.email.body.slice(0, 240),
+        sandboxOverride,
+        dispatchedTo:     finalTo,
+        dispatch,
+    });
+});
+
+// ── POST /send-whatsapp — Twilio-backed WhatsApp send ────────────────────────
+//
+// Single-step "send a WhatsApp message now" path.  Routes through the
+// existing approval gate (creates a PENDING approval, then approves it
+// on behalf of the caller) so the audit trail is identical to the
+// Composer flow, and adds a TWILIO_WHATSAPP-specific dispatch event.
+//
+// Body:
+//   {
+//     customer_id : string  (required)
+//     body        : string  (required; if omitted, uses approval push.body
+//                            or sms.body as a fallback)
+//     from        : string? (override TWILIO_WHATSAPP_FROM)
+//     to          : string? (override recipient — defaults to sandbox)
+//     approval_id : string? (reuse an existing pending approval)
+//     reviewed_by : string? (defaults to req.user.username)
+//   }
+//
+// Returns:
+//   { status:'ok', approvalId, dispatch:{messageSid,to,from,status,...},
+//     customerPhone, bodyPreview, sandboxOverride }
+
+router.post('/send-whatsapp', verifyToken, async (req, res) => {
+    const {
+        customer_id, body, from, to,
+        approval_id, reviewed_by,
+    } = req.body || {};
+
+    if (!customer_id)
+        return res.status(400).json({ status: 'error', message: 'customer_id is required' });
+
+    const actor    = reviewed_by || req.user?.username || 'rm_user';
+    const customer = await ds.getCustomerById(customer_id);
+    if (!customer) return res.status(404).json({ status: 'error', message: 'Customer not found' });
+
+    // DPDPA + TRAI consent check on PUSH channel (WhatsApp falls under
+    // the same DCA framework as SMS / push notifications in the demo).
+    const consentCheck = consentSvc.canSendOutreach(customer_id, 'PUSH');
+    if (!consentCheck.allowed) {
+        await auditLog.logEvent({
+            eventType:  'OUTREACH_BLOCKED',
+            customerId: customer_id,
+            actor,
+            layer:      'HERALD',
+            payload:    { channel: 'WHATSAPP', reason: consentCheck.reason, source: 'send-whatsapp-twilio' },
+            modelVersion: 'HERALD-v1.0',
+        });
+        return res.status(403).json({
+            status:  'error',
+            message: `WHATSAPP blocked: ${consentCheck.reason}`,
+            reason:  consentCheck.reason,
+        });
+    }
+
+    // Resolve the body: prefer the supplied body, otherwise reuse the
+    // push.body from the cached HERALD record, then sms.body as a
+    // fallback, then a templated retention offer.
+    let messageBody = body;
+    if (!messageBody) {
+        const cached = await ds.getHerald(customer_id);
+        messageBody = cached?.sms?.body || cached?.push?.body || '';
+    }
+    if (!messageBody) {
+        return res.status(400).json({
+            status:  'error',
+            message: 'body is required (or generate HERALD content first)',
+        });
+    }
+
+    const compassRecommendation = {
+        offer:     'personalised_retention',
+        channel:   'whatsapp',
+        timing:    'immediate',
+        rationale: 'Twilio-backed direct WhatsApp dispatch from the RM Outreach tab.',
+    };
+
+    // Build a synthetic approval record so the audit trail is consistent
+    // with the email / multi-channel flows.
+    const heraldContent = {
+        push: { title: 'Union Bank', body: messageBody, compliance_status: 'pending' },
+    };
+
+    let approvalId = approval_id;
+    if (approvalId) {
+        const existing = approvalSvc.getApprovalById(approvalId);
+        if (!existing) return res.status(404).json({ status: 'error', message: `Approval ${approvalId} not found` });
+        if (existing.status !== 'PENDING')
+            return res.status(409).json({ status: 'error', message: `Approval ${approvalId} is ${existing.status}` });
+    } else {
+        approvalId = await approvalSvc.createApprovalRequest(customer_id, actor, compassRecommendation, heraldContent);
+    }
+
+    let approval;
+    try {
+        approval = await approvalSvc.approveOutreach(approvalId, actor);
+    } catch (err) {
+        return res.status(400).json({ status: 'error', message: err.message });
+    }
+
+    // Determine the actual recipient.  Twilio's WhatsApp sandbox can
+    // only deliver to numbers that have joined the sandbox (by texting
+    // the join keyword).  For the demo, default to the number the team
+    // registered.  In production, set WA_SANDBOX_OVERRIDE=false.
+    const sandboxOverride = waTwilio.WA_SANDBOX_OVERRIDE_ON;
+    const requestedTo     = to || customer.phone;
+    const finalTo         = sandboxOverride ? waTwilio.WA_SANDBOX_OVERRIDE_TO : requestedTo;
+
+    let dispatch;
+    try {
+        dispatch = await waTwilio.sendWhatsapp({
+            to:         finalTo,
+            from,
+            body:       messageBody,
+            customerId: customer_id,
+            metadata: {
+                approvalId,
+                customerPhone: customer.phone,
+                sandboxOverride,
+                provider: 'twilio-whatsapp',
+            },
+        });
+    } catch (err) {
+        await auditLog.logEvent({
+            eventType:  'OUTREACH_BLOCKED',
+            customerId: customer_id,
+            actor,
+            layer:      'HERALD',
+            payload:    { channel: 'WHATSAPP', reason: err.code || 'TWILIO_ERROR', detail: err.message, approvalId },
+            modelVersion: 'HERALD-v1.0',
+        });
+        return res.status(502).json({
+            status:  'error',
+            message: err.message,
+            code:    err.code || 'TWILIO_ERROR',
+            approvalId,
+        });
+    }
+
+    const contentHash = crypto.createHash('sha256').update(messageBody).digest('hex');
+
+    await auditLog.logEvent({
+        eventType:  'OUTREACH_WHATSAPP_DISPATCHED',
+        customerId: customer_id,
+        actor,
+        layer:      'HERALD',
+        payload: {
+            approvalId,
+            provider:     'twilio-whatsapp',
+            messageSid:   dispatch.messageSid,
+            to:           finalTo,
+            requestedTo,
+            from:         dispatch.from,
+            sandboxOverride,
+            contentHash,
+        },
+        modelVersion: 'HERALD-v1.0',
+    });
+
+    await auditLog.logEvent({
+        eventType:  'OUTREACH_SENT',
+        customerId: customer_id,
+        actor,
+        layer:      'HERALD',
+        payload: { approvalId, channel: 'WHATSAPP', contentHash, provider: 'twilio-whatsapp', messageSid: dispatch.messageSid },
+        modelVersion: 'HERALD-v1.0',
+    });
+
+    res.json({
+        status:           'ok',
+        approvalId,
+        customerPhone:    customer.phone,
+        bodyPreview:      messageBody.slice(0, 240),
         sandboxOverride,
         dispatchedTo:     finalTo,
         dispatch,

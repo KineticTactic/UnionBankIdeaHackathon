@@ -1120,7 +1120,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:55:12.573Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -1145,8 +1145,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T09:35:48.129Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T04:55:12.573Z"
   },
@@ -1155,7 +1155,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:55:27.966Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -1180,8 +1180,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T09:35:47.702Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T04:55:27.966Z"
   },
@@ -1190,7 +1190,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T05:59:16.104Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -1215,8 +1215,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T09:35:47.283Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T05:59:16.104Z"
   },
@@ -1225,7 +1225,7 @@
     "customerId": "CUST-002",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T06:06:29.369Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "phone",
@@ -1250,8 +1250,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T09:35:46.316Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T06:06:29.369Z"
   },
@@ -1260,7 +1260,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T06:07:01.835Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -1285,8 +1285,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T09:35:45.468Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T06:07:01.835Z"
   },
@@ -1295,7 +1295,7 @@
     "customerId": "CUST-049",
     "requestedBy": "rm_user",
     "requestedAt": "2026-06-30T09:00:32.687Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -1320,8 +1320,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T09:35:44.895Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T09:00:32.687Z"
   },
@@ -1330,7 +1330,7 @@
     "customerId": "CUST-049",
     "requestedBy": "rm_user",
     "requestedAt": "2026-06-30T09:00:43.705Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -1355,8 +1355,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T09:35:44.518Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T09:00:43.705Z"
   },
@@ -1365,7 +1365,7 @@
     "customerId": "CUST-049",
     "requestedBy": "rm_user",
     "requestedAt": "2026-06-30T09:08:36.891Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -1390,8 +1390,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T09:35:44.046Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T09:08:36.891Z"
   },
@@ -1400,7 +1400,7 @@
     "customerId": "CUST-049",
     "requestedBy": "rm_user",
     "requestedAt": "2026-06-30T09:09:10.577Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -1425,8 +1425,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T09:35:43.568Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T09:09:10.577Z"
   },
@@ -1485,7 +1485,7 @@
     "customerId": "CUST-034",
     "requestedBy": "rm_user",
     "requestedAt": "2026-06-30T09:18:39.104Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "Fee Waiver",
       "channel": "sms",
@@ -1510,8 +1510,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T09:35:43.200Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T09:18:39.104Z"
   },
@@ -1520,7 +1520,7 @@
     "customerId": "CUST-034",
     "requestedBy": "rm_user",
     "requestedAt": "2026-06-30T09:18:55.613Z",
-    "status": "PENDING",
+    "status": "APPROVED",
     "compassRecommendation": {
       "offer": "Fee Waiver",
       "channel": "sms",
@@ -1545,8 +1545,8 @@
         "compliance_status": "APPROVED"
       }
     },
-    "reviewedBy": null,
-    "reviewedAt": null,
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-06-30T09:35:42.075Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T09:18:55.613Z"
   },
@@ -1584,5 +1584,78 @@
     "reviewedAt": "2026-06-30T09:22:45.262Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T09:22:15.413Z"
+  },
+  {
+    "approvalId": "ce6c1985-bc89-4735-9443-46ae66322b66",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-06-30T09:26:35.230Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "personalised_retention",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "Resend-backed direct email dispatch from the RM Outreach tab."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "A personal note from your Relationship Manager",
+        "body": "Dear Naveen,\n\nI wanted to reach out personally as your Relationship Manager at Union Bank. I've noticed some changes in your account over the past few weeks and would love the opportunity to speak with you directly.\n\nAs a valued customer, I've arranged a Retention Offer for your account — no paperwork needed on your end. I'd also love to understand if there's anything we can do better.\n\nCould we find 15 minutes this week? My direct line is 1800-XXX-XXXX.\n\nWarm regards,\nAditya Sharma\nSenior Relationship Manager, Union Bank",
+        "compliance_status": "pending",
+        "word_count": 89
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-06-30T09:26:35.232Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T09:26:35.230Z"
+  },
+  {
+    "approvalId": "fc38301a-1e01-4c5b-935e-a53064afd4a1",
+    "customerId": "CUST-009",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-06-30T09:53:01.682Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "personalised_retention",
+      "channel": "whatsapp",
+      "timing": "immediate",
+      "rationale": "Twilio-backed direct WhatsApp dispatch from the RM Outreach tab."
+    },
+    "heraldContent": {
+      "push": {
+        "title": "Union Bank",
+        "body": "Your Engagement Reward from Union Bank is ready. Tap to view.",
+        "compliance_status": "pending"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-06-30T09:53:01.688Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T09:53:01.682Z"
+  },
+  {
+    "approvalId": "923e6733-b02d-45cd-a3c6-395ae9eaabcc",
+    "customerId": "CUST-009",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-06-30T09:54:24.088Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "personalised_retention",
+      "channel": "whatsapp",
+      "timing": "immediate",
+      "rationale": "Twilio-backed direct WhatsApp dispatch from the RM Outreach tab."
+    },
+    "heraldContent": {
+      "push": {
+        "title": "Union Bank",
+        "body": "Your Engagement Reward from Union Bank is ready. Tap to view.",
+        "compliance_status": "pending"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-06-30T09:54:24.092Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T09:54:24.088Z"
   }
 ]

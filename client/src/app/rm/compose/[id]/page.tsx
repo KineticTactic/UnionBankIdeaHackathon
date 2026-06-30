@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import {
   ArrowLeft, Brain, Globe, Globe2, ShieldCheck, Eye, Send, Languages,
   Loader2, CheckCircle, AlertTriangle, ChevronRight, AlertCircle, RotateCcw,
+  MessageCircle,
 } from 'lucide-react';
 
 type Step = 1 | 2 | 3 | 4 | 5;
@@ -55,6 +56,11 @@ export default function OutreachComposerPage() {
   const [emailSending, setEmailSending]   = useState(false);
   const [emailResult,  setEmailResult]    = useState<any>(null);
   const [emailError,   setEmailError]     = useState('');
+
+  // Step 5 — Twilio direct WhatsApp send
+  const [waSending,    setWaSending]      = useState(false);
+  const [waResult,     setWaResult]       = useState<any>(null);
+  const [waError,      setWaError]        = useState('');
 
   useEffect(() => {
     if (!getToken()) { router.push('/login'); return; }
@@ -154,6 +160,23 @@ export default function OutreachComposerPage() {
       setEmailError(e.message);
     } finally {
       setEmailSending(false);
+    }
+  };
+
+  const sendWhatsappViaTwilio = async () => {
+    setWaSending(true); setWaError(''); setWaResult(null);
+    try {
+      const finalBody = editContent || content;
+      const r = await api.sendOutreachWhatsapp({
+        customer_id: id,
+        body:        finalBody?.sms?.body || finalBody?.push?.body || '',
+        approval_id: approvalId || undefined,
+      });
+      setWaResult(r);
+    } catch (e: any) {
+      setWaError(e.message);
+    } finally {
+      setWaSending(false);
     }
   };
 
@@ -500,6 +523,34 @@ export default function OutreachComposerPage() {
             <button onClick={sendEmailViaResend} disabled={emailSending || sending || !approvalId}
               className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 text-white text-[12px] font-semibold hover:bg-emerald-700 disabled:opacity-50 transition-colors">
               {emailSending ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending via Resend…</> : <><Send className="w-3.5 h-3.5" /> Send Email via Resend</>}
+            </button>
+          </div>
+
+          {/* Twilio direct WhatsApp — uses push.body from the edit step */}
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <MessageCircle className="w-4 h-4 text-emerald-600" />
+              <p className="text-[12px] font-bold text-slate-700">Or send WhatsApp message directly via Twilio</p>
+            </div>
+            <p className="text-[11px] text-slate-500 mb-3">
+              Dispatches via Twilio to <span className="font-mono font-semibold">whatsapp:+919874618487</span>
+              (sandbox override).  Uses the push.body from Step 4 (falls back to sms.body).
+            </p>
+            {waError && (
+              <div className="bg-red-50 border border-red-100 rounded-lg px-3 py-2 text-[12px] text-red-600 mb-3">{waError}</div>
+            )}
+            {waResult && (
+              <div className="bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2 text-[12px] text-emerald-800 mb-3 space-y-0.5">
+                <p className="font-semibold flex items-center gap-1.5">
+                  <CheckCircle className="w-3.5 h-3.5" /> Twilio dispatch successful
+                </p>
+                <p>Message SID: <span className="font-mono">{waResult.dispatch?.messageSid}</span></p>
+                <p>To: <span className="font-mono">{waResult.dispatchedTo}</span></p>
+              </div>
+            )}
+            <button onClick={sendWhatsappViaTwilio} disabled={waSending || sending || !approvalId}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 text-white text-[12px] font-semibold hover:bg-emerald-700 disabled:opacity-50 transition-colors">
+              {waSending ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending via Twilio…</> : <><MessageCircle className="w-3.5 h-3.5" /> Send via WhatsApp</>}
             </button>
           </div>
 

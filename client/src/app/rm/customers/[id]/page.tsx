@@ -11,7 +11,7 @@ import {
   ArrowLeft, Send, ClipboardList, Phone, Brain,
   Activity, BarChart3, FileText, Shield, X, Loader2,
   CheckCircle, AlertTriangle, TrendingUp, Calendar,
-  MapPin, Briefcase, CreditCard, Smartphone,
+  MapPin, Briefcase, CreditCard, Smartphone, MessageCircle,
 } from 'lucide-react';
 
 interface Snapshot {
@@ -256,6 +256,13 @@ function OutreachTab({ snap, customerId }: { snap: Snapshot; customerId: string 
         defaultSubject={content?.email?.subject || ''}
         defaultBody={content?.email?.body || ''}
       />
+
+      <SendWhatsappPanel
+        customerId={customerId}
+        customerPhone={snap.customer?.phone || ''}
+        customerName={snap.customer?.full_name || ''}
+        defaultBody={content?.sms?.body || content?.push?.body || ''}
+      />
     </div>
   );
 }
@@ -359,6 +366,99 @@ function SendEmailPanel({
         <button onClick={send} disabled={!canSend}
           className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 text-white text-[12px] font-semibold hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
           {sending ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending…</> : <><Send className="w-3.5 h-3.5" /> Send via Resend</>}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Send WhatsApp Panel (Twilio) ──────────────────────────────────────────────
+function SendWhatsappPanel({
+  customerId, customerPhone, customerName, defaultBody,
+}: {
+  customerId: string;
+  customerPhone: string;
+  customerName: string;
+  defaultBody: string;
+}) {
+  const [body,    setBody]    = useState(defaultBody);
+  const [sending, setSending] = useState(false);
+  const [err,     setErr]     = useState('');
+  const [result,  setResult]  = useState<any>(null);
+
+  useEffect(() => { setBody(defaultBody); }, [defaultBody]);
+
+  const canSend = body.trim().length > 0 && !sending;
+
+  const send = async () => {
+    setSending(true); setErr(''); setResult(null);
+    try {
+      const r = await api.sendOutreachWhatsapp({ customer_id: customerId, body });
+      setResult(r);
+    } catch (e: any) {
+      setErr(e.message);
+    } finally { setSending(false); }
+  };
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2">
+          <MessageCircle className="w-4 h-4 text-emerald-600" />
+          <div>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Send WhatsApp · Twilio</p>
+            <p className="text-[12px] text-slate-600 mt-0.5">
+              Direct send via the Twilio WhatsApp API.  Routed through the human-approval gate and audit log.
+            </p>
+          </div>
+        </div>
+        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 uppercase tracking-wide">
+          WHATSAPP · Twilio
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Customer phone (display)</label>
+          <input value={customerPhone} readOnly
+            className="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 bg-slate-50 text-slate-500 font-mono" />
+        </div>
+        <div>
+          <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Recipient (Twilio sandbox)</label>
+          <input value="whatsapp:+919874618487" readOnly
+            className="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 bg-slate-50 text-slate-500 font-mono" />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Message</label>
+        <textarea value={body} onChange={e => setBody(e.target.value)} placeholder={defaultBody ? '' : 'Click Generate above to populate the message…'}
+          rows={4} className="w-full px-3 py-2 text-[12px] rounded-lg border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f2d5c]/20 resize-none" />
+        <p className="text-[10px] text-slate-400 mt-1">{body.length} chars</p>
+      </div>
+
+      {err && (
+        <div className="bg-red-50 border border-red-100 rounded-lg px-3 py-2 text-[12px] text-red-600">{err}</div>
+      )}
+
+      {result && (
+        <div className="bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2.5 text-[12px] text-emerald-800 space-y-1">
+          <p className="font-semibold flex items-center gap-1.5">
+            <CheckCircle className="w-3.5 h-3.5" /> WhatsApp dispatched
+          </p>
+          <p>Message SID: <span className="font-mono">{result.dispatch?.messageSid}</span></p>
+          <p>To: <span className="font-mono">{result.dispatchedTo}</span>{result.sandboxOverride && <span className="ml-2 text-[10px] uppercase tracking-wide text-amber-700 font-semibold">(sandbox override)</span>}</p>
+          <p>Approval ID: <span className="font-mono">{result.approvalId}</span></p>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <p className="text-[10px] text-slate-400">
+          Sending to <span className="font-mono font-semibold">whatsapp:+919874618487</span> for the Twilio sandbox demo.
+        </p>
+        <button onClick={send} disabled={!canSend}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 text-white text-[12px] font-semibold hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          {sending ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending…</> : <><MessageCircle className="w-3.5 h-3.5" /> Send via WhatsApp</>}
         </button>
       </div>
     </div>

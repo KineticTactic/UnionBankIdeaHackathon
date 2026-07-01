@@ -69,8 +69,8 @@ The result is a fully agentic pipeline that **identifies risk, decides on the op
 
 | Resource                       | Link                                                                                                          |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| Live application               | [moneylords-pcop.up.railway.app](https://moneylords-pcop.up.railway.app)                                      |
-| Demo video                     | [Watch on YouTube](https://www.youtube.com/watch?v=HVEjXQ74iBo)                                               |
+| Live application               | [unionbankideahackathon-production-6810.up.railway.app](https://unionbankideahackathon-production-6810.up.railway.app)                                     |
+| Demo video                     | [Watch on YouTube](https://www.youtube.com/watch?v=VnABCvFw94U)                                               |
 | Technical walkthrough notebook | [Open in Google Colab](https://colab.research.google.com/drive/1tOCU-VWpDs-SW6dNmlDM_rAdbpCsEbit?usp=sharing) |
 | Architecture and contracts     | [ARCHITECTURE.md](ARCHITECTURE.md)                                                                            |
 | Compliance and fairness        | [COMPLIANCE.md](COMPLIANCE.md)                                                                                |

@@ -171,6 +171,24 @@ export default function BusinessModelPage() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLElement && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const jump = (id: string) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const NAV_OFFSET = 56;
+        const top = el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+        window.scrollTo({ top, behavior: 'smooth' });
+      };
+      if (e.key === 'c' || e.key === 'C') jump('competitive-analysis');
+      else if (e.key === 'g' || e.key === 'G') jump('go-to-market');
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
     <div className="min-h-screen bg-cream text-charcoal">
 

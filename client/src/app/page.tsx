@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Shield, Activity, Plug, CheckCircle2, AlertCircle, Code2, ChevronDown, IndianRupee, TrendingUp, BarChart3, Building2, ArrowUpRight, Target, Globe, DollarSign, Server, Zap, Lock, FileText } from 'lucide-react';
+import { ArrowRight, Shield, Activity, Plug, CheckCircle2, AlertCircle, Code2, ChevronDown, IndianRupee, TrendingUp, BarChart3, Building2, ArrowUpRight, Target, Globe, DollarSign, Server, Zap, Lock, FileText, BellOff, Megaphone, Scale, Quote } from 'lucide-react';
 
 const LAYERS = [
   { id: 'L1', name: 'INGEST',   color: 'var(--crimson)',         desc: 'Kafka · T24/Finacle · CRM · Mobile App' },
@@ -156,10 +156,12 @@ function Navbar() {
 export default function LandingPage() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLElement && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
       if (e.key === 's' || e.key === 'S') {
-        if (e.target instanceof HTMLElement && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
         const el = document.getElementById('scalability');
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (e.key === 'a' || e.key === 'A') {
+        window.location.href = '/admin/argus';
       }
     };
     window.addEventListener('keydown', onKey);
@@ -294,6 +296,90 @@ export default function LandingPage() {
                 <p className={`text-[12px] leading-snug ${r.real ? 'text-white' : 'text-white/50'}`}>{r.text}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── THE PROBLEM ────────────────────────────────────────────────── */}
+      <section id="problem" className="relative py-32 px-6 bg-cream overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.04] pointer-events-none"
+             style={{ background: 'radial-gradient(circle, var(--crimson) 0%, transparent 70%)' }} />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-[0.04] pointer-events-none"
+             style={{ background: 'radial-gradient(circle, var(--copper) 0%, transparent 70%)' }} />
+
+        <div className="relative max-w-6xl mx-auto">
+          {/* Section header */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-md text-crimson text-[10px] font-bold uppercase tracking-widest bg-crimson-soft border border-crimson animate-fade-up">
+              <AlertCircle className="w-3 h-3" />
+              The Problem
+            </div>
+            <h2 className="text-[40px] lg:text-[48px] font-heading font-bold text-charcoal mb-5 leading-[1.05] animate-fade-up delay-100"
+                style={{ letterSpacing: '-0.03em' }}>
+              Retail banks are losing customers<br />
+              <span className="text-gradient">weeks before they know it.</span>
+            </h2>
+          </div>
+
+          {/* Root cause analysis */}
+          <div className="mb-12">
+            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest text-center mb-8 animate-fade-up delay-400">Root Cause Analysis</p>
+            <p className="text-center text-[20px] font-bold text-charcoal font-heading mb-10 animate-fade-up delay-400">Why banks can't stop churn today</p>
+
+            <div className="grid lg:grid-cols-3 gap-4">
+              {[
+                {
+                  icon: BellOff,
+                  title: 'Signals arrive too late',
+                  body: 'Account closure requests, balance-zero events, and complaint escalations are lagging indicators — the customer has already decided to leave by then.',
+                  accent: 'crimson',
+                },
+                {
+                  icon: Megaphone,
+                  title: 'Outreach is untargeted & generic',
+                  body: 'Blanket campaign mailers ignore individual context — salary drops, life events, competitor activity — and generate noise rather than retention.',
+                  accent: 'copper',
+                },
+                {
+                  icon: Scale,
+                  title: 'No causal measurement',
+                  body: "Banks can't distinguish customers who were retained because of outreach from those who would have stayed anyway — wasting retention budget on the wrong cohort.",
+                  accent: 'crimson',
+                },
+              ].map((c, i) => {
+                const Icon = c.icon;
+                return (
+                  <div key={c.title}
+                    className={`group p-6 rounded-md border bg-white border-soft transition-all duration-300 hover-lift animate-fade-up ${
+                      c.accent === 'crimson' ? 'hover:border-crimson' : 'hover:border-copper'
+                    }`}
+                    style={{ animationDelay: `${0.5 + i * 0.1}s` }}>
+                    <div className={`w-10 h-10 rounded-md flex items-center justify-center mb-4 ${
+                      c.accent === 'crimson' ? 'bg-crimson-soft' : 'bg-copper-soft'
+                    }`}>
+                      <Icon className={`w-5 h-5 ${c.accent === 'crimson' ? 'text-crimson' : 'text-copper'}`} />
+                    </div>
+                    <p className="text-[15px] font-bold text-charcoal font-heading mb-2">{c.title}</p>
+                    <p className="text-[12px] text-gray-500 leading-relaxed">{c.body}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Quote callout */}
+          <div className="max-w-3xl mx-auto p-6 rounded-md border-l-4 border-crimson bg-white border border-soft animate-fade-up delay-800">
+            <div className="flex items-start gap-3">
+              <Quote className="w-5 h-5 text-crimson shrink-0 mt-0.5" />
+              <div>
+                <p className="text-[15px] text-charcoal font-heading font-semibold leading-relaxed mb-3">
+                  "By the time a customer shows explicit signs of leaving, it is already too late."
+                </p>
+                <p className="text-[13px] text-gray-500 leading-relaxed">
+                  Banks need a system that detects micro-behavioural shifts weeks upstream — before the intent crystallises.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -871,7 +957,11 @@ export default function LandingPage() {
               <p className="text-[10px] text-white/50 uppercase tracking-wider">Union Bank · IDEA 2.0 · 2026</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <div className="px-3 py-1.5 rounded-md bg-crimson/10 border border-crimson/30">
+              <span className="text-[10px] font-bold text-copper uppercase tracking-widest">Team MoneyLords</span>
+              <span className="text-[10px] text-white/40 uppercase tracking-wider ml-2">IIT Guwahati</span>
+            </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-copper/10 border border-copper/30">
               <span className="w-1.5 h-1.5 rounded-full bg-copper animate-live-pulse" />
               <span className="text-[10px] font-bold text-copper uppercase tracking-widest">Demo Environment</span>

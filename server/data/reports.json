@@ -1320,5 +1320,100 @@
       "calls": "d4735e3a265e16ee"
     },
     "generator": "templated+llm-narrative"
+  },
+  {
+    "id": "RPT-1782880837538-UPPU",
+    "report_type": "rm_activity",
+    "date_from": "",
+    "date_to": "",
+    "generated_at": "2026-07-01T04:40:37.538Z",
+    "generated_by": "admin",
+    "data": {
+      "period": {
+        "from": "all",
+        "to": "now"
+      },
+      "generated_at": "2026-07-01T04:40:33.895Z",
+      "churn_intervention": {
+        "total_customers": 51,
+        "at_risk": 19,
+        "interventions": 3,
+        "saves": 2,
+        "save_rate": "66.7%"
+      },
+      "compliance_audit": {
+        "total_customers": 51,
+        "calls_recorded": 2,
+        "compliance_flags": 0,
+        "consent_coverage": 2,
+        "tasks_completed": 1,
+        "tasks_outstanding": 3
+      },
+      "rm_activity": [
+        {
+          "rm_name": "Aditya Sharma",
+          "username": "rm_user",
+          "calls": 2,
+          "outcomes": 3,
+          "tasks": 4
+        },
+        {
+          "rm_name": "Deepa Krishnan",
+          "username": "rm_deepa",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Sunita Nair",
+          "username": "rm_sunita",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Vikram Joshi",
+          "username": "rm_vikram",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Rohit Kapoor",
+          "username": "rm_rohit",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Ritu Malhotra",
+          "username": "rm_ritu",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Anand Pillai",
+          "username": "rm_anand",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Priya Menon",
+          "username": "rm_priya",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        }
+      ]
+    },
+    "llm_summary": "**Executive Summary: RM Activity Compliance Review**\n\nOver the review period, the RM team managed a portfolio of **51 total customers**, with **19 classified as at-risk**. Despite proactive monitoring, the team initiated only **3 interventions** to address customer risk, achieving **2 successful saves**, resulting in a **66.7% save rate**. This indicates a measured but limited response to risk mitigation, with most at-risk customers remaining unaddressed.\n\nCompliance adherence was strong, with **0 compliance flags** recorded from calls and **2 of 51 (3.9%) customers** providing consent coverage. Task completion was minimal, with only **1 of 4 tasks (25%)** finalized, leaving **3 tasks outstanding**. This suggests potential inefficiencies in workflow execution despite a low-risk environment.\n\nOverall, the RM activity reflects conservative risk management, with modest intervention rates and high compliance standards. However, the low number of customer contacts and task completion gaps may warrant further review to ensure proactive risk management and operational efficiency.",
+    "source_hashes": {
+      "customers": "c2063cd152f08b9d",
+      "outcomes": "4e07408562bedb8b",
+      "calls": "d4735e3a265e16ee"
+    },
+    "generator": "templated+llm-narrative"
   }
 ]

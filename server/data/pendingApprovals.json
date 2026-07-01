@@ -2187,5 +2187,40 @@
     "reviewedAt": "2026-07-01T03:53:48.449Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-03T03:53:15.906Z"
+  },
+  {
+    "approvalId": "5ce888a9-ff03-492b-a169-9f1ccba41c1e",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-01T04:38:33.749Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let’s keep your savings journey smooth",
+        "body": "Hi Naveen, I noticed your recent activity and wanted to reach out personally. It’s clear you’ve been focused on building your financial future, and we’re here to support you every step of the way. Whether it’s planning for retirement or managing day-to-day expenses, your goals matter deeply to us. Let’s ensure your accounts stay aligned with what matters most to you—simply reply to this email or call our dedicated support line at 1800-XXX-XXXX. We’re just a conversation away, and your financial well-being is our priority.",
+        "compliance_status": "APPROVED",
+        "word_count": 85
+      },
+      "sms": {
+        "body": "Naveen, we’ve missed your recent activity and want to support you. Your financial goals are important to us. Reply YES or call 1800-XXX-XXXX for personalised assistance. Union Bank cares about your journey.",
+        "compliance_status": "APPROVED",
+        "char_count": 206
+      },
+      "push": {
+        "title": "Your plans matter, Naveen",
+        "body": "Let’s align your accounts with your goals—tap to chat with us now.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-07-01T04:38:41.914Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-07-03T04:38:33.749Z"
   }
 ]

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Shield, Activity, Plug, CheckCircle2, AlertCircle, Code2, ChevronDown } from 'lucide-react';
+import { ArrowRight, Shield, Activity, Plug, CheckCircle2, AlertCircle, Code2, ChevronDown, IndianRupee, TrendingUp, BarChart3, Building2, ArrowUpRight, Target, Globe, DollarSign, Server, Zap, Lock, FileText } from 'lucide-react';
 
 const LAYERS = [
   { id: 'L1', name: 'INGEST',   color: 'var(--crimson)',         desc: 'Kafka · T24/Finacle · CRM · Mobile App' },
@@ -47,6 +47,71 @@ const METHOD: Record<string, string> = {
   SPRT:  'bg-copper-pale text-copper-dark',
 };
 
+const MARKET = [
+  { label: 'India SAM (2025)',    value: '$35M',    sub: 'SaaS license revenue',        icon: Target },
+  { label: 'India SAM (2030)',    value: '$200M',   sub: 'Capturable platform spend',    icon: TrendingUp },
+  { label: 'Year 3 ARR Target',   value: '$4.7M',   sub: '8–12 banks live',             icon: BarChart3 },
+  { label: 'Year 5 ARR Target',   value: '$14.5M',  sub: '35–40 banks, SE Asia entry',  icon: Globe },
+];
+
+const PRICING = [
+  { tier: 'Small SFB / Mid PSU',  rms: '50–100',   price: '₹1–2 Cr',   usd: '$120K–240K',   accent: 'copper' },
+  { tier: 'Mid PVB / Large PSU',  rms: '100–300',  price: '₹2–5 Cr',   usd: '$240K–600K',   accent: 'crimson' },
+  { tier: 'Large PVB',            rms: '300–1K',   price: '₹5–15 Cr',  usd: '$600K–1.8M',   accent: 'copper' },
+];
+
+const ROI_ROW = [
+  { label: 'Churn savings (Yr 1 revenue)',     value: '₹49.4 Cr' },
+  { label: 'Cross-sell revenue',               value: '₹78.8 Cr' },
+  { label: 'Total value created per year',     value: '₹128.2 Cr', bold: true },
+  { label: 'PCOP annual cost to bank',         value: '₹6–10.2 Cr' },
+  { label: 'Net profit to bank',               value: '₹118 Cr',    bold: true },
+  { label: 'ROI',                              value: '11.6x',      accent: true },
+];
+
+const GTM_TIERS = [
+  {
+    tier: 'Tier 1 — Private Banks',
+    banks: 'AU SFB, Bandhan, Federal, South Indian Bank, Karnataka Bank, City Union Bank, DCB Bank, RBL Bank',
+    why: 'Decide in 6–12 months, feel churn pressure acutely, right-sized customer base (20–80 lakh) for CHRONOS without a multi-year integration.',
+    accent: 'copper',
+    class: 'border-copper/30 bg-copper/[0.04]',
+  },
+  {
+    tier: 'Tier 2 — Mid-Sized PSU Banks',
+    banks: 'Bank of Maharashtra, Punjab & Sind Bank, UCO Bank, Indian Overseas Bank, Central Bank of India',
+    why: 'The Union Bank iDEA relationship converts into a design-partner pilot. Winning one PSU unlocks the rest — Indian PSU banks watch each other closely.',
+    accent: 'crimson',
+    class: 'border-crimson/30 bg-crimson/[0.04]',
+  },
+  {
+    tier: 'Tier 3 — Small Finance Banks',
+    banks: 'Ujjivan SFB, Jana SFB, ESAF SFB, Suryoday SFB',
+    why: 'Raising AI spend fastest as they scale toward universal-bank status. Their biggest pain point (retaining microfinance customers graduating into full banking) is precisely what PCOP solves.',
+    accent: 'copper',
+    class: 'border-copper/30 bg-copper/[0.04]',
+  },
+];
+
+const SCALE_PILLARS = [
+  { icon: Code2, title: 'Stateless Orchestration', body: 'Zero in-memory state. JWTs with 8-hour TTL, no session tables. pm2 -i 8 behind nginx — no cache invalidation, no sticky sessions.' },
+  { icon: Shield, title: 'Async by Default', body: 'BullMQ on Redis with sync fallback. API returns 202 with jobId; worker runs at concurrency 5. Redis down? Falls back to sync — degrade, not fail.' },
+  { icon: BarChart3, title: 'Postgres at Every Tier', body: 'Sharding-ready: customer_id leads every table. Index on (customer_id, timestamp). At 1M customers, add Citus — same queries, zero app changes.' },
+  { icon: Activity, title: 'Kafka Event Spine', body: 'Signals, approvals, consent changes all flow through Kafka keyed by customer_id. Ordered processing, audit replay, clean subscription. New consumer = 2 lines.' },
+  { icon: Plug, title: 'Abstracted LLM Layer', body: 'callNvidia() with Claude fallback, 30s timeout, p-limit concurrency, circuit breaker. Token usage tracked via /api/llm-usage for cost-per-customer.' },
+  { icon: Globe, title: 'Translation at Scale', body: 'Provider-agnostic wrapper around Google Cloud Translation. Used for Composer transcreate with back-translation. 70% under free tier in load test.' },
+];
+
+
+const SECURITY_FEATURES = [
+  { icon: Shield, title: 'DPDPA 2023 Compliant', body: 'Every data path mapped against the Act. Consent records with timestamps and purpose tags; withdrawal is immediate. Retention policies configurable per bank.' },
+  { icon: CheckCircle2, title: 'PII Masking Before External APIs', body: 'Name, phone, email, account stripped from every prompt before reaching NVIDIA or Azure OpenAI. Masked token replaces identity — LLM sees behaviour, not the person.' },
+  { icon: ArrowRight, title: 'Role-Based Access Control', body: 'Three tiers: analyst (read-only), RM (outreach), admin (full). JWT role claims verified on every request. Every mutation logged with actor and timestamp.' },
+  { icon: Activity, title: 'Immutable Audit Log', body: 'Every recommendation, generation, handoff, and calculation written to append-only store. Each entry carries eventType, customerId, actor — satisfying DPDPA Section 4(5).' },
+  { icon: Target, title: 'TRAI Compliance Gate', body: 'Outreach checks opt-in before dispatch. SMS enforces 155-character limit. Consent revocation propagates within 60 seconds to all dispatch paths.' },
+  { icon: Shield, title: 'Data Residency (India Only)', body: 'All customer data in Azure Central India (Pune). LLM inference routes through Azure OpenAI in the same region. No data crosses Indian borders.' },
+];
+
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
@@ -79,6 +144,10 @@ function Navbar() {
         <div className="flex items-center gap-6">
           <a href="#how-it-works" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>How it works</a>
           <a href="#architecture" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>Architecture</a>
+          <a href="#business" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>Business</a>
+          <Link href="/business-model" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>Business Model</Link>
+          <a href="#scalability" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>Scale</a>
+          <a href="#security" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>Security</a>
           <a href="#api" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>API</a>
           <Link href="/login"
             className="flex items-center gap-1.5 text-[13px] font-semibold px-4 py-2 rounded-md text-white bg-gradient-brand hover:opacity-90 transition-all">
@@ -406,6 +475,305 @@ export default function LandingPage() {
                 </span>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BUSINESS MODEL ──────────────────────────────────────────────── */}
+      <section id="business" className="relative py-24 px-6 bg-white overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.04] pointer-events-none"
+             style={{ background: 'radial-gradient(circle, var(--copper) 0%, transparent 70%)' }} />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-[0.04] pointer-events-none"
+             style={{ background: 'radial-gradient(circle, var(--crimson) 0%, transparent 70%)' }} />
+
+        <div className="relative max-w-6xl mx-auto">
+          {/* Section header */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-md text-copper text-[10px] font-bold uppercase tracking-widest bg-copper-soft border border-copper animate-fade-up">
+              <IndianRupee className="w-3 h-3" />
+              Business Model
+            </div>
+            <h2 className="text-[44px] font-heading font-bold text-charcoal mb-4 leading-[1.05] animate-fade-up delay-100"
+                style={{ letterSpacing: '-0.03em' }}>
+              Proven Economics for<br />
+              <span className="text-gradient">Indian Retail Banking</span>
+            </h2>
+            <p className="text-gray-500 text-[16px] max-w-xl mx-auto animate-fade-up delay-200">
+              Priced for India. Built for compliance. Proven by causal measurement.
+            </p>
+          </div>
+
+          {/* Market opportunity grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-20">
+            {MARKET.map((m, i) => {
+              const Icon = m.icon;
+              return (
+                <div key={m.label}
+                  className="group relative p-5 rounded-md border border-soft hover:border-copper bg-cream transition-all duration-300 hover-lift overflow-hidden animate-fade-up"
+                  style={{ animationDelay: `${0.2 + i * 0.08}s` }}>
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-copper/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-9 h-9 rounded-md bg-white border border-soft flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Icon className="w-4 h-4 text-copper" />
+                    </div>
+                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{m.label}</span>
+                  </div>
+                  <p className="text-[28px] font-black text-charcoal font-heading tabular-nums tracking-tight">{m.value}</p>
+                  <p className="text-[11px] text-gray-500 mt-1">{m.sub}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Pricing + ROI row */}
+          <div className="grid lg:grid-cols-5 gap-4 mb-20">
+            {/* Pricing table — spans 3 cols */}
+            <div className="lg:col-span-3 rounded-md border border-soft bg-cream overflow-hidden animate-fade-up delay-200">
+              <div className="px-6 py-4 border-b border-soft flex items-center gap-3">
+                <div className="w-8 h-8 rounded-md bg-gradient-brand flex items-center justify-center">
+                  <DollarSign className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-bold text-charcoal font-heading">Pricing Tiers</p>
+                  <p className="text-[10px] text-gray-500">Annual license by RM headcount</p>
+                </div>
+              </div>
+              <div className="divide-y divide-soft">
+                {PRICING.map((p) => (
+                  <div key={p.tier} className="grid grid-cols-3 gap-4 px-6 py-3.5 items-center hover:bg-white transition-colors">
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-5 h-5 rounded-sm flex items-center justify-center shrink-0 ${
+                        p.accent === 'crimson' ? 'bg-crimson-soft' : 'bg-copper-soft'
+                      }`}>
+                        <Building2 className={`w-3 h-3 ${p.accent === 'crimson' ? 'text-crimson' : 'text-copper'}`} />
+                      </div>
+                      <span className="text-[13px] font-bold text-charcoal font-heading">{p.tier}</span>
+                    </div>
+                    <div className="text-center">
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider">RMs</span>
+                      <p className="text-[13px] font-bold text-charcoal tabular-nums">{p.rms}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider">{p.usd}</span>
+                      <p className="text-[15px] font-black text-charcoal font-heading tabular-nums">{p.price}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="px-6 py-3 bg-white border-t border-soft flex items-center gap-2">
+                <ArrowUpRight className="w-3 h-3 text-copper" />
+                <span className="text-[10px] text-gray-500">72% gross margin at steady state</span>
+              </div>
+            </div>
+
+            {/* ROI card — spans 2 cols */}
+            <div className="lg:col-span-2 rounded-md border border-soft bg-cream overflow-hidden animate-fade-up delay-300">
+              <div className="px-6 py-4 border-b border-soft flex items-center gap-3">
+                <div className="w-8 h-8 rounded-md bg-gradient-brand flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-bold text-charcoal font-heading">Union Bank Case Study</p>
+                  <p className="text-[10px] text-gray-500">2.5 Cr active retail customers</p>
+                </div>
+              </div>
+              <div className="divide-y divide-soft px-6">
+                {ROI_ROW.map((r) => (
+                  <div key={r.label} className="flex items-center justify-between py-2.5">
+                    <span className={`text-[11px] ${r.bold ? 'font-bold text-charcoal' : 'text-gray-500'}`}>{r.label}</span>
+                    <span className={`text-[14px] font-black tabular-nums font-heading ${
+                      r.accent ? 'text-crimson' : r.bold ? 'text-charcoal' : 'text-charcoal'
+                    }`}>{r.value}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="px-6 py-3 bg-white border-t border-soft flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-gradient-brand animate-live-pulse" />
+                <span className="text-[10px] text-gray-500">Causal uplift validated via VERDICT holdout methodology</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Go-to-market */}
+          <div className="mb-6">
+            <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest text-center mb-8 animate-fade-up delay-400">Go-to-Market Sequencing</p>
+
+            {/* Full pitch doc CTA */}
+            <div className="mb-8 p-5 rounded-md border border-crimson/30 bg-crimson/[0.04] flex items-center justify-between flex-wrap gap-4 animate-fade-up delay-450">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-md bg-gradient-brand flex items-center justify-center shrink-0">
+                  <IndianRupee className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-[14px] font-bold text-charcoal font-heading">Full Business & Financial Pitch</p>
+                  <p className="text-[11px] text-gray-500">Market sizing · pricing · 5-year TCO · Union Bank case study · GTM</p>
+                </div>
+              </div>
+              <Link href="/business-model"
+                className="group inline-flex items-center gap-1.5 text-[12px] font-bold px-5 py-2.5 rounded-md text-white bg-gradient-brand hover:opacity-90 transition-all">
+                Open Pitch Document
+                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </Link>
+            </div>
+            <div className="grid lg:grid-cols-3 gap-4">
+              {GTM_TIERS.map((g, i) => (
+                <div key={g.tier}
+                  className={`rounded-md border p-6 transition-all duration-300 hover-lift animate-fade-up ${g.class}`}
+                  style={{ animationDelay: `${0.5 + i * 0.1}s` }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className={`w-7 h-7 rounded-md flex items-center justify-center shrink-0 ${
+                      g.accent === 'crimson' ? 'bg-crimson-soft' : 'bg-copper-soft'
+                    }`}>
+                      <span className={`text-[10px] font-black ${
+                        g.accent === 'crimson' ? 'text-crimson' : 'text-copper'
+                      }`}>{i + 1}</span>
+                    </div>
+                    <p className={`text-[13px] font-bold font-heading ${
+                      g.accent === 'crimson' ? 'text-crimson' : 'text-copper'
+                    }`}>{g.tier}</p>
+                  </div>
+                  <p className="text-[11px] font-bold text-charcoal mb-2">Target: {g.banks}</p>
+                  <p className="text-[11px] text-gray-500 leading-relaxed">{g.why}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SCALABILITY ─────────────────────────────────────────────────── */}
+      <section id="scalability" className="relative py-24 px-6 bg-cream overflow-hidden">
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full opacity-[0.04] pointer-events-none"
+             style={{ background: 'radial-gradient(circle, var(--crimson) 0%, transparent 70%)' }} />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full opacity-[0.04] pointer-events-none"
+             style={{ background: 'radial-gradient(circle, var(--copper) 0%, transparent 70%)' }} />
+
+        <div className="relative max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-md text-copper text-[10px] font-bold uppercase tracking-widest bg-copper-soft border border-copper animate-fade-up">
+              <Server className="w-3 h-3" />
+              Scalability & Performance
+            </div>
+            <h2 className="text-[44px] font-heading font-bold text-charcoal mb-4 leading-[1.05] animate-fade-up delay-100"
+                style={{ letterSpacing: '-0.03em' }}>
+              Scales from One Bank to<br />
+              <span className="text-gradient">a Million Customers</span>
+            </h2>
+            <p className="text-gray-500 text-[16px] max-w-xl mx-auto animate-fade-up delay-200">
+              Microservice isolation, stateless orchestration, and a Kafka event spine — the same pattern Netflix uses for independent scaling and failure domains.
+            </p>
+          </div>
+
+          {/* Architecture pillars */}
+          <div className="grid lg:grid-cols-3 gap-4">
+            {SCALE_PILLARS.map((p, i) => {
+              const Icon = p.icon;
+              return (
+                <div key={p.title}
+                  className="group p-6 rounded-md border border-soft bg-white transition-all duration-300 hover-lift overflow-hidden animate-fade-up"
+                  style={{ animationDelay: `${0.3 + i * 0.08}s` }}>
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-copper/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-md bg-gradient-brand flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Icon className="w-5 h-5 text-white" />
+                    </div>
+                    <p className="text-[14px] font-bold text-charcoal font-heading">{p.title}</p>
+                  </div>
+                  <p className="text-[12px] text-gray-500 leading-relaxed">{p.body}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Architecture detail strip */}
+          <div className="mt-8 p-5 rounded-md border border-soft bg-white animate-fade-up delay-500">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-md bg-copper-soft flex items-center justify-center">
+                <Zap className="w-4 h-4 text-copper" />
+              </div>
+              <p className="text-[13px] font-bold text-charcoal font-heading">Layer Architecture — Port Map</p>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+              {[
+                { port: '3001', name: 'Bank API',      color: 'bg-copper-soft text-copper' },
+                { port: '8000', name: 'Orchestrator',   color: 'bg-crimson-soft text-crimson' },
+                { port: '8001', name: 'CHRONOS',        color: 'bg-copper-soft text-copper' },
+                { port: '8002', name: 'ARGUS',          color: 'bg-crimson-soft text-crimson' },
+                { port: '8004', name: 'COMPASS',        color: 'bg-copper-soft text-copper' },
+                { port: '8005', name: 'HERALD',         color: 'bg-cream text-charcoal border border-soft' },
+                { port: '8006', name: 'VERDICT',        color: 'bg-cream text-charcoal border border-soft' },
+                { port: '8007', name: 'ORACLE',         color: 'bg-cream text-charcoal border border-soft' },
+              ].map((svc) => (
+                <div key={svc.port} className="flex items-center gap-2.5 p-2.5 rounded-md bg-cream">
+                  <code className={`text-[10px] font-black px-2 py-1 rounded shrink-0 tracking-wider ${svc.color}`}>{svc.port}</code>
+                  <span className="text-[12px] font-bold text-charcoal">{svc.name}</span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-3 text-[11px] text-gray-500">Each stage owns its own data, dependencies, and port. Communicate over HTTP internally and Kafka externally. Independent deploys, independent scaling, independent failure domains.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECURITY & ENTERPRISE READINESS ──────────────────────────────── */}
+      <section id="security" className="relative py-24 px-6 bg-white overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-[0.03] pointer-events-none"
+             style={{ background: 'radial-gradient(circle, var(--copper) 0%, transparent 60%)' }} />
+
+        <div className="relative max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-md text-crimson text-[10px] font-bold uppercase tracking-widest bg-crimson-soft border border-crimson animate-fade-up">
+              <Lock className="w-3 h-3" />
+              Enterprise Readiness
+            </div>
+            <h2 className="text-[44px] font-heading font-bold text-charcoal mb-4 leading-[1.05] animate-fade-up delay-100"
+                style={{ letterSpacing: '-0.03em' }}>
+              Compliance by Design,<br />
+              <span className="text-gradient">Security by Default</span>
+            </h2>
+            <p className="text-gray-500 text-[16px] max-w-xl mx-auto animate-fade-up delay-200">
+              DPDPA 2023 mapped into every data path. PII masked before any external API call. Data never leaves India.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-4">
+            {SECURITY_FEATURES.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <div key={s.title}
+                  className="group relative p-6 rounded-md border border-soft bg-cream transition-all duration-300 hover-lift overflow-hidden animate-fade-up"
+                  style={{ animationDelay: `${0.2 + i * 0.07}s` }}>
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-crimson/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className={`w-10 h-10 rounded-md flex items-center justify-center group-hover:scale-110 transition-transform ${
+                      i % 2 === 0 ? 'bg-crimson-soft' : 'bg-copper-soft'
+                    }`}>
+                      <Icon className={`w-5 h-5 ${i % 2 === 0 ? 'text-crimson' : 'text-copper'}`} />
+                    </div>
+                    <p className="text-[14px] font-bold text-charcoal font-heading">{s.title}</p>
+                  </div>
+                  <p className="text-[12px] text-gray-500 leading-relaxed">{s.body}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Standards strip */}
+          <div className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-3 animate-fade-up delay-500">
+            {[
+              { label: 'DPDPA 2023', sub: 'Full compliance mapped' },
+              { label: 'TRAI Regs',  sub: 'Consent + 155-char SMS' },
+              { label: 'RBI Outsourcing', sub: 'India-only data residency' },
+              { label: 'Model Risk', sub: 'Holdout-gated deployment' },
+            ].map((s) => (
+              <div key={s.label} className="flex items-center gap-3 p-4 rounded-md border border-soft bg-cream">
+                <div className="w-2 h-2 rounded-full bg-gradient-brand shrink-0" />
+                <div>
+                  <p className="text-[12px] font-bold text-charcoal">{s.label}</p>
+                  <p className="text-[10px] text-gray-500">{s.sub}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

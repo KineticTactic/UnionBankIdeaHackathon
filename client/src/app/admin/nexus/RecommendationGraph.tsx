@@ -39,7 +39,7 @@ interface Props {
 export default function RecommendationGraph({ graph, recommendation, recommendations, selectedId, onSelect }: Props) {
   const cnodes = useRef<CNode[]>([]);
   const pnodes = useRef<Map<string, PNode>>(new Map());
-  const raf = useRef<number>();
+  const raf = useRef<number | undefined>(undefined);
   const pausedRef = useRef(false);
   const frame = useRef(0);
   const [rnodes, setRnodes] = useState<CNode[]>([]);

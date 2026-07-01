@@ -1225,5 +1225,100 @@
       "calls": "d4735e3a265e16ee"
     },
     "generator": "templated+llm-narrative"
+  },
+  {
+    "id": "RPT-1782878094541-J7RE",
+    "report_type": "bias_review",
+    "date_from": "",
+    "date_to": "",
+    "generated_at": "2026-07-01T03:54:54.541Z",
+    "generated_by": "admin",
+    "data": {
+      "period": {
+        "from": "all",
+        "to": "now"
+      },
+      "generated_at": "2026-07-01T03:54:54.541Z",
+      "churn_intervention": {
+        "total_customers": 51,
+        "at_risk": 19,
+        "interventions": 3,
+        "saves": 2,
+        "save_rate": "66.7%"
+      },
+      "compliance_audit": {
+        "total_customers": 51,
+        "calls_recorded": 2,
+        "compliance_flags": 0,
+        "consent_coverage": 2,
+        "tasks_completed": 1,
+        "tasks_outstanding": 3
+      },
+      "rm_activity": [
+        {
+          "rm_name": "Aditya Sharma",
+          "username": "rm_user",
+          "calls": 2,
+          "outcomes": 3,
+          "tasks": 4
+        },
+        {
+          "rm_name": "Deepa Krishnan",
+          "username": "rm_deepa",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Sunita Nair",
+          "username": "rm_sunita",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Vikram Joshi",
+          "username": "rm_vikram",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Rohit Kapoor",
+          "username": "rm_rohit",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Ritu Malhotra",
+          "username": "rm_ritu",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Anand Pillai",
+          "username": "rm_anand",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        },
+        {
+          "rm_name": "Priya Menon",
+          "username": "rm_priya",
+          "calls": 0,
+          "outcomes": 0,
+          "tasks": 0
+        }
+      ]
+    },
+    "llm_summary": null,
+    "source_hashes": {
+      "customers": "c2063cd152f08b9d",
+      "outcomes": "4e07408562bedb8b",
+      "calls": "d4735e3a265e16ee"
+    },
+    "generator": "templated+llm-narrative"
   }
 ]

@@ -2082,5 +2082,110 @@
     "reviewedAt": null,
     "rejectionReason": null,
     "expiresAt": "2026-07-02T23:51:41.421Z"
+  },
+  {
+    "approvalId": "200f309b-e957-4324-addf-2298e72a499c",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-01T03:47:43.472Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let's keep your banking journey smooth and rewarding",
+        "body": "Hi Naveen, I noticed a few transactions that suggest your banking needs may have changed since you retired last month—let’s make sure Union Bank continues working perfectly for you. Your steady salary credits and careful spending show you’re managing finances thoughtfully, and we want to support that effort. Would you like me to connect you with a relationship manager who can review your account and suggest ways to simplify your post-retirement banking? Just reply to this email or call 1800-22-3344 and ask for Priya. Warmly, Union Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 87
+      },
+      "sms": {
+        "body": "Dear Naveen, retirement brings new priorities—let’s ensure your Union Bank account stays effortless for you. Reply YES to speak with Priya or call 1800-22-3344 today. – Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 179
+      },
+      "push": {
+        "title": "Retirement just began—let’s simplify your banking",
+        "body": "Naveen, retirement is a fresh start. Tap to chat with Priya and make your Union Bank account work exactly the way you need it to now.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-03T03:47:43.472Z"
+  },
+  {
+    "approvalId": "9d887856-111f-4b83-9ed3-8f69137a5807",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-01T03:47:50.602Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let’s make your first month of retirement stress-free",
+        "body": "Hi Naveen, congratulations on taking this exciting step into retirement! We know this is a big transition, and we’re here to support you every step of the way. Since your last salary credit, we’ve noticed your banking might need a little extra attention right now—and that’s why we’d love to help simplify things for you. As a valued customer, we’re setting aside a special assistance package just for you. Would you like us to connect with a dedicated relationship manager who can walk you through optimizing your accounts, setting up auto-payments, or even exploring ways to grow your savings safely? Simply reply to this email or call us at 1800-XXX-XXXX anytime; we’re available 7 days a week. Warmest regards, Team Union Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 122
+      },
+      "sms": {
+        "body": "Naveen, congrats on retirement! Let us help make your first month seamless. Reply YES for a call-back or call 1800-XXX-XXXX anytime—we’re here for you. Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 162
+      },
+      "push": {
+        "title": "Retirement just started—let’s make it easy",
+        "body": "Naveen, your first month deserves less stress & more support. Tap to schedule a quick call with our team. Union Bank",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-07-01T03:48:10.797Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-07-03T03:47:50.602Z"
+  },
+  {
+    "approvalId": "884e42a6-fa43-4f8e-968d-f3caaa25672d",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-01T03:53:15.906Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let’s make your savings work harder for you",
+        "body": "Hi Naveen, I hope this note finds you well. I wanted to reach out personally to see how you’ve been doing. With your transition to retirement, I know it’s a time for new priorities and perhaps some gentle recalibration of your finances. We’ve noticed you’ve been actively managing your accounts and I’d love to help ensure your money is aligned with what matters most to you now. Could we set up a quick call this week to explore how we can make your savings or any upcoming goals feel even more secure and rewarding? Your peace of mind is what matters most. Just reply with a time that works for you, and I’ll take care of the rest.",
+        "compliance_status": "APPROVED",
+        "word_count": 118
+      },
+      "sms": {
+        "body": "Hi Naveen, hope you're doing well. Retirement’s a big change — we’d love to support you. Can we chat this week about how your accounts can work even smarter for your new chapter? Just reply YES and we’ll set it up. Warmly, Union Bank.",
+        "compliance_status": "APPROVED",
+        "char_count": 234
+      },
+      "push": {
+        "title": "Let’s chat about your plans",
+        "body": "Naveen, we’ve got your back as you start this new phase. Tap to schedule a quick call with us and let’s make sure your money’s working just right for you.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-07-01T03:53:48.449Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-07-03T03:53:15.906Z"
   }
 ]

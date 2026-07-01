@@ -2,6 +2,17 @@
 
 > **UnionBank iDEA 2.0 Hackathon 2026** · Team MoneyLords · Indian Institute of Technology Guwahati
 
+<div align="center">
+	<code><img width="50" src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/tailwind_css.png" alt="Tailwind CSS" title="Tailwind CSS"/></code>
+	<code><img width="50" src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/typescript.png" alt="TypeScript" title="TypeScript"/></code>
+	<code><img width="50" src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/node_js.png" alt="Node.js" title="Node.js"/></code>
+	<code><img width="50" src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/next_js.png" alt="Next.js" title="Next.js"/></code>
+	<code><img width="50" src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/python.png" alt="Python" title="Python"/></code>
+	<code><img width="50" src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/go.png" alt="Go" title="Go"/></code>
+	<code><img width="50" src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/docker.png" alt="Docker" title="Docker"/></code>
+	<code><img width="50" src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/kafka.png" alt="kafka" title="kafka"/></code>
+</div>
+
 PCOP is a seven-layer intelligence platform that detects retail banking customers approaching a churn decision **weeks before any explicit disengagement signal**, and autonomously orchestrates hyper-personalised, compliance-gated retention outreach through the optimal channel — all while the bank is still well within the intervention window.
 
 ---
@@ -157,14 +168,14 @@ The full stage registry, inter-stage Pydantic contracts, and model artifact loca
 
 ### ARGUS sub-components (L2)
 
-| Component     | Role                                 | Statistical basis                                                                                |
-| ------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| **HERALD**    | Per-stream adaptive change detection | Shiryaev-Roberts (gradual drift), two-sided CUSUM (sudden shift), SPRT (rare events)             |
-| **NEXUS**     | Correlation structure monitor        | Graphical lasso precision matrix per segment; flags changes in signal co-movement                |
-| **ORACLE**    | Multivariate joint arbiter           | G-BOCPD (Bayesian online changepoint detection)                                                 |
-| **WARDEN**    | Multiple testing controller          | Benjamini-Hochberg FDR at α = 0.05 across 18 signals; reduces naive FWER of 37% to 5%           |
-| **TEMPO**     | Adaptive baseline manager            | Kalman filter for drift-resistant μ₀ estimation                                                  |
-| **ECHO**      | Signal expiry and TTL                | 72-hour TTL prevents stale signals contaminating ORACLE                                         |
+| Component  | Role                                 | Statistical basis                                                                     |
+| ---------- | ------------------------------------ | ------------------------------------------------------------------------------------- |
+| **HERALD** | Per-stream adaptive change detection | Shiryaev-Roberts (gradual drift), two-sided CUSUM (sudden shift), SPRT (rare events)  |
+| **NEXUS**  | Correlation structure monitor        | Graphical lasso precision matrix per segment; flags changes in signal co-movement     |
+| **ORACLE** | Multivariate joint arbiter           | G-BOCPD (Bayesian online changepoint detection)                                       |
+| **WARDEN** | Multiple testing controller          | Benjamini-Hochberg FDR at α = 0.05 across 18 signals; reduces naive FWER of 37% to 5% |
+| **TEMPO**  | Adaptive baseline manager            | Kalman filter for drift-resistant μ₀ estimation                                       |
+| **ECHO**   | Signal expiry and TTL                | 72-hour TTL prevents stale signals contaminating ORACLE                               |
 
 ### NEXUS — Cross-Sell Recommendation Engine
 
@@ -481,26 +492,26 @@ All data used in this project is **100% synthetic** — no real customer PII was
 
 All routes except `/auth/*` require `Authorization: Bearer <JWT>`.
 
-| Method | Endpoint                      | Description                          |
-| ------ | ----------------------------- | ------------------------------------ |
-| POST   | `/auth/login`                 | Get JWT token                        |
-| GET    | `/api/portfolio/stats`        | Aggregate KPIs                       |
-| GET    | `/api/portfolio/top-at-risk`  | Top customers by churn score         |
-| GET    | `/api/customers`              | All 20 customers (filterable)        |
-| GET    | `/api/customers/:id/snapshot` | Full customer profile                |
-| GET    | `/api/customers/:id/signals`  | Active ARGUS signals                 |
-| POST   | `/api/analysis/analyze`       | Trigger AI risk analysis             |
-| POST   | `/api/outreach/generate`      | Generate HERALD outreach content     |
-| GET    | `/api/v2/scores`              | Ensemble scores + survival horizons  |
-| GET    | `/api/v2/action-plans`        | COMPASS action plans                 |
-| GET    | `/api/v2/model-health`        | Model health + ensemble config       |
-| GET    | `/api/kafka/stream`           | Server-Sent Events live event stream |
-| GET    | `/api/nexus/overview`         | Portfolio cross-sell intelligence (KPIs, catalog adoption, top opportunities) |
-| GET    | `/api/nexus/customer/:id`     | Per-customer ranked recommendations + eligibility + COMPASS offer |
-| GET    | `/api/nexus/graph`            | Force-directed customer–product graph for the operator console     |
-| GET    | `/api/nexus/handoffs`         | Recent NEXUS-to-COMPASS handoffs                                     |
-| POST   | `/api/nexus/send-to-compass/:id` | Push top NEXUS recommendation to COMPASS for action plan          |
-| POST   | `/api/nexus/pitch/:id`        | Generate a pitch for a single NEXUS recommendation                  |
+| Method | Endpoint                         | Description                                                                   |
+| ------ | -------------------------------- | ----------------------------------------------------------------------------- |
+| POST   | `/auth/login`                    | Get JWT token                                                                 |
+| GET    | `/api/portfolio/stats`           | Aggregate KPIs                                                                |
+| GET    | `/api/portfolio/top-at-risk`     | Top customers by churn score                                                  |
+| GET    | `/api/customers`                 | All 20 customers (filterable)                                                 |
+| GET    | `/api/customers/:id/snapshot`    | Full customer profile                                                         |
+| GET    | `/api/customers/:id/signals`     | Active ARGUS signals                                                          |
+| POST   | `/api/analysis/analyze`          | Trigger AI risk analysis                                                      |
+| POST   | `/api/outreach/generate`         | Generate HERALD outreach content                                              |
+| GET    | `/api/v2/scores`                 | Ensemble scores + survival horizons                                           |
+| GET    | `/api/v2/action-plans`           | COMPASS action plans                                                          |
+| GET    | `/api/v2/model-health`           | Model health + ensemble config                                                |
+| GET    | `/api/kafka/stream`              | Server-Sent Events live event stream                                          |
+| GET    | `/api/nexus/overview`            | Portfolio cross-sell intelligence (KPIs, catalog adoption, top opportunities) |
+| GET    | `/api/nexus/customer/:id`        | Per-customer ranked recommendations + eligibility + COMPASS offer             |
+| GET    | `/api/nexus/graph`               | Force-directed customer–product graph for the operator console                |
+| GET    | `/api/nexus/handoffs`            | Recent NEXUS-to-COMPASS handoffs                                              |
+| POST   | `/api/nexus/send-to-compass/:id` | Push top NEXUS recommendation to COMPASS for action plan                      |
+| POST   | `/api/nexus/pitch/:id`           | Generate a pitch for a single NEXUS recommendation                            |
 
 Full API documentation is available in the technical walkthrough notebook.
 

@@ -142,13 +142,7 @@ function Navbar() {
           <span className="text-gray-500 text-[10px] font-semibold px-2 py-0.5 rounded-md border border-soft uppercase tracking-wider ml-1">Demo</span>
         </Link>
         <div className="flex items-center gap-6">
-          <a href="#how-it-works" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>How it works</a>
-          <a href="#architecture" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>Architecture</a>
-          <a href="#business" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>Business</a>
           <Link href="/business-model" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>Business Model</Link>
-          <a href="#scalability" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>Scale</a>
-          <a href="#security" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>Security</a>
-          <a href="#api" className={`text-[13px] transition-colors hidden md:block ${scrolled ? 'text-charcoal/70 hover:text-charcoal' : 'text-charcoal/70 hover:text-charcoal'}`}>API</a>
           <Link href="/login"
             className="flex items-center gap-1.5 text-[13px] font-semibold px-4 py-2 rounded-md text-white bg-gradient-brand hover:opacity-90 transition-all">
             Enter Platform <ArrowRight className="w-3.5 h-3.5" />
@@ -160,6 +154,18 @@ function Navbar() {
 }
 
 export default function LandingPage() {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 's' || e.key === 'S') {
+        if (e.target instanceof HTMLElement && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+        const el = document.getElementById('scalability');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
     <div className="w-full min-h-screen bg-cream text-charcoal">
 

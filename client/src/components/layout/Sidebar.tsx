@@ -127,7 +127,7 @@ export default function Sidebar() {
 
       {/* Logo */}
       <div className="h-14 flex items-center px-4 border-b border-[#E5E0DF]">
-        <Link href="/dashboard" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5">
           <Image
             src="/pcop_logo.png"
             alt="PCOP"

@@ -91,5 +91,57 @@
     "rationale": "Cross-sell fit 45% for Health Insurance. 4 of 13 similar SME customers hold this; typical for the SME segment. Source: nexus-heuristic.",
     "churn_deferral_checked": true,
     "created_at": "2026-06-30T21:43:19.830Z"
+  },
+  "CUST-047": {
+    "customer_id": "CUST-047",
+    "source": "NEXUS",
+    "action": "CROSS_SELL",
+    "offer_code": "CROSS_SELL_LIFE_INSURANCE",
+    "offer_display": "Life Insurance",
+    "content_strategy": "cross_sell",
+    "channel": "branch",
+    "fit_score": 0.982,
+    "model": "nexus-baseline-pkdd99",
+    "model_version": "nexus-baseline-v1",
+    "reason_codes": [
+      {
+        "feature": "trained_model",
+        "value": 0.98,
+        "direction": "increases_fit",
+        "detail": "NEXUS-Baseline propensity 98% (XGBoost, trained on PKDD'99)"
+      }
+    ],
+    "rationale": "Cross-sell fit 98% for Life Insurance. NEXUS-Baseline propensity 98% (XGBoost, trained on PKDD'99). Source: nexus-baseline-pkdd99.",
+    "churn_deferral_checked": true,
+    "created_at": "2026-07-01T03:49:05.984Z"
+  },
+  "CUST-043": {
+    "customer_id": "CUST-043",
+    "source": "NEXUS",
+    "action": "CROSS_SELL",
+    "offer_code": "CROSS_SELL_HEALTH_INSURANCE",
+    "offer_display": "Health Insurance",
+    "content_strategy": "cross_sell",
+    "channel": "email",
+    "fit_score": 0.413,
+    "model": "nexus-heuristic",
+    "model_version": "nexus-baseline-v1",
+    "reason_codes": [
+      {
+        "feature": "peer_adoption",
+        "value": 0.53,
+        "direction": "increases_fit",
+        "detail": "9 of 17 similar Mass Affluent customers hold this"
+      },
+      {
+        "feature": "segment_affinity",
+        "value": 0.5,
+        "direction": "increases_fit",
+        "detail": "typical for the Mass Affluent segment"
+      }
+    ],
+    "rationale": "Cross-sell fit 41% for Health Insurance. 9 of 17 similar Mass Affluent customers hold this; typical for the Mass Affluent segment. Source: nexus-heuristic.",
+    "churn_deferral_checked": true,
+    "created_at": "2026-07-01T03:54:31.920Z"
   }
 }

@@ -129,7 +129,7 @@ services:
   # ── Chronos ML Scoring ──────────────────────────────────────────────────────
   scoring:
     build:
-      context: ./chronos
+      context: ./L3_CHRONOS
       dockerfile: services/scoring/Dockerfile
     restart: unless-stopped
     ports:
@@ -142,7 +142,7 @@ services:
       kafka:
         condition: service_started
     volumes:
-      - ./chronos/ml/checkpoints:/app/ml/checkpoints:ro
+      - ./L3_CHRONOS/ml/checkpoints:/app/ml/checkpoints:ro
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-pcop}:${POSTGRES_PASSWORD:-pcop_dev}@postgres:5432/${POSTGRES_DB:-pcop}
       REDIS_URL: redis://redis:6379
@@ -150,7 +150,7 @@ services:
       MLFLOW_TRACKING_URI: http://mlflow:5000
       PYTHONPATH: /app
     env_file:
-      - ./chronos/.env
+      - ./L3_CHRONOS/.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
       interval: 30s

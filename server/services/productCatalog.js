@@ -3,7 +3,7 @@
  * productCatalog.js — NEXUS product taxonomy + segment affinity priors.
  *
  * Single source of truth for the cross-sell catalog. Mirrors
- * chronos/ml/features/product_taxonomy.py (§2 of NEXUS_IMPLEMENTATION.md).
+ * L3_CHRONOS/ml/features/product_taxonomy.py (§2 of NEXUS_IMPLEMENTATION.md).
  * Used by:
  *   - scripts/backfill_holdings.js  (P0 — seed demo customer holdings)
  *   - services/nexus.js             (P1 — peer-adoption recommendation scoring)

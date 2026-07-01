@@ -10,10 +10,10 @@ build/
 .mypy_cache/
 .ruff_cache/
 .DS_Store
-chronos/ml/checkpoints/
-chronos/data/
+L3_CHRONOS/ml/checkpoints/
+L3_CHRONOS/data/
 mlruns/
 *.db
 **/demo*.json
-# NEXUS dataset source zip (CSVs extracted to gitignored chronos/data/datasets/)
+# NEXUS dataset source zip (CSVs extracted to gitignored L3_CHRONOS/data/datasets/)
 archive.zip

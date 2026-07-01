@@ -35,12 +35,17 @@ service, the inter-stage contracts, and the issues that Phase 2 fixes.
          │    Live signal-detection library (HERALD + NEXUS + ORACLE
          │    + WARDEN + ECHO). Per-customer in-process evaluation.
          │
-         ├─► Layer 3 · CHRONOS (Python FastAPI, :8001)
-         │    chronos/api/main.py
-         │    5-model ensemble scoring (TARE + HABITAT + FUSIONX +
-         │    CAUSAL-NET + GENESIS). Fetches from Bank :3001 live.
-         │    APScheduler jobs: 6h batch + daily GENESIS + weekly
-         │    MLflow retrain + monthly retrain.
+          ├─► Layer 3 · CHRONOS (Python FastAPI, :8001)
+          │    chronos/api/main.py
+          │    5-model ensemble scoring (TARE + HABITAT + FUSIONX +
+          │    CAUSAL-NET + GENESIS). Fetches from Bank :3001 live.
+          │    APScheduler jobs: 6h batch + daily GENESIS + weekly
+          │    MLflow retrain + monthly retrain.
+          │    ├── NEXUS — graph-based product recommendation
+          │    │   XGBoost baseline + GraphSAGE GNN. Trained on
+          │    │   PKDD'99 (peer-adoption link prediction). Serves
+          │    │   /recommendations/{customer_id} for COMPASS to pick
+          │    │   the next best cross-sell offer (compliance-gated).
          │
          ├─► Layer 4 · COMPASS (Python FastAPI, :8004)
          │    layer4 compass orchestration/services/orchestration/main.py
@@ -96,6 +101,7 @@ service, the inter-stage contracts, and the issues that Phase 2 fixes.
 | 1 | Bank API          | bank         | 3001 | `bank/server.js` | Live core-banking, CRM, app-events, card-network, enrichment | n/a (loads JSON/CSVs at startup) | postgres (optional via DATABASE_URL) |
 | 2 | ARGUS             | argus        | 8002 | `pcop_layer2_argus/services/detection/main.py` (FastAPI wrapper added) | Per-customer signal detection. CUSUM, BOCPD, SPRT, SA-EWMA, BH-FDR, NEXUS (joint), ORACLE (multivariate), WARDEN (FDR), ECHO (alarm publisher) | n/a (stateless lib) | kafka (optional) |
 | 3 | CHRONOS           | chronos      | 8001 | `chronos/api/main.py` (FastAPI) | Risk scoring + survival. TARE ONNX encoder, HABITAT XGBoost, FUSIONX ensemble, CAUSAL-NET, GENESIS, AEGIS guard. APScheduler background jobs. | `ml/checkpoints/tare_churn.onnx`, `habitat_pass1.json`, `fusion_weights.json`, `causal_net_*.json`, `genesis_lr.pkl`, `aegis_reference.json` | postgres, redis, kafka, mlflow |
+| 3a | NEXUS (CHRONOS sub-component) | nexus | 8001 | `chronos/api/routers/recommendations.py` (served by CHRONOS) | Graph-based product cross-sell. XGBoost baseline (`nexus-baseline`) trained on PKDD'99, GraphSAGE GNN for peer-adoption link prediction. Compliance-gated (no credit offers to high churn-risk). | `ml/checkpoints/nexus_baseline_metrics.json`, `ml/training/nexus_baseline_train.py` | postgres (catalog), inherits CHRONOS deps |
 | 4 | COMPASS           | compass      | 8004 | `layer4 compass orchestration/services/orchestration/main.py` | Next-best-action agent (LangGraph 7 nodes). Consumes signal-detections, emits action plans. | NVIDIA DeepSeek V4 Pro for cognition + NBA | kafka |
 | 5 | HERALD            | herald       | 8005 | `layer5 herald content generation/services/content/main.py` (HTTP shim added) | Content generation + compliance check (SENTINEL) + dispatch. | NVIDIA DeepSeek-V4 Pro, channel prompts, prohibited-phrases list | kafka |
 | 6 | VERDICT           | verdict      | 8006 | `layer6 verdict measurement/scripts/run_demo_verdict.py` wrapped by `services/measurement/api.py` (added) | T+N outcome measurement + DR-Learner uplift attribution. | DR-Learner internals (numpy/scipy) | postgres, kafka |
@@ -163,15 +169,18 @@ Layer 2  POST /evaluate                body: ARGUSInput → ARGUSOutput
         GET  /version
 
 Layer 3  GET  /scores                  → ChurnScoreListResponse
-        GET  /scores/:customer_id      → ChurnScoreResponse
-        GET  /scores/:customer_id/token-sequence
-        GET  /scores/:customer_id/reason-codes
-        POST /scores/:customer_id/analyze → AnalyzeResponse
-        GET  /model-health
-        GET  /model-health/scheduler
-        POST /bias-audit/run
-        GET  /bias-audit/status
-        GET  /health
+         GET  /scores/:customer_id      → ChurnScoreResponse
+         GET  /scores/:customer_id/token-sequence
+         GET  /scores/:customer_id/reason-codes
+         POST /scores/:customer_id/analyze → AnalyzeResponse
+         GET  /model-health
+         GET  /model-health/scheduler
+         POST /bias-audit/run
+         GET  /bias-audit/status
+         GET  /health
+         GET  /recommendations/health             — NEXUS model metadata + offline metrics
+         POST /recommendations/score              body: { features, held_products[] }
+         GET  /recommendations/{customer_id}      — ranked product propensities (top-offer)
 
 Layer 4  POST /orchestrate             body: CompassState → CompassState
         GET  /health
@@ -226,6 +235,8 @@ A TypeScript mirror is provided at `pcop_schemas/ts/` for the client.
 | SHAP summary | `chronos/ml/checkpoints/habitat_shap_summary.png` | static asset |
 | MLflow registry | `chronos/mlflow.db` + `mlruns/` (created at runtime) | |
 | RAG corpus | `chronos/rag/corpus/*.json`, `*.md` | |
+| NEXUS baseline | `chronos/ml/checkpoints/nexus_baseline_metrics.json` | XGBoost offline eval (PKDD'99) |
+| NEXUS GraphSAGE | `chronos/ml/checkpoints/graphsage_churn.pt` | GNN link-prediction model (optional, in production) |
 
 ---
 

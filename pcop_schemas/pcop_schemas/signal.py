@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 class SignalResult(BaseModel):
     """Result of a single HERALD agent or joint detector run.
 
-    Mirrors `pcop_layer2_argus.services.detection.agents.base_agent.SignalResult`.
+    Mirrors `L2_ARGUS.services.detection.agents.base_agent.SignalResult`.
     """
 
     customer_id: str

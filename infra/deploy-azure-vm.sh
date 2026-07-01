@@ -34,7 +34,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
 # ── Pre-flight checks ────────────────────────────────────────────────────────
-for envfile in server/.env chronos/.env; do
+for envfile in server/.env L3_CHRONOS/.env; do
   [ -f "$PROJECT_DIR/$envfile" ] || echo "⚠️  Missing $envfile — NVIDIA API keys may not be set"
 done
 
@@ -141,7 +141,7 @@ echo "=== Uploading project (excluding node_modules, .next, etc.) ==="
 rsync -avz --delete \
   --exclude='node_modules' --exclude='.next' --exclude='__pycache__' \
   --exclude='*.pyc' --exclude='.venv' --exclude='.git' \
-  --exclude='chronos/ml/checkpoints' --exclude='chronos/data' \
+  --exclude='L3_CHRONOS/ml/checkpoints' --exclude='L3_CHRONOS/data' \
   --exclude='mlruns' --exclude='*.db' \
   -e "ssh -o StrictHostKeyChecking=no" \
   "${PROJECT_DIR}/" "${ADMIN_USER}@${FQDN}:/opt/pcop/"

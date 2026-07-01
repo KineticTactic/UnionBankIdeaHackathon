@@ -2047,5 +2047,40 @@
     "reviewedAt": "2026-06-30T22:12:33.849Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-02T22:12:02.287Z"
+  },
+  {
+    "approvalId": "91a74fe1-2cf6-4f87-be0d-60da1b85e8c3",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-06-30T23:51:41.421Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let’s make your banking smoother today",
+        "body": "Hi Naveen, I noticed you haven’t logged into the app in a while, and I just want to check in and see how I can make your banking experience easier for you. Sometimes life gets busy, and I totally get that. If there’s anything you’d like help with—whether it’s setting up automatic savings, checking your balance quickly, or exploring our digital tools—just let me know. We’re here to make things simpler for you. You’re an important part of the Union Bank family, and I’d love to help however I can. Just reply to this email or give us a call at 1800-XXX-XXXX. Warm regards, Union Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 106
+      },
+      "sms": {
+        "body": "Hi Naveen, it’s been a while since we last connected. We’d love to help make your banking even easier—just reply ‘HELP’ and let us know what you need. Union Bank cares about you.",
+        "compliance_status": "APPROVED",
+        "char_count": 178
+      },
+      "push": {
+        "title": "Let’s make banking easier for you, Naveen",
+        "body": "Hi Naveen, we miss you! Tap here to see how Union Bank can make your banking smoother today.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-02T23:51:41.421Z"
   }
 ]

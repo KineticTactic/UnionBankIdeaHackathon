@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -225,4 +226,136 @@ func ParseCommand(s string) []string {
 		out = append(out, cur.String())
 	}
 	return out
+}
+
+// KillPortOccupants finds and kills any process listening on the given
+// ports.  Used at TUI startup so stale processes from a previous run
+// do not block the new services from binding their required ports.
+//
+// Implementation notes:
+//   - macOS / Linux: uses `lsof -nP -tiTCP:PORT -sTCP:LISTEN` to print
+//     only the PID(s) listening on PORT.
+//   - Falls back to `lsof -ti:PORT` if the narrow LISTEN filter fails.
+//   - Each found PID is sent SIGKILL (signal 9) to ensure a hard stop;
+//     the TUI is about to respawn the service in that port anyway.
+//   - All activity is published to `broker` under the "tui-preflight"
+//     service so it shows up in the log ring buffer / dashboard tab.
+//
+// Returns the number of processes actually killed.
+func KillPortOccupants(ports []int, broker *LogBroker) int {
+	// De-dupe and drop zero / negative ports.
+	seen := make(map[int]bool)
+	clean := make([]int, 0, len(ports))
+	for _, p := range ports {
+		if p <= 0 || seen[p] {
+			continue
+		}
+		seen[p] = true
+		clean = append(clean, p)
+	}
+	if len(clean) == 0 {
+		return 0
+	}
+
+	const tag = "tui-preflight"
+	broker.Publish(LogLine{
+		Service: tag,
+		Line:    fmt.Sprintf("→ preflight: checking %d port(s): %s", len(clean), joinInts(clean, ", ")),
+		Time:    time.Now(),
+	})
+
+	killed := 0
+	for _, port := range clean {
+		pids := findPidsOnPort(port)
+		if len(pids) == 0 {
+			broker.Publish(LogLine{
+				Service: tag,
+				Line:    fmt.Sprintf("  port %d: free", port),
+				Time:    time.Now(),
+			})
+			continue
+		}
+		for _, pid := range pids {
+			proc, err := os.FindProcess(pid)
+			if err != nil {
+				broker.Publish(LogLine{
+					Service: tag,
+					Line:    fmt.Sprintf("  port %d: pid %d lookup failed: %v", port, pid, err),
+					Time:    time.Now(),
+				})
+				continue
+			}
+			if err := proc.Signal(syscall.SIGKILL); err != nil {
+				broker.Publish(LogLine{
+					Service: tag,
+					Line:    fmt.Sprintf("  port %d: pid %d kill failed: %v", port, pid, err),
+					Time:    time.Now(),
+				})
+				continue
+			}
+			killed++
+			broker.Publish(LogLine{
+				Service: tag,
+				Line:    fmt.Sprintf("  port %d: killed pid %d", port, pid),
+				Time:    time.Now(),
+			})
+		}
+	}
+	broker.Publish(LogLine{
+		Service: tag,
+		Line:    fmt.Sprintf("→ preflight done: %d process(es) killed", killed),
+		Time:    time.Now(),
+	})
+	return killed
+}
+
+// findPidsOnPort returns the PIDs of processes listening on the given
+// TCP port.  Tries the LISTEN-state filter first, then falls back to a
+// broader query so we still catch processes even if `lsof` is older.
+func findPidsOnPort(port int) []int {
+	// `lsof -nP -tiTCP:PORT -sTCP:LISTEN`  →  PIDs only, numeric, LISTEN.
+	args := []string{"-nP", "-tiTCP:" + strconv.Itoa(port), "-sTCP:LISTEN"}
+	if out, ok := runLsof(args); ok {
+		return parsePids(out)
+	}
+	// Fallback: any process touching this port.
+	if out, ok := runLsof([]string{"-nP", "-ti:" + strconv.Itoa(port)}); ok {
+		return parsePids(out)
+	}
+	return nil
+}
+
+func runLsof(args []string) (string, bool) {
+	cmd := exec.Command("lsof", args...)
+	out, err := cmd.Output()
+	if err != nil {
+		return "", false
+	}
+	return string(out), true
+}
+
+func parsePids(s string) []int {
+	var pids []int
+	for _, line := range strings.Split(strings.TrimSpace(s), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		pid, err := strconv.Atoi(line)
+		if err != nil {
+			continue
+		}
+		if pid > 0 {
+			pids = append(pids, pid)
+		}
+	}
+	return pids
+}
+
+func joinInts(xs []int, sep string) string {
+	parts := make([]string, len(xs))
+	for i, x := range xs {
+		parts[i] = strconv.Itoa(x)
+	}
+	return strings.Join(parts, sep)
 }

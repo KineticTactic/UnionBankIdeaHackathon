@@ -118,6 +118,9 @@ func main() {
 
 	// Start services unless disabled.
 	if !*noStart {
+		// Preflight: kill any stale processes still holding the ports
+		// we are about to bind to, so a previous run cannot block startup.
+		services.KillPortOccupants(mgr.Ports(), broker)
 		mgr.StartAll()
 	}
 

@@ -48,7 +48,7 @@ app_services:
   # ── Layer 2 · ARGUS ──────────────────────────────────────────────────────
   - name: argus
     color: "#DC2626"   # red
-    dir: ./pcop_layer2_argus
+    dir: ./L2_ARGUS
     start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8002 --no-access-log"
     health_url: http://localhost:8002/health
     port: 8002
@@ -58,7 +58,7 @@ app_services:
   # ── Layer 3 · CHRONOS ───────────────────────────────────────────────────
   - name: chronos
     color: "#2563EB"   # blue
-    dir: ./chronos
+    dir: ./L3_CHRONOS
     start_cmd: "poetry run uvicorn api.main:app --host 0.0.0.0 --port 8001 --no-access-log"
     health_url: http://localhost:8001/health
     port: 8001
@@ -68,7 +68,7 @@ app_services:
   # ── Layer 4 · COMPASS ───────────────────────────────────────────────────
   - name: compass
     color: "#F59E0B"   # amber
-    dir: ./layer4 compass orchestration
+    dir: ./L4_COMPASS
     start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8004 --no-access-log"
     health_url: http://localhost:8004/health
     port: 8004
@@ -78,7 +78,7 @@ app_services:
   # ── Layer 5 · HERALD ────────────────────────────────────────────────────
   - name: herald
     color: "#EC4899"   # pink
-    dir: ./layer5 herald content generation
+    dir: ./L5_HERALD
     start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8005 --no-access-log"
     health_url: http://localhost:8005/health
     port: 8005
@@ -88,7 +88,7 @@ app_services:
   # ── Layer 6 · VERDICT ───────────────────────────────────────────────────
   - name: verdict
     color: "#14B8A6"   # teal
-    dir: ./layer6 verdict measurement
+    dir: ./L6_VERDICT
     start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8006 --no-access-log"
     health_url: http://localhost:8006/health
     port: 8006
@@ -98,7 +98,7 @@ app_services:
   # ── Layer 7 · ORACLE ────────────────────────────────────────────────────
   - name: oracle
     color: "#A855F7"   # purple-light
-    dir: ./layer7 oracle analytics
+    dir: ./L7_ORACLE
     start_cmd: "PYTHONPATH=. uvicorn services.api.main:app --host 0.0.0.0 --port 8007 --no-access-log"
     health_url: http://localhost:8007/health
     port: 8007
@@ -298,49 +298,49 @@ commands:
     description: "Pre-train the TARE temporal sequence encoder"
     service: chronos
     cmd: "PYTHONPATH=. poetry run python ml/training/tare_pretrain.py --epochs 10"
-    dir: ./chronos
+    dir: ./L3_CHRONOS
 
   - name: "chronos train tare-finetune"
     description: "Fine-tune TARE for churn prediction"
     service: chronos
     cmd: "PYTHONPATH=. poetry run python ml/training/tare_finetune.py --pretrain-checkpoint ml/checkpoints/tare_pretrain_final.pt"
-    dir: ./chronos
+    dir: ./L3_CHRONOS
 
   - name: "chronos export onnx"
     description: "Export TARE to ONNX for inference"
     service: chronos
     cmd: "PYTHONPATH=. poetry run python ml/training/export_onnx.py --checkpoint ml/checkpoints/tare_finetune_final.pt --output ml/checkpoints/tare_churn.onnx"
-    dir: ./chronos
+    dir: ./L3_CHRONOS
 
   - name: "chronos train habitat"
     description: "Train the HABITAT XGBoost tabular scorer"
     service: chronos
     cmd: "PYTHONPATH=. poetry run python ml/training/habitat_train.py"
-    dir: ./chronos
+    dir: ./L3_CHRONOS
 
   - name: "chronos train genesis"
     description: "Train the GENESIS cold-start LR"
     service: chronos
     cmd: "PYTHONPATH=. poetry run python ml/training/genesis_train.py"
-    dir: ./chronos
+    dir: ./L3_CHRONOS
 
   - name: "chronos train causal-net"
     description: "Train the CAUSAL-NET T/S learners"
     service: chronos
     cmd: "PYTHONPATH=. poetry run python ml/training/causal_net_train.py"
-    dir: ./chronos
+    dir: ./L3_CHRONOS
 
   - name: "chronos batch score"
     description: "Run the full batch scoring pipeline and persist to DB"
     service: chronos
     cmd: "poetry run python -m services.scoring.serving.batch_scorer"
-    dir: ./chronos
+    dir: ./L3_CHRONOS
 
   - name: "chronos register models"
     description: "Register all CHRONOS models with MLflow"
     service: chronos
     cmd: "poetry run python ml/register_all_models.py"
-    dir: ./chronos
+    dir: ./L3_CHRONOS
 
   - name: "chronos bias audit"
     description: "Run a bias audit on the latest CHRONOS scores"
@@ -528,7 +528,7 @@ commands:
     description: "Run the COMPASS demo with hardcoded profiles (legacy script)"
     service: compass
     cmd: "python3 scripts/run_demo_compass.py"
-    dir: ./layer4 compass orchestration
+    dir: ./L4_COMPASS
 
   # ── HERALD ──────────────────────────────────────────────────────────────
   - name: "herald generate C-00000001"
@@ -541,7 +541,7 @@ commands:
     description: "Run the HERALD demo with hardcoded action plans (legacy script)"
     service: herald
     cmd: "python3 scripts/run_demo_herald.py"
-    dir: ./layer5 herald content generation
+    dir: ./L5_HERALD
 
   # ── VERDICT ─────────────────────────────────────────────────────────────
   - name: "verdict measure"
@@ -554,7 +554,7 @@ commands:
     description: "Run the VERDICT demo with hardcoded outcomes (legacy script)"
     service: verdict
     cmd: "python3 scripts/run_demo_verdict.py"
-    dir: ./layer6 verdict measurement
+    dir: ./L6_VERDICT
 
   # ── ORACLE ──────────────────────────────────────────────────────────────
   - name: "oracle cycle narrate"
@@ -573,7 +573,7 @@ commands:
     description: "Run the ORACLE demo with all 4 cycles (legacy script)"
     service: oracle
     cmd: "python3 scripts/run_demo_oracle.py"
-    dir: ./layer7 oracle analytics
+    dir: ./L7_ORACLE
 
 scheduled_tasks:
   - name: "chronos batch score"

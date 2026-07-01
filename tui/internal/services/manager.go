@@ -415,6 +415,21 @@ func (m *Manager) ServiceNames() []string {
 	return names
 }
 
+// Ports returns a stable list of ports owned by registered services.
+// Used at TUI startup so the preflight step can kill stale processes
+// that are still holding the ports we are about to bind to.
+func (m *Manager) Ports() []int {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	ports := make([]int, 0, len(m.states))
+	for _, s := range m.states {
+		if s.Port > 0 {
+			ports = append(ports, s.Port)
+		}
+	}
+	return ports
+}
+
 // FilterLogLines returns the last `n` log lines, optionally filtered
 // to a single service.  A line matches the filter if its primary
 // Service OR any of its Tags equals the filter (or if filter is "all").

@@ -27,9 +27,9 @@ _LAYER2_ROOT = _THIS_DIR.parent.parent
 if str(_LAYER2_ROOT) not in sys.path:
     sys.path.insert(0, str(_LAYER2_ROOT))
 
-# Also expose pcop_schemas for the shared Pydantic models.
+# Also expose schemas for the shared Pydantic models.
 _REPO_ROOT = _LAYER2_ROOT.parent
-_SCHEMAS_DIR = _REPO_ROOT / "pcop_schemas"
+_SCHEMAS_DIR = _REPO_ROOT / "schemas"
 if str(_SCHEMAS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCHEMAS_DIR))
 

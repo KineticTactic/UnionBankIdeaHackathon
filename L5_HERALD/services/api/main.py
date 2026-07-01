@@ -29,7 +29,7 @@ _LAYER_ROOT = _THIS_DIR.parent.parent
 if str(_LAYER_ROOT) not in sys.path:
     sys.path.insert(0, str(_LAYER_ROOT))
 _REPO_ROOT = _LAYER_ROOT.parent
-_SCHEMAS_DIR = _REPO_ROOT / "pcop_schemas"
+_SCHEMAS_DIR = _REPO_ROOT / "schemas"
 if str(_SCHEMAS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCHEMAS_DIR))
 

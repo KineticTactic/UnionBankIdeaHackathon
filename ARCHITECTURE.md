@@ -199,16 +199,16 @@ Layer 7  POST /cycle/:name             body: { params } → cycle-result
         GET  /health
 ```
 
-### Shared Schemas (new `pcop_schemas/` package)
+### Shared Schemas (new `schemas/` package)
 
-We introduce `pcop_schemas/` at the repo root, importable by all Python
+We introduce `schemas/` at the repo root, importable by all Python
 services via `PYTHONPATH`. Schemas live in Python (`pydantic`) for the
 Python side and as a single source of truth, with a parallel TypeScript
 re-export for the client.
 
 ```
-pcop_schemas/
-├── pcop_schemas/
+schemas/
+├── schemas/
 │   ├── __init__.py
 │   ├── customer.py       # CustomerRecord, CustomerSnapshot
 │   ├── score.py          # ChurnScore, ReasonCode, Survival
@@ -219,7 +219,7 @@ pcop_schemas/
 │   └── analytics.py      # ORACLE cycle-result schemas
 ```
 
-A TypeScript mirror is provided at `pcop_schemas/ts/` for the client.
+A TypeScript mirror is provided at `schemas/ts/` for the client.
 
 ### Model Artifact Locations
 
@@ -252,7 +252,7 @@ preserves behaviour while removing the smell.
    Rule A violation — even a degraded live response must come from a real
    model or a clear "model unavailable" error. Fix: return a structured
    error and require the operator to provide a real key (or a stub
-   heuristic service in `pcop_schemas`).
+   heuristic service in `schemas`).
 
 2. **C-2. `server/services/localData.js` reads from `bank/data/*.json` at
    request time** (lines 14-25, 81-103). This bypasses the live Bank API
@@ -349,7 +349,7 @@ preserves behaviour while removing the smell.
     in production calls `scoreRepo.getPortfolioAggregates()`. The shape
     is consistent (`{avg_p7, avg_p30, avg_p90, urgent_7d, urgent_30d,
     urgent_90d}`) but the source is implicit. Fix: add a `PortfolioSurvival`
-    Pydantic model to `pcop_schemas/`.
+    Pydantic model to `schemas/`.
 
 18. **M-5. `server/routes/customers.js:74-90`** POST /api/customers returns
     a fake customer with no DB write. Rule A violation. Fix: either

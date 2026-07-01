@@ -1,0 +1,8 @@
+{
+  "name": "schemas",
+  "version": "1.0.0",
+  "description": "PCOP inter-stage data contracts — TypeScript mirror of schemas/schemas",
+  "main": "index.ts",
+  "types": "index.ts",
+  "private": true
+}

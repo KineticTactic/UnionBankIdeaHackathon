@@ -1,6 +1,6 @@
 # PCOP shared schemas — inter-stage data contracts.
 # This package is the single source of truth for Python services.
-# A TypeScript mirror is at pcop_schemas/ts/ for the client.
+# A TypeScript mirror is at schemas/ts/ for the client.
 
 from .customer import CustomerRecord, CustomerSnapshot, BankCustomer
 from .score import (

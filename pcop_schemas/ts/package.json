@@ -1,8 +1,0 @@
-{
-  "name": "pcop-schemas",
-  "version": "1.0.0",
-  "description": "PCOP inter-stage data contracts — TypeScript mirror of pcop_schemas/pcop_schemas",
-  "main": "index.ts",
-  "types": "index.ts",
-  "private": true
-}

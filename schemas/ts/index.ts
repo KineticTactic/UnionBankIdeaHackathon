@@ -1,5 +1,5 @@
 // PCOP shared schemas — TypeScript mirror.
-// Keep in sync with pcop_schemas/pcop_schemas/*.py
+// Keep in sync with schemas/schemas/*.py
 
 export type RiskTier = 'critical' | 'high' | 'medium' | 'low';
 export type Channel = 'email' | 'sms' | 'push' | 'call' | 'rm_visit' | 'app';

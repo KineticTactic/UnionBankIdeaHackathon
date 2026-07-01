@@ -16,9 +16,9 @@ _CHRONOS_ROOT = Path(__file__).resolve().parents[2]
 if str(_CHRONOS_ROOT) not in sys.path:
     sys.path.insert(0, str(_CHRONOS_ROOT))
 
-# Same for pcop_schemas (sibling of chronos/ in the repo root).
+# Same for schemas (sibling of L3_CHRONOS/ in the repo root).
 _REPO_ROOT = _CHRONOS_ROOT.parent
-_SCHEMAS_DIR = _REPO_ROOT / "pcop_schemas"
+_SCHEMAS_DIR = _REPO_ROOT / "schemas"
 if _SCHEMAS_DIR.exists() and str(_SCHEMAS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCHEMAS_DIR))
 

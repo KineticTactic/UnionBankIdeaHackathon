@@ -184,6 +184,7 @@ export default function BusinessModelPage() {
       };
       if (e.key === 'c' || e.key === 'C') jump('competitive-analysis');
       else if (e.key === 'g' || e.key === 'G') jump('go-to-market');
+      else if (e.key === 'f' || e.key === 'F') jump('financial-model-cost');
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);

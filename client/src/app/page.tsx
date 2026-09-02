@@ -246,8 +246,8 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-        </div>
 
+        </div>
         {/* Scroll hint */}
         <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-400 animate-bounce">
           <span className="text-[10px] uppercase tracking-widest">Scroll</span>

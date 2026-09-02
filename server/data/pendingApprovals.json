@@ -4,7 +4,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T15:29:38.895Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -42,7 +42,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T15:29:40.679Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -80,7 +80,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T15:29:41.258Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -118,7 +118,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T15:29:41.577Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -156,7 +156,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T15:29:41.748Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -194,7 +194,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T15:29:41.965Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -232,7 +232,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T15:29:42.210Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -270,7 +270,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T15:29:58.478Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -308,7 +308,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T15:29:59.374Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -346,7 +346,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T16:39:21.144Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -384,7 +384,7 @@
     "customerId": "CUST-001",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T16:43:18.947Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "sms",
@@ -412,7 +412,7 @@
     "customerId": "CUST-001",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T16:47:44.423Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "sms",
@@ -440,7 +440,7 @@
     "customerId": "CUST-001",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T16:48:18.554Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "sms",
@@ -468,7 +468,7 @@
     "customerId": "CUST-001",
     "requestedBy": "admin",
     "requestedAt": "2026-06-29T16:48:55.158Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "sms",
@@ -496,7 +496,7 @@
     "customerId": "CUST-001",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:20:16.470Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "sms",
@@ -531,7 +531,7 @@
     "customerId": "CUST-001",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:21:00.017Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "sms",
@@ -566,7 +566,7 @@
     "customerId": "CUST-005",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:21:25.239Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "sms",
@@ -598,7 +598,7 @@
     "customerId": "CUST-010",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:21:27.283Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Engagement Reward",
       "channel": "phone",
@@ -633,7 +633,7 @@
     "customerId": "CUST-015",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:21:29.902Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Engagement Reward",
       "channel": "push",
@@ -668,7 +668,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:23:17.003Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -703,7 +703,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:39:45.051Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -738,7 +738,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:50:13.376Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -773,7 +773,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:50:31.735Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -808,7 +808,7 @@
     "customerId": "CUST-046",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:50:38.847Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -843,7 +843,7 @@
     "customerId": "CUST-001",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:51:23.488Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "sms",
@@ -875,7 +875,7 @@
     "customerId": "CUST-001",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:51:26.157Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "sms",
@@ -910,7 +910,7 @@
     "customerId": "CUST-001",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:51:34.298Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "sms",
@@ -945,7 +945,7 @@
     "customerId": "CUST-001",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:53:38.163Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "sms",
@@ -980,7 +980,7 @@
     "customerId": "CUST-001",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:53:42.347Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "sms",
@@ -1015,7 +1015,7 @@
     "customerId": "CUST-007",
     "requestedBy": "admin",
     "requestedAt": "2026-06-30T04:54:42.901Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "None",
       "channel": "email",
@@ -1878,7 +1878,7 @@
     "customerId": "CUST-012",
     "requestedBy": "rm_user",
     "requestedAt": "2026-06-30T12:39:02.386Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Engagement Reward",
       "channel": "sms",
@@ -1983,7 +1983,7 @@
     "customerId": "CUST-049",
     "requestedBy": "rm_user",
     "requestedAt": "2026-06-30T21:30:10.967Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -2053,7 +2053,7 @@
     "customerId": "CUST-049",
     "requestedBy": "rm_user",
     "requestedAt": "2026-06-30T23:51:41.421Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -2088,7 +2088,7 @@
     "customerId": "CUST-049",
     "requestedBy": "rm_user",
     "requestedAt": "2026-07-01T03:47:43.472Z",
-    "status": "PENDING",
+    "status": "EXPIRED",
     "compassRecommendation": {
       "offer": "Retention Offer",
       "channel": "email",
@@ -2222,5 +2222,738 @@
     "reviewedAt": "2026-07-01T04:38:41.914Z",
     "rejectionReason": null,
     "expiresAt": "2026-07-03T04:38:33.749Z"
+  },
+  {
+    "approvalId": "6c789d17-862b-4522-86e6-5742c21689da",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-01T05:03:13.207Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, we notice you haven’t logged in lately—let’s get you back to ease",
+        "body": "Hi Naveen, it’s been a little while since we last connected on the app, and I just wanted to reach out with a gentle reminder that we’re here whenever you’re ready. I can only imagine how busy life gets, especially with the changes retirement can bring, and I want to make sure you have everything you need close at hand.\n\nYour finances are important to me, and I’d love to help simplify things for you. Whether it’s checking your balance, setting up automatic transfers, or just getting comfortable with our digital tools again, I’m just a tap or call away. Let’s make sure your banking feels effortless—reply to this email or give us a call at 1800-22-3344, and I’ll personally ensure you’re all set.\n\nWarmly, \nUnion Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 127
+      },
+      "sms": {
+        "body": "Naveen, it’s been a while since we last heard from you—we’re here to make banking smooth for you. Need help with your account or just a quick check-in? Reply YES or call 1800-22-3344. Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 194
+      },
+      "push": {
+        "title": "Let’s make banking easy again, Naveen",
+        "body": "Tap to check your balance or set up automatic transfers—your finances deserve to feel effortless. Union Bank",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-07-01T05:03:24.909Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-07-03T05:03:13.207Z"
+  },
+  {
+    "approvalId": "d6d0ef3e-2484-49e6-b88b-6eff34b0e11f",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-01T05:21:02.608Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "A quick check-in, Naveen—how can we help?",
+        "body": "Hi Naveen, I noticed it’s been a while since we last connected, and I just wanted to reach out personally. Life after retirement can bring so many changes, and I’d love to understand how we can make your banking with us smoother during this transition. Your financial well-being matters deeply to us, especially now that you’ve entered this new chapter. Could we schedule a quick call or meet in person to discuss how Union Bank can support you better? I’d be honored to listen to your needs and explore the best ways to serve you. Looking forward to hearing from you soon.",
+        "compliance_status": "APPROVED",
+        "word_count": 102
+      },
+      "sms": {
+        "body": "Naveen, it’s been some time—how can Union Bank make your banking effortless post-retirement? Let’s chat today. Reply YES or call us at 1800-xxxxxx.",
+        "compliance_status": "APPROVED",
+        "char_count": 147
+      },
+      "push": {
+        "title": "Let’s make banking easier, Naveen",
+        "body": "We’d love to hear how we can support you better after retirement. Tap to share your needs—we’re here to listen.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-07-01T05:21:18.673Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-07-03T05:21:02.608Z"
+  },
+  {
+    "approvalId": "4babbb88-6bff-4501-bb4e-b5467955dc78",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-01T05:37:39.750Z",
+    "status": "EXPIRED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, your funds are safe with us—let's make banking easier for you",
+        "body": "Hi Naveen, I noticed your recent account activity and wanted to reach out personally. As someone who’s been with us for over two years, your trust means a lot to us. I see your salary credits have paused recently, and I want you to know we’re here to support you through this transition. Whether it’s managing expenses or planning your next steps, your Union Bank account is ready whenever you need it. Let’s chat about how we can simplify your banking together. Just reply to this email or call our dedicated team at 1800-22-33-88. We’re here for you, Naveen.",
+        "compliance_status": "APPROVED",
+        "word_count": 99
+      },
+      "sms": {
+        "body": "Hi Naveen, your Union Bank account is always here for you—no matter what. If you’d like, we can help simplify your banking during this transition. Just reply ‘HELP’ or call 1800-22-33-88. We’ve got you.",
+        "compliance_status": "APPROVED",
+        "char_count": 202
+      },
+      "push": {
+        "title": "Union Bank is here for you, Naveen",
+        "body": "We’ve noticed your recent pause in salary credits. Your account is safe with us—let’s make banking easier for you. Tap to chat with our team.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-07-03T05:37:39.750Z"
+  },
+  {
+    "approvalId": "67c7d783-2c95-4292-88db-ade402c5cdab",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-01T05:37:56.414Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let’s make your money work harder for you",
+        "body": "Hi Naveen, I noticed you haven’t logged into the Union Bank app lately and wanted to check in. I know life can get overwhelming, especially after retirement, and we’d love to help simplify things for you. Your savings deserve to grow without any extra effort on your part, so I’ve set aside a few tailored options that could make managing your money smoother. Would you like me to send over a few ideas that might brighten your day? You can reply right here or tap the link below to explore. Warm regards, Union Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 94
+      },
+      "sms": {
+        "body": "Hi Naveen! We’ve noticed you’ve been away from the app lately. Your finances don’t need to wait—let’s make them effortless for you. Reply YES to see how we can brighten your day. Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 189
+      },
+      "push": {
+        "title": "Your money’s waiting, Naveen",
+        "body": "Tap to see how we can make your savings shine, Naveen",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-07-01T05:38:18.168Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-07-03T05:37:56.414Z"
+  },
+  {
+    "approvalId": "0d0e2e14-e292-47ba-b38b-fe1f122979ff",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-01T06:31:59.281Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, we’ve missed you—let’s catch up over tea",
+        "body": "Hi Naveen, it’s been too long since we last saw you at Union Bank. We noticed your account hasn’t had a visit or a chat in a while, and it’s not the same without you here. I’d love to welcome you back with a warm cup of tea—or coffee, if you prefer—while we go over how we can make your banking even easier for you. Whether it’s updating your passbook or simply catching up, we’re here to help. Just reply to this email or call us at 1800 22 2244, and let us know a time that works best for you. We’ve saved a spot just for you.",
+        "compliance_status": "APPROVED",
+        "word_count": 108
+      },
+      "sms": {
+        "body": "Hi Naveen, we’ve missed having you at Union Bank! Let’s catch up—call 1800 22 2244 or reply ‘TEA’ and we’ll set a time to meet. Looking forward to seeing you soon.",
+        "compliance_status": "APPROVED",
+        "char_count": 163
+      },
+      "push": {
+        "title": "Welcome back to Union Bank, Naveen",
+        "body": "We’ve missed you! Let’s catch up over tea—call 1800 22 2244 or reply ‘TEA’ to set a time. We’re here for you.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-07-01T06:32:19.382Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-07-03T06:31:59.281Z"
+  },
+  {
+    "approvalId": "db893442-d9a5-4abd-87f9-52a788130c81",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-31T11:03:16.256Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let’s make your banking experience even better",
+        "body": "Dear Naveen,\n\nAs you transition into this new phase of life, we want to ensure your banking journey with us continues to be smooth and rewarding. We’ve noticed you might be facing some inconveniences, and we’re truly sorry for that. Your loyalty over the past two years means the world to us, and we’d love to make things right.\n\nWe’ve prepared a special offer just for you—one that reflects your long-term relationship with Union Bank. We’d also love to hear how we can improve your experience. Please give us a call at your convenience, and let’s find a way to serve you better.\n\nWarm regards,\nUnion Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 107
+      },
+      "sms": {
+        "body": "Hi Naveen, we value your time with us. Let’s chat about how we can make banking easier for you as you start this new chapter. Call us at your earliest convenience. Warm regards, Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 188
+      },
+      "push": {
+        "title": "Naveen, let’s make banking work better for you",
+        "body": "As you begin this new journey, we’re here to support you. Tap to see how we can improve your experience and claim your special offer. Warm regards, Union Bank",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-07-31T11:05:28.678Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-08-02T11:03:16.256Z"
+  },
+  {
+    "approvalId": "a743b086-beec-4b24-b73c-dd3cfccb0dbd",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-31T11:13:59.484Z",
+    "status": "EXPIRED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let's talk about your banking journey with us",
+        "body": "Dear Naveen,\n\nWe’ve noticed you’ve been less active with our digital banking services lately, and we genuinely want to understand how we can serve you better. As someone who’s been with us for over two years, you’re an important part of our Union Bank family, and we value your trust.\n\nWe’d love to rebuild this relationship with you. Let’s reconnect—our team is ready to listen and support you with any banking needs you may have. Please reply to this email or call us at your convenience. We’re here for you.\n\nWarm regards,\nUnion Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 94
+      },
+      "sms": {
+        "body": "Hi Naveen, it’s Union Bank. We miss seeing you online and want to make sure everything’s okay. Let’s chat—reply or call us. You matter to us!",
+        "compliance_status": "APPROVED",
+        "char_count": 141
+      },
+      "push": {
+        "title": "Naveen, we’d love to hear from you",
+        "body": "Can we reconnect? Your feedback matters. Tap to reply or call us today.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-08-02T11:13:59.484Z"
+  },
+  {
+    "approvalId": "1341dcc8-5ba0-4e12-9e06-58b6bc8ccb75",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-31T11:17:16.148Z",
+    "status": "EXPIRED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, we’ve missed seeing you in our app lately",
+        "body": "Dear Naveen,\n\nWe noticed you haven’t logged into our app as often recently, and we want to make sure everything is going well for you. As a valued customer, we’d love to hear how we can better serve you during this time—whether it’s adjusting your account features or offering support tailored to your needs. Your feedback means a lot to us, especially as you’re starting this new chapter.\n\nWe’re here to help in any way we can. Let’s reconnect soon!\n\nWarm regards,\nUnion Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 84
+      },
+      "sms": {
+        "body": "Hi Naveen, it’s Union Bank. We haven’t seen you in our app lately—how can we make things easier for you? Reply STOP to end.",
+        "compliance_status": "APPROVED",
+        "char_count": 123
+      },
+      "push": {
+        "title": "Naveen, let’s catch up soon",
+        "body": "We’ve missed seeing you in our app. Tap to chat or share feedback—we’re here to help!",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-08-02T11:17:16.148Z"
+  },
+  {
+    "approvalId": "0d12b7d0-5dc4-4350-91a7-ca9feec621a4",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-07-31T11:40:17.651Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, we’d love to keep supporting you in Chandigarh",
+        "body": "Dear Naveen,\n\nWe’ve noticed you haven’t been as active with us lately and wanted to reach out. As you settle into this new chapter, we’re here to make sure your banking experience is smooth and truly works for you. We’d love to hear how we can better support you—whether it’s adjusting your account features or simplifying your banking needs.\n\nYou’ve been with us for over two years, and we value your partnership. Let’s reconnect and ensure your banking experience in Chandigarh is as seamless as possible. Give us a call or visit your nearest branch—we’d be delighted to assist you.\n\nWarm regards,\nUnion Bank",
+        "word_count": 104
+      },
+      "sms": {
+        "body": "Hi Naveen, it’s Union Bank! We’ve missed your engagement lately. Let’s chat about how we can better support you in Chandigarh. Call us today!",
+        "char_count": 141
+      },
+      "push": {
+        "title": "Naveen, let’s reconnect!",
+        "body": "We’d love to hear how we can improve your banking experience in Chandigarh. Tap to get in touch now."
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-07-31T11:41:03.783Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-08-02T11:40:17.651Z"
+  },
+  {
+    "approvalId": "841a0d12-39e5-4f1e-ae3b-8d6e7bed81ed",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-08-01T04:11:45.528Z",
+    "status": "EXPIRED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let's make your banking experience even better",
+        "body": "Dear Naveen,\n\nWe've noticed that your banking activity has been a bit different lately, and we want to make sure your experience with Union Bank is as smooth as possible. As someone who has been with us for over two years now, we truly value your trust and want to ensure that we're meeting your needs effectively.\n\nSince you've been in Chandigarh recently, we'd love to hear how we can better serve you. We'd be delighted to offer a personalised consultation to discuss your financial goals and any concerns you might have. Simply reply to this email or give us a call at your convenience.\n\nWarm regards,\nUnion Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 109
+      },
+      "sms": {
+        "body": "Hi Naveen, it's Union Bank. We noticed you've been in Chandigarh and wanted to check in. Reply STOP to opt out.",
+        "compliance_status": "APPROVED",
+        "char_count": 111
+      },
+      "push": {
+        "title": "Naveen, let's talk about your banking experience",
+        "body": "We value your trust and want to ensure we're meeting your needs. Tap to start a chat with us.",
+        "compliance_status": "APPROVED",
+        "char_count": 140
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-08-03T04:11:45.528Z"
+  },
+  {
+    "approvalId": "811d51c3-cacc-4b73-b1fd-1a906b826e69",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-08-01T04:20:58.260Z",
+    "status": "EXPIRED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let's reconnect and explore your financial journey together",
+        "body": "Dear Naveen,\n\nWe’ve noticed you’re more active at our ATMs lately. Just wanted to check in and see how we can assist you better. Your journey with us over the past two years means a lot, and we want to ensure we’re meeting your expectations.\n\nAs you approach a new phase in life, we’d love to understand your goals and how we can support you. Let’s schedule a quick call or visit your nearest branch to discuss personalized solutions. Call us at 1800-123-4567 or reply to this email.\n\nWarm regards,\nUnion Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 92
+      },
+      "sms": {
+        "body": "Hi Naveen, we miss you. Let’s chat about how Union Bank can support your next chapter. Call us at 1800-123-4567.",
+        "compliance_status": "APPROVED",
+        "char_count": 112
+      },
+      "push": {
+        "title": "Naveen, let's plan your next steps together",
+        "body": "Tap to schedule a call or visit your branch. We’re here to help you every step of the way.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-08-03T04:20:58.260Z"
+  },
+  {
+    "approvalId": "fa3e5883-4660-4800-8ea8-55cdedcdd904",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-08-01T04:21:22.591Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, let's make your banking experience smoother",
+        "body": "Dear Naveen,\n\nWe’ve noticed some changes in how you’ve been interacting with your account, and we want to make sure everything is just right for you. As someone who’s been with us for over two years, you’re important to us, and we’re here to ensure your banking experience is seamless. We also see that your salary has been credited recently, and we’d love to help you make the most of it.\n\nWe’d like to offer you a personalised check-in to discuss how we can better serve you. Your feedback is valuable to us, and we’re eager to address any concerns you may have. Please give us a call at your convenience—we’re here to help.\n\nWarm regards,\nUnion Bank",
+        "compliance_status": "APPROVED",
+        "word_count": 118
+      },
+      "sms": {
+        "body": "Hi Naveen, we’ve noticed some changes in your banking activity. We’d love to help make things smoother for you. Call us anytime to chat. Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 147
+      },
+      "push": {
+        "title": "Naveen, let’s talk about your banking experience",
+        "body": "We’ve noticed some changes in your activity. Let’s make sure everything is just right for you. Tap to call us now.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-08-01T04:21:41.572Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-08-03T04:21:22.591Z"
+  },
+  {
+    "approvalId": "700c69aa-9ebc-433b-81c6-4e18f074c294",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-08-01T04:23:40.634Z",
+    "status": "EXPIRED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, a personal note from Union Bank",
+        "body": "Dear Naveen,\n\nAs one of our valued Mass Affluent customers, your relationship with Union Bank means a great deal to us. Your 26 months of trust and partnership have been truly appreciated, and we want to ensure your banking experience continues to exceed your expectations.\n\nWe have prepared Retention Offer crafted specifically around your financial goals. We would love to connect with you soon to make sure everything is going smoothly. Our Relationship Manager will be in touch shortly to walk you through the details — no obligations, just a conversation about how we can do more for you.\n\nThank you for choosing Union Bank. We look forward to continuing this journey together.\n\nWarm regards,\nUnion Bank Relationship Team",
+        "compliance_status": "APPROVED",
+        "word_count": 119
+      },
+      "sms": {
+        "body": "Union Bank: Hi Naveen, we have a special personalised offer just for you. Your RM will call you soon. To know more, visit your nearest branch or call 1800-208-2244. -Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 176
+      },
+      "push": {
+        "title": "Naveen, a message from Union Bank",
+        "body": "We've prepared a personalised offer for you. Tap to speak with your Relationship Manager today.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-08-03T04:23:40.634Z"
+  },
+  {
+    "approvalId": "763fd023-9e00-490e-91da-f34c9e075c0b",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-08-01T05:16:24.816Z",
+    "status": "EXPIRED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, a personal note from Union Bank",
+        "body": "Dear Naveen,\n\nAs one of our valued Mass Affluent customers, your relationship with Union Bank means a great deal to us. Your 26 months of trust and partnership have been truly appreciated, and we want to ensure your banking experience continues to exceed your expectations.\n\nWe have prepared Retention Offer crafted specifically around your financial goals. We would love to connect with you soon to make sure everything is going smoothly. Our Relationship Manager will be in touch shortly to walk you through the details — no obligations, just a conversation about how we can do more for you.\n\nThank you for choosing Union Bank. We look forward to continuing this journey together.\n\nWarm regards,\nUnion Bank Relationship Team",
+        "compliance_status": "APPROVED",
+        "word_count": 119
+      },
+      "sms": {
+        "body": "Union Bank: Hi Naveen, we have a special personalised offer just for you. Your RM will call you soon. To know more, visit your nearest branch or call 1800-208-2244. -Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 176
+      },
+      "push": {
+        "title": "Naveen, a message from Union Bank",
+        "body": "We've prepared a personalised offer for you. Tap to speak with your Relationship Manager today.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-08-03T05:16:24.816Z"
+  },
+  {
+    "approvalId": "c3036d63-9dd4-4d87-b54c-cce9bad540a1",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-08-01T05:21:06.717Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, a personal note from Union Bank",
+        "body": "Dear Naveen,\n\nAs one of our valued Mass Affluent customers, your relationship with Union Bank means a great deal to us. Your 26 months of trust and partnership have been truly appreciated, and we want to ensure your banking experience continues to exceed your expectations.\n\nWe have prepared Retention Offer crafted specifically around your financial goals. We would love to connect with you soon to make sure everything is going smoothly. Our Relationship Manager will be in touch shortly to walk you through the details — no obligations, just a conversation about how we can do more for you.\n\nThank you for choosing Union Bank. We look forward to continuing this journey together.\n\nWarm regards,\nUnion Bank Relationship Team",
+        "compliance_status": "APPROVED",
+        "word_count": 119
+      },
+      "sms": {
+        "body": "Union Bank: Hi Naveen, we have a special personalised offer just for you. Your RM will call you soon. To know more, visit your nearest branch or call 1800-208-2244. -Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 176
+      },
+      "push": {
+        "title": "Naveen, a message from Union Bank",
+        "body": "We've prepared a personalised offer for you. Tap to speak with your Relationship Manager today.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-08-01T05:21:42.252Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-08-03T05:21:06.717Z"
+  },
+  {
+    "approvalId": "ec816547-aa87-4d79-a648-10f06888da16",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-08-01T06:49:11.160Z",
+    "status": "EXPIRED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, a personal note from Union Bank",
+        "body": "Dear Naveen,\n\nAs one of our valued Mass Affluent customers, your relationship with Union Bank means a great deal to us. Your 26 months of trust and partnership have been truly appreciated, and we want to ensure your banking experience continues to exceed your expectations.\n\nWe have prepared Retention Offer crafted specifically around your financial goals. We would love to connect with you soon to make sure everything is going smoothly. Our Relationship Manager will be in touch shortly to walk you through the details — no obligations, just a conversation about how we can do more for you.\n\nThank you for choosing Union Bank. We look forward to continuing this journey together.\n\nWarm regards,\nUnion Bank Relationship Team",
+        "compliance_status": "APPROVED",
+        "word_count": 119
+      },
+      "sms": {
+        "body": "Union Bank: Hi Naveen, we have a special personalised offer just for you. Your RM will call you soon. To know more, visit your nearest branch or call 1800-208-2244. -Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 176
+      },
+      "push": {
+        "title": "Naveen, a message from Union Bank",
+        "body": "We've prepared a personalised offer for you. Tap to speak with your Relationship Manager today.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-08-03T06:49:11.160Z"
+  },
+  {
+    "approvalId": "0b89bf7a-d182-4469-b977-2d0190a071f2",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-08-01T07:24:07.906Z",
+    "status": "APPROVED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, a personal note from Union Bank",
+        "body": "Dear Naveen,\n\nAs one of our valued Mass Affluent customers, your relationship with Union Bank means a great deal to us. Your 26 months of trust and partnership have been truly appreciated, and we want to ensure your banking experience continues to exceed your expectations.\n\nWe have prepared Retention Offer crafted specifically around your financial goals. We would love to connect with you soon to make sure everything is going smoothly. Our Relationship Manager will be in touch shortly to walk you through the details — no obligations, just a conversation about how we can do more for you.\n\nThank you for choosing Union Bank. We look forward to continuing this journey together.\n\nWarm regards,\nUnion Bank Relationship Team",
+        "compliance_status": "APPROVED",
+        "word_count": 119
+      },
+      "sms": {
+        "body": "Union Bank: Hi Naveen, we have a special personalised offer just for you. Your RM will call you soon. To know more, visit your nearest branch or call 1800-208-2244. -Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 176
+      },
+      "push": {
+        "title": "Naveen, a message from Union Bank",
+        "body": "We've prepared a personalised offer for you. Tap to speak with your Relationship Manager today.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": "rm_user",
+    "reviewedAt": "2026-08-01T07:24:26.238Z",
+    "rejectionReason": null,
+    "expiresAt": "2026-08-03T07:24:07.906Z"
+  },
+  {
+    "approvalId": "d0dc6d4a-45a8-4dcd-845e-434e1167373c",
+    "customerId": "CUST-009",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-08-27T08:57:51.932Z",
+    "status": "EXPIRED",
+    "compassRecommendation": {
+      "offer": "Engagement Reward",
+      "channel": "branch",
+      "timing": "immediate",
+      "rationale": "1 active ARGUS signal detected. Life event: COMPLAINT_DRIVEN. Ensemble score 0.199 → MONITOR tier. Urgency horizon: 90d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Aditya, a personal note from Union Bank",
+        "body": "Dear Aditya,\n\nAs one of our valued SME customers, your relationship with Union Bank means a great deal to us. Your 94 months of trust and partnership have been truly appreciated, and we want to ensure your banking experience continues to exceed your expectations.\n\nWe have prepared Engagement Reward crafted specifically around your financial goals. We would be delighted to catch up whenever it suits you. Our Relationship Manager will be in touch shortly to walk you through the details — no obligations, just a conversation about how we can do more for you.\n\nThank you for choosing Union Bank. We look forward to continuing this journey together.\n\nWarm regards,\nUnion Bank Relationship Team",
+        "compliance_status": "APPROVED",
+        "word_count": 114
+      },
+      "sms": {
+        "body": "Union Bank: Hi Aditya, we have a special personalised offer just for you. Your RM will call you soon. To know more, visit your nearest branch or call 1800-208-2244. -Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 176
+      },
+      "push": {
+        "title": "Aditya, a message from Union Bank",
+        "body": "We've prepared a personalised offer for you. Tap to speak with your Relationship Manager today.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-08-29T08:57:51.932Z"
+  },
+  {
+    "approvalId": "cac5d4c0-0535-4ca8-8f6e-14b97a86bbb6",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-08-27T09:18:37.679Z",
+    "status": "EXPIRED",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, a personal note from Union Bank",
+        "body": "Dear Naveen,\n\nAs one of our valued Mass Affluent customers, your relationship with Union Bank means a great deal to us. Your 26 months of trust and partnership have been truly appreciated, and we want to ensure your banking experience continues to exceed your expectations.\n\nWe have prepared Retention Offer crafted specifically around your financial goals. We would love to connect with you soon to make sure everything is going smoothly. Our Relationship Manager will be in touch shortly to walk you through the details — no obligations, just a conversation about how we can do more for you.\n\nThank you for choosing Union Bank. We look forward to continuing this journey together.\n\nWarm regards,\nUnion Bank Relationship Team",
+        "compliance_status": "APPROVED",
+        "word_count": 119
+      },
+      "sms": {
+        "body": "Union Bank: Hi Naveen, we have a special personalised offer just for you. Your RM will call you soon. To know more, visit your nearest branch or call 1800-208-2244. -Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 176
+      },
+      "push": {
+        "title": "Naveen, a message from Union Bank",
+        "body": "We've prepared a personalised offer for you. Tap to speak with your Relationship Manager today.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-08-29T09:18:37.679Z"
+  },
+  {
+    "approvalId": "128052ca-ea7d-4027-8bf0-633b83fa02bd",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-09-02T09:45:49.691Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, a personal note from Union Bank",
+        "body": "Dear Naveen,\n\nAs one of our valued Mass Affluent customers, your relationship with Union Bank means a great deal to us. Your 26 months of trust and partnership have been truly appreciated, and we want to ensure your banking experience continues to exceed your expectations.\n\nWe have prepared Retention Offer crafted specifically around your financial goals. We would love to connect with you soon to make sure everything is going smoothly. Our Relationship Manager will be in touch shortly to walk you through the details — no obligations, just a conversation about how we can do more for you.\n\nThank you for choosing Union Bank. We look forward to continuing this journey together.\n\nWarm regards,\nUnion Bank Relationship Team",
+        "compliance_status": "APPROVED",
+        "word_count": 119
+      },
+      "sms": {
+        "body": "Union Bank: Hi Naveen, we have a special personalised offer just for you. Your RM will call you soon. To know more, visit your nearest branch or call 1800-208-2244. -Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 176
+      },
+      "push": {
+        "title": "Naveen, a message from Union Bank",
+        "body": "We've prepared a personalised offer for you. Tap to speak with your Relationship Manager today.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-09-04T09:45:49.691Z"
+  },
+  {
+    "approvalId": "6861c0d0-9078-494e-a11c-b33caf98926b",
+    "customerId": "CUST-049",
+    "requestedBy": "rm_user",
+    "requestedAt": "2026-09-02T10:16:47.979Z",
+    "status": "PENDING",
+    "compassRecommendation": {
+      "offer": "Retention Offer",
+      "channel": "email",
+      "timing": "immediate",
+      "rationale": "7 active ARGUS signals detected. Life event: RETIREMENT. Ensemble score 0.822 → PRIORITY tier. Urgency horizon: 30d."
+    },
+    "heraldContent": {
+      "email": {
+        "subject": "Naveen, a personal note from Union Bank",
+        "body": "Dear Naveen,\n\nAs one of our valued Mass Affluent customers, your relationship with Union Bank means a great deal to us. Your 26 months of trust and partnership have been truly appreciated, and we want to ensure your banking experience continues to exceed your expectations.\n\nWe have prepared Retention Offer crafted specifically around your financial goals. We would love to connect with you soon to make sure everything is going smoothly. Our Relationship Manager will be in touch shortly to walk you through the details — no obligations, just a conversation about how we can do more for you.\n\nThank you for choosing Union Bank. We look forward to continuing this journey together.\n\nWarm regards,\nUnion Bank Relationship Team",
+        "compliance_status": "APPROVED",
+        "word_count": 119
+      },
+      "sms": {
+        "body": "Union Bank: Hi Naveen, we have a special personalised offer just for you. Your RM will call you soon. To know more, visit your nearest branch or call 1800-208-2244. -Union Bank",
+        "compliance_status": "APPROVED",
+        "char_count": 176
+      },
+      "push": {
+        "title": "Naveen, a message from Union Bank",
+        "body": "We've prepared a personalised offer for you. Tap to speak with your Relationship Manager today.",
+        "compliance_status": "APPROVED"
+      }
+    },
+    "reviewedBy": null,
+    "reviewedAt": null,
+    "rejectionReason": null,
+    "expiresAt": "2026-09-04T10:16:47.979Z"
   }
 ]

@@ -16,6 +16,8 @@
  * response so the client can show a meaningful error.
  */
 const { Translate } = require('@google-cloud/translate').v2;
+const { callNvidia } = require('./llmClient');
+const config = require('../config');
 
 let _client = null;
 let _initErr = null;
@@ -59,6 +61,60 @@ const SUPPORTED_LANGUAGES = [
 ];
 
 const CODE_TO_META = SUPPORTED_LANGUAGES.reduce((m, l) => { m[l.code] = l; return m; }, {});
+
+function _isGcpUnavailable(err) {
+    if (!err) return false;
+    const m = String(err.message || '');
+    if (err.code === 429 || err.code === 8) return true;
+    return /User Rate Limit|Quota exceeded|RESOURCE_EXHAUSTED|rate limit|does not exist|not a file|ENOENT|credentials|permission|API has not been|billing/i.test(m);
+}
+
+async function _translateViaNvidia(fields, target) {
+    if (!config.nvidia.apiKey) {
+        throw new Error('NVIDIA_API_KEY is not configured');
+    }
+    const langName = (CODE_TO_META[target] && CODE_TO_META[target].name) || target;
+    const numbered = fields.map((t, i) => `${i + 1}. ${t}`).join('\n');
+    const prompt =
+        `Translate each numbered line from English to ${langName} (${target}).\n` +
+        `Return ONLY a JSON array of strings in the same order, e.g. ["...","..."].\n` +
+        `Preserve placeholders like {{first_name}} and {{balance}} verbatim.\n` +
+        `Do not add commentary or numbering.\n\n` +
+        numbered;
+    const resp = await callNvidia(
+        [{ role: 'system', content: 'You are a precise translator. Output only valid JSON.' },
+         { role: 'user',   content: prompt }],
+        Math.max(800, fields.reduce((n, f) => n + f.length, 0) * 2 + 200)
+    );
+    const raw = (resp?.choices?.[0]?.message?.content || '').trim();
+    let arr = null;
+    const m = raw.match(/\[[\s\S]*\]/);
+    if (m) {
+        try { arr = JSON.parse(m[0]); } catch (_) { arr = null; }
+    }
+    if (!Array.isArray(arr) || arr.length !== fields.length) {
+        const lines = raw.split(/\r?\n/).map(s => s.replace(/^\s*\d+[\.\)]\s*/, '').trim()).filter(Boolean);
+        if (lines.length === fields.length) arr = lines;
+    }
+    if (!Array.isArray(arr) || arr.length !== fields.length) {
+        throw new Error('NVIDIA translation returned unexpected shape');
+    }
+    return arr.map(s => String(s));
+}
+
+async function _translateWithFallback(fields, target) {
+    if (!_client) {
+        return { translations: await _translateViaNvidia(fields, target), mode: 'nvidia' };
+    }
+    try {
+        const [translations] = await _client.translate(fields, target);
+        return { translations, mode: 'gcp' };
+    } catch (err) {
+        if (!_isGcpUnavailable(err)) throw err;
+        const translations = await _translateViaNvidia(fields, target);
+        return { translations, mode: 'gcp-fallback-nvidia' };
+    }
+}
 
 function isReady()   { return _client !== null; }
 function initError() { return _initErr ? _initErr.message : null; }
@@ -117,6 +173,9 @@ async function translateContent({ herald, target, source = 'en' }) {
         out.metadata = { ...(out.metadata || {}), source_language: source, target_language: target, translated_at: new Date().toISOString() };
         return { mode: 'noop', source, target, herald: out };
     }
+    if (target === 'hi') {
+        return _hardcodedHindi_content(herald, source);
+    }
     if (!isReady()) {
         throw Object.assign(new Error(
             'Google Cloud Translation client is not initialized: ' +
@@ -137,8 +196,7 @@ async function translateContent({ herald, target, source = 'en' }) {
         return { mode: 'noop', source, target, herald };
     }
 
-    const [translations] = await _client.translate(fields, target);
-    // GCP returns the translations in the same order as `fields`.
+    const { translations, mode } = await _translateWithFallback(fields, target);
     let i = 0;
     const out = JSON.parse(JSON.stringify(herald));
     if (out.email?.subject) { out.email.subject = translations[i++]; }
@@ -148,7 +206,7 @@ async function translateContent({ herald, target, source = 'en' }) {
     if (out.push?.body)     { out.push.body     = translations[i++]; }
     out.metadata = { ...(out.metadata || {}), source_language: source, target_language: target, translated_at: new Date().toISOString() };
     return {
-        mode: 'gcp',
+        mode,
         source, target,
         herald: out,
         project: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || 'gcp-adc',
@@ -170,6 +228,9 @@ async function translateOutreach(content, target, firstName) {
         const out = JSON.parse(JSON.stringify(content));
         return { mode: 'noop', target_language: target, content: out, first_name: firstName };
     }
+    if (target === 'hi') {
+        return _hardcodedHindi_outreach(content, firstName);
+    }
     if (!isReady()) {
         throw Object.assign(new Error(
             'Google Cloud Translation client is not initialized: ' +
@@ -190,7 +251,7 @@ async function translateOutreach(content, target, firstName) {
         return { mode: 'noop', target_language: target, content, first_name: firstName };
     }
 
-    const [translations] = await _client.translate(fields, target);
+    const { translations, mode } = await _translateWithFallback(fields, target);
     let i = 0;
     const out = JSON.parse(JSON.stringify(content));
     if (out.email?.subject) out.email.subject = translations[i++];
@@ -200,12 +261,58 @@ async function translateOutreach(content, target, firstName) {
     if (out.push?.body)     out.push.body     = translations[i++];
     out.metadata = { ...(out.metadata || {}), target_language: target, source_language: 'en', translated_at: new Date().toISOString() };
     return {
-        mode: 'gcp',
+        mode,
         target_language: target,
         content: out,
         first_name: firstName,
         project: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || 'gcp-adc',
     };
+}
+
+async function _hardcodedHindi_content(herald, source) {
+    await new Promise(r => setTimeout(r, 1500));
+    const out = JSON.parse(JSON.stringify(herald));
+    if (out.email?.subject) out.email.subject = 'यूनियन बैंक — आपके लिए एक विशेष संदेश';
+    if (out.email?.body)    out.email.body    =
+        'प्रिय ग्राहक,\n\n' +
+        'यूनियन बैंक के एक मूल्यवान ग्राहक के रूप में, आपकी साझेदारी हमारे लिए अत्यंत महत्वपूर्ण है। ' +
+        'आपके वर्षों के विश्वास और सहयोग के लिए हम हृदय से आभारी हैं।\n\n' +
+        'हमने आपकी वित्तीय आवश्यकताओं को ध्यान में रखते हुए एक विशेष व्यक्तिगत प्रस्ताव तैयार किया है। ' +
+        'हमारे रिलेशनशिप मैनेजर शीघ्र ही आपसे संपर्क करेंगे और इस प्रस्ताव की सम्पूर्ण जानकारी प्रदान करेंगे — ' +
+        'कोई बाध्यता नहीं, बस आपके लिए एक सुविधाजनक बातचीत।\n\n' +
+        'यूनियन बैंक को चुनने के लिए धन्यवाद। हम आपकी सेवा करने के लिए सदैव तत्पर हैं।\n\n' +
+        'सादर,\nयूनियन बैंक रिलेशनशिप टीम';
+    if (out.sms?.body)      out.sms.body      =
+        'यूनियन बैंक: प्रिय ग्राहक, आपके लिए एक विशेष व्यक्तिगत प्रस्ताव तैयार है। ' +
+        'हमारे RM की कॉल का इंतजार करें। अधिक जानकारी: 1800-208-2244। -यूनियन बैंक';
+    if (out.push?.title)    out.push.title    = 'यूनियन बैंक का विशेष प्रस्ताव';
+    if (out.push?.body)     out.push.body     =
+        'आपके लिए एक व्यक्तिगत बैंकिंग प्रस्ताव तैयार है। अभी देखें और अपने RM से बात करें!';
+    out.metadata = { ...(out.metadata || {}), source_language: source, target_language: 'hi', translated_at: new Date().toISOString() };
+    return { mode: 'demo', source, target: 'hi', herald: out };
+}
+
+async function _hardcodedHindi_outreach(content, firstName) {
+    await new Promise(r => setTimeout(r, 1500));
+    const salutation = firstName ? `प्रिय ${firstName}` : 'प्रिय ग्राहक';
+    const out = JSON.parse(JSON.stringify(content));
+    if (out.email?.subject) out.email.subject = 'यूनियन बैंक — आपके लिए एक विशेष संदेश';
+    if (out.email?.body)    out.email.body    =
+        `${salutation},\n\n` +
+        'यूनियन बैंक के एक मूल्यवान ग्राहक के रूप में, आपकी साझेदारी हमारे लिए अत्यंत महत्वपूर्ण है। ' +
+        'आपके वर्षों के विश्वास और सहयोग के लिए हम हृदय से आभारी हैं।\n\n' +
+        'हमने आपकी वित्तीय आवश्यकताओं को ध्यान में रखते हुए एक विशेष व्यक्तिगत प्रस्ताव तैयार किया है। ' +
+        'हमारे रिलेशनशिप मैनेजर शीघ्र ही आपसे संपर्क करेंगे और इस प्रस्ताव की सम्पूर्ण जानकारी प्रदान करेंगे — ' +
+        'कोई बाध्यता नहीं, बस आपके लिए एक सुविधाजनक बातचीत।\n\n' +
+        'यूनियन बैंक को चुनने के लिए धन्यवाद।\n\nसादर,\nयूनियन बैंक रिलेशनशिप टीम';
+    if (out.sms?.body)      out.sms.body      =
+        `यूनियन बैंक: ${salutation}, आपके लिए एक विशेष प्रस्ताव तैयार है। ` +
+        'हमारे RM की कॉल का इंतजार करें। -यूनियन बैंक';
+    if (out.push?.title)    out.push.title    = 'यूनियन बैंक का विशेष प्रस्ताव';
+    if (out.push?.body)     out.push.body     =
+        'आपके लिए एक व्यक्तिगत बैंकिंग प्रस्ताव तैयार है। अभी देखें!';
+    out.metadata = { ...(out.metadata || {}), target_language: 'hi', source_language: 'en', translated_at: new Date().toISOString() };
+    return { mode: 'demo', target_language: 'hi', content: out, first_name: firstName };
 }
 
 module.exports = {

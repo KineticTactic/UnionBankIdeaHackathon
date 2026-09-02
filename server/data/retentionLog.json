@@ -510,5 +510,13 @@
     },
     "errors": [],
     "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
+  },
+  {
+    "checkedAt": "2026-09-02T15:34:56.525Z",
+    "archived": {
+      "approvals": 0
+    },
+    "errors": [],
+    "note": "Audit log entries are retained permanently per DPDPA Rule 4 legal obligation."
   }
 ]

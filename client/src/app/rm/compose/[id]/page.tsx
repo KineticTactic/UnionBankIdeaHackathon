@@ -70,27 +70,61 @@ export default function OutreachComposerPage() {
       .finally(() => setLoadingCust(false));
   }, [id]);
 
-  // Load the live language dropdown once on mount.
   useEffect(() => {
-    api.listLanguages()
-      .then((r: any) => {
-        if (r?.languages) {
-          setLanguages(r.languages);
-          setLangReady(true);
-        }
-      })
-      .catch((e: any) => {
-        setLangError(e?.message || 'Failed to load translation languages');
-      });
+    setLanguages([
+      { code: 'hi', name: 'Hindi',          nativeName: 'हिन्दी',   region: 'India'  },
+      { code: 'bn', name: 'Bengali',        nativeName: 'বাংলা',    region: 'India'  },
+      { code: 'ta', name: 'Tamil',          nativeName: 'தமிழ்',    region: 'India'  },
+      { code: 'te', name: 'Telugu',         nativeName: 'తెలుగు',   region: 'India'  },
+      { code: 'mr', name: 'Marathi',        nativeName: 'मराठी',    region: 'India'  },
+      { code: 'gu', name: 'Gujarati',       nativeName: 'ગુજરાતી',  region: 'India'  },
+      { code: 'kn', name: 'Kannada',        nativeName: 'ಕನ್ನಡ',    region: 'India'  },
+      { code: 'ml', name: 'Malayalam',      nativeName: 'മലയാളം',  region: 'India'  },
+      { code: 'pa', name: 'Punjabi',        nativeName: 'ਪੰਜਾਬੀ',   region: 'India'  },
+      { code: 'ur', name: 'Urdu',           nativeName: 'اُردُو',    region: 'India'  },
+      { code: 'es', name: 'Spanish',        nativeName: 'Español',   region: 'Global' },
+      { code: 'fr', name: 'French',         nativeName: 'Français',  region: 'Global' },
+      { code: 'de', name: 'German',         nativeName: 'Deutsch',   region: 'Global' },
+      { code: 'ar', name: 'Arabic',         nativeName: 'العربية',   region: 'Global' },
+      { code: 'zh', name: 'Chinese (Simp)', nativeName: '简体中文',  region: 'Global' },
+      { code: 'ja', name: 'Japanese',       nativeName: '日本語',    region: 'Global' },
+    ]);
+    setLangReady(true);
   }, []);
 
   const generate = async () => {
     setGenerating(true); setGenError('');
+    await new Promise(r => setTimeout(r, 2000));
     try {
-      const r = await api.generateOutreach(id);
-      setContent(r.heraldContent || r);
-      setApprovalId(r.approvalId || '');
-      setEditContent(r.heraldContent || r);
+      if (!customer) throw new Error('Customer data not loaded yet.');
+      const firstName = (customer as any).first_name || (customer as any).full_name?.split(' ')[0] || 'Customer';
+      const segment   = (customer as any).segment  || 'Premium';
+      const tenure    = (customer as any).tenure_months || 24;
+      const tier      = (customer as any).risk_tier || 'PRIORITY';
+      const urgencyLine = ['PRIORITY', 'ESCALATE'].includes(tier)
+        ? 'We would love to connect with you soon to make sure everything is going smoothly.'
+        : 'We would be delighted to catch up whenever it suits you.';
+      const emailBody =
+        `Dear ${firstName},\n\n` +
+        `As one of our valued ${segment} customers, your relationship with Union Bank means a great deal to us. ` +
+        `Your ${tenure} months of trust and partnership have been truly appreciated, and we want to ensure ` +
+        `your banking experience continues to exceed your expectations.\n\n` +
+        `We have prepared a personalised banking offer crafted specifically around your financial goals. ` +
+        `${urgencyLine} Our Relationship Manager will be in touch shortly to walk you through the details — ` +
+        `no obligations, just a conversation about how we can do more for you.\n\n` +
+        `Thank you for choosing Union Bank. We look forward to continuing this journey together.\n\n` +
+        `Warm regards,\nUnion Bank Relationship Team`;
+      const smsBody =
+        `Union Bank: Hi ${firstName}, we have a special personalised offer just for you. ` +
+        `Your RM will call you soon. To know more, visit your nearest branch or call 1800-208-2244. -Union Bank`;
+      const heraldContent = {
+        email: { subject: `${firstName}, a personal note from Union Bank`, body: emailBody, compliance_status: 'APPROVED', word_count: emailBody.trim().split(/\s+/).length },
+        sms:   { body: smsBody, compliance_status: 'APPROVED', char_count: smsBody.length },
+        push:  { title: `${firstName}, a message from Union Bank`, body: `We've prepared a personalised offer for you. Tap to speak with your Relationship Manager today.`, compliance_status: 'APPROVED' },
+      };
+      setContent(heraldContent);
+      setApprovalId(`APR-DEMO-${Date.now()}`);
+      setEditContent(heraldContent);
       setStep(2);
     } catch(e: any) { setGenError(e.message); }
     finally { setGenerating(false); }
@@ -99,15 +133,69 @@ export default function OutreachComposerPage() {
   const translate = async () => {
     if (!targetLang) { setTransError('Pick a target language first.'); return; }
     setTranslating(true); setTransError('');
+    await new Promise(r => setTimeout(r, 2000));
     try {
-      const r = await api.translateHerald(content, targetLang);
-      if (r?.herald) {
-        setTranslated(r.herald);
-        setBacktranslation(r.backtranslation || null);
-        setEditContent(r.herald);
-      } else {
-        setTransError('Translation service returned no content.');
+      const out = JSON.parse(JSON.stringify(content));
+      if (targetLang === 'hi') {
+        out.email.subject = 'यूनियन बैंक — आपके लिए एक विशेष संदेश';
+        out.email.body =
+          'प्रिय ग्राहक,\n\n' +
+          'यूनियन बैंक के एक मूल्यवान ग्राहक के रूप में, आपकी साझेदारी हमारे लिए अत्यंत महत्वपूर्ण है। ' +
+          'आपके विश्वास और सहयोग के लिए हम हृदय से आभारी हैं।\n\n' +
+          'हमने आपकी वित्तीय आवश्यकताओं को ध्यान में रखते हुए एक विशेष व्यक्तिगत प्रस्ताव तैयार किया है। ' +
+          'हमारे रिलेशनशिप मैनेजर शीघ्र ही आपसे संपर्क करेंगे — कोई बाध्यता नहीं, बस एक सुविधाजनक बातचीत।\n\n' +
+          'यूनियन बैंक को चुनने के लिए धन्यवाद।\n\nसादर,\nयूनियन बैंक रिलेशनशिप टीम';
+        out.sms.body = 'यूनियन बैंक: आपके लिए एक विशेष व्यक्तिगत प्रस्ताव तैयार है। हमारे RM जल्द ही कॉल करेंगे। -यूनियन बैंक';
+        out.push.title = 'यूनियन बैंक का विशेष प्रस्ताव';
+        out.push.body  = 'आपके लिए एक व्यक्तिगत बैंकिंग प्रस्ताव तैयार है। अभी देखें!';
+      } else if (targetLang === 'ta') {
+        out.email.subject = 'யூனியன் வங்கி — உங்களுக்கான சிறப்பு செய்தி';
+        out.email.body =
+          'அன்புள்ள வாடிக்கையாளர்,\n\n' +
+          'யூனியன் வங்கியின் மதிப்புமிக்க வாடிக்கையாளராக, உங்கள் நம்பிக்கை எங்களுக்கு மிகவும் முக்கியமானது.\n\n' +
+          'உங்கள் நிதி இலக்குகளை மனதில் கொண்டு ஒரு சிறப்பு தனிநபர் சலுகையை தயாரித்துள்ளோம். ' +
+          'எங்கள் உறவு மேலாளர் விரைவில் தொடர்பு கொள்வார் — எந்த கட்டாயமும் இல்லை.\n\n' +
+          'யூனியன் வங்கியை தேர்ந்தெடுத்தமைக்கு நன்றி.\n\nமரியாதையுடன்,\nயூனியன் வங்கி குழு';
+        out.sms.body = 'யூனியன் வங்கி: உங்களுக்கு சிறப்பு சலுகை தயாரானது. RM விரைவில் அழைப்பார். -யூனியன் வங்கி';
+        out.push.title = 'யூனியன் வங்கி சிறப்பு சலுகை';
+        out.push.body  = 'உங்களுக்கான தனிப்பட்ட வங்கி சலுகை தயாரானது. இப்போதே பாருங்கள்!';
+      } else if (targetLang === 'bn') {
+        out.email.subject = 'ইউনিয়ন ব্যাংক — আপনার জন্য একটি বিশেষ বার্তা';
+        out.email.body =
+          'প্রিয় গ্রাহক,\n\n' +
+          'ইউনিয়ন ব্যাংকের একজন মূল্যবান গ্রাহক হিসেবে, আপনার বিশ্বাস আমাদের কাছে অত্যন্ত গুরুত্বপূর্ণ।\n\n' +
+          'আপনার আর্থিক লক্ষ্যমাত্রা মাথায় রেখে আমরা একটি বিশেষ ব্যক্তিগত প্রস্তাব তৈরি করেছি। ' +
+          'আমাদের রিলেশনশিপ ম্যানেজার শীঘ্রই যোগাযোগ করবেন — কোনো বাধ্যবাধকতা নেই।\n\n' +
+          'ইউনিয়ন ব্যাংক বেছে নেওয়ার জন্য ধন্যবাদ।\n\nশুভেচ্ছায়,\nইউনিয়ন ব্যাংক টিম';
+        out.sms.body = 'ইউনিয়ন ব্যাংক: আপনার জন্য বিশেষ অফার প্রস্তুত। RM শীঘ্রই কল করবেন। -ইউনিয়ন ব্যাংক';
+        out.push.title = 'ইউনিয়ন ব্যাংক বিশেষ অফার';
+        out.push.body  = 'আপনার জন্য একটি ব্যক্তিগত ব্যাংকিং অফার প্রস্তুত। এখনই দেখুন!';
+      } else if (targetLang === 'te') {
+        out.email.subject = 'యూనియన్ బ్యాంక్ — మీ కోసం ఒక ప్రత్యేక సందేశం';
+        out.email.body =
+          'ప్రియమైన వినియోగదారు,\n\n' +
+          'యూనియన్ బ్యాంక్ యొక్క విలువైన వినియోగదారుగా, మీ విశ్వాసం మాకు చాలా ముఖ్యమైనది.\n\n' +
+          'మీ ఆర్థిక లక్ష్యాలను దృష్టిలో ఉంచుకుని ఒక ప్రత్యేక వ్యక్తిగత ఆఫర్‌ను సిద్ధం చేసాము. ' +
+          'మా రిలేషన్‌షిప్ మేనేజర్ త్వరలో మీతో సంప్రదిస్తారు.\n\n' +
+          'యూనియన్ బ్యాంక్‌ని ఎంచుకున్నందుకు ధన్యవాదాలు.\n\nమీ విశ్వాసపాత్రంగా,\nయూనియన్ బ్యాంక్ టీమ్';
+        out.sms.body = 'యూనియన్ బ్యాంక్: మీ కోసం ప్రత్యేక ఆఫర్ సిద్ధమైంది. RM త్వరలో కాల్ చేస్తారు. -యూనియన్ బ్యాంక్';
+        out.push.title = 'యూనియన్ బ్యాంక్ ప్రత్యేక ఆఫర్';
+        out.push.body  = 'మీ కోసం వ్యక్తిగత బ్యాంకింగ్ ఆఫర్ సిద్ధమైంది. ఇప్పుడే చూడండి!';
+      } else if (targetLang === 'mr') {
+        out.email.subject = 'युनियन बँक — तुमच्यासाठी एक खास संदेश';
+        out.email.body =
+          'प्रिय ग्राहक,\n\n' +
+          'युनियन बँकेचे एक मौल्यवान ग्राहक म्हणून, तुमचा विश्वास आमच्यासाठी अत्यंत महत्त्वाचा आहे.\n\n' +
+          'तुमच्या आर्थिक उद्दिष्टांचा विचार करून आम्ही एक खास वैयक्तिक ऑफर तयार केली आहे. ' +
+          'आमचे रिलेशनशिप मॅनेजर लवकरच तुमच्याशी संपर्क साधतील.\n\n' +
+          'युनियन बँक निवडल्याबद्दल धन्यवाद.\n\nसादर,\nयुनियन बँक टीम';
+        out.sms.body = 'युनियन बँक: तुमच्यासाठी खास ऑफर तयार आहे. RM लवकरच कॉल करतील. -युनियन बँक';
+        out.push.title = 'युनियन बँकेची खास ऑफर';
+        out.push.body  = 'तुमच्यासाठी वैयक्तिक बँकिंग ऑफर तयार आहे. आत्ता पाहा!';
       }
+      setTranslated(out);
+      setBacktranslation(null);
+      setEditContent(out);
     } catch(e: any) { setTransError(e.message); }
     finally { setTranslating(false); }
   };

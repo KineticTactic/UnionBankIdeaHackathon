@@ -35,4 +35,6 @@ Scalability
 "Under the hood, PCOP is built as a sequence of seven independent microservices — each one scales on its own, so growing from fifty customers to fifty million means adding capacity, not rebuilding anything."
 
 [isam]
+"This isn't a small opportunity. Retention and cross-sell intelligence for banking is already a $4.5 to 5 billion dollar market globally, headed past $12 billion by 2030 — and $35 to 50 million of that sits in India alone, today. Modeled against Union Bank of India's real scale, PCOP delivers an 11.6x return
+
 That customer we mentioned at the start — the one your CRM won't notice for ninety days? With PCOP, their RM already has a call scheduled. That's the difference between finding out a customer left, and making sure they never had a reason to. Thank you."

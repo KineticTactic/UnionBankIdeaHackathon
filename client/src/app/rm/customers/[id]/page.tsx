@@ -1208,32 +1208,41 @@ export default function RmCustomer360Page() {
   const runAnalysis = async () => {
     if (!snap) return;
     setAnalysisLoading(true);
-    await new Promise(r => setTimeout(r, 2000));
-    const c  = snap.customer;
-    const s  = snap.score;
-    const signals   = snap.signals || [];
-    const riskTier  = s?.risk_tier || 'Medium';
-    const churnP30  = s?.p30 != null ? `${Math.round(s.p30 * 100)}%` : 'N/A';
-    const topSignal = (signals[0]?.signal_type || 'no recent signals').replace(/_/g, ' ');
-    const isHigh    = ['PRIORITY', 'ESCALATE', 'High', 'Critical'].includes(riskTier);
-    setAnalysis(
-      `**Risk Assessment — ${c.full_name}**\n\n` +
-      `**1. Key Churn Drivers**\n` +
-      `${c.full_name} (${c.segment}, ${c.tenure_months}-month tenure) shows a ${riskTier} churn risk ` +
-      `with a 30-day churn probability of ${churnP30}. Primary driver: ${topSignal}. ` +
-      `Account inactivity of ${c.inactivity_days} days and ${c.complaint_count} logged complaint(s) ` +
-      `are compounding the risk. Current balance of ₹${(c.balance || 0).toLocaleString('en-IN')} ` +
-      `suggests limited recent transactional engagement.\n\n` +
-      `**2. Recommended Intervention**\n` +
-      `Assign a dedicated RM touchpoint within 48 hours. Offer a personalised product review ` +
-      `(${c.life_event ? `aligned to the recent life event: ${c.life_event.replace(/_/g, ' ')}` : 'focused on portfolio optimisation'}). ` +
-      `Consider a fee-waiver or loyalty reward to re-engage the account.\n\n` +
-      `**3. Urgency**\n` +
-      `${isHigh
-        ? 'HIGH — escalate to senior RM immediately; risk of silent attrition within 30 days.'
-        : 'MEDIUM — schedule outreach within the next 5 business days to prevent further disengagement.'}`
-    );
-    setAnalysisLoading(false);
+    try {
+      // Live LLM (Groq) risk narrative generated server-side from the
+      // pre-computed score/signals. Falls back to the local template below.
+      const r = await api.analyzeCustomer(id);
+      if (!r?.analysis) throw new Error('empty analysis');
+      setAnalysis(r.analysis);
+    } catch {
+      await new Promise(r => setTimeout(r, 2000));
+      const c  = snap.customer;
+      const s  = snap.score;
+      const signals   = snap.signals || [];
+      const riskTier  = s?.risk_tier || 'Medium';
+      const churnP30  = s?.p30 != null ? `${Math.round(s.p30 * 100)}%` : 'N/A';
+      const topSignal = (signals[0]?.signal_type || 'no recent signals').replace(/_/g, ' ');
+      const isHigh    = ['PRIORITY', 'ESCALATE', 'High', 'Critical'].includes(riskTier);
+      setAnalysis(
+        `**Risk Assessment — ${c.full_name}**\n\n` +
+        `**1. Key Churn Drivers**\n` +
+        `${c.full_name} (${c.segment}, ${c.tenure_months}-month tenure) shows a ${riskTier} churn risk ` +
+        `with a 30-day churn probability of ${churnP30}. Primary driver: ${topSignal}. ` +
+        `Account inactivity of ${c.inactivity_days} days and ${c.complaint_count} logged complaint(s) ` +
+        `are compounding the risk. Current balance of ₹${(c.balance || 0).toLocaleString('en-IN')} ` +
+        `suggests limited recent transactional engagement.\n\n` +
+        `**2. Recommended Intervention**\n` +
+        `Assign a dedicated RM touchpoint within 48 hours. Offer a personalised product review ` +
+        `(${c.life_event ? `aligned to the recent life event: ${c.life_event.replace(/_/g, ' ')}` : 'focused on portfolio optimisation'}). ` +
+        `Consider a fee-waiver or loyalty reward to re-engage the account.\n\n` +
+        `**3. Urgency**\n` +
+        `${isHigh
+          ? 'HIGH — escalate to senior RM immediately; risk of silent attrition within 30 days.'
+          : 'MEDIUM — schedule outreach within the next 5 business days to prevent further disengagement.'}`
+      );
+    } finally {
+      setAnalysisLoading(false);
+    }
   };
 
   const c = snap?.customer;

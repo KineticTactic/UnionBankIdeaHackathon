@@ -109,4 +109,44 @@ Return:
   return JSON.parse(cleaned);
 }
 
-module.exports = { analyzeCall, generateCallScript };
+const RISK_ASSESSMENT_SYSTEM = `You are a senior retention analyst at Union Bank writing an INTERNAL risk assessment for a Relationship Manager.
+Use ONLY the pre-computed facts supplied in the user message. Never recompute, guess or invent scores, transactions, products or events.
+This is RM-facing internal guidance, so you may reference the churn/risk tier and signal names — but be factual and never promise outcomes.
+Return concise Markdown with exactly these three sections, nothing before or after:
+**1. Key Churn Drivers**
+**2. Recommended Intervention**
+**3. Urgency**`;
+
+async function generateRiskAssessment(customer, score, signals) {
+  const topSignals = (signals || [])
+    .slice(0, 5)
+    .map(s => `  - ${String(s.signal_type || '').replace(/_/g, ' ')} (confidence ${Math.round((s.confidence || 0) * 100)}%)`)
+    .join('\n') || '  - none';
+
+  const messages = [
+    { role: 'system', content: RISK_ASSESSMENT_SYSTEM },
+    {
+      role: 'user',
+      content: `Pre-computed facts (DO NOT recompute — only narrate):
+CUSTOMER: ${customer.full_name} (${customer.customer_id})
+SEGMENT: ${customer.segment} | TENURE: ${customer.tenure_months} months | CITY: ${customer.city}
+RISK TIER: ${score?.risk_tier || customer.risk_tier || 'Unknown'}
+30-DAY CHURN PROBABILITY: ${score?.p30 != null ? `${Math.round(score.p30 * 100)}%` : 'N/A'}
+FINAL SCORE: ${score?.final_score != null ? Number(score.final_score).toFixed(3) : 'N/A'}
+INACTIVITY: ${customer.inactivity_days != null ? `${customer.inactivity_days} days` : 'N/A'} | COMPLAINTS: ${customer.complaint_count != null ? customer.complaint_count : 0}
+BALANCE: ₹${(customer.balance || 0).toLocaleString('en-IN')}
+LIFE EVENT: ${customer.life_event ? String(customer.life_event).replace(/_/g, ' ') : 'none'}
+ACTIVE SIGNALS:
+${topSignals}
+
+Write the assessment now.`,
+    },
+  ];
+
+  const resp = await callLLM(messages, 700);
+  const raw = (resp.choices?.[0]?.message?.content || '').trim();
+  if (!raw) throw new Error('empty risk assessment');
+  return raw;
+}
+
+module.exports = { analyzeCall, generateCallScript, generateRiskAssessment };

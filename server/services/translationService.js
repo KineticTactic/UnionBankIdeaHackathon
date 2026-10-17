@@ -16,8 +16,7 @@
  * response so the client can show a meaningful error.
  */
 const { Translate } = require('@google-cloud/translate').v2;
-const { callLLM } = require('./llmClient');
-const config = require('../config');
+const { callLLM, isConfigured } = require('./llmClient');
 
 let _client = null;
 let _initErr = null;
@@ -70,7 +69,7 @@ function _isGcpUnavailable(err) {
 }
 
 async function _translateViaLLM(fields, target) {
-    if (!config.groq.apiKey) {
+    if (!isConfigured()) {
         throw new Error('GROQ_API_KEY is not configured');
     }
     const langName = (CODE_TO_META[target] && CODE_TO_META[target].name) || target;
@@ -103,17 +102,26 @@ async function _translateViaLLM(fields, target) {
 }
 
 async function _translateWithFallback(fields, target) {
-    if (!_client) {
-        return { translations: await _translateViaLLM(fields, target), mode: 'groq' };
+    // 1) Google Cloud Translation (when configured).
+    if (_client) {
+        try {
+            const [translations] = await _client.translate(fields, target);
+            return { translations, mode: 'gcp' };
+        } catch (err) {
+            if (!_isGcpUnavailable(err)) throw err;
+        }
     }
-    try {
-        const [translations] = await _client.translate(fields, target);
-        return { translations, mode: 'gcp' };
-    } catch (err) {
-        if (!_isGcpUnavailable(err)) throw err;
+
+    // 2) Groq fallback — also covers the case where GCP was never configured.
+    if (isConfigured()) {
         const translations = await _translateViaLLM(fields, target);
-        return { translations, mode: 'gcp-fallback-groq' };
+        return { translations, mode: _client ? 'gcp-fallback-groq' : 'groq' };
     }
+
+    // 3) No provider available — caller decides whether to use a hardcoded fallback.
+    throw Object.assign(new Error(
+        'No translation provider available (Google Cloud Translation not initialized and GROQ_API_KEY not set)'),
+        { httpStatus: 503, stage: 5, stage_name: 'translation' });
 }
 
 function isReady()   { return _client !== null; }
@@ -132,16 +140,22 @@ function _validateLanguage(code) {
 }
 
 async function listLanguages() {
-    if (!isReady()) {
-        throw Object.assign(new Error(
-            'Google Cloud Translation client is not initialized: ' +
-            (initError() || 'no credentials found in the ADC chain. ' +
-             'Run `gcloud auth application-default login` or set ' +
-             'GOOGLE_APPLICATION_CREDENTIALS to a service-account JSON file.')),
-            { httpStatus: 503, stage: 5, stage_name: 'translation' }
-        );
+    const staticList = {
+        mode: 'static',
+        project: 'groq',
+        languages: SUPPORTED_LANGUAGES.map(l => ({ ...l })),
+    };
+    // No client at all, or the client can't reach GCP — serve the curated list
+    // so the UI stays usable and translation runs through Groq (see
+    // _translateWithFallback).
+    if (!isReady()) return staticList;
+    let codes;
+    try {
+        [codes] = await _client.getLanguages();
+    } catch (err) {
+        if (_isGcpUnavailable(err)) return staticList;
+        throw err;
     }
-    const [codes] = await _client.getLanguages();
     return {
         mode: 'gcp',
         project: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || 'gcp-adc',
@@ -173,16 +187,6 @@ async function translateContent({ herald, target, source = 'en' }) {
         out.metadata = { ...(out.metadata || {}), source_language: source, target_language: target, translated_at: new Date().toISOString() };
         return { mode: 'noop', source, target, herald: out };
     }
-    if (target === 'hi') {
-        return _hardcodedHindi_content(herald, source);
-    }
-    if (!isReady()) {
-        throw Object.assign(new Error(
-            'Google Cloud Translation client is not initialized: ' +
-            (initError() || 'no credentials found in the ADC chain.')),
-            { httpStatus: 503, stage: 5, stage_name: 'translation' }
-        );
-    }
 
     const fields = [
         herald.email?.subject,
@@ -196,7 +200,15 @@ async function translateContent({ herald, target, source = 'en' }) {
         return { mode: 'noop', source, target, herald };
     }
 
-    const { translations, mode } = await _translateWithFallback(fields, target);
+    let translations, mode;
+    try {
+        ({ translations, mode } = await _translateWithFallback(fields, target));
+    } catch (err) {
+        // No provider available — last resort is the hardcoded Hindi demo copy.
+        if (target === 'hi') return _hardcodedHindi_content(herald, source);
+        throw err;
+    }
+
     let i = 0;
     const out = JSON.parse(JSON.stringify(herald));
     if (out.email?.subject) { out.email.subject = translations[i++]; }
@@ -228,16 +240,6 @@ async function translateOutreach(content, target, firstName) {
         const out = JSON.parse(JSON.stringify(content));
         return { mode: 'noop', target_language: target, content: out, first_name: firstName };
     }
-    if (target === 'hi') {
-        return _hardcodedHindi_outreach(content, firstName);
-    }
-    if (!isReady()) {
-        throw Object.assign(new Error(
-            'Google Cloud Translation client is not initialized: ' +
-            (initError() || 'no credentials found in the ADC chain.')),
-            { httpStatus: 503, stage: 5, stage_name: 'translation' }
-        );
-    }
 
     const fields = [
         content.email?.subject,
@@ -251,7 +253,15 @@ async function translateOutreach(content, target, firstName) {
         return { mode: 'noop', target_language: target, content, first_name: firstName };
     }
 
-    const { translations, mode } = await _translateWithFallback(fields, target);
+    let translations, mode;
+    try {
+        ({ translations, mode } = await _translateWithFallback(fields, target));
+    } catch (err) {
+        // No provider available — last resort is the hardcoded Hindi demo copy.
+        if (target === 'hi') return _hardcodedHindi_outreach(content, firstName);
+        throw err;
+    }
+
     let i = 0;
     const out = JSON.parse(JSON.stringify(content));
     if (out.email?.subject) out.email.subject = translations[i++];

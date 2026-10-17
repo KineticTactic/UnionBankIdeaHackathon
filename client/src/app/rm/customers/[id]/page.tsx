@@ -241,7 +241,7 @@ function PitchView({ pitch, customerId }: { pitch: any; customerId: string }) {
   return (
     <div className="mt-2 rounded-lg border border-[var(--crimson)]/20 bg-[var(--crimson)]/[0.02] p-3 space-y-2">
       <p className="text-[9px] font-bold text-[var(--crimson)] uppercase tracking-wide flex items-center gap-1.5">
-        <Send className="w-3 h-3" /> HERALD draft for {pitch.label} · {pitch.source === 'llm-live' ? 'NVIDIA DeepSeek' : 'template'}
+        <Send className="w-3 h-3" /> HERALD draft for {pitch.label} · {pitch.source === 'llm-live' ? 'Groq' : 'template'}
       </p>
       <div>
         <p className="text-[12px] font-semibold text-slate-800">Subject: {c.email.subject}</p>
@@ -428,7 +428,7 @@ function OutreachTab({ snap, customerId }: { snap: Snapshot; customerId: string 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-[12px] text-slate-400">HERALD-generated content (NVIDIA DeepSeek V4 Pro)</p>
+        <p className="text-[12px] text-slate-400">HERALD-generated content (Groq)</p>
         <div className="flex gap-2">
           <button onClick={generate} disabled={loading}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--crimson)] text-white text-[12px] font-semibold hover:bg-[var(--crimson-dark)] disabled:opacity-50 transition-colors">
@@ -1318,7 +1318,7 @@ export default function RmCustomer360Page() {
                       <div className="flex items-center gap-2 mb-1.5">
                         <TrendingUp className="w-3.5 h-3.5 text-[#6B132B]" />
                         <p className="text-[10px] font-bold text-[#6B132B] uppercase tracking-wide">AI Risk Analysis</p>
-                        <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-[#6B132B] text-white uppercase tracking-wide">NVIDIA DeepSeek V4 Pro</span>
+                        <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-[#6B132B] text-white uppercase tracking-wide">Groq</span>
                       </div>
                       <div className="text-[12px] text-[#2A161B] leading-relaxed prose prose-sm max-w-none"
                         dangerouslySetInnerHTML={{ __html: mdToHtml(analysis) }} />

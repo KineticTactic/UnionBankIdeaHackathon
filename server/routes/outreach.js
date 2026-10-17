@@ -11,6 +11,8 @@ const router      = require('express').Router();
 const crypto      = require('crypto');
 const config      = require('../config');
 const { verifyToken } = require('../middleware/auth');
+const llm         = require('../services/llmClient');
+const { buildHeraldPrompts, parseHeraldResponse } = require('../services/heraldPrompt');
 const ds          = require('../services/dataStore');
 const consentSvc  = require('../services/consentService');
 const approvalSvc = require('../services/approvalService');
@@ -170,8 +172,28 @@ async function _syncGenerate(req, res, snap, requestedBy) {
     const score = snap.score?.final_score || snap.customer?.churn_score || 0.0;
     const tier  = snap.score?.risk_tier   || snap.customer?.risk_tier   || 'NONE';
 
-    await new Promise(r => setTimeout(r, 2500));
-    const heraldContent = _buildHeraldContent(snap);
+    // Try live LLM (Groq) generation first; fall back to the templated
+    // demo content when the key is unset or the provider is unavailable.
+    let heraldContent = null;
+    let contentSource = 'demo';
+    if (llm.isConfigured()) {
+        try {
+            const { systemPrompt, userPrompt } = buildHeraldPrompts(snap);
+            const resp = await llm.callLLM([
+                { role: 'system', content: systemPrompt },
+                { role: 'user',   content: userPrompt },
+            ], 1200);
+            const raw = resp?.choices?.[0]?.message?.content || '';
+            heraldContent = parseHeraldResponse(raw);
+            contentSource = 'llm-live';
+        } catch (err) {
+            console.error(`[HERALD] sync LLM failed for ${id}: ${err.category || 'error'} (${err.status || 'n/a'}) — using template fallback`);
+        }
+    }
+    if (!heraldContent) {
+        await new Promise(r => setTimeout(r, 2500));
+        heraldContent = _buildHeraldContent(snap);
+    }
 
     const plan = snap.plan || {};
     const compassRecommendation = {
@@ -185,14 +207,14 @@ async function _syncGenerate(req, res, snap, requestedBy) {
 
     console.log(`[HERALD] sync generate  customer=${id}  tier=${tier}  score=${(score||0).toFixed(3)}  ` +
                 `offer=${compassRecommendation.offer}  channel=${compassRecommendation.channel}  ` +
-                `source=demo  approval=${approvalId}`);
+                `source=${contentSource}  approval=${approvalId}`);
 
     await auditLog.logEvent({
         eventType:    'OUTREACH_QUEUED',
         customerId:   id,
         actor:        requestedBy,
         layer:        'HERALD',
-        payload:      { approvalId, allowedChannels, consentStatus, source: 'demo' },
+        payload:      { approvalId, allowedChannels, consentStatus, source: contentSource },
         modelVersion: 'HERALD-v1.0',
     });
 

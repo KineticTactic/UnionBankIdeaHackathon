@@ -25,14 +25,22 @@ module.exports = {
     oracleBaseUrl:    process.env.ORACLE_BASE_URL     || 'http://localhost:8007',
     kafkaBrokers:     _list(process.env.KAFKA_BROKERS, 'localhost:9092'),
 
-    nvidia: {
-        endpoint:       process.env.NVIDIA_ENDPOINT      || 'https://integrate.api.nvidia.com/v1/chat/completions',
-        apiKey:         process.env.NVIDIA_API_KEY        || '',
-        // mistral-small-4-119b returns in ~2s; deepseek-v4-pro takes
-        // 25-60s on the same prompt and routinely times out.
-        model:          process.env.NVIDIA_MODEL          || 'mistralai/mistral-small-4-119b-2603',
-        timeoutMs:      parseInt(process.env.NVIDIA_TIMEOUT_MS      || '30000'),
-        maxConcurrency: parseInt(process.env.NVIDIA_MAX_CONCURRENCY || '5'),
+    // ── Groq LLM (HERALD outreach + call analysis + optional translation) ──
+    // OpenAI-compatible Chat Completions API.  The key is server-side only and
+    // is never sent to the browser.  Model is overridable per environment.
+    groq: {
+        endpoint:       process.env.GROQ_ENDPOINT        || 'https://api.groq.com/openai/v1/chat/completions',
+        apiKey:         process.env.GROQ_API_KEY          || '',
+        model:          process.env.GROQ_MODEL            || 'openai/gpt-oss-20b',
+        // gpt-oss models are reasoning models; without a low effort the
+        // reasoning tokens consume the whole max_tokens budget and the
+        // completion content comes back empty.  Set GROQ_REASONING_EFFORT to
+        // an empty string to omit the parameter for non-reasoning models.
+        reasoningEffort: process.env.GROQ_REASONING_EFFORT === undefined
+                            ? 'low'
+                            : (process.env.GROQ_REASONING_EFFORT || null),
+        timeoutMs:      parseInt(process.env.GROQ_TIMEOUT_MS      || '45000'),
+        maxConcurrency: parseInt(process.env.GROQ_MAX_CONCURRENCY || '5'),
     },
 
     corsOrigins:    _list(process.env.CORS_ORIGINS, '*'),

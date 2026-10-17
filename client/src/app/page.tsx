@@ -16,7 +16,7 @@ const LAYERS = [
   { id: 'L2', name: 'ARGUS',   color: 'var(--crimson-dark)', desc: 'Shiryaev-Roberts · CUSUM · SPRT · 9 streams' },
   { id: 'L3', name: 'CHRONOS', color: 'var(--copper)',       desc: 'GENESIS · HABITAT · TARE · GraphSAGE · FusionXV2' },
   { id: 'L4', name: 'COMPASS', color: 'var(--copper-dark)',  desc: 'LangGraph · Life-event inference · Next-best-action' },
-  { id: 'L5', name: 'HERALD',  color: 'var(--charcoal)',     desc: 'NVIDIA DeepSeek V4 Pro · Email · SMS · Push' },
+  { id: 'L5', name: 'HERALD',  color: 'var(--charcoal)',     desc: 'Groq · Email · SMS · Push' },
   { id: 'L6', name: 'VERDICT', color: 'var(--gray-600)',     desc: 'Doubly-robust ATE · Qini curve · Hillstrom' },
   { id: 'L7', name: 'ORACLE',  color: 'var(--copper-soft)',  desc: 'Thompson Sampling · Weekly retrain · Prompt optimisation' },
 ];
@@ -25,7 +25,7 @@ const REAL = [
   { real: true,  text: 'All 7 AI/ML layers fully designed, documented and implemented' },
   { real: true,  text: 'ARGUS algorithms (SR, CUSUM, SPRT) - real statistical implementations' },
   { real: true,  text: 'CHRONOS 5-model ensemble with conformal prediction intervals' },
-  { real: true,  text: 'HERALD content generation via live NVIDIA DeepSeek V4 Pro API' },
+  { real: true,  text: 'HERALD content generation via live Groq API' },
   { real: true,  text: 'VERDICT doubly-robust ATE estimator and Qini uplift curves' },
   { real: true,  text: 'REST API - any banking portal can integrate with one endpoint' },
   { real: false, text: '50 customers are synthetic - scores pre-computed for demo' },
@@ -79,7 +79,7 @@ const SCALE_PILLARS = [
   { icon: Shield,    title: 'Async by Default',         body: 'BullMQ on Redis with sync fallback. API returns 202 with jobId; worker runs at concurrency 5. Redis down? Falls back to sync - degrade, not fail.' },
   { icon: BarChart3, title: 'Postgres at Every Tier',   body: 'Sharding-ready: customer_id leads every table. At 1M customers, add Citus - same queries, zero app changes.' },
   { icon: Activity,  title: 'Kafka Event Spine',        body: 'Signals, approvals, consent changes all flow through Kafka keyed by customer_id. Ordered processing, audit replay. New consumer = 2 lines.' },
-  { icon: Plug,      title: 'Abstracted LLM Layer',     body: 'callNvidia() with Claude fallback, 30s timeout, p-limit concurrency, circuit breaker. Token usage tracked per customer.' },
+  { icon: Plug,      title: 'Abstracted LLM Layer',     body: 'callLLM() with cached/template fallback, 45s timeout, p-limit concurrency, bounded retry. Token usage tracked per customer.' },
   { icon: Globe,     title: 'Translation at Scale',     body: 'Provider-agnostic wrapper around Google Cloud Translation. Used for Composer transcreate with back-translation. 70% under free tier.' },
 ];
 

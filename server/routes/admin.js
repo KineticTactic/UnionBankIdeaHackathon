@@ -419,7 +419,7 @@ router.post('/reports/generate', complianceAccess, async (req, res) => {
 
         // 3) Optional LLM narrative (executor must be human-readable).
         let llm_summary = null;
-        if (include_llm_summary && config.nvidia.apiKey) {
+        if (include_llm_summary && config.groq.apiKey) {
             try {
                 const llm = require('../services/llmClient');
                 const prompt = `You are a banking compliance analyst writing an executive summary.
@@ -438,7 +438,7 @@ Pre-computed facts (DO NOT recompute — only narrate):
 - Tasks outstanding: ${reportData.compliance_audit.tasks_outstanding}
 
 Write a 3-paragraph executive summary suitable for a regulator. No raw PII. Use specific numbers from the facts above.`;
-                const resp = await llm.callNvidia([
+                const resp = await llm.callLLM([
                     { role: 'system', content: 'You are a precise compliance analyst. Cite only the numbers provided. No fabrication.' },
                     { role: 'user',   content: prompt },
                 ], 600);

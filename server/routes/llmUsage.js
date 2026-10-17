@@ -2,7 +2,8 @@
 /**
  * GET /api/llm-usage
  *
- * Reads LLM call counters from Redis keys pcop:llm_calls:* (set by nvidia_client.py).
+ * Reads LLM call counters from Redis keys pcop:llm_calls:* (set by the
+ * provider clients, e.g. Groq).
  * Falls back to zeros in DEMO_MODE (no Redis) so the endpoint is always safe to call.
  */
 const { Router } = require('express');

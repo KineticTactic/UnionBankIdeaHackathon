@@ -305,7 +305,7 @@ export default function OutreachComposerPage() {
           {customer && <p className="text-[13px] text-slate-400 mt-0.5">for {customer.full_name} · {customer.segment} · {customer.city}</p>}
         </div>
         <div className="text-right">
-          <p className="text-[10px] text-slate-400 font-medium">HERALD + NVIDIA DeepSeek V4 Pro</p>
+          <p className="text-[10px] text-slate-400 font-medium">HERALD + Groq</p>
           <p className="text-[10px] text-slate-300">Human approval required before send</p>
         </div>
       </div>

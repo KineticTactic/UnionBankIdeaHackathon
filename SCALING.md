@@ -23,7 +23,7 @@
      │  (system of    │    │ Pub/Sub + BullMQ  │    │  (HERALD LLM)   │
      │   record)      │    │  event bus        │    └────────┬────────┘
      └────────────────┘    └──────────────────┘             │
-                                                            NVIDIA DeepSeek
+                                                            Groq LLM
               ┌────────────────────────────────────────────┐
               │              CHRONOS FastAPI                │
               │  (scoring service — writes to Postgres)     │
@@ -46,7 +46,7 @@
 ## Key Bottlenecks Eliminated
 
 1. **Single-process state** — All mutable state moved to Postgres and Redis. Any number of Express replicas can serve requests.
-2. **Blocking LLM calls** — POST `/api/outreach/generate` no longer waits for NVIDIA response; it enqueues a BullMQ job and returns `202 {jobId}`. Client polls `GET /api/outreach/job/:jobId`.
+2. **Blocking LLM calls** — POST `/api/outreach/generate` no longer waits for the Groq response; it enqueues a BullMQ job and returns `202 {jobId}`. Client polls `GET /api/outreach/job/:jobId`.
 3. **In-memory EventEmitter for SSE** — Replaced with Redis Pub/Sub channels (`pcop:events:global`, `pcop:events:{customerId}`). SSE subscribers on any replica receive all events.
 4. **Hardcoded localhost** — `CHRONOS_BASE_URL`, `BANK_API_BASE_URL`, `DATABASE_URL`, `REDIS_URL` are all env-var driven. No hardcoded hosts remain.
 5. **Unbounded simulation maps** — `_capMap()` in `kafkaService.js` caps override maps at 500 entries; signal arrays cap at 20 per customer.

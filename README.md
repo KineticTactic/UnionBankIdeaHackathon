@@ -374,7 +374,8 @@ UnionBankIdeaHackathon/
 │   └── services/
 │       ├── kafkaService.js             ← Kafka consumer + 8s simulation fallback
 │       ├── dataStore.js                ← In-memory customer + signal store
-│       ├── analysisService.js          ← NVIDIA LLM integration
+│       ├── analysisService.js          ← Analysis orchestration
+│       ├── llmClient.js                ← Groq LLM integration (HERALD outreach)
 │       ├── nexus.js                    ← NEXUS cross-sell scoring (peer-adoption heuristic + trained XGBoost)
 │       ├── eligibility.js              ← Compliance + churn-deferral gate for NEXUS recommendations
 │       ├── productCatalog.js           ← NEXUS product taxonomy + segment affinity priors
@@ -538,7 +539,7 @@ Full API documentation is available in the technical walkthrough notebook.
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Frontend            | Next.js 16.2.1 (App Router) · React 19 · TypeScript 5 · Tailwind CSS v4 · shadcn/ui · Recharts v3 · Lucide React                                                                                                                                          |
 | API gateway         | Node.js · Express 5 · JWT (HS256, 8-hour expiry) · KafkaJS · Server-Sent Events for real-time streaming                                                                                                                                                   |
-| AI and LLM          | NVIDIA-hosted `mistralai/mistral-small-4-119b-2603` via `integrate.api.nvidia.com/v1` (HERALD outreach generation) · LangGraph (agentic orchestration in COMPASS)                                                                                         |
+| AI and LLM          | Groq OpenAI-compatible Chat Completions (`openai/gpt-oss-20b`, configurable via `GROQ_MODEL`) for HERALD outreach generation · LangGraph (agentic orchestration in COMPASS)                                                                                |
 | ML and data science | Python 3.11 · FastAPI · PyTorch 2.2 · ONNX Runtime · XGBoost 2.0 · scikit-learn · scikit-uplift · GraphSAGE (PyTorch Geometric) · DeepHit survival modelling · SHAP (explainability) · Pandas · NumPy                                                     |
 | Infrastructure      | Railway (production deployment — two services: server + client) · Apache Kafka (real-time event streaming; simulation fallback if broker absent) · Docker Compose (local Postgres + Kafka + MLflow stack) · MLflow (experiment tracking + model registry) |
 | Operator console    | Go 1.22+ · Bubbletea · Lipgloss · Bubbles                                                                                                                                                                                                                 |
@@ -551,7 +552,7 @@ Full API documentation is available in the technical walkthrough notebook.
 - The Kafka layer currently runs in simulation mode (no live broker required) — real deployment needs a managed Kafka cluster.
 - DeepHit and TARE training data is synthetic; survival curves are indicative, not calibrated on real churn outcomes.
 - The demo covers 20 customers. Scaling to production volumes (100K or more customers) would require batch scoring infrastructure and a vector database for GraphSAGE. See [SCALING.md](SCALING.md) for the full plan.
-- HERALD content quality depends on NVIDIA API availability; the system falls back to pre-generated content if the API is unreachable.
+- HERALD content quality depends on Groq API availability; the system falls back to pre-generated content if the API is unreachable or `GROQ_API_KEY` is unset.
 - No real-time Core Banking System integration — all data is served from static JSON snapshots updated offline.
 
 ---

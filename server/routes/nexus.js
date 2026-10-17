@@ -198,8 +198,8 @@ router.post('/send-to-compass/:id', (req, res) => {
 
 // ── POST /api/nexus/pitch/:id ─────────────────────────────────────────────────
 // Generate a HERALD cross-sell pitch for a SPECIFIC product. Tries the live LLM
-// (NVIDIA DeepSeek) with a cross-sell prompt; falls back to a templated,
-// product-specific draft so the demo always returns content.
+// (Groq) with a cross-sell prompt; falls back to a templated, product-specific
+// draft so the demo always returns content.
 function templatedPitch(customer, label, reason) {
     const first = customer.first_name || (customer.full_name || 'there').split(' ')[0];
     const rm    = customer.relationship_manager || 'your relationship manager';
@@ -238,7 +238,7 @@ router.post('/pitch/:id', async (req, res) => {
                 `Customer: ${customer.full_name} (${customer.customer_id}) | Age ${customer.age} | ${customer.city} | ${customer.segment}\n` +
                 `Product to pitch: ${label}\nWhy it fits: ${reason || 'strong profile match'}\n` +
                 `Channels: email (subject + body <=120 words), sms (<=160 chars), push (title <=40 chars, body <=100 chars).`;
-            const resp = await llm.callNvidia(
+            const resp = await llm.callLLM(
                 [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }], 1000);
             const raw = resp?.choices?.[0]?.message?.content || '';
             content = parseHeraldResponse(raw);

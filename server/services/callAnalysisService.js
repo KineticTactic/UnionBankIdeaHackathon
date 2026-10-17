@@ -1,5 +1,5 @@
 'use strict';
-const { callNvidia } = require('./llmClient');
+const { callLLM } = require('./llmClient');
 
 const ANALYSIS_SYSTEM = `You are an expert banking call analyst for Union Bank.
 Your job is to extract structured intelligence from RM-customer call transcripts.
@@ -50,7 +50,7 @@ Return this exact JSON structure:
     },
   ];
 
-  const resp = await callNvidia(messages, 1200);
+  const resp = await callLLM(messages, 1200);
   const raw = resp.choices?.[0]?.message?.content || '{}';
   const cleaned = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
   return JSON.parse(cleaned);
@@ -103,7 +103,7 @@ Return:
     },
   ];
 
-  const resp = await callNvidia(messages, 800);
+  const resp = await callLLM(messages, 800);
   const raw = resp.choices?.[0]?.message?.content || '{}';
   const cleaned = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
   return JSON.parse(cleaned);

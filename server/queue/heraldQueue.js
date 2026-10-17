@@ -2,8 +2,9 @@
 /**
  * HERALD BullMQ job queue — decouples LLM calls from the HTTP request path.
  * POST /api/outreach/generate enqueues a job and returns 202 immediately.
- * A Worker (started at boot) processes it: calls NVIDIA, caches the result,
- * creates the approval entry, and publishes a Redis 'herald.completed' event.
+ * A Worker (started at boot) processes it: calls the LLM (Groq), caches the
+ * result, creates the approval entry, and publishes a Redis 'herald.completed'
+ * event.
  *
  * Job deduplication: jobs with the same customerId within 60 s are collapsed.
  */
@@ -63,11 +64,11 @@ async function _processJob(job) {
     let heraldContent = pub ? await _getCached(pub, cacheKey) : null;
 
     if (!heraldContent) {
-        // 2. Call NVIDIA (rate-limited, timeout-bound, retried)
-        if (config.nvidia.apiKey) {
+        // 2. Call the LLM (Groq) — rate-limited, timeout-bound, retried
+        if (llm.isConfigured()) {
             try {
                 const { systemPrompt, userPrompt } = buildHeraldPrompts(snapshot);
-                const resp = await llm.callNvidia([
+                const resp = await llm.callLLM([
                     { role: 'system', content: systemPrompt },
                     { role: 'user',   content: userPrompt },
                 ], 1200);
@@ -75,7 +76,7 @@ async function _processJob(job) {
                 heraldContent = parseHeraldResponse(raw);
                 if (pub) await _setCached(pub, cacheKey, heraldContent);
             } catch (err) {
-                console.error(`[HERALD worker] NVIDIA failed for ${customerId}:`, err.message);
+                console.error(`[HERALD worker] LLM failed for ${customerId}: ${err.category || 'error'} (${err.status || 'n/a'})`);
             }
         }
 
@@ -169,7 +170,7 @@ async function startHeraldWorker() {
         heraldQueue  = new Queue(QUEUE_NAME, { connection: _connection() });
         heraldWorker = new Worker(QUEUE_NAME, _processJob, {
             connection,
-            concurrency: config.nvidia.maxConcurrency,
+            concurrency: config.groq.maxConcurrency,
         });
         heraldWorker.on('failed', (job, err) => console.error(`[HERALD worker] job ${job?.id} failed:`, err.message));
         console.log('[HERALD] BullMQ worker started');

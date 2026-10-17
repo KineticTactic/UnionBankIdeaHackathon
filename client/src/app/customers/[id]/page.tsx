@@ -107,7 +107,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
       setHerald(h);
       return h;
     } catch (e: unknown) {
-      setHeraldError(e instanceof Error ? e.message : 'NVIDIA DeepSeek V4 Pro did not respond. Check the API key or network connection.');
+      setHeraldError(e instanceof Error ? e.message : 'Groq did not respond. Check the API key or network connection.');
       return null;
     } finally {
       setGenerating(false);
@@ -126,7 +126,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
         const generated = await generateHerald();
         if (!generated) {
           setTranslationErr('Could not generate content for translation. ' +
-                             'Check the NVIDIA API key and try again.');
+                             'Check the Groq API key and try again.');
           return;
         }
         source = generated;
@@ -174,7 +174,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
       const r = await api.analyzeCustomer(id);
       setAnalysis(r.analysis || '');
     } catch (e: unknown) {
-      setAnalysisError(e instanceof Error ? e.message : 'NVIDIA DeepSeek V4 Pro did not respond. Check the API key or network connection.');
+      setAnalysisError(e instanceof Error ? e.message : 'Groq did not respond. Check the API key or network connection.');
     } finally { setAnalyzing(false); }
   };
 
@@ -307,7 +307,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
               <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200">
                 <div className="flex items-center gap-2">
                   <p className="text-[13px] font-semibold text-slate-700">AI Risk Analysis</p>
-                  <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-teal-soft text-teal-dark uppercase tracking-wide">NVIDIA DeepSeek V4 Pro</span>
+                  <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-teal-soft text-teal-dark uppercase tracking-wide">Groq</span>
                 </div>
                 <button onClick={handleAnalyze} disabled={analyzing}
                   className="flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg bg-[var(--crimson)] text-white hover:bg-[var(--crimson-dark)] disabled:opacity-50 transition-colors">
@@ -320,7 +320,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                   <div className="space-y-2.5">
                     <div className="flex items-center gap-2 mb-3 text-[12px] text-slate-400">
                       <div className="w-4 h-4 border-2 border-[var(--crimson)] border-t-transparent rounded-full animate-spin shrink-0" />
-                      NVIDIA DeepSeek V4 Pro is analysing {c.full_name}'s risk profile…
+                      Groq is analysing {c.full_name}'s risk profile…
                     </div>
                     <div className="h-3 bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-slate-200 rounded-full animate-pulse" style={{width:'85%'}} /></div>
                     <div className="h-3 bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-slate-200 rounded-full animate-pulse" style={{width:'65%'}} /></div>
@@ -338,7 +338,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                 ) : analysis ? (
                   <p className="text-[13px] text-slate-600 leading-relaxed whitespace-pre-line">{analysis}</p>
                 ) : (
-                  <p className="text-[12px] text-slate-400 italic">Click "Generate Analysis" to get a live AI-powered risk assessment via NVIDIA DeepSeek V4 Pro.</p>
+                  <p className="text-[12px] text-slate-400 italic">Click "Generate Analysis" to get a live AI-powered risk assessment via Groq.</p>
                 )}
               </div>
             </div>
@@ -606,7 +606,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
               <div>
                 <p className="text-[13px] font-semibold text-slate-700">HERALD Content</p>
                 <p className="text-[11px] text-slate-400">
-                  {herald ? 'Live — generated via NVIDIA DeepSeek V4 Pro' : 'No content yet — click Generate with AI or pick a language and Translate'}
+                  {herald ? 'Live — generated via Groq' : 'No content yet — click Generate with AI or pick a language and Translate'}
                 </p>
               </div>
               <div className="flex items-center gap-2 flex-wrap">
@@ -654,7 +654,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                         ? (langError || 'Waiting for language list')
                         : !targetLang
                             ? 'Pick a target language'
-                            : 'Generate + translate via NVIDIA DeepSeek V4 Pro & Google Cloud Translation'
+                            : 'Generate + translate via Groq & Google Cloud Translation'
                     }
                   >
                     <Languages className="w-3.5 h-3.5" />
@@ -704,7 +704,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
               <div className="space-y-3 py-2">
                 <div className="flex items-center gap-2 text-[12px] text-slate-400 mb-1">
                   <div className="w-4 h-4 border-2 border-[var(--crimson)] border-t-transparent rounded-full animate-spin shrink-0" />
-                  NVIDIA DeepSeek V4 Pro is writing personalised email, SMS and push content…
+                  Groq is writing personalised email, SMS and push content…
                 </div>
                 {['Email body', 'SMS message', 'Push notification'].map(label => (
                   <div key={label} className="border border-slate-100 rounded-lg p-3 space-y-2">
@@ -721,11 +721,11 @@ export default function CustomerDetailPage({ params }: { params: Promise<{id:str
                 <div>
                   <p className="text-[12px] font-semibold text-crimson mb-0.5">Content generation failed</p>
                   <p className="text-[12px] text-crimson">{heraldError}</p>
-                  <p className="text-[11px] text-crimson mt-1">Check that the NVIDIA API key is set in server/.env and the endpoint is reachable.</p>
+                  <p className="text-[11px] text-crimson mt-1">Check that the Groq API key is set in server/.env and the endpoint is reachable.</p>
                 </div>
               </div>
             ) : !activeHerald ? (
-              <p className="text-[13px] text-slate-400 italic py-8 text-center">Pick a language above and click <strong>Translate</strong> to generate + translate live content via NVIDIA DeepSeek V4 Pro &amp; Google Cloud Translation — or click <strong>Generate with AI</strong> for English-only.</p>
+              <p className="text-[13px] text-slate-400 italic py-8 text-center">Pick a language above and click <strong>Translate</strong> to generate + translate live content via Groq &amp; Google Cloud Translation — or click <strong>Generate with AI</strong> for English-only.</p>
             ) : (
               <>
                 {activeHerald.email && (

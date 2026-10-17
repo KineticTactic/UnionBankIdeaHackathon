@@ -1,7 +1,7 @@
 # PCOP — Deployment Guide
 
 > **What actually needs to deploy:** Two Node.js services only.
-> NVIDIA DeepSeek V4 Pro is used for HERALD — everything else runs standalone.
+> Groq (OpenAI-compatible Chat Completions) is used for HERALD — everything else runs standalone.
 
 ---
 
@@ -17,7 +17,7 @@ The full PCOP repo contains 7 layers, Python ML training code, PostgreSQL migrat
 | `server/services/localData.js` | ✅ Built-in | — | All 20 customers, signals, portfolio data — no DB needed |
 | `chronos/data/*.json` | ✅ Built-in | 43 KB | Pre-computed ML scores, action plans, HERALD content |
 | Kafka simulation | ✅ Auto-on | — | Activates when no broker is available — no setup needed |
-| **NVIDIA API** | ✅ Keep | — | DeepSeek V4 Pro for HERALD outreach generation only |
+| **Groq API** | ✅ Optional | — | LLM for HERALD outreach generation only; falls back to cached content |
 | CHRONOS FastAPI (Python) | ❌ Skip | ~2 GB | Scores are pre-computed — FastAPI not needed for demo |
 | PostgreSQL | ❌ Skip | — | `localData.js` replaces the DB entirely |
 | Bank API (port 3001) | ❌ Skip | — | `localData.js` is already the fallback |
@@ -64,11 +64,13 @@ The full PCOP repo contains 7 layers, Python ML training code, PostgreSQL migrat
    | `PORT` | `10000` |
    | `NODE_ENV` | `production` |
    | `JWT_SECRET` | *(random 32+ char string)* |
-   | `NVIDIA_ENDPOINT` | `https://integrate.api.nvidia.com/v1/chat/completions` |
-   | `NVIDIA_API_KEY` | *(your NVIDIA API key)* |
-   | `NVIDIA_MODEL` | `deepseek-ai/deepseek-v4-pro` |
+   | `GROQ_API_KEY` | *(your Groq API key — optional)* |
+   | `GROQ_MODEL` | `openai/gpt-oss-20b` |
 
    > **Note:** Render free tier uses port `10000`. Set `PORT=10000`.
+   >
+   > `GROQ_API_KEY` is optional. Without it, HERALD generation falls back to
+   > cached/template content and the rest of the app is unaffected.
 
 6. Click **Create Web Service**. Wait for deploy (~3 minutes).
 
@@ -135,9 +137,8 @@ Railway hosts both services from the same repo with no cold starts.
    | `PORT` | `8000` |
    | `NODE_ENV` | `production` |
    | `JWT_SECRET` | *(random string)* |
-   | `NVIDIA_ENDPOINT` | `https://integrate.api.nvidia.com/v1/chat/completions` |
-   | `NVIDIA_API_KEY` | *(your NVIDIA API key)* |
-   | `NVIDIA_MODEL` | `deepseek-ai/deepseek-v4-pro` |
+   | `GROQ_API_KEY` | *(your Groq API key — optional)* |
+   | `GROQ_MODEL` | `openai/gpt-oss-20b` |
 
 5. Deploy → note the **Public URL** — this is your `BACKEND_URL`.
 
@@ -168,11 +169,29 @@ Railway hosts both services from the same repo with no cold starts.
 | `PORT` | Yes | `8000` (Railway) or `10000` (Render) |
 | `NODE_ENV` | Yes | `production` |
 | `JWT_SECRET` | Yes | Any random 32+ character string |
-| `NVIDIA_ENDPOINT` | For HERALD | `https://integrate.api.nvidia.com/v1/chat/completions` |
-| `NVIDIA_API_KEY` | For HERALD | Your NVIDIA API key |
-| `NVIDIA_MODEL` | For HERALD | `deepseek-ai/deepseek-v4-pro` |
+| `GROQ_API_KEY` | For HERALD | Your Groq API key (server-side only) |
+| `GROQ_MODEL` | Optional | `openai/gpt-oss-20b` |
+| `GROQ_TIMEOUT_MS` | Optional | `45000` |
+| `GROQ_REASONING_EFFORT` | Optional | `low` (gpt-oss models reason before answering) |
+| `GROQ_ENDPOINT` | Optional | `https://api.groq.com/openai/v1/chat/completions` |
 
-If `NVIDIA_*` vars are not set, HERALD outreach generation falls back to pre-generated cached content. Everything else — dashboard, customers, risk scores, signals — works without them.
+If `GROQ_API_KEY` is not set, HERALD outreach generation falls back to pre-generated cached content. Everything else — dashboard, customers, risk scores, signals — works without it.
+
+### Switching the Groq model
+
+The model ID is read from `GROQ_MODEL` at startup, so no code change is needed.
+Set `GROQ_MODEL` to any Groq-supported chat model (see
+https://console.groq.com/docs/models), redeploy/restart, and generation uses the
+new model. The default is `openai/gpt-oss-20b`.
+
+### Groq fallback behaviour
+
+Groq is used for language generation only; it never recomputes churn/risk scores.
+On a missing key, invalid credentials (401/403), rate limit (429), provider 5xx,
+timeout or network failure, the LLM client raises a categorised error and the
+caller falls back to cached/template content. 429/5xx/network failures are
+retried at most once with backoff (honouring `Retry-After` where provided), so a
+temporary provider outage degrades gracefully instead of breaking the dashboard.
 
 ### Frontend (Next.js)
 
@@ -203,7 +222,7 @@ Open the backend URL in a browser — you should see `{"status":"error","message
 `JWT_SECRET` not set. Verify it exists in your platform's environment variables.
 
 ### HERALD outreach generation fails
-Check `NVIDIA_API_KEY` and `NVIDIA_ENDPOINT` in the backend environment. The rest of the platform works without these.
+Check `GROQ_API_KEY` in the backend environment (and that `GROQ_MODEL` is a valid Groq model). The rest of the platform works without these.
 
 ### Render — 503 on first load
 Free tier cold start. Wait 90 seconds, then try again. Pre-warm by opening the backend URL before your demo.

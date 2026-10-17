@@ -16,7 +16,7 @@
  * response so the client can show a meaningful error.
  */
 const { Translate } = require('@google-cloud/translate').v2;
-const { callNvidia } = require('./llmClient');
+const { callLLM } = require('./llmClient');
 const config = require('../config');
 
 let _client = null;
@@ -69,9 +69,9 @@ function _isGcpUnavailable(err) {
     return /User Rate Limit|Quota exceeded|RESOURCE_EXHAUSTED|rate limit|does not exist|not a file|ENOENT|credentials|permission|API has not been|billing/i.test(m);
 }
 
-async function _translateViaNvidia(fields, target) {
-    if (!config.nvidia.apiKey) {
-        throw new Error('NVIDIA_API_KEY is not configured');
+async function _translateViaLLM(fields, target) {
+    if (!config.groq.apiKey) {
+        throw new Error('GROQ_API_KEY is not configured');
     }
     const langName = (CODE_TO_META[target] && CODE_TO_META[target].name) || target;
     const numbered = fields.map((t, i) => `${i + 1}. ${t}`).join('\n');
@@ -81,7 +81,7 @@ async function _translateViaNvidia(fields, target) {
         `Preserve placeholders like {{first_name}} and {{balance}} verbatim.\n` +
         `Do not add commentary or numbering.\n\n` +
         numbered;
-    const resp = await callNvidia(
+    const resp = await callLLM(
         [{ role: 'system', content: 'You are a precise translator. Output only valid JSON.' },
          { role: 'user',   content: prompt }],
         Math.max(800, fields.reduce((n, f) => n + f.length, 0) * 2 + 200)
@@ -97,22 +97,22 @@ async function _translateViaNvidia(fields, target) {
         if (lines.length === fields.length) arr = lines;
     }
     if (!Array.isArray(arr) || arr.length !== fields.length) {
-        throw new Error('NVIDIA translation returned unexpected shape');
+        throw new Error('Groq translation returned unexpected shape');
     }
     return arr.map(s => String(s));
 }
 
 async function _translateWithFallback(fields, target) {
     if (!_client) {
-        return { translations: await _translateViaNvidia(fields, target), mode: 'nvidia' };
+        return { translations: await _translateViaLLM(fields, target), mode: 'groq' };
     }
     try {
         const [translations] = await _client.translate(fields, target);
         return { translations, mode: 'gcp' };
     } catch (err) {
         if (!_isGcpUnavailable(err)) throw err;
-        const translations = await _translateViaNvidia(fields, target);
-        return { translations, mode: 'gcp-fallback-nvidia' };
+        const translations = await _translateViaLLM(fields, target);
+        return { translations, mode: 'gcp-fallback-groq' };
     }
 }
 

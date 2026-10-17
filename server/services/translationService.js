@@ -61,13 +61,6 @@ const SUPPORTED_LANGUAGES = [
 
 const CODE_TO_META = SUPPORTED_LANGUAGES.reduce((m, l) => { m[l.code] = l; return m; }, {});
 
-function _isGcpUnavailable(err) {
-    if (!err) return false;
-    const m = String(err.message || '');
-    if (err.code === 429 || err.code === 8) return true;
-    return /User Rate Limit|Quota exceeded|RESOURCE_EXHAUSTED|rate limit|does not exist|not a file|ENOENT|credentials|permission|API has not been|billing/i.test(m);
-}
-
 async function _translateViaLLM(fields, target) {
     if (!isConfigured()) {
         throw new Error('GROQ_API_KEY is not configured');
@@ -102,17 +95,17 @@ async function _translateViaLLM(fields, target) {
 }
 
 async function _translateWithFallback(fields, target) {
-    // 1) Google Cloud Translation (when configured).
+    // 1) Google Cloud Translation (when a client exists). Any failure here —
+    //    missing/invalid credentials, disabled API, quota, rate limit — must
+    //    fall through to Groq, so we deliberately swallow every error.
     if (_client) {
         try {
             const [translations] = await _client.translate(fields, target);
             return { translations, mode: 'gcp' };
-        } catch (err) {
-            if (!_isGcpUnavailable(err)) throw err;
-        }
+        } catch (_) { /* fall through to Groq */ }
     }
 
-    // 2) Groq fallback — also covers the case where GCP was never configured.
+    // 2) Groq fallback — also covers the case where GCP was never usable.
     if (isConfigured()) {
         const translations = await _translateViaLLM(fields, target);
         return { translations, mode: _client ? 'gcp-fallback-groq' : 'groq' };
@@ -152,9 +145,9 @@ async function listLanguages() {
     let codes;
     try {
         [codes] = await _client.getLanguages();
-    } catch (err) {
-        if (_isGcpUnavailable(err)) return staticList;
-        throw err;
+    } catch (_) {
+        // Any GCP failure (auth/quota/API-disabled) → serve the curated list.
+        return staticList;
     }
     return {
         mode: 'gcp',

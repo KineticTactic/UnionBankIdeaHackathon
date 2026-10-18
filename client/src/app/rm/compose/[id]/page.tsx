@@ -77,6 +77,36 @@ function buildHardcodedTranslation(base: any, targetLang: string): any {
   return out;
 }
 
+// Offline last-resort draft, used only when the generation API (and its
+// server-side template fallback) is unreachable.
+function buildHardcodedHerald(customer: any): any {
+  const firstName = customer?.first_name || customer?.full_name?.split(' ')[0] || 'Customer';
+  const segment   = customer?.segment  || 'Premium';
+  const tenure    = customer?.tenure_months || 24;
+  const tier      = customer?.risk_tier || 'PRIORITY';
+  const urgencyLine = ['PRIORITY', 'ESCALATE'].includes(tier)
+    ? 'We would love to connect with you soon to make sure everything is going smoothly.'
+    : 'We would be delighted to catch up whenever it suits you.';
+  const emailBody =
+    `Dear ${firstName},\n\n` +
+    `As one of our valued ${segment} customers, your relationship with Union Bank means a great deal to us. ` +
+    `Your ${tenure} months of trust and partnership have been truly appreciated, and we want to ensure ` +
+    `your banking experience continues to exceed your expectations.\n\n` +
+    `We have prepared a personalised banking offer crafted specifically around your financial goals. ` +
+    `${urgencyLine} Our Relationship Manager will be in touch shortly to walk you through the details — ` +
+    `no obligations, just a conversation about how we can do more for you.\n\n` +
+    `Thank you for choosing Union Bank. We look forward to continuing this journey together.\n\n` +
+    `Warm regards,\nUnion Bank Relationship Team`;
+  const smsBody =
+    `Union Bank: Hi ${firstName}, we have a special personalised offer just for you. ` +
+    `Your RM will call you soon. To know more, visit your nearest branch or call 1800-208-2244. -Union Bank`;
+  return {
+    email: { subject: `${firstName}, a personal note from Union Bank`, body: emailBody, compliance_status: 'APPROVED', word_count: emailBody.trim().split(/\s+/).length },
+    sms:   { body: smsBody, compliance_status: 'APPROVED', char_count: smsBody.length },
+    push:  { title: `${firstName}, a message from Union Bank`, body: `We've prepared a personalised offer for you. Tap to speak with your Relationship Manager today.`, compliance_status: 'APPROVED' },
+  };
+}
+
 export default function OutreachComposerPage() {
   const { id } = useParams() as { id: string };
   const router  = useRouter();
@@ -158,37 +188,44 @@ export default function OutreachComposerPage() {
 
   const generate = async () => {
     setGenerating(true); setGenError('');
-    await new Promise(r => setTimeout(r, 2000));
     try {
       if (!customer) throw new Error('Customer data not loaded yet.');
-      const firstName = (customer as any).first_name || (customer as any).full_name?.split(' ')[0] || 'Customer';
-      const segment   = (customer as any).segment  || 'Premium';
-      const tenure    = (customer as any).tenure_months || 24;
-      const tier      = (customer as any).risk_tier || 'PRIORITY';
-      const urgencyLine = ['PRIORITY', 'ESCALATE'].includes(tier)
-        ? 'We would love to connect with you soon to make sure everything is going smoothly.'
-        : 'We would be delighted to catch up whenever it suits you.';
-      const emailBody =
-        `Dear ${firstName},\n\n` +
-        `As one of our valued ${segment} customers, your relationship with Union Bank means a great deal to us. ` +
-        `Your ${tenure} months of trust and partnership have been truly appreciated, and we want to ensure ` +
-        `your banking experience continues to exceed your expectations.\n\n` +
-        `We have prepared a personalised banking offer crafted specifically around your financial goals. ` +
-        `${urgencyLine} Our Relationship Manager will be in touch shortly to walk you through the details — ` +
-        `no obligations, just a conversation about how we can do more for you.\n\n` +
-        `Thank you for choosing Union Bank. We look forward to continuing this journey together.\n\n` +
-        `Warm regards,\nUnion Bank Relationship Team`;
-      const smsBody =
-        `Union Bank: Hi ${firstName}, we have a special personalised offer just for you. ` +
-        `Your RM will call you soon. To know more, visit your nearest branch or call 1800-208-2244. -Union Bank`;
-      const heraldContent = {
-        email: { subject: `${firstName}, a personal note from Union Bank`, body: emailBody, compliance_status: 'APPROVED', word_count: emailBody.trim().split(/\s+/).length },
-        sms:   { body: smsBody, compliance_status: 'APPROVED', char_count: smsBody.length },
-        push:  { title: `${firstName}, a message from Union Bank`, body: `We've prepared a personalised offer for you. Tap to speak with your Relationship Manager today.`, compliance_status: 'APPROVED' },
-      };
-      setContent(heraldContent);
-      setApprovalId(`APR-DEMO-${Date.now()}`);
-      setEditContent(heraldContent);
+
+      // 1) HERALD generation via the backend. The route uses Groq live and
+      //    falls back to its own template when the key/provider is missing.
+      let heraldContent: any = null;
+      let approvalId = '';
+      try {
+        const r = await api.generateOutreach(id);
+        heraldContent = r?.heraldContent || null;
+        approvalId    = r?.approvalId    || '';
+      } catch (e: any) {
+        setGenError(
+          `Generation API failed${e?.message ? ` (${e.message})` : ''} — showing built-in draft instead.`
+        );
+      }
+
+      // 2) Last resort: the built-in template.
+      if (!heraldContent) {
+        heraldContent = buildHardcodedHerald(customer);
+        if (!approvalId) approvalId = `APR-LOCAL-${Date.now()}`;
+      }
+
+      // Normalise counts/status so the UI always has them.
+      const out = { ...heraldContent };
+      if (out.email) {
+        out.email.compliance_status = out.email.compliance_status || 'APPROVED';
+        out.email.word_count = (out.email.body || '').trim().split(/\s+/).filter(Boolean).length;
+      }
+      if (out.sms) {
+        out.sms.compliance_status = out.sms.compliance_status || 'APPROVED';
+        out.sms.char_count = (out.sms.body || '').length;
+      }
+      if (out.push) out.push.compliance_status = out.push.compliance_status || 'APPROVED';
+
+      setContent(out);
+      setApprovalId(approvalId);
+      setEditContent(out);
       setStep(2);
     } catch(e: any) { setGenError(e.message); }
     finally { setGenerating(false); }
